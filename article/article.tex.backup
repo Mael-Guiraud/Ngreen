@@ -1,0 +1,24 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+
+%opening
+\title{Contention Management for 5G}
+\author{DB,CC,MG,OM,YS}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article treats about Contention Management for 5G.
+\end{abstract}
+
+\section{Introduction}
+\itemize
+\item Context and problematic
+\item Related works
+\item Article contribution
+\end{itemize}
+
+
+\end{document}
