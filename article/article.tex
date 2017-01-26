@@ -56,16 +56,16 @@ This article treats about Contention Management for 5G.
 
   \subsection{Definitions}
   
-	We consider a symmetric directed graph $G=(V,A)$ modeling a slotted network. Each arc  $(u,v)$ in $A$ is characterized by an integer delay $Dl(u,v) \geq 1$ representing the number of slots from $u$ to $v$ on this arc. Note that for any arc $(u,v)$, $Dl(u,v)=Dl(v,u)$.
-
-      A route $r$ in $G$ is a sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\em latency} of a vertex $u_i$ in $r$, with $i \geq 1$, is defined by $$\lambda(u_i,r)= \sum\limits_{0 \leq j <i} Dl(a_j)$$ We also define $\lambda(u_0,r)=0$.
-      The latency of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.  A routing function $\cal R$ in $G$ associates a route from $u$ to $v$ for any couple of different vertices $<u,v>$ in $G$.\\
-
+	We consider a symmetric directed graph $G=(V,A)$ modelling a slotted network. Each arc  $(u,v)$ in $A$ is characterised by an integer delay $Dl(u,v) \geq 1$ representing the number of slots taken by a signal to go from $u$ to $v$ using this arc. Note that for any arc $(u,v)$, $Dl(u,v)=Dl(v,u)$.\\
+      A {\bf route} $r$ in $G$ is a sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$. \\ 
+      The {\bf latency} of a vertex $u_i$ in $r$, with $i \geq 1$, is defined by $$\lambda(u_i,r)= \sum\limits_{0 \leq j <i} Dl(a_j)$$ We also define $\lambda(u_0,r)=0$.
+      The latency of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.\\
+      A routing function $\cal R$ in $G$ associates a route from $u$ to $v$ for any couple of different vertices $<u,v>$ in $G$.\\
       Let $\cal C$ be an {assignment} in $G$, i.e., set of couples of different vertices of $G$. We denote by $\cal R_{\cal C}$ the set of routes ${\cal R}(u,v)$ for any $<u,v>$ in $\cal C$. 
 
    \subsection{Slotted time Model}
-      Consider now a positive integer $P$ called {\bf period}. A {\bf $P$-periodic affectation} of $\cal C$ in $(G,{\cal R})$ consists in a set  ${\cal M}=(m_0, \ldots ,m_{c-1})$
-      of $c$ integers that we call {\bf offset}, with $c$ the cardinal of $\cal C$. Indeed, time is consider as consecutive periods of $P$ slots each and the number $m_i$ represents the first slot number used by the route $r_i \in {\cal R}_{\cal C}$ at its source.
+      Consider now a positive integer $P$ called {\bf period}. A {\bf $P$-periodic affectation} of $\cal R_{\cal C}$ consists in a set  ${\cal M}=(m_0, \ldots ,m_{c-1})$
+      of $c$ integers that we call {\bf offset}, with $c$ the cardinal of $\cal C$. Indeed, time is considered as consecutive periods of $P$ slots, and the number $m_i$ represents the first slot number used by the route $r_i \in {\cal R}_{\cal C}$ at its source.
       We define the first time slot at which a message reaches any vertex $v$ in this route by $$t(v,r_i) = m_i+\lambda(v,r_i) \mod P.$$
 
       Let us call $[t(v,r_i)]$ the values of the time slots used by a route $r_i$ in such a vertex $v$. 
@@ -143,7 +143,8 @@ This article treats about Contention Management for 5G.
     Exemple de cas simple
     
 \section{Proposed Solutions, solving PALL}
-
+  
+  In this section, we consider a particular case of the model, in which for each couple <u,v> , the route is the same in both directions. This means that ${\cal R}(u,v)$ uses the same arc than ${\cal R}(v,u)$ in the opposite orientation.
   \subsection{Intro}
     PALL NP-Hard car PRA NP-Hard\\
     Résultats valables sur Topologie 1 avec nos paramètres
