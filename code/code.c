@@ -62,7 +62,6 @@ void graphe_etoile(Graphe g,int taille_liens)
 //met toutes les cases du message a 1 dans la periode
 void ecrire_message_periode(int * p,int periode, int debut, int fin)
 {
-	printf("on écrit de %d à %d \n",debut,fin);
 	if(debut > fin)
 	{
 		for(int i=0;i<=fin;i++)p[i]=1;
@@ -80,44 +79,48 @@ void affiche_periode(int *p, int periode)
 	{
 		if(p[i]!=actuel)
 		{
-			if(actuel)printf("fin d'un message en %d\n\n",i);
-			else	  printf("debut d'un message en %d\n\n",i);
+			if(actuel)printf("-%d[ ",i);
+			else	  printf("[%d",i);
 			actuel = 1-actuel;
 		}
 	}
+	printf("\n");
 }
 int greedy_prime(Graphe g,int periode,int taille_message)
 {
 	if(!g.N%2){printf("G n'est peut être pas une étoile\n");exit(5);}
 	int nb_routes = g.N/2;
 	int routes[nb_routes];
+	int nb_slots = periode / taille_message;
+
 	for(int i=0;i<nb_routes;i++)
 	{
 		routes[i]=2*g.matrice[nb_routes][i+nb_routes+1];
 	}
 
-	int aller[periode], retour[periode];
-	for(int i=0;i<periode;i++){aller[i]=0;retour[i]=0;}
+	int aller[nb_slots], retour[periode];
+	for(int i=0;i<nb_slots;i++){aller[i]=0;}
+	for(int i=0;i<periode;i++){retour[i]=0;}
 
 
 	//Pour chaque route
 	for(int i=0;i<nb_routes;i++)
 	{
 		//On recherche le depart le plus petit
-		for(int j=0;j<periode-taille_message;j++)
+		for(int j=0;j<nb_slots;j++)
 		{
-			if(!aller[j] && !aller[(j+taille_message-1)%periode] && !retour[(j+routes[i])%periode] && !retour[(j+routes[i]+taille_message-1)%periode])
+			if(!aller[j] && !retour[(j*taille_message+routes[i])%periode] && !retour[(j*taille_message+routes[i]+taille_message-1)%periode])
 			{
 
-				ecrire_message_periode(aller,periode,j,(j+taille_message-1)%periode);
-				ecrire_message_periode(retour,periode,(j+routes[i])%periode,(j+routes[i]+taille_message-1)%periode);
+				ecrire_message_periode(aller,nb_routes,j,j);
+				ecrire_message_periode(retour,periode,(j*taille_message+routes[i])%periode,(j*taille_message+routes[i]+taille_message-1)%periode);
 				break;
 			}
 		}
 
 	}
 	printf("aller\n");
-	affiche_periode(aller,periode);
+	affiche_periode(aller,nb_slots);
 	printf("retour\n");
 	affiche_periode(retour,periode);
 	return 1;
