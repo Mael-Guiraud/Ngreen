@@ -86,13 +86,15 @@ void affiche_periode(int *p, int periode)
 	}
 	printf("\n");
 }
-int greedy_prime(Graphe g,int periode,int taille_message)
+
+//retourne -1 si la periode donnée ne donne pas de solutions, la taille de la periode sinon
+int algo_3NT(Graphe g,int periode,int taille_message)
 {
 	if(!g.N%2){printf("G n'est peut être pas une étoile\n");exit(5);}
 	int nb_routes = g.N/2;
 	int routes[nb_routes];
 	int nb_slots = periode / taille_message;
-
+	int assigned = 0;
 	for(int i=0;i<nb_routes;i++)
 	{
 		routes[i]=2*g.matrice[nb_routes][i+nb_routes+1];
@@ -114,26 +116,119 @@ int greedy_prime(Graphe g,int periode,int taille_message)
 
 				ecrire_message_periode(aller,nb_routes,j,j);
 				ecrire_message_periode(retour,periode,(j*taille_message+routes[i])%periode,(j*taille_message+routes[i]+taille_message-1)%periode);
+				assigned = 1;
 				break;
 			}
 		}
-
+		if(!assigned)//Si une route n'a pas trouvé de départ possible, c'est que la fenètre est trop petite.
+			return -1;
+		assigned = 0;
 	}
-	printf("aller\n");
-	affiche_periode(aller,nb_slots);
-	printf("retour\n");
-	affiche_periode(retour,periode);
-	return 1;
+	return periode;
 }
 
+int linear_3NT(Graphe g,int taille_message)
+{
+	int result;
+	for(int i =0;i<taille_message*(g.N/2)*3;i++)
+	{
+		result = algo_3NT(g,i,taille_message);
+		if(result != -1)
+		{
+			return result;
+		}
+	}
+	return -1;
+}
+
+
+//retourne -1 si la periode donnée ne donne pas de solutions, la taille de la periode sinon
+int algo_prime(Graphe g,int periode,int taille_message)
+{
+	if(!g.N%2){printf("G n'est peut être pas une étoile\n");exit(5);}
+	int nb_routes = g.N/2;
+	int routes[nb_routes];
+	int assigned = 0;
+	for(int i=0;i<nb_routes;i++)
+	{
+		routes[i]=2*g.matrice[nb_routes][i+nb_routes+1];
+	}
+
+	int aller[periode], retour[periode];
+	for(int i=0;i<periode;i++){aller[i]=0;retour[i]=0;}
+
+
+	//Pour chaque route
+	for(int i=0;i<nb_routes;i++)
+	{
+		//On recherche le depart le plus petit
+		for(int j=0;j<periode-taille_message;j++)
+		{
+			if(!aller[j] && !aller[(j+taille_message)%periode] && !retour[(j*taille_message+routes[i])%periode] && !retour[(j*taille_message+routes[i]+taille_message-1)%periode])
+			{
+
+				ecrire_message_periode(aller,periode,j,(j+taille_message)%periode);
+				ecrire_message_periode(retour,periode,(j*taille_message+routes[i])%periode,(j*taille_message+routes[i]+taille_message-1)%periode);
+				assigned = 1;
+				break;
+			}
+		}
+		if(!assigned)//Si une route n'a pas trouvé de départ possible, c'est que la fenètre est trop petite.
+			return -1;
+		assigned = 0;
+	}
+	return periode;
+}
+
+int linear_prime(Graphe g,int taille_message)
+{
+	int result;
+	for(int i =0;i<taille_message*(g.N/2)*3;i++)
+	{
+		result = algo_prime(g,i,taille_message);
+		if(result != -1)
+		{
+			return result;
+		}
+	}
+	return -1;
+}
+
+void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_simuls)
+{
+	FILE * F = fopen("results_periode.data","w");
+	Graphe g;
+	long long int total_3NT, total_prime ;
+
+
+	for(int j = 1 ; j<=nb_routes;j++)
+	{
+		printf("Calculs pour %d routes : \n",j);
+		g = init_graphe(j*2 + 1);
+		graphe_etoile(g,taille_routes);
+		total_3NT = 0;
+		total_prime = 0;
+		for(int i = 0;i<nb_simuls;i++)
+		{
+			total_3NT += linear_3NT(g,taille_message);
+			total_prime += linear_prime(g,taille_message);
+			fprintf(stdout,"\rStep%5d /%d",i+1,nb_simuls);fflush(stdout);
+		}
+		printf("\n");
+		printf("P moyen (sur %d simulations) 3NT  : %lld\n",nb_simuls,total_3NT/nb_simuls);
+		printf("P moyen (sur %d simulations) Prime: %lld\n",nb_simuls,total_prime/nb_simuls);
+
+
+		free(g.matrice);
+		fprintf(F, "%d %lld %lld\n",j,total_3NT/nb_simuls,total_prime/nb_simuls);
+		printf("\n");
+	}
+	fclose(F);
+
+}
 int main()
 {
 	srand(time(NULL));
-	Graphe g = init_graphe(5);
-	affiche_matrice(g);
-	graphe_etoile(g,700);
-	affiche_matrice(g);
-	greedy_prime(g,2500,500);
-	free(g.matrice);
+	simuls_periode(7,2500,700,100);
 	return 0;
 }

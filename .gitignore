@@ -1,0 +1,6 @@
+*.data
+a.out
+*.pdf
+*.aux
+*.log
+*.tex.backup
