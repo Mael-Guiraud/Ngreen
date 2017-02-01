@@ -55,7 +55,7 @@ This article treats about Contention Management for 5G.
 
   \subsection{Definitions}
   
-	We consider a symmetric directed graph $G=(V,A)$ modelling a network. Each arc  $(u,v)$ in $A$ is labeled by an integer $Dl(u,v) \geq 1$ that we call the delay and
+	We consider a directed graph $G=(V,A)$ modelling a network. Each arc  $(u,v)$ in $A$ is labeled by an integer $Dl(u,v) \geq 1$ that we call the delay and
 	which represents the number of time slots taken by a signal to go from $u$ to $v$ using this arc. Note that for any arc $(u,v)$, $Dl(u,v)=Dl(v,u)$.
 	
       A {\bf route} $r$ in $G$ is a sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$. 
@@ -64,6 +64,8 @@ This article treats about Contention Management for 5G.
       The latency of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
       
       A {\bf routing function} $\cal R$ in $G$ associates to each pair of vertices $(u,v)$ a route from $u$ to $v$. Let $\cal C$ be an {\bf assignment} in $G$, i.e., a set of couples of different vertices of $G$. We denote by $\cal R_{\cal C}$ the set of routes ${\cal R}(u,v)$ for any $(u,v)$ in $\cal C$. \todo{Si on s'en sert, ajouter ici que le routage est cohérent.}
+      
+      \todo{Doit on définir un objet graphe + routes + assignement pour ensuite simplifier l'écriture}
 
    \subsection{Slotted time Model}
       Consider now a positive integer $P$ called the {\bf period}. In our problem the messages we send in the network will be periodic of period $P$ and thus we consider slices of time of $P$ discrete slots. Assume we send a message at the source of the route $r$,
@@ -81,7 +83,7 @@ This article treats about Contention Management for 5G.
 
       The main theoretical problem we have to deal with in this context is the following.\\
 
-      \noindent {\bf Problem  Periodic Routes Assignment (PRA)} 
+      \noindent {\bf Problem Periodic Routes Assignment (PRA)} 
 
       \noindent {\bf Input:} a graph $G=(V,A)$, a set $\cal C$ of pair of vertices, a routing function $\cal R$ and an integer $P$.
 
@@ -107,10 +109,8 @@ This article treats about Contention Management for 5G.
       $(l,\rho(l))$ and $m_{\rho(l)}$ to $(\rho(l),l)$.  
       
       This affectation represents the following process: first a message is sent in $l$, through the route $r_l$, at time $m_l$.
-      This message is received by $\rho(l)$ at time $t(\rho(l),r_l)$. It is then sent back to $l$ at time $\bar{m_l}$,
-      which is in the same period if $m_{\rho(l)} > t(\rho(l),r_l)$ otherwise it is in the next. The time between the arrival of
-      the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{\rho(l)} - t(\rho(l),r_l)$ if $m_{\rho(l)} > t(\rho(l),r_l)$ and $w_l = m_{\rho(l)} + P - t(\rho(l),r_l)$ otherwise.
-      When a BBU receives a message, it must compute the answer before sending it back to the BBU. This time is taken into account
+      This message is received by $\rho(l)$ at time $t(\rho(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{\rho(l)}$ if $m_{\rho(l)} > t(\rho(l),r_l)$, otherwise at time $m_{\rho(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{\rho(l)} - t(\rho(l),r_l)$ if $m_{\rho(l)} > t(\rho(l),r_l)$ and $w_l = m_{\rho(l)} + P - t(\rho(l),r_l)$ otherwise.
+      When a BBU receives a message, it must compute the answer before sending it back to the RRH. This time can be encoded
       in the last arc leading to the BBU and thus we need not to consider it explicitely in our model.
     
       Thus, the whole proccess time for a vertex $l$ is equal to
@@ -137,63 +137,73 @@ This article treats about Contention Management for 5G.
   \label{sec:complexity}
   \subsection{NP-Hardness}
 
+ In this section we assume that the size of a message $\tau$ is equal to one, which implies hardness of PRA and PALL for all $\tau$. 
 Consider an instance of Problem PRA, i.e., a digraph $G=(V,A)$, an assignment $\cal C$, a routing function $\cal R$ and a period $P$. 
-The \emph{conflict depth} of an assignment $\cal C$ is the  number of arcs crossed by at least two routes in ${\cal R}_{\cal C}$; in other words it is the number of potential conflicts between these routes. 
-The \emph{load} of  an assignment is the maximal number of routes sharing a same arc (i.e., the congestion of this arc).
+The {\bf conflict depth} of a route is the number of other routes which share an edge with it. 
+The conflict depth of an assignment $\cal C$ is the maximum of the conflict depth of the routes in ${\cal R}_{\cal C}$.
+The {\bf load} of an assignment is the maximal number of routes sharing the same arc.
 It is clear that a $P$-periodic affectation must satisfy that $P$ is larger or equal to the load.
 
 We give two alternate proofs that PRA is $\NP$-complete.
 The first one works for conflict depth $2$ and is minimal in this regards since we later prove that for conflict depth one,
-it is easy to solve PRA. The second one reduces the problem to graph coloring and implies inapproximability. \\
+it is easy to solve PRA. The second one reduces the problem to graph coloring and implies inapproximability when one tries to minimize the parameter $P$. \\
  
 
  
 
  \begin{proposition}
-Problem PRA is $\NP$-complete, for a routing with conflict depth two.
+Problem PRA is $\NP$-complete, when the routing is of conflict depth two.
 \end{proposition}
  \begin{proof}
-  Let $H=(V,E)$ be a graph and $d$ its maximal degree. We want to determine whether $H$ is edge-colorable
-  with $d$ or $d+1$ colors. We reduce this edge coloring problem to PRA. We define  from $H$ an instance $G,{\cal C}, {\cal R}, P$ as follows. For each 
-  $v \in V$ there are two vertices in $G$  connected by an arc $(v_1,v_2)$ and none of these arcs are incident. The delay of these arcs is equal to $1$.
-  The set $\cal C$ is made of couples of vertices $<s_{u,v}, l_{u,v}>$ for each edge $[u,v]$ in $H$ and the routes associated is ${\cal R} =s_{u,v},u_1,u_2,v_1,v_2,l_{u,v}$.  The delays of arcs $(s_{u,v},u_1)$ and $(v_2,l_{u,v})$ are equal to $d(d+1)-1$.  
+ The problem $PRA$ is in $\NP$ since given an offfset for each route in an affectation, it is easy to check in linear time in the number of edges whether there are collisions.
+ 
+  Let $H=(V,E)$ be a graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is edge-colorable
+  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. The graph $G$ has for vertices $V'= \{ v_1, v_2 \mid v \in V  \} \cup \{ l_{u,v}, s_{u,v} \mid (u,v) \in E \}$ that is two vertices for each vertex and for each edge of $H$. 
+  Let $A$ bet the set of arcs of $G$, defined by 
+  $$A = \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(l_{u,v},u_1),(v_2,s_{u,v}) \mid (u,v) \in E \}. $$
+  All these arcs are of weigth $0$. 
+  For each edge $(u,v) \in E$, the is a route $r_{u,v} = s_{u,v},u_1,u_2,v_1,v_2,l_{u,v}$ in ${\cal R}$.  
+  The affectation ${\cal C}$ is the set of pair of vertices $(s_{u,v}, l_{u,v})$.
     
-  Let $\phi$ be an edge coloring with $k$ colors of $H$. We can build a $k$-periodic affectation of $\cal C$ in $(G,{\cal R})$
-  by assigning to the source $s_{u,v}$ of each route an offset  of $\phi(s_{u,v})$. Indeed, 
-  if two routes $r_1$ and $r_2$ in ${\cal R}_{\cal C}$ share the same edge, say $(v_1,v_2)$ then they represent two edges $e_1$ and $e_2$ of $H$ incident  
-  to the vertex $v$. Therefore $\lambda(v_1,r_1) = \phi(e_1) \mod k$ because the delays of the edges before $v_1$ sum to $d(d+1)$ or 
-  $2(d(d+1))$ which are equal to $0$ modulo $k$ since $k=d$ or $k=d+1$. Thus $\lambda(v_1,r_1) - \lambda(v_1,r_2) \mod k = \phi(e_1) - \phi(e_2) \mod k$
-  and $\lambda(v_1,r_1) - \lambda(v_1,r_2) \mod k > 0$ since $\phi(e_1) \neq \phi(e_2) $.
-  
-  Now consider a $k$-periodic affectation of $\cal C$ in $(G,{\cal R})$ . For each $[u,v]$ in $H$, we define $\phi(u,v)$ to be the offset of the route
-  beginning at $s_{u,v}$ in ${\cal R}_{\cal C}$. For the same reasons as in the last paragraph, $\phi$ is an edge coloring with $k$ colors.
-  Therefore we have reduced edge coloring which is $\NP$-hard~\cite{holyer1981np} to PRA which concludes the proof. 
+  Observe that the existence of a $d$-coloring of $H$ is equivalent to the existence of a $d$-periodic affectation
+  for $(G,{\cal R},{\cal C})$. Indeed, a $d$-coloring of $H$ can be seen as a labeling of its edges by the integers
+  in $\{0,\dots,d-1\}$ and we have a correspondance between a $d$-coloring of $H$ and offests for the routes of $(G,{\cal R},{\cal C})$.
+  By contruction, the constraint of having no collision between the routes is equivalent to the fact that no two adjacent edges have
+  the same color. Therefore we have reduced edge coloring to PRA which concludes the proof. 
  \end{proof}
-Solving Problem PALL implies to solve PRA for an assignment ${\cal C}_{\rho}$ defined on $S$ and $L$ (see Section 2). Thus, we have the following corollary :
+ \todo{Faire un dessin d'illustration ?}
+ 
+ Remark that we have used zero weigth in the proof. If the weigths must be strictly positive, which makes more sense in our model since
+ we model the latency of physical links, it is easy to adapt the proof. We just have to set them so that in any route the delay at $u_1$ is equal to $d$ and thus equal to $0$ modulo $d$. We now lift this hardness result to the problem PALL.
 
 \begin{corollary}
-Problem PALL is NP-Hard.
+Problem PALL is $\NP$-complete for routing of conflict depth two.
 \end{corollary}
+\begin{proof}
+ We consider $(G,{\cal R},{\cal C},P)$ an instance of $PRA$ such that no element appears both in the first and second position in a pair of ${\cal C}$. Remark that this condition is satisfied in the previous proof, which makes the problem $PRA$ restricted to these instances $\NP$-complete. 
+ Let us define $T_{max} = 2 \times \max_{r \in {\cal R}} \lambda(r) + P$. We define $\rho$ as the function which maps 
+ $u$ to $v$ when $(u,v) \in {\cal C}$. The instance $(G,{\cal R},\rho,P,T_{max})$ is in PALL if and only if $(G,{\cal R},{\cal C},P)$
+ is in $PRA$. Indeed the waiting time of each route is by definition less than $P$ and thus the maximal process time less than $T_{max}$. Therefore the fact that $(G,{\cal R},\rho,P,T_{max})$ is in PALL is equivalent to the existence of a $P$-periodic assignment of ${\cal C}_{\rho}$ which is equal to ${\cal C}$.
+\end{proof}
+% 
+% 
+% As another corollary of the previous proposition,  given $G$, $\cal R$, $P$ and two disjoint subsets $S$ and $L$ in $G$, the problem of  knowing if there is a matching $\rho$  from $L$ in $S$ such that the answer to problem PRA for instance $G,{\cal C_{\rho}},{\cal R}, P$ is  $\NP$-hard since checking a potential feasible solution for this problem implies to solve PRA.\\
 
-As another corollary of the previous proposition,  given $G$, $\cal R$, $P$ and two disjoint subsets $S$ and $L$ in $G$, the problem of  knowing if there is a matching $\rho$  from $L$ in $S$ such that the answer to problem PRA for instance $G,{\cal C_{\rho}},{\cal R}, P$ is  $\NP$-hard since checking a potential feasible solution for this problem implies to solve PRA.\\
-
-Consider now MIN-PRA as the minimisation problem related to PRA, consisting in minimizing the peril $P$.
+Let MIN-PRA be the problem, given a graph, a routing and an affectation, to find the minimal period $P$ such that there is a $P$-periodic affectation. 
 
 \begin{theorem}
- Problem MIN-PRA cannot be approximate within a factor $n^{1-o(1)}$ unless $\P = \NP$ even when the load is two
- and $n$ is the number of vertices.
+ The problem MIN-PRA cannot be approximated in polynomial time within a factor $n^{1-o(1)}$, with $n$ the number of routes, unless $\P = \NP$ even when the load is two.
 \end{theorem}
 
 \begin{proof}
- We reduce PRA to graph coloring. Let $H$ be a graph instance of the $k$-coloring problem. 
+ We reduce graph coloring to PRA. Let $H$ be a graph instance of the $k$-coloring problem. 
  We define $G$ in the following way: for each vertex $v$ in $H$, there is a route $r_v$ in $G$.
- Two routes $r_v$ and $r_u$ share an arc if and only if $[u,v]$ is an edge in $H$; this arc is the only one shared by these two routes.   We put delays inbetween shared arcs in a route so that there is a delay $k$ between two such arcs. 
+ Two routes $r_v$ and $r_u$ share an arc if and only if $(u,v)$ is an edge in $H$; this arc is the only one shared by these two routes.   
+ All arcs are of delay $0$. 
  
- As in the previous proof, a $k$-coloring of $H$ gives a $k$-periodic affectation in $G$
- and conversely. Therefore if we can approximate the minimum value of $P$  within a factor $f$,
- we could approximate the minimal number of colors needed to color a graph within a fator $f$, 
- by doing the previous reduction for all possible $k$. The proof follows from the hardness of approximability
- of finding a minimal coloring~\cite{zuckerman2006linear}.
+ Observe that the existence of a $k$-coloring of $H$ is equivalent to the existence of a $k$-periodic affectation in $G$, 
+ by converting an offset of a route into a color of a vertex and reciprocally. Therefore if we can approximate the minimum value of $P$ within a factor $f$,
+ we could approximate the minimal number of colors needed to color a graph within a factor $f$, by doing the previous reduction for all possible $k$. The proof follows from the hardness of approximability of finding a minimal coloring~\cite{zuckerman2006linear}.
 \end{proof}
 
 
@@ -201,7 +211,7 @@ In particular, this reduction shows that even with small maximal load, the
 minimal period can be large.
    
   \subsection{MIN-PRA}
-    Exemple de cas simple
+    Exemple de cas polynomiaux
     
 \section{Proposed Solutions, solving PALL}
   
@@ -215,6 +225,12 @@ minimal period can be large.
     \subsubsection{Shortest-longest}
       \paragraph{Algo}
       \paragraph{Period}
+    \subsubsection{Greedy Algorithm with higher bound}
+      \paragraph{Algo}
+	Todo
+      \paragraph{Period}
+	This algorithm gives us a solution without waiting times in a maximum period $3.\tau.N$, if we have N routes.\\
+	Suppose that we have a period of $3.\tau.N$ slots, divided in $\tau$ macro-slots.
     \subsubsection{Exhaustive generation}
       Décrire l'algo, expliquer les coupes
     \subsubsection{Results}
