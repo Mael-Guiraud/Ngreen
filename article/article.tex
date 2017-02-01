@@ -23,11 +23,10 @@
 \newcommand\matchedgraph{{\bf matched graph}}
 \newtheorem{proposition}{Proposition}
 \newtheorem{theorem}{Theorem}
-\newcommand{\reporttitle}{Contention management for Deterministic Networking}     % Titre
-\newcommand{\reportauthor}{Maël \textsc{Guiraud }} % Auteur
-\newcommand{\reportsubject}{Master Thesis} 
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
-\setlength{\parskip}{1ex} % Espace entre les paragraphes
+\newtheorem{fact}{Fact}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
 
 
 \newcommand{\todo}[1]{{\color{red} TODO: {#1}}}
@@ -137,29 +136,69 @@ This article treats about Contention Management for 5G.
 \section{Solving PRA}
   \label{sec:complexity}
   \subsection{NP-Hardness}
-	
-   \todo{Definition of the load. La preuve se réfère à la précédente qui n'a pas été retenue, il faut du coup tout expliquer.}
-   
-   
-    \begin{theorem}
-    Problem PRA cannot be approximated within a factor $n^{1-o(1)}$ unless $\P = \NP$ even when the load is two
-    and $n$ is the number of pairs in the assignment.
-    \end{theorem}
 
-    \begin{proof}
-    We reduce PRA to graph coloring. Let $G$ be a graph instance of the $k$-coloring problem. 
-    We define $H$ in the following way: for each vertex $v$ in $G$, there is a route $r_v$ in $H$.
-    Two routes $r_v$ and $r_u$ share an edge if and only if $(u,v)$ is an edge in $G$ and this edge is only in this two routes. 
-    We put a weight inbetween shared edges in a route so that there is a delay $k$ between two such edges. 
+Consider an instance of Problem PRA, i.e., a digraph $G=(V,A)$, an assignment $\cal C$, a routing function $\cal R$ and a period $P$. 
+The \emph{conflict depth} of an assignment $\cal C$ is the  number of arcs crossed by at least two routes in ${\cal R}_{\cal C}$; in other words it is the number of potential conflicts between these routes. 
+The \emph{load} of  an assignment is the maximal number of routes sharing a same arc (i.e., the congestion of this arc).
+It is clear that a $P$-periodic affectation must satisfy that $P$ is larger or equal to the load.
+
+We give two alternate proofs that PRA is $\NP$-complete.
+The first one works for conflict depth $2$ and is minimal in this regards since we later prove that for conflict depth one,
+it is easy to solve PRA. The second one reduces the problem to graph coloring and implies inapproximability. \\
+ 
+
+ 
+
+ \begin{proposition}
+Problem PRA is $\NP$-complete, for a routing with conflict depth two.
+\end{proposition}
+ \begin{proof}
+  Let $H=(V,E)$ be a graph and $d$ its maximal degree. We want to determine whether $H$ is edge-colorable
+  with $d$ or $d+1$ colors. We reduce this edge coloring problem to PRA. We define  from $H$ an instance $G,{\cal C}, {\cal R}, P$ as follows. For each 
+  $v \in V$ there are two vertices in $G$  connected by an arc $(v_1,v_2)$ and none of these arcs are incident. The delay of these arcs is equal to $1$.
+  The set $\cal C$ is made of couples of vertices $<s_{u,v}, l_{u,v}>$ for each edge $[u,v]$ in $H$ and the routes associated is ${\cal R} =s_{u,v},u_1,u_2,v_1,v_2,l_{u,v}$.  The delays of arcs $(s_{u,v},u_1)$ and $(v_2,l_{u,v})$ are equal to $d(d+1)-1$.  
     
-    As in the previous proof, a $k$-coloring of $G$ gives a $k$-periodic schedule of $H$
-    and conversly. Therefore if we can approximate the value of PRA  within a factor $f$,
-    we could approximate the minimal number of colors needed to color a graph within a fator $f$, 
-    by doing the previous reduction for all possible $k$. The proof follows from the hardness of approximability
-    of finding a minimal coloring~\cite{zuckerman2006linear}.
-    \end{proof}
+  Let $\phi$ be an edge coloring with $k$ colors of $H$. We can build a $k$-periodic affectation of $\cal C$ in $(G,{\cal R})$
+  by assigning to the source $s_{u,v}$ of each route an offset  of $\phi(s_{u,v})$. Indeed, 
+  if two routes $r_1$ and $r_2$ in ${\cal R}_{\cal C}$ share the same edge, say $(v_1,v_2)$ then they represent two edges $e_1$ and $e_2$ of $H$ incident  
+  to the vertex $v$. Therefore $\lambda(v_1,r_1) = \phi(e_1) \mod k$ because the delays of the edges before $v_1$ sum to $d(d+1)$ or 
+  $2(d(d+1))$ which are equal to $0$ modulo $k$ since $k=d$ or $k=d+1$. Thus $\lambda(v_1,r_1) - \lambda(v_1,r_2) \mod k = \phi(e_1) - \phi(e_2) \mod k$
+  and $\lambda(v_1,r_1) - \lambda(v_1,r_2) \mod k > 0$ since $\phi(e_1) \neq \phi(e_2) $.
+  
+  Now consider a $k$-periodic affectation of $\cal C$ in $(G,{\cal R})$ . For each $[u,v]$ in $H$, we define $\phi(u,v)$ to be the offset of the route
+  beginning at $s_{u,v}$ in ${\cal R}_{\cal C}$. For the same reasons as in the last paragraph, $\phi$ is an edge coloring with $k$ colors.
+  Therefore we have reduced edge coloring which is $\NP$-hard~\cite{holyer1981np} to PRA which concludes the proof. 
+ \end{proof}
+Solving Problem PALL implies to solve PRA for an assignment ${\cal C}_{\rho}$ defined on $S$ and $L$ (see Section 2). Thus, we have the following corollary :
+
+\begin{corollary}
+Problem PALL is NP-Hard.
+\end{corollary}
+
+As another corollary of the previous proposition,  given $G$, $\cal R$, $P$ and two disjoint subsets $S$ and $L$ in $G$, the problem of  knowing if there is a matching $\rho$  from $L$ in $S$ such that the answer to problem PRA for instance $G,{\cal C_{\rho}},{\cal R}, P$ is  $\NP$-hard since checking a potential feasible solution for this problem implies to solve PRA.\\
+
+Consider now MIN-PRA as the minimisation problem related to PRA, consisting in minimizing the peril $P$.
+
+\begin{theorem}
+ Problem MIN-PRA cannot be approximate within a factor $n^{1-o(1)}$ unless $\P = \NP$ even when the load is two
+ and $n$ is the number of vertices.
+\end{theorem}
+
+\begin{proof}
+ We reduce PRA to graph coloring. Let $H$ be a graph instance of the $k$-coloring problem. 
+ We define $G$ in the following way: for each vertex $v$ in $H$, there is a route $r_v$ in $G$.
+ Two routes $r_v$ and $r_u$ share an arc if and only if $[u,v]$ is an edge in $H$; this arc is the only one shared by these two routes.   We put delays inbetween shared arcs in a route so that there is a delay $k$ between two such arcs. 
+ 
+ As in the previous proof, a $k$-coloring of $H$ gives a $k$-periodic affectation in $G$
+ and conversely. Therefore if we can approximate the minimum value of $P$  within a factor $f$,
+ we could approximate the minimal number of colors needed to color a graph within a fator $f$, 
+ by doing the previous reduction for all possible $k$. The proof follows from the hardness of approximability
+ of finding a minimal coloring~\cite{zuckerman2006linear}.
+\end{proof}
 
 
+In particular, this reduction shows that even with small maximal load, the 
+minimal period can be large.
    
   \subsection{MIN-PRA}
     Exemple de cas simple
