@@ -162,7 +162,7 @@ int algo_prime(Graphe g,int periode,int taille_message)
 	for(int i=0;i<nb_routes;i++)
 	{
 		//On recherche le depart le plus petit
-		for(int j=0;j<periode-taille_message;j++)
+		for(int j=0;j<=periode-taille_message;j++)
 		{
 			if(!aller[j] && !aller[(j+taille_message)%periode] && !retour[(j*taille_message+routes[i])%periode] && !retour[(j*taille_message+routes[i]+taille_message-1)%periode])
 			{
@@ -204,22 +204,24 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 	for(int j = 1 ; j<=nb_routes;j++)
 	{
 		printf("Calculs pour %d routes : \n",j);
-		g = init_graphe(j*2 + 1);
-		graphe_etoile(g,taille_routes);
+		
 		total_3NT = 0;
 		total_prime = 0;
 		for(int i = 0;i<nb_simuls;i++)
 		{
+			g = init_graphe(j*2 + 1);
+			graphe_etoile(g,taille_routes);
 			total_3NT += linear_3NT(g,taille_message);
 			total_prime += linear_prime(g,taille_message);
 			fprintf(stdout,"\rStep%5d /%d",i+1,nb_simuls);fflush(stdout);
+			free(g.matrice);
 		}
 		printf("\n");
 		printf("P moyen (sur %d simulations) 3NT  : %lld\n",nb_simuls,total_3NT/nb_simuls);
 		printf("P moyen (sur %d simulations) Prime: %lld\n",nb_simuls,total_prime/nb_simuls);
 
 
-		free(g.matrice);
+		
 		fprintf(F, "%d %lld %lld\n",j,total_3NT/nb_simuls,total_prime/nb_simuls);
 		printf("\n");
 	}
@@ -229,6 +231,6 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 int main()
 {
 	srand(time(NULL));
-	simuls_periode(7,2500,700,100);
+	simuls_periode(7,2500,700,1000);
 	return 0;
 }
