@@ -148,7 +148,20 @@ This article treats about Contention Management for 5G.
       $(l,\rho(l))$ and $m_{\rho(l)}$ to $(\rho(l),l)$.  
       
       This affectation represents the following process: first a message is sent in $l$, through the route $r_l$, at time $m_l$.
+      
+      \begin{center}
+      \includegraphics[scale=0.2]{rrh.jpeg}
+      \end{center}
+      
       This message is received by $\rho(l)$ at time $t(\rho(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{\rho(l)}$ if $m_{\rho(l)} > t(\rho(l),r_l)$, otherwise at time $m_{\rho(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{\rho(l)} - t(\rho(l),r_l)$ if $m_{\rho(l)} > t(\rho(l),r_l)$ and $w_l = m_{\rho(l)} + P - t(\rho(l),r_l)$ otherwise.
+      
+       \begin{center}
+      \includegraphics[scale=0.2]{BBU1.jpeg}
+      
+      \includegraphics[scale=0.2]{BBU2.jpeg}
+      \end{center}
+     
+      
       When a BBU receives a message, it must compute the answer before sending it back to the RRH. This time can be encoded
       in the last arc leading to the BBU and thus we need not to consider it explicitely in our model.
     

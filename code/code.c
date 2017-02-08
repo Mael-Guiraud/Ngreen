@@ -198,19 +198,20 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 {
 	FILE * F = fopen("results_periode.data","w");
 	Graphe g;
-	long long int total_3NT, total_prime ;
+	long long int total_3NT, total_prime;
 
 
 	for(int j = 1 ; j<=nb_routes;j++)
 	{
-		printf("Calculs pour %d routes : \n",j);
+		printf("Calculs pour %d routes: \n",j);
 		
 		total_3NT = 0;
 		total_prime = 0;
+
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(j*2 + 1);
-			graphe_etoile(g,taille_routes);
+			graphe_etoile(g,j*taille_message);
 			total_3NT += linear_3NT(g,taille_message);
 			total_prime += linear_prime(g,taille_message);
 			fprintf(stdout,"\rStep%5d /%d",i+1,nb_simuls);fflush(stdout);
@@ -222,15 +223,15 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 
 
 		
-		fprintf(F, "%d %lld %lld\n",j,total_3NT/nb_simuls,total_prime/nb_simuls);
+		fprintf(F, "%d %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_prime/nb_simuls,j*taille_message,2*j*taille_message);
 		printf("\n");
 	}
 	fclose(F);
-
 }
+
 int main()
 {
 	srand(time(NULL));
-	simuls_periode(7,2500,700,1000);
+	simuls_periode(7,2500,10000,1000);
 	return 0;
 }
