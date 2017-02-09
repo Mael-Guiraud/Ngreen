@@ -115,12 +115,12 @@ This article treats about Contention Management for 5G.
 
       \noindent {\bf  Periodic Routes Assignment (PRA)} 
 
-      \noindent {\bf Input:} a routage graph $\cal R$, an integer $\tau$ and an integer $P$.
+      \noindent {\bf Input:} a routage graph $\cal R_{\cal C}$, an integer $\tau$ and an integer $P$.
 
-      \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic affectation of $\cal R$ ?
+      \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic affectation of $\cal R_{\cal C}$ ?
 
       We will prove in Sec.~\ref{sec:complexity} that the problem PRA is $\NP$-complete, even in restricted settings.
-      Even approximating the smallest value of $P$ for which there is a $P$-periodic assignment is hard.
+      Even approximating the smallest value of $P$ for which there is a $(P,\tau)$-periodic affectation is hard.
       Another strange property is that given a routage graph, we may have a $(P,\tau)$-periodic affectation but no
       $(P',\tau)$-periodic affectation with $P' > P$, the property is thus not monotone with regards to $P$.
 
@@ -128,7 +128,7 @@ This article treats about Contention Management for 5G.
 	 For any $P$, there is a routage graphe such that there is $(2,1)$-periodic affectation but no $(P,1)$-periodic affectation.
 	\end{lemma}
 \begin{proof}
-      Consider the routage graph ${\cal R}$ given in the previous subsection. 
+      Consider the routage graph ${\cal R_{\cal C}}$ given in the previous subsection. 
       We change the delays so that for $v$ the first vertex which belong to $r_i$ and $r_j$,
       we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $c$ the number of routes in ${\cal R}$.
       If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) = 1 $ modulo $2$. Therefore $(0,\dots,0)$ is a $(2,1)$-periodic affectation of ${\cal R}$.
@@ -151,8 +151,16 @@ This article treats about Contention Management for 5G.
       
       In the context of cloud-RAN applications, we consider here the digraph $G=(V,A)$ modeling the target network 
       and two disjoint subsets of vertices $S$ and $L$, where $S$ is the set of BBU and $L$ is the set of RRH. 
-      We denote by $n$ the size of $S$ and $L$. We are given a period $P$, a routing function ${\cal R}$ and a bijection $\rho:L\rightarrow S$ which assigns a BBU to each RRH. Let ${\cal C}_{\rho} = \{(l,\rho(l))\}_{l \in L} \cup \{(s,\rho^{-1}(s))\}_{s \in S}$. Let consider a $P$-periodic affectation of ${\cal C}_{\rho}$ which associates $m_l$ to 
-      $(l,\rho(l))$ and $m_{\rho(l)}$ to $(\rho(l),l)$.  
+       We have as much BBUs as RRH in the network. We denote by ${\cal c}$ the size of $S$ and $L$, and so, the number of routes.
+       We are given a period $P$, a routing function ${\cal R}$, and an assignment ${\cal C}:L\rightarrow S$  which assigns a BBU to each RRH. 
+       $l_i,i<{\cal c}$ is the RRH of the route $i$ and ${\cal C}(l_i)$, or $s_i$ is its corresponding BBU. The routing between each RRH and BBU is given by the routage graph ${\cal R}_{\cal C}$.
+       
+       Let consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_l$ to 
+      $(l,{\cal C}(l))$ and $m_{{\cal C}(l)}$ to $({\cal C}(l),l)$.  
+      
+%       
+%       We denote by $n$ the size of $S$ and $L$. We are given a period $P$, a routing function ${\cal R}$ and a bijection $\rho:L\rightarrow S$ which assigns a BBU to each RRH. Let ${\cal C}_{\rho} = \{(l,\rho(l))\}_{l \in L} \cup \{(s,\rho^{-1}(s))\}_{s \in S}$. Let consider a $P$-periodic affectation of ${\cal C}_{\rho}$ which associates $m_l$ to 
+%       $(l,\rho(l))$ and $m_{\rho(l)}$ to $(\rho(l),l)$.  
       
       This affectation represents the following process: first a message is sent in $l$, through the route $r_l$, at time $m_l$.
       
@@ -160,7 +168,7 @@ This article treats about Contention Management for 5G.
       \includegraphics[scale=0.2]{rrh.jpeg}
       \end{center}
       
-      This message is received by $\rho(l)$ at time $t(\rho(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{\rho(l)}$ if $m_{\rho(l)} > t(\rho(l),r_l)$, otherwise at time $m_{\rho(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{\rho(l)} - t(\rho(l),r_l)$ if $m_{\rho(l)} > t(\rho(l),r_l)$ and $w_l = m_{\rho(l)} + P - t(\rho(l),r_l)$ otherwise.
+      This message is received by ${\cal C}(l)$ at time $t({\cal C}(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{{\cal C}(l)}$ if $m_{{\cal C}(l)} > t({\cal C}(l),r_l)$, otherwise at time $m_{{\cal C}(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{{\cal C}(l)} - t({\cal C}(l),r_l)$ if $m_{{\cal C}(l)} > t({\cal C}(l),r_l)$ and $w_l = m_{{\cal C}(l)} + P - t({\cal C}(l),r_l)$ otherwise.
       
        \begin{center}
       \includegraphics[scale=0.2]{BBU1.jpeg}
@@ -174,14 +182,14 @@ This article treats about Contention Management for 5G.
     
       Thus, the whole proccess time for a vertex $l$ is equal to
       $$
-      PT(l)=\lambda(r_l)+ w_l+\lambda(r_{\rho(l)}).
+      PT(l)=\lambda(r_l)+ w_l+\lambda(r_{{\cal C}(l)}).
       $$
       
-    The {\bf maximum process time} of the $P$-periodic affectation ${\cal M} $ is defined by $MT({\cal M})=\max\limits_{l \in L} PT(l)$. The problem we want to solve is the following. 
+    The {\bf maximum process time} of the $(P,\tau)$-periodic affectation ${\cal M} $ is defined by $MT({\cal M})=\max\limits_{l \in L} PT(l)$. The problem we want to solve is the following. 
 
       \noindent {\bf Problem Periodic Assignment for Low Latency(PALL)} 
 
-      \noindent {\bf Input:}  a digraph $G$, a matching $\rho$ from $L$ to $S$ two disjoint set of vertices of $G$, a routing function $\cal R$, a period $P$, an integer $T_{max}$.
+      \noindent {\bf Input:}  A routage graph ${\cal R}_{\cal C}$, a period $P$, an integer $T_{max}$.
 
       \noindent {\bf Question:} does there exist a $P$-periodic affectation ${\cal M}$ of ${\cal C}_{\rho}$ in $(G,{\cal R})$ such that $MT({\cal M}) \leq T_{max}$?
 
@@ -335,8 +343,8 @@ minimal period can be large.
       \Edge(1)(3)
     \node (1) at (-3,4){\Huge $\rightarrow$};
     
-    \node (2) at (-7,-2){\Huge G};
-    \node (3) at (10,-2){\Huge H};
+    \node (2) at (-7,0){\Huge H};
+    \node (3) at (10,0){\Huge G};
     \end{tikzpicture}
 
 
