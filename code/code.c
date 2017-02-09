@@ -232,6 +232,6 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 int main()
 {
 	srand(time(NULL));
-	simuls_periode(7,2500,10000,1000);
+	simuls_periode(15,2500,10000,1000);
 	return 0;
 }
