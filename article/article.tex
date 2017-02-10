@@ -180,7 +180,6 @@ This article treats about Contention Management for 5G.
       This message is received by ${\cal C}(l)$ at time $t({\cal C}(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{{\cal C}(l)}$ if $m_{{\cal C}(l)} > t({\cal C}(l),r_l)$, otherwise at time $m_{{\cal C}(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{{\cal C}(l)} - t({\cal C}(l),r_l)$ if $m_{{\cal C}(l)} > t({\cal C}(l),r_l)$ and $w_l = m_{{\cal C}(l)} + P - t({\cal C}(l),r_l)$ otherwise.
       
        \begin{center}
-      \includegraphics[scale=0.2]{BBU1.jpeg}
       
       \includegraphics[scale=0.2]{BBU2.jpeg}
       \end{center}
@@ -418,7 +417,9 @@ minimal period can be large.
       \paragraph{Period}
 	This algorithm gives us a solution without waiting times in a maximum period $3.\tau.c$, if we have $c$ routes.\\
 	Suppose that we have a period of $3.\tau.c$ slots, divided in $\tau$ macro-slots. Let us call {\em forward period} the period in the central node when the messages goes to RRH to BBU, and {\em backward period} the period when the messages comes back in the other way. Put a message in the first slot of size $\tau$ in the forward period, such that the corresponding area in the backward period is free.This message takes at most 2 slots of time $\tau$ in the backward period.\\
-	\todo{Dessin qui illustre ça}\\
+      \begin{center}
+      \includegraphics[scale=0.2]{ex3nt.png}
+      \end{center}
 	When $k < c$ messages are put in the forward period, and we want to add another message, there is $3.c - k$ free slots of size $\tau$ in the forward period. Those $3.c - k$ gives us $3.c - k$ possible slots in the backward periods.\\
 	The $k$ messages uses at most $2k$ slots of size $\tau$ used in the backward period. Since $k<c$,  $2k < 3.c - k$, thus using the pigeonhole principle, there is at least one free slot in the backward period for the new message.
 	
