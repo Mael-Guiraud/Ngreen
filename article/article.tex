@@ -424,7 +424,27 @@ minimal period can be large.
 	The $k$ messages uses at most $2k$ slots of size $\tau$ used in the backward period. Since $k<c$,  $2k < 3.c - k$, thus using the pigeonhole principle, there is at least one free slot in the backward period for the new message.
 	
     \subsubsection{Exhaustive generation}
-      Décrire l'algo, expliquer les coupes
+	\begin{algorithm}[H]
+	\caption{Exhaustive Generation}  
+	\begin{algorithmic}
+	\REQUIRE A routage graph ${\cal R}_{\cal C}$, period $P$, packet size $\tau$
+	\ENSURE $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$
+	\STATE BUDGET $\leftarrow$ $P$ - ${\cal c}$ * $\tau$
+	\STATE offset $\leftarrow$ 0
+	\FORALL{route i in  ${\cal R}_{\cal C}$}
+	\FORALL{j from offset to offset + BUDGET }
+	\IF{Message of the route i does not collides with scheduled routes AND budget > 0}
+	\STATE Give i the offset j
+	\STATE BUDGET $\leftarrow$ BUDGET - (j - offset)
+	\STATE offset $\leftarrow$ j
+	\STATE call Exhaustive Generation on remaining routes
+	\ENDIF
+	\ENDFOR
+	\ENDFOR
+
+
+      \end{algorithmic}
+      \end{algorithm}
     \subsubsection{Results}
       Resultats des simulations : Shortest-longest optimal pour ces parametres.
       
