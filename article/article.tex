@@ -375,12 +375,18 @@ minimal period can be large.
     
 \section{The Star Topolgy}
   
-  In this section, we consider a particular case of the model, in which for each $(u,v)$ , the route is the same in both directions. This means that ${\cal R}(u,v)$ uses the same arcs as ${\cal R}(v,u)$ in the opposite orientation.
+
   \subsection{Intro}
     PALL NP-Hard car PRA NP-Hard\\
-    Résultats valables sur Topologie 1 avec nos paramètres
-    \todo{J'ai viré star affectation, car je pense qu'il n'y a rien à dire là dessus.}
     
+      In this section, we consider a particular case of the model, in which for each $(u,v)$ , the route is the same in both directions. This means that $\forall (u,v) \in {\cal C}, {\cal R}_{\cal C}(u,v)$ uses the same arcs as ${\cal R}_{\cal C}(v,u)$ in the opposite direction.\\
+      Furthermore, the following algorithms and results were designed for a particular topology of network, in which all the routes uses a same common switch.
+        \begin{center}
+	  \includegraphics[scale=0.8]{Fig4.pdf}
+	\end{center}
+      Let us call {\bf LN} (leaves node) the central node connected to leaves, and {\bf SN} (sources node), the one connected to sources. The period in those nodes are respectively called {\em forward period}, and {\em backward period}.
+      The weight on the link between the two central nodes is simplified in the forthcoming calculations.
+
   \subsection{No waiting times}
     \subsubsection{Shortest-longest}
       \paragraph{Algo}
@@ -416,7 +422,7 @@ minimal period can be large.
 	\end{algorithm}
       \paragraph{Period}
 	This algorithm gives us a solution without waiting times in a maximum period $3.\tau.c$, if we have $c$ routes.\\
-	Suppose that we have a period of $3.\tau.c$ slots, divided in $\tau$ macro-slots. Let us call {\em forward period} the period in the central node when the messages goes to RRH to BBU, and {\em backward period} the period when the messages comes back in the other way. Put a message in the first slot of size $\tau$ in the forward period, such that the corresponding area in the backward period is free.This message takes at most 2 slots of time $\tau$ in the backward period.\\
+	Suppose that we have a period of $3.\tau.c$ slots, divided in $\tau$ macro-slots. Put a message in the first slot of size $\tau$ in the forward period, such that the corresponding area in the backward period is free.This message takes at most 2 slots of time $\tau$ in the backward period.\\
       \begin{center}
       \includegraphics[scale=0.2]{ex3nt.png}
       \end{center}
@@ -429,14 +435,16 @@ minimal period can be large.
 	\begin{algorithmic}
 	\REQUIRE A routage graph ${\cal R}_{\cal C}$, period $P$, packet size $\tau$
 	\ENSURE $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$
-	\STATE BUDGET $\leftarrow$ $P$ - ${\cal c}$ * $\tau$
-	\STATE offset $\leftarrow$ 0
+	\STATE Forward-budget $\leftarrow$ $P$ - {\cal c} * $\tau$
+	\STATE Backward-budget $\leftarrow$ $P$ - {\cal c} * $\tau$
+	\STATE Free-Intervals $\leftarrow$ list of free intervals, init to $[0;P[$
 	\FORALL{route i in  ${\cal R}_{\cal C}$}
-	\FORALL{j from offset to offset + BUDGET }
-	\IF{Message of the route i does not collides with scheduled routes AND budget > 0}
-	\STATE Give i the offset j
-	\STATE BUDGET $\leftarrow$ BUDGET - (j - offset)
-	\STATE offset $\leftarrow$ j
+	\FORALL{j in Free-Intervals }
+	\IF{Message of the route i does not collides with scheduled routes}
+	\STATE $m_i \leftarrow $ the first slot of Free-Intervals[j]
+	\STATE Split the Free-Intervals considering the new packet
+	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
+	\STATE Backward-budget $\leftarrow$ Backward-budget - {\em lost size}
 	\STATE call Exhaustive Generation on remaining routes
 	\ENDIF
 	\ENDFOR
@@ -445,6 +453,18 @@ minimal period can be large.
 
       \end{algorithmic}
       \end{algorithm}
+      {\bf {\em Lost size}}, is the size lost when an interval is too few to put another packet. Ex : if the interval [250;3250[ receives a packet of size 2500, there is 500 slots lost, because there is no way to uses the slots for another packet.\\
+      
+	    
+      This algorithm enumerates all the solutions by traversing a tree. The leaves of the tree are 
+      the $(P\tau)$-periodic affectations, and the nodes are partial solutions. A partial solution is a choice of a starting time for a subset of the routes.
+      For each route, the algorithm tries every possible starting offset until it finds one available (that allows the message to come back without collisions). When a route have been scheduled, it take another route that have not been scheduled yet.
+      This creates a new sub-tree in which the algorithm will try every possible starting offset too, and create a sub-tree on the following route too.
+      If no offset are available for a route, this means that the partial solution is not good, so the algorithm backtracks over the tree that is,
+      it goes back to the father of the current sub-tree.
+      Once a leaf is obtained, the algorithm stops and return the scheduling.\\      
+      To reduce the number of useless calculation, in each time we add another packet, we consider the lost size in both periods, thus, we know when a period has no many great enough free area to put a packet.
+
     \subsubsection{Results}
       Resultats des simulations : Shortest-longest optimal pour ces parametres.
       
