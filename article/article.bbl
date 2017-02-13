@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+
+\bibitem{holyer1981np}
+Ian Holyer.
+\newblock The np-completeness of edge-coloring.
+\newblock {\em SIAM Journal on computing}, 10(4):718--720, 1981.
+
+\bibitem{zuckerman2006linear}
+David Zuckerman.
+\newblock Linear degree extractors and the inapproximability of max clique and
+  chromatic number.
+\newblock In {\em Proceedings of the thirty-eighth annual ACM symposium on
+  Theory of computing}, pages 681--690. ACM, 2006.
+
+\end{thebibliography}

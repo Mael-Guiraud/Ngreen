@@ -83,10 +83,10 @@ This article treats about Contention Management for 5G.
 
    \subsection{Slotted time Model}
       Consider now a positive integer $P$ called the {\bf period}. In our problem, we send in the network
-      periodic messages of period $P$. The time will thus be cut into slices of $P$ discrete slots. Assume we send a message at the source of the route $r$, at the time slot $m$ in the first period, then a message will be sent at time slot $m$ at each new period. We define the first time slot at which the message reaches a vertex $v$ in this route by $t(v,r) = m + \lambda(v,r) \mod P$. 
+      messages with period $P$. The time will thus be cut into slices of $P$ discrete slots. Assume we send a message at the source of the route $r$, at the time slot $m$ in the first period, then a message will be sent at time slot $m$ at each new period. We define the first time slot at which the message reaches a vertex $v$ in this route by $t(v,r) = m + \lambda(v,r) \mod P$. 
 
       A message usually cannot be transported in a single time slot. We denote by $\tau$ the number 
-      of consecutive slots necessary to transmit a message. Let us call $[t(v,r)]_{P,\tau}$ the set of time slots used by $r$ at a vertex $v$ in a period $P$, that is $[t(v,r)]_{P,\tau} = \{t(v,r) + i \mod P \mid 0 \leq i < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r)]_{P,\tau}$ by $[t(v,r)]$
+      of consecutive slots necessary to transmit a message. Let us call $[t(v,r)]_{P,\tau}$ the set of time slots used by $r$ at a vertex $v$ in a period $P$, that is $[t(v,r)]_{P,\tau} = \{t(v,r) + i \mod P \mid 0 \leq i < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r)]_{P,\tau}$ by $[t(v,r)]$.
       
       
       A {\bf $(P,\tau)$-periodic affectation} of a routage graph $\cal R$ is a sequence  ${\cal M}=(m_0, \ldots ,m_{c-1})$ of $c$ integers that we call {\bf offsets}, with $c$ the number of routes in $\cal R$. The number $m_i$ represents the index of the first slot used in a period  by the route $r_i \in {\cal R}$ at its source.
@@ -115,32 +115,32 @@ This article treats about Contention Management for 5G.
 
    \subsection{Problems}
 
-    We want to ensure that there is an affectation which allows to send periodic messages from elements in $S$ to elements in $L$.
-    The problem we need to solve is thus the following:
+    We want to ensure that there is an affectation which allows to send periodic messages from sources to target
+    without collisions. The problem we need to solve is thus the following:
     
 
       \noindent {\bf  Periodic Routes Assignment (PRA)} 
 
-      \noindent {\bf Input:} a routage graph $\cal R_{\cal C}$, an integer $\tau$ and an integer $P$.
+      \noindent {\bf Input:} a routage graph $\cal R$, an integer $\tau$ and an integer $P$.
 
-      \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic affectation of $\cal R_{\cal C}$ ?
+      \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic affectation of $\cal R$ ?
 
 
       We will prove in Sec.~\ref{sec:complexity} that the problem PRA is $\NP$-complete, even in restricted settings.
       Even approximating the smallest value of $P$ for which there is a $(P,\tau)$-periodic affectation is hard.
 
-      Another strange property is that given a routage graph, we may have a $(P,\tau)$-periodic affectation but no
-      $(P',\tau)$-periodic affectation with $P' > P$, the property is thus not monotone with regards to $P$.
+      An unusual property of affectation is that given a routage graph, we may have a $(P,\tau)$-periodic affectation but no
+      $(P',\tau)$-periodic affectation with $P' > P$: the existence of an affectation is not monotone with regards to $P$.
 
 	\begin{lemma} 
 	 For any odd $P$, there is a routage graphe such that there is $(2,1)$-periodic affectation but no $(P,1)$-periodic affectation.
 	\end{lemma}
 \begin{proof}
 
-      Consider the routage graph ${\cal R_{\cal C}}$ given in the previous subsection. 
-      We change the delays so that for $v$ the first vertex which belong to $r_i$ and $r_j$,
+      Consider the routage graph ${\cal R}$ given in the previous subsection. 
+      We change the delays so that for $v$, the first vertex which belongs to $r_i$ and $r_j$,
       we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $c$ the number of routes in ${\cal R}$.
-      If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) = 1 $ modulo $2$. Therefore $(0,\dots,0)$ is a $(2,1)$-periodic affectation of ${\cal R_{\cal C}}$.
+      If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) = 1 $ modulo $2$. Therefore $(0,\dots,0)$ is a $(2,1)$-periodic affectation of ${\cal R}$.
 
       
 \end{proof}
@@ -158,62 +158,48 @@ This article treats about Contention Management for 5G.
 
       
       In the context of cloud-RAN applications, we consider here the digraph $G=(V,A)$ modeling the target network 
-
-      and two disjoint subsets of vertices $S$ and $L$, where $S$ is the set of BBU and $L$ is the set of RRH. 
-       We have as much BBUs as RRH in the network. We denote by ${\cal c}$ the size of $S$ and $L$, and so, the number of routes.
-       We are given a period $P$, a routing function ${\cal R}$, and an assignment ${\cal C}:L\rightarrow S$  which assigns a BBU to each RRH. 
-       $l_i,i<{\cal c}$ is the RRH of the route $i$ and ${\cal C}(l_i)$, or $s_i$ is its corresponding BBU. The routing between each RRH and BBU is given by the routage graph ${\cal R}_{\cal C}$.
-       
-       Let consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_l$ to 
-      $(l,{\cal C}(l))$ and $m_{{\cal C}(l)}$ to $({\cal C}(l),l)$.  
+      and two disjoint subsets of vertices $S$ and $T$ of equal cardinality, where $S$ is the set of RRHs and $T$ is the set of BBUs. 
+      A \textbf{symmetric} assignment ${\cal C}$, is an involutive function from $S$ to $T$, which maps each element $s\in S$ to ${\cal C}(s)$ and ${\cal C}(s)$ to $s$. It can also be seen as the set of pairs $(s,{\cal C}(s))$ and $({\cal C}(s),s)$.
+     
+       We are given a period $P$, a routing function ${\cal R}$, and we consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_s$ to the route $r_s$ which begins by $s$.  This affectation represents the following process: first a message is sent at $s$, through the route $r_s$, at time $m_s$.
       
 %       
 %       We denote by $n$ the size of $S$ and $L$. We are given a period $P$, a routing function ${\cal R}$ and a bijection $\rho:L\rightarrow S$ which assigns a BBU to each RRH. Let ${\cal C}_{\rho} = \{(l,\rho(l))\}_{l \in L} \cup \{(s,\rho^{-1}(s))\}_{s \in S}$. Let consider a $P$-periodic affectation of ${\cal C}_{\rho}$ which associates $m_l$ to 
 %       $(l,\rho(l))$ and $m_{\rho(l)}$ to $(\rho(l),l)$.  
       
-      This affectation represents the following process: first a message is sent in $l$, through the route $r_l$, at time $m_l$.
       
       \begin{center}
       \includegraphics[scale=0.2]{rrh.jpeg}
       \end{center}
       
-      This message is received by ${\cal C}(l)$ at time $t({\cal C}(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{{\cal C}(l)}$ if $m_{{\cal C}(l)} > t({\cal C}(l),r_l)$, otherwise at time $m_{{\cal C}(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{{\cal C}(l)} - t({\cal C}(l),r_l)$ if $m_{{\cal C}(l)} > t({\cal C}(l),r_l)$ and $w_l = m_{{\cal C}(l)} + P - t({\cal C}(l),r_l)$ otherwise.
+      
+
+      This message is received by ${\cal C}(s)$ at time $t({\cal C}(s),r_s)$. It is then sent back to $s$ in the same period at time $m_{{\cal C}(s)}$ if $m_{{\cal C}(s)} > t({\cal C}(s),r_s)$, otherwise at time $m_{{\cal C}(s)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_s = m_{{\cal C}(s)} - t({\cal C}(s),r_s)$ if $m_{{\cal C}(s)} > t({\cal C}(s),r_s)$ and $w_s = m_{{\cal C}(s)} + P - t({\cal C}(s),r_s)$ otherwise.
       
        \begin{center}
+
       
       \includegraphics[scale=0.2]{BBU2.jpeg}
       \end{center}
      
 
-%       \begin{center}
-%       \includegraphics[scale=0.2]{rrh.jpeg}
-%       \end{center}
-%       
-%       This message is received by $\rho(l)$ at time $t(\rho(l),r_l)$. It is then sent back to $l$ in the same period at time $m_{\rho(l)}$ if $m_{\rho(l)} > t(\rho(l),r_l)$, otherwise at time $m_{\rho(l)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_l = m_{\rho(l)} - t(\rho(l),r_l)$ if $m_{\rho(l)} > t(\rho(l),r_l)$ and $w_l = m_{\rho(l)} + P - t(\rho(l),r_l)$ otherwise.
-%       
-%        \begin{center}
-%       \includegraphics[scale=0.2]{BBU1.jpeg}
-%       
-%       \includegraphics[scale=0.2]{BBU2.jpeg}
-%       \end{center}
-%      
-
       When a BBU receives a message, it must compute the answer before sending it back to the RRH. This time can be encoded
-      in the last arc leading to the BBU and thus we need not to consider it explicitely in our model.
+      in the last arc leading to the BBU and thus we need not to consider it explicitly in our model.
     
-      Thus, the whole proccess time for a message sent at vertex $l$ is equal to
+      Thus, the whole process time for a message sent at vertex $s$ is equal to
       $$
-      PT(l)=\lambda(r_l)+ w_l+\lambda(r_{{\cal C}(l)}).
+      PT(s)=\lambda(r_s)+ w_s+\lambda(r_{{\cal C}(s)}).
       $$
       
-    The {\bf maximum process time} of the $(P,\tau)$-periodic affectation ${\cal M} $ is defined by $MT({\cal M})=\max\limits_{l \in L} PT(l)$. The problem we want to solve is the following. 
+    The {\bf maximum process time} of the $(P,\tau)$-periodic affectation ${\cal M} $ is defined by $MT({\cal M})=\max\limits_{s \in S} PT(s)$. The problem we want to solve is the following. 
 
       \noindent {\bf Periodic Assignment for Low Latency(PALL)} 
 
-      \noindent {\bf Input:}  A routage graph ${\cal R}_{\cal C}$, a period $P$, an integer $T_{max}$.
+      \noindent {\bf Input:}  A routage graph ${\cal R}_{\cal C}$ with ${\cal C}$ a symmetric assignment, a period $P$, an integer $\tau$, an integer $T_{max}$.
 
-      \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic affectation ${\cal M}$ of ${\cal R}$ such that $MT({\cal M}) \leq T_{max}$?
+      \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic affectation ${\cal M}$ of ${\cal R}_{\cal C}$ such that $MT({\cal M}) \leq T_{max}$?
 
+      \todo{Si on veut, on peut parler du temps moyen aussi ici, seulement si on fait quelque chose dessus dans la suite}
       %The related optimisation problem we will focus on  consists in minimizing  $MT({\cal M})$. Note that in the context of cloud-RAN networks, we consider $P=1ms$, $\theta=2.6ms$ and $T_{max}$ must be less or equal to $3ms$.
       %cette remarque doit être dans la partie expérimentale
 
@@ -226,11 +212,11 @@ This article treats about Contention Management for 5G.
 
  In this section we assume that the size of a message $\tau$ is equal to one. 
  We will prove the hardness of PRA and PALL for this parameter, which implies the hardness of the general problems. 
-Consider an instance of the problem PRA, i.e., a routing graph $\cal{R}$, a message size $\tau$ and a period $P$. 
+Consider an instance of the problem PRA, i.e., a routage graph $\cal{R}$, a message size $\tau$ and a period $P$. 
 The {\bf conflict depth} of a route is the number of other routes which share an edge with it. 
-The conflict depth of an assignment $\cal C$ is the maximum of the conflict depth of the routes in ${\cal R}$.
-The {\bf load} of a routing graph is the maximal number of routes sharing the same arc.
-It is clear that a $P$-periodic affectation must satisfy that $P$ is larger or equal to the load.
+The conflict depth of a routage graph  $\cal{R}$ is the maximum of the conflict depth of the routes in ${\cal R}$.
+The {\bf load} of a routage graph is the maximal number of routes sharing the same arc.
+It is clear that a $(P,\tau)$-periodic affectation must satisfy that $P$ is larger or equal to the load times $\tau$.
 
 We give two alternate proofs that PRA is $\NP$-complete.
 The first one works for conflict depth $2$ and is minimal in this regards since we later prove that for conflict depth one,
@@ -240,41 +226,38 @@ it is easy to solve PRA. The second one reduces the problem to graph coloring an
 Problem PRA is $\NP$-complete, when the routing is of conflict depth two.
 \end{proposition}
  \begin{proof}
- The problem $PRA$ is in $\NP$ since given an offfset for each route in an affectation, it is easy to check in linear time in the number of edges whether there are collisions.
+ The problem $PRA$ is in $\NP$ since given an offset for each route in an affectation, it is easy to check in linear time in the number of edges whether there are collisions.
  
   Let $H=(V,E)$ be a graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is edge-colorable
-  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. The graph $G$ has for vertices $V'= \{ v_1, v_2 \mid v \in V  \} \cup \{ l_{u,v}, s_{u,v} \mid (u,v) \in E \}$ that is two vertices for each vertex and for each edge of $H$. 
-  Let $A$ bet the set of arcs of $G$, defined by 
-  $$A = \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(l_{u,v},u_1),(v_2,s_{u,v}) \mid (u,v) \in E \}. $$
-  All these arcs are of weigth $0$. 
-  For each edge $(u,v) \in E$, the is a route $r_{u,v} = s_{u,v},u_1,u_2,v_1,v_2,l_{u,v}$ in ${\cal R}$.  
-  The affectation ${\cal C}$ is the set of pair of vertices $(s_{u,v}, l_{u,v})$.
+  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. The graph $G$ has for vertices $v_1, v_2$ for each $v$ in $V$
+  and $s_{u,v}, t_{u,v}$ for each $(u,v) \in E$. The set $A$ of arcs of $G$ is: 
+  $$ \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(s_{u,v},u_1),(v_2,t_{u,v}) \mid (u,v) \in E \}. $$
+  All these arcs are of weight $0$. 
+  For each edge $(u,v) \in E$, there is a route $s_{u,v},u_1,u_2,v_1,v_2,t_{u,v}$ in ${\cal R}$.  
+  The affectation ${\cal C}$ is the set of pair of vertices $(s_{u,v}, t_{u,v})$.
     
-  Observe that the existence of a $d$-coloring of $H$ is equivalent to the existence of a $d$-periodic affectation
-  for $(G,{\cal R},{\cal C})$. Indeed, a $d$-coloring of $H$ can be seen as a labeling of its edges by the integers
-  in $\{0,\dots,d-1\}$ and we have a correspondance between a $d$-coloring of $H$ and offests for the routes of $(G,{\cal R},{\cal C})$.
-  By contruction, the constraint of having no collision between the routes is equivalent to the fact that no two adjacent edges have
+  Observe that the existence of a $d$-coloring of $H$ is equivalent to the existence of a $(d,1)$-periodic affectation
+  of ${\cal R}_{\cal C}$. Indeed, a $d$-coloring of $H$ can be seen as a labeling of its edges by the integers
+  in $\{0,\dots,d-1\}$ and we have a bijection between $d$-colorings of $H$ and offsets of the routes of ${\cal R}_{\cal C}$.
+  By construction, the constraint of having no collision between the routes is equivalent to the fact that no two adjacent edges have
   the same color. Therefore we have reduced edge coloring to PRA which concludes the proof. 
  \end{proof}
  \todo{Faire un dessin d'illustration ?}
  
- Remark that we have used zero weigth in the proof. If we ask the weigths to be strictly positive, which makes sense in our model since
+ Remark that we have used zero weight in the proof. If we ask the weights to be strictly positive, which makes sense in our model since
 they represent the latency of physical links, it is easy to adapt the proof. We just have to set them so that in any route the delay at $u_1$ is equal to $d$ and thus equal to $0$ modulo $d$. We now lift this hardness result to the problem PALL.
 
 \begin{corollary}
 Problem PALL is $\NP$-complete for routing of conflict depth two.
 \end{corollary}
 \begin{proof}
- We consider $(G,{\cal R},{\cal C},P)$ an instance of $PRA$ such that no element appears both in the first and second position in a pair of ${\cal C}$. Remark that this condition is satisfied in the previous proof, which makes the problem $PRA$ restricted to these instances $\NP$-complete. 
- Let us define $T_{max} = 2 \times \max_{r \in {\cal R}} \lambda(r) + P$. We define $\rho$ as the function which maps 
- $u$ to $v$ when $(u,v) \in {\cal C}$. The instance $(G,{\cal R},\rho,P,T_{max})$ is in PALL if and only if $(G,{\cal R},{\cal C},P)$
- is in $PRA$. Indeed the waiting time of each route is by definition less than $P$ and thus the maximal process time less than $T_{max}$. Therefore the fact that $(G,{\cal R},\rho,P,T_{max})$ is in PALL is equivalent to the existence of a $P$-periodic assignment of ${\cal C}_{\rho}$ which is equal to ${\cal C}$.
+ We consider $({\cal R}_{\cal C},P,\tau)$ an instance of $PRA$. We assume that no vertex appears both in the first and second position in a pair of ${\cal C}$. Remark that this condition is satisfied in the previous proof, which makes the problem $PRA$ restricted to this kind of instances $\NP$-complete. 
+ Let us define $T_{max} = 2 \times \max_{r \in {\cal R}} \lambda(r) + P$. We consider ${\cal C}'$ and ${\cal R}'_{\cal C'}$ symmetrized versions of ${\cal C}$ and  ${\cal R}_{\cal C}$ where for every route there is a symmetric route with new arcs and the same weights.
+ The instance $({\cal R'}_{\cal C'},P,\tau,T_{max})$ is in PALL if and only if $({\cal R}_{\cal C},P,\tau)$
+ is in $PRA$. Indeed the waiting time of each route is by definition less than $P$ and thus the maximal process time is always less than $T_{max}$. Moreover a $(P,\tau)$-affectation of ${\cal R}_{\cal C}$ can be extended into a $(P,\tau)$-affectation of ${\cal R'}_{\cal C'}$ in the following way. For each route $r_{u,v}$, the time at which the message arrives is $t(v,r_{u,v})$, then we choose as offset for $r_{v,u}$, $-t(v,r_{u,v}) \mod P$. The symmetry ensures that each new route $r_{v,u}$ in ${\cal R'}_{\cal C'}$ uses the same times slot as $r_{u,v}$ and thus avoid collisions.
 \end{proof}
-% 
-% 
-% As another corollary of the previous proposition,  given $G$, $\cal R$, $P$ and two disjoint subsets $S$ and $L$ in $G$, the problem of  knowing if there is a matching $\rho$  from $L$ in $S$ such that the answer to problem PRA for instance $G,{\cal C_{\rho}},{\cal R}, P$ is  $\NP$-hard since checking a potential feasible solution for this problem implies to solve PRA.\\
 
-Let MIN-PRA be the problem, given a graph, a routing and an affectation, to find the minimal period $P$ such that there is a $P$-periodic affectation. 
+Let MIN-PRA be the problem, given a routage graph and an assignment, to find the minimal period $P$ such that there is a $P$-periodic affectation. 
 
 \begin{theorem}
  The problem MIN-PRA cannot be approximated in polynomial time within a factor $n^{1-o(1)}$, with $n$ the number of routes, unless $\P = \NP$ even when the load is two.
@@ -282,13 +265,12 @@ Let MIN-PRA be the problem, given a graph, a routing and an affectation, to find
 
 \begin{proof}
  We reduce graph coloring to PRA. Let $H$ be a graph instance of the $k$-coloring problem. 
- We define $G$ in the following way: for each vertex $v$ in $H$, there is a route $r_v$ in $G$.
+ We define ${\cal R}$ in the following way: for each vertex $v$ in $H$, there is a route $r_v$ in ${\cal R}$.
  Two routes $r_v$ and $r_u$ share an arc if and only if $(u,v)$ is an edge in $H$; this arc is the only one shared by these two routes.   
  All arcs are of delay $0$. 
  
- Observe that the existence of a $k$-coloring of $H$ is equivalent to the existence of a $k$-periodic affectation in $G$, 
- by converting an offset of a route into a color of a vertex and reciprocally. Therefore if we can approximate the minimum value of $P$ within a factor $f$,
- we could approximate the minimal number of colors needed to color a graph within a factor $f$, by doing the previous reduction for all possible $k$. The proof follows from the hardness of approximability of finding a minimal coloring~\cite{zuckerman2006linear}.
+ Observe that the existence of a $k$-coloring of $H$ is equivalent to the existence of a $(k,1)$-periodic affectation in $G$, 
+ by converting an offset of a route into a color of a vertex and reciprocally. Therefore if we can approximate the minimum value of $P$ within some factor, we could approximate the minimal number of colors needed to color a graph within the same factor. The proof follows from the hardness of approximability of finding a minimal coloring~\cite{zuckerman2006linear}.
 \end{proof}
 
 
