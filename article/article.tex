@@ -352,31 +352,84 @@ minimal period can be large.
     }
     
     
-  \subsection{MIN-PRA}
-    Exemple de cas polynomiaux
+  \subsection{Tractable cases of PRA}
     
-\section{The Star Topolgy}
+    In this section, we present a few polynomial cases, in particular when the conflict depth is one.
+    
+    
+    The problem PALL seems to be hard to solve, even for very simple classes of graphs, as seen in the next section.
+    
+\section{The Star Topology}
   
-
-  \subsection{Intro}
-    PALL NP-Hard car PRA NP-Hard\\
+   
     
-      In this section, we consider a particular case of the model, in which for each $(u,v)$ , the route is the same in both directions. This means that $\forall (u,v) \in {\cal C}, {\cal R}_{\cal C}(u,v)$ uses the same arcs as ${\cal R}_{\cal C}(v,u)$ in the opposite direction.\\
-      Furthermore, the following algorithms and results were designed for a particular topology of network, in which all the routes uses a same common switch.
-        \begin{center}
+      In this section, we consider graphs with a very simple topology that we call the {\bf star topology}. 
+      First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
+      Moreover, there is a special arc, the central arc, which is shared by all routes.
+      All routes consist from an arc from its source to the source node, denoted by {\bf SN},
+      then the central arc to {\bf TN}, the target node, and an arc to its target. In addition to SN and TN,
+      there are two sets $S$ and $T$ of cardinality $n$ and ${\cal C}$ a symmetric assignment from $S$ to $T$. 
+      The routes are the directed paths of the form $s_i,SN,TN,t_i$ and $t_i,TN,SN,s_i$. 
+      
+      
+       \begin{center}
 	  \includegraphics[scale=0.8]{Fig4.pdf}
 	\end{center}
-      Let us call {\bf LN} (leaves node) the central node connected to leaves, and {\bf SN} (sources node), the one connected to sources. The period in those nodes are respectively called {\em forward period}, and {\em backward period}.
-      The weight on the link between the two central nodes is simplified in the forthcoming calculations.
+	
+      We assume the weight of the central arc to be $0$ since it appears in every route,
+      its value does not matter when considering affectations. Collisions between messages can 
+      only appear at node SN on the way forward and at node TN on the way back. 
+  \todo{Définir la forward period et la backward period et dire à quoi correspond une affectation en terme de forward et backward period (placement de messages dans la première période}     
+%       Therefore, 
+%       finding an $(P,\tau)$-periodic affectation without collision, is equivalent to fix ...
 
-  \subsection{No waiting times}
-    \subsubsection{Shortest-longest}
+      
+%       
+%       between the two central nodes is simplified in the forthcoming calculations.
+%       Let us call {\bf SN} (source node) the central node connected to leaves, and {\bf SN} (sources node), the one connected to sources. The period in those nodes are respectively called {\em forward period}, and {\em backward period}.
+      
+
+  \subsection{Solving PALL without waiting times}
+  
+  In this subsection, we deal with a simpler version of the problem PALL.
+  We ask for a $(P,\tau)$-periodic affectation with all waiting times equal to $0$. 
+  In that case $T_{max}$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
+  $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + t(r_i)$.
+  Moreover, in this context the weight of the arcs from $s_i$ to SN have no impact, therefore we assume they are 
+  equal to $0$.
+ 
+  
+    \subsubsection{Shortest-longest policy}
+    
+    We present a simple policy, which works when the period is large with regards to the delay of the routes.
+    We send the messages in order from the shortest route to the longest route. 
+    \todo{Preuve en deux lignes que ça ne collisionne pas à condition que la période soit assez grande}
+    
+    
       \paragraph{Algo}
       \paragraph{Period}
-    \subsubsection{Greedy Algorithm with higher bound}
+      
+      
+    \subsubsection{Greedy Algorithm}
+    
+    We introduce a greedy algorithm to build a $(P,\tau)$-periodic affectation, which provably works when
+    the period is large enough with regards to the number of routes and size of messages. In other words, 
+    we can always find a solution when the network is far from saturated. 
+    
+    \begin{proposition}
+    There is an algorithm, which finds a $(P,\tau)$-periodic affectation in time $O(n^2)$ when $P \geq 3n\tau$.
+    \end{proposition}
+    \begin{proof}
+     We consider the time period at the vertex SN and cut it into consecutive macro slots of time of size $\tau$. The algorithm works in the following way: select the first route for which the offset as not been chosen. Try every offset which put the message in a  
+     free macro slot in the period at SN. It also fixes the position of a message a TN, and we choose the first offset which does not create a collision at TN. 
+     Assume we choose the offset of the route $r_{k+1}$, we have  at least $3n - k$ free macro-slots, since $P \geq 3n\tau$. Each of these $3n - k$ possible offset values translates into $3n - k$ positions of messages in the period at TN. All these positions are separated by at least $\tau$ slots. There are already $k$ messages of size $\tau$ in the period at TN. One such message can intersect at most $2k$ potential positions, therefore  amongst the possible $3n - k$ positions, there are  $3n - k -2k$ which are without collision. Since $k < n$, one of the choice is without collision, which proves that the algorithm terminates and find a
+     $(P,\tau)$-periodic affectation. To ensure a complexity linear in $n$, it is enough to maintain a list of the free slices at SN and a list of the free intervals at TN. 
+    \end{proof}
+
+    \todo{Avec une structure de données plus maligne on doit pouvoir faire n, non ?}
    
 	\begin{algorithm}[H]
-	\caption{Greedy with Higher bound Period(GHP)}
+	\caption{Greedy affectation}
 	\begin{algorithmic}
 	\REQUIRE ${\cal R}_{\cal C}$, period $P$
 	\ENSURE A P-periodic affectation in p $\leq P$, or FAILURE
