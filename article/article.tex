@@ -399,18 +399,28 @@ minimal period can be large.
   In that case $T_{max}$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
   $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i)$.
   Moreover, in this context the weight of the arcs from $s_i$ to $c_s$ have no impact, therefore we assume they are 
-  equal to $0$. Thus, in this case, we can consider only the forward and backward periods. The goal is now to put messages in the forward periods such that there is no collisions in the both periods.
- 
+  equal to $0$. Thus, in this case, we can consider only the forward and backward periods. The goal is now to put messages in the forward periods such that there is no collisions in the both periods.\\
+  In this section, the offsets $m_{s_i}, i<n$ are in reality $[t(c_s,r_{s_i})]$, but to find the real values, there is just to change the values of the offset considering the dealy of the arcs $(s_i, c_s) , \forall i$.
+  
   
     \subsubsection{Shortest-longest policy}
     
+    \paragraph{Algo}
     We present a simple policy, which works when the period is large with regards to the delay of the routes.
-    We send the messages in order from the shortest route to the longest route. 
-    \todo{Preuve en deux lignes que ça ne collisionne pas à condition que la période soit assez grande}
-    
-    
-      \paragraph{Algo}
+    We send the messages in order from the shortest route to the longest route, on after each others in the forward period. 
+      
+      
+The message using the shortest route is sent before the others, so it comes back to the central node before the following ones.
+Recursively, the second message is sent before the others, and also will be back before the following messages. 
+Because the second message is sent T slots after the first message ($m_{s_2} = m_{s_1} + \tau$, it comes back after
+the end of the message one: $m_{s_1}+ \tau + 2.\lambda(r_{{\cal C}(s_1)}) \le m_{s_2} + 2.\lambda(r_{{\cal C}(s_2)})$ with $\lambda(r_{{\cal C}(s_2)}) \ge \lambda(r_{{\cal C}(s_1)})$.
+
       \paragraph{Period}
+The period given by this policy is $P = \tau * n + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0}))$, if routes $\{r_0,...,r_{s_{n-1}}\}$ are ordered
+from the shortest to the longest. $2.\lambda(r_{s_0})$ is the first slot in which the first message is coming back in the backward period,
+and 2$\lambda(r_{s_{n-1}}) + n . \tau $ is the time at which the last message has totally passed the switch.
+Therefore, the period only depends of the difference between the longest and the shortest route: the larger this value is, the larger
+the period is.
       
       
     \subsubsection{Greedy Algorithm}
@@ -449,7 +459,7 @@ minimal period can be large.
 	\IF{$P1[j]$ is free AND $P2[j+\lambda(r_i)]$ is free}
 
 	
-	\STATE $o_i \leftarrow j$
+	\STATE $m_{s_i} \leftarrow j$
 	\ENDIF
 
 
@@ -481,7 +491,7 @@ minimal period can be large.
 	\FORALL{route i in  ${\cal R}_{\cal C}$}
 	\FORALL{j in Free-Intervals }
 	\IF{Message of the route i does not collides with scheduled routes}
-	\STATE $m_i \leftarrow $ the first slot of Free-Intervals[j]
+	\STATE $m_{s_i} \leftarrow $ the first slot of Free-Intervals[j]
 	\STATE Split the Free-Intervals considering the new packet
 	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
 	\STATE Backward-budget $\leftarrow$ Backward-budget - {\em lost size}

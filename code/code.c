@@ -3,11 +3,9 @@
 #include <assert.h>
 #include <time.h>
 
+#include "struct.h"
+#include "bruteforce.h"
 
-typedef struct graphe{
-	int N; //nombre de sommets
-	int ** matrice;//matrice d'adjacence pondérée
-}Graphe ;
 
 void affiche_matrice(Graphe g)
 {
@@ -47,7 +45,7 @@ Graphe init_graphe(int N)
 //prends un graphe vide en argument et le transforme en etoile
 void graphe_etoile(Graphe g,int taille_liens)
 {
-	if(!g.N%2){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
+	if(!(g.N%2)){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
 	int pivot = g.N/2;
 	int alea;
 	for(int i=0;i<g.N;i++)
@@ -86,11 +84,59 @@ void affiche_periode(int *p, int periode)
 	}
 	printf("\n");
 }
+void affiche_tab(int * tab, int taille)
+{
+	for(int i=0;i<taille;i++)
+	{
+		printf("%d ",tab[i]);
+	}
+	printf("\n");
+}
+void tri_bulles(int* tab,int taille)
+{
+	int sorted;
+	int tmp;
+	for(int i=taille-1;i>=1;i--)
+	{
+		sorted = 1;
+		for(int j = 0;j<=i-1;j++)
+		{
+			if(tab[j+1]<tab[j])
+			{
+				tmp = tab[j+1];
+				tab[j+1]= tab[j];
+				tab[j]= tmp;
+				sorted = 0;
+			}
+			if(sorted)return;
+		}
+	}
+}
+
+//retourne -1 si la periode donnée ne donne pas de solutions, la taille de la periode sinon
+int algo_shortest_longest(Graphe g,int periode,int taille_message)
+{
+	if(!(g.N%2)){printf("G n'est peut être pas une étoile\n");exit(5);}
+	int nb_routes = g.N/2;
+	int min = g.matrice[nb_routes][nb_routes+1];
+	int max = min;
+	for(int i=1;i<nb_routes;i++)
+	{
+		if(g.matrice[nb_routes][i+nb_routes+1] < min)
+			min = g.matrice[nb_routes][i+nb_routes+1];
+		if(g.matrice[nb_routes][i+nb_routes+1] > max)
+			max = g.matrice[nb_routes][i+nb_routes+1];
+	}
+	if(periode >= (taille_message * nb_routes + 2*(max-min) ) ) 
+		return taille_message * nb_routes + 2*(max-min);
+	 
+	return -1;
+}
 
 //retourne -1 si la periode donnée ne donne pas de solutions, la taille de la periode sinon
 int algo_3NT(Graphe g,int periode,int taille_message)
 {
-	if(!g.N%2){printf("G n'est peut être pas une étoile\n");exit(5);}
+	if(!(g.N%2)){printf("G n'est peut être pas une étoile\n");exit(5);}
 	int nb_routes = g.N/2;
 	int routes[nb_routes];
 	int nb_slots = periode / taille_message;
@@ -127,6 +173,7 @@ int algo_3NT(Graphe g,int periode,int taille_message)
 	return periode;
 }
 
+
 int linear_3NT(Graphe g,int taille_message)
 {
 	int result;
@@ -145,7 +192,7 @@ int linear_3NT(Graphe g,int taille_message)
 //retourne -1 si la periode donnée ne donne pas de solutions, la taille de la periode sinon
 int algo_prime(Graphe g,int periode,int taille_message)
 {
-	if(!g.N%2){printf("G n'est peut être pas une étoile\n");exit(5);}
+	if(!(g.N%2)){printf("G n'est peut être pas une étoile\n");exit(5);}
 	int nb_routes = g.N/2;
 	int routes[nb_routes];
 	int assigned = 0;
@@ -229,9 +276,42 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 	fclose(F);
 }
 
+void echec(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
+{
+	FILE * F = fopen("results_echec.data","w");
+	Graphe g;
+	long long int total_3NT, total_brute, total_sl;
+
+
+	for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=100)
+	{
+		
+		total_3NT = 0;
+		total_brute = 0;
+		total_sl = 0;
+
+		for(int i = 0;i<nb_simuls;i++)
+		{
+			g = init_graphe(nb_routes *2 +1);
+			graphe_etoile(g,j);
+			if(algo_3NT(g,j,taille_message) != -1) total_3NT++;
+			if(bruteforceiter(g,j,taille_message) != -1) total_brute++;
+			if(algo_shortest_longest(g,j,taille_message)!= -1) total_sl++;
+			free(g.matrice);
+			fprintf(stdout,"\rStep = %5d/%d [Period : %d]",i+1,nb_simuls,j);fflush(stdout);
+		}
+
+	
+		fprintf(F, "%d %lld %lld %lld \n",j,total_sl,total_3NT,total_brute);
+
+	}
+	fclose(F);
+}
 int main()
 {
 	srand(time(NULL));
-	simuls_periode(15,2500,10000,1000);
+	//simuls_periode(15,2500,10000,1000);
+	echec(8,2500,25000,1000);
+
 	return 0;
 }
