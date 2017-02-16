@@ -16,9 +16,9 @@
   \Vertex[x=0,y=4]{s2}
   \Vertex[x=0,y=6]{s1}
   
-  \Vertex[x=14,y=7]{l3}
-  \Vertex[x=14,y=4]{l2}
-  \Vertex[x=10,y=2]{l1}
+  \Vertex[x=14,y=7]{t3}
+  \Vertex[x=14,y=4]{t2}
+  \Vertex[x=10,y=2]{t1}
   
   \SetVertexNoLabel
   \Vertex[x=2,y=5]{A}
@@ -33,7 +33,7 @@
   \Edge[label = 1](A)(B)
   \Edge[label = 2](B)(C)
   \Edge[label = 1](C)(D)
-  \Edge[label = 1](D)(l2)
+  \Edge[label = 1](D)(t2)
 
   
    \tikzset{
@@ -42,14 +42,14 @@
   \Edge[label = 1](E)(F)
   \Edge[label = 1](F)(C)
   \Edge[label = 1](C)(D)
-  \Edge[label = 1](D)(l3) 
+  \Edge[label = 1](D)(t3) 
      \tikzset{
   EdgeStyle/.append style = {blue} }
   \Edge[label = 1](s1)(A)
   \Edge[label = 1](A)(B)
   \Edge[label = 1](B)(E)
   \Edge[label = 1](E)(F)
-  \Edge[label = 1](F)(l1)
+  \Edge[label = 1](F)(t1)
 
 \end{tikzpicture}
 

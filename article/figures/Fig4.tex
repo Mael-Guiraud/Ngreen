@@ -12,26 +12,26 @@
 \begin{document}
 \begin{tikzpicture}
   \SetGraphUnit{5}
-  \Vertex[x=0,y=0]{l3}
-  \Vertex[x=0,y=2]{l2}
-  \Vertex[x=0,y=4]{l1}
+  \Vertex[x=0,y=0]{s3}
+  \Vertex[x=0,y=2]{s2}
+  \Vertex[x=0,y=4]{s1}
   
-  \Vertex[x=8,y=0]{s3}
-  \Vertex[x=8,y=2]{s2}
-  \Vertex[x=8,y=4]{s1}
+  \Vertex[x=8,y=0]{t3}
+  \Vertex[x=8,y=2]{t2}
+  \Vertex[x=8,y=4]{t1}
   
-  \Vertex[x=2,y=2]{LS}
-  \Vertex[x=6,y=2]{SS}
+  \Vertex[x=2,y=2]{cs}
+  \Vertex[x=6,y=2]{ct}
   
-  \Edge(l1)(LS)
-  \Edge(l2)(LS)
-  \Edge(l3)(LS)
+  \Edge(s1)(cs)
+  \Edge(s2)(cs)
+  \Edge(s3)(cs)
   
-  \Edge(SS)(s1)
-  \Edge(SS)(s2)
-  \Edge(SS)(s3)
+  \Edge(ct)(t1)
+  \Edge(ct)(t2)
+  \Edge(ct)(t3)
   
-  \Edge(SS)(LS)
+  \Edge(cs)(ct)
 
 \end{tikzpicture}
 
