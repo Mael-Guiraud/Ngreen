@@ -77,8 +77,7 @@ This article treats about Contention Management for 5G.
 
       A {\bf routing function} $\cal R$ in $G$ associates to each pair of vertices $(u,v)$ a route from $u$ to $v$. Let $\cal C$ be an {\bf assignment} in $G$, i.e., a set of couples of different vertices of $G$. We denote by $\cal R_{\cal C}$ the set of routes ${\cal R}(u,v)$ for any $(u,v)$ in $\cal C$. We call $\cal R_{\cal C}$ a {\bf routage graph}, it contains all the informations needed in the forthcoming problems (assignment, routes and delays of the arcs). 
       
-     \todo{Dire après  la définition des problèmes qu'on pourrait demander de trouver l'assignement et même le routage pour optimiser, mais pas dans cet article
-     et qu'on travail avec des réseaux déjà constitués}
+
       \todo{Si on s'en sert, ajouter ici que le routage est cohérent.}
 
    \subsection{Slotted time Model}
@@ -89,8 +88,8 @@ This article treats about Contention Management for 5G.
       of consecutive slots necessary to transmit a message. Let us call $[t(v,r)]_{P,\tau}$ the set of time slots used by $r$ at a vertex $v$ in a period $P$, that is $[t(v,r)]_{P,\tau} = \{t(v,r) + i \mod P \mid 0 \leq i < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r)]_{P,\tau}$ by $[t(v,r)]$.
       
       
-      A {\bf $(P,\tau)$-periodic affectation} of a routage graph $\cal R$ is a sequence  ${\cal M}=(m_0, \ldots ,m_{c-1})$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_i$ represents the index of the first slot used in a period  by the route $r_i \in {\cal R}$ at its source.
-      A $(P,\tau)$-periodic affectation must have no {\bf collision} between two routes in ${\cal R}$, that is $\forall (r_i, r_j) \in {\cal R_{\cal C}}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
+      A {\bf $(P,\tau)$-periodic affectation} of a routage graph $\cal R_{\cal C}$ is a sequence  ${\cal M}=(m_0, \ldots ,m_{c-1})$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R_{\cal C}$. The number $m_i$ represents the index of the first slot used in a period  by the route $r_i \in \cal R_{\cal C}$ at its source.
+      A $(P,\tau)$-periodic affectation must have no {\bf collision} between two routes in $\cal R_{\cal C}$, that is $\forall (r_i, r_j) \in {\cal R_{\cal C}}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
       we have $$[t(u,r_i)] \cap [t(u,r_j)] = \emptyset .$$
       
 
@@ -105,7 +104,56 @@ This article treats about Contention Management for 5G.
 %       A labeling $F$ of such a graph is an affectation of an integer to each vertex, such that for each vertex $u$, $f(u) \neq f(v)+w(u,v)\mod P$, where $v$ are the neighbors of $u$ in the conflict graph and $P$ our period.
       \begin{figure}[h]
        \begin{center}
-      \includegraphics[scale=0.7]{Fig5.pdf}
+      
+\begin{tikzpicture}
+
+
+\tikzset{
+  LabelStyle/.style = { rectangle, rounded corners, draw,
+                       font = \bfseries },
+  EdgeStyle/.append style = {->} }
+  \SetGraphUnit{5}
+  \node[draw,circle] (s3) at (4, 2) {$s_3$}; 
+  \node[draw,circle] (s2) at (0, 4) {$s_2$}; 
+  \node[draw,circle] (s1) at (0, 6) {$s_1$}; 
+
+  \node[draw,circle] (t3) at (14, 7) {$t_3$}; 
+  \node[draw,circle] (t2) at (14, 4) {$t_2$}; 
+  \node[draw,circle] (t1) at (10, 2) {$t_1$}; 
+
+  
+  \SetVertexNoLabel
+  \Vertex[x=2,y=5]{A}
+  \Vertex[x=4,y=5]{B}
+  \Vertex[x=10,y=5]{C}
+  \Vertex[x=12,y=5]{D}
+  \Vertex[x=6,y=3]{E}
+  \Vertex[x=8,y=3]{F}
+  \tikzset{
+  EdgeStyle/.append style = {green} }
+  \Edge[label = 2](s2)(A)
+  \Edge[label = 1](A)(B)
+  \Edge[label = 2](B)(C)
+  \Edge[label = 1](C)(D)
+  \Edge[label = 1](D)(t2)
+
+  
+   \tikzset{
+  EdgeStyle/.append style = {red} }
+  \Edge[label = 2](s3)(E)
+  \Edge[label = 1](E)(F)
+  \Edge[label = 1](F)(C)
+  \Edge[label = 1](C)(D)
+  \Edge[label = 1](D)(t3) 
+     \tikzset{
+  EdgeStyle/.append style = {blue} }
+  \Edge[label = 1](s1)(A)
+  \Edge[label = 1](A)(B)
+  \Edge[label = 1](B)(E)
+  \Edge[label = 1](E)(F)
+  \Edge[label = 1](F)(t1)
+
+\end{tikzpicture}
       \end{center}
        \caption{A routage graph with $(0,\dots,0)$ as a $(2,1)$-periodic affectation}
       \end{figure}
@@ -133,14 +181,14 @@ This article treats about Contention Management for 5G.
       $(P',\tau)$-periodic affectation with $P' > P$: the existence of an affectation is not monotone with regards to $P$.
 
 	\begin{lemma} 
-	 For any odd $P$, there is a routage graphe such that there is $(2,1)$-periodic affectation but no $(P,1)$-periodic affectation.
+	 For any odd $P$, there is a routage graph such that there is $(2,1)$-periodic affectation but no $(P,1)$-periodic affectation.
 	\end{lemma}
 \begin{proof}
 
       Consider the routage graph ${\cal R_{\cal C}}$ given in the previous subsection. 
       We change the delays so that for $v$, the first vertex which belongs to $r_i$ and $r_j$,
       we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $n$, the number of routes in ${\cal R_{\cal C}}$. In such a graph, there is no $(P,\tau)$-periodic affectation, because of $P < n$.\\
-      If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) \mod 2 = 1$ . Therefore $(0,\dots,0)$ is a $(2,1)$-periodic affectation of ${\cal R}$.
+      If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) \mod 2 = 1$ . Therefore $(0,\dots,0)$ is a $(2,1)$-periodic affectation of ${\cal R_{\cal C}}$.
 
       
 \end{proof}
@@ -160,8 +208,8 @@ This article treats about Contention Management for 5G.
       In the context of cloud-RAN applications, we consider here the digraph $G=(V,A)$ modeling the target network 
       and two disjoint subsets of vertices $S$ and $T$ of equal cardinality, where $S$ is the set of RRHs and $T$ is the set of BBUs. 
       A \textbf{symmetric} assignment ${\cal C}$, is an involutive function from $S$ to $T$, which maps each element $s\in S$ to ${\cal C}(s)$ and ${\cal C}(s)$ to $s$. It can also be seen as the set of pairs $(s,{\cal C}(s))$ and $({\cal C}(s),s)$.\\
-      The Routing function ${\cal R}$ associtates to each couple $(s,{\cal C}(s))$ a route called $r_s$ and to each couples $({\cal C}(s),s)$ a route called $r_{{\cal C}(s)}$.\\     
-       We are given a period $P$, a routing function ${\cal R}$, and we consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_s$ to the route $r_s$ which begins by $s$.  This affectation represents the following process: first a message is sent at $s$, through the route $r_s$, at time $m_s$.
+      The Routing function ${\cal R}$ associates to each couple $(s,{\cal C}(s))$ a route called $r_s$ and to each couples $({\cal C}(s),s)$ a route called $r_{{\cal C}(s)}$.\\     
+       We are given a period $P$, a routing function ${\cal R}$, and we consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_s$ to the route $r_s$ which begins by $s$, and $m_{C(s)}$ to the routes $r_{C(s)}$ which begins by $C(s)$.  This affectation represents the following process: first a message is sent at $s$, through the route $r_s$, at time $m_s$.
       
 %       
 %       We denote by $n$ the size of $S$ and $L$. We are given a period $P$, a routing function ${\cal R}$ and a bijection $\rho:L\rightarrow S$ which assigns a BBU to each RRH. Let ${\cal C}_{\rho} = \{(l,\rho(l))\}_{l \in L} \cup \{(s,\rho^{-1}(s))\}_{s \in S}$. Let consider a $P$-periodic affectation of ${\cal C}_{\rho}$ which associates $m_l$ to 
