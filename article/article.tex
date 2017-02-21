@@ -209,7 +209,7 @@ This article treats about Contention Management for 5G.
       and two disjoint subsets of vertices $S$ and $T$ of equal cardinality, where $S$ is the set of RRHs and $T$ is the set of BBUs. 
       A \textbf{symmetric} assignment ${\cal C}$, is an involutive function from $S$ to $T$, which maps each element $s\in S$ to ${\cal C}(s)$ and ${\cal C}(s)$ to $s$. It can also be seen as the set of pairs $(s,{\cal C}(s))$ and $({\cal C}(s),s)$.\\
       The Routing function ${\cal R}$ associates to each couple $(s,{\cal C}(s))$ a route called $r_s$ and to each couples $({\cal C}(s),s)$ a route called $r_{{\cal C}(s)}$.\\     
-       We are given a period $P$, a routing function ${\cal R}$, and we consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_s$ to the route $r_s$ which begins by $s$, and $m_{C(s)}$ to the routes $r_{C(s)}$ which begins by $C(s)$.  This affectation represents the following process: first a message is sent at $s$, through the route $r_s$, at time $m_s$.
+       We are given a period $P$, a routing function ${\cal R}$, and we consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_s$ to the route $r_s$ which begins by $s$, and $m_{{\cal C}(s)}$ to the routes $r_{{\cal C}(s)}$ which begins by ${\cal C}(s)$.  This affectation represents the following process: first a message is sent at $s$, through the route $r_s$, at time $m_s$.
       
 %       
 %       We denote by $n$ the size of $S$ and $L$. We are given a period $P$, a routing function ${\cal R}$ and a bijection $\rho:L\rightarrow S$ which assigns a BBU to each RRH. Let ${\cal C}_{\rho} = \{(l,\rho(l))\}_{l \in L} \cup \{(s,\rho^{-1}(s))\}_{s \in S}$. Let consider a $P$-periodic affectation of ${\cal C}_{\rho}$ which associates $m_l$ to 
@@ -276,12 +276,17 @@ Problem PRA is $\NP$-complete, when the routing is of conflict depth two.
  The problem $PRA$ is in $\NP$ since given an offset for each route in an affectation, it is easy to check in linear time in the number of edges whether there are collisions.
  
   Let $H=(V,E)$ be a graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is edge-colorable
-  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. The graph $G$ has for vertices $v_1, v_2$ for each $v$ in $V$
-  and $s_{u,v}, t_{u,v}$ for each $(u,v) \in E$. The set $A$ of arcs of $G$ is: 
-  $$ \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(s_{u,v},u_1),(v_2,t_{u,v}) \mid (u,v) \in E \}. $$
-  All these arcs are of weight $0$. 
+  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. 
+  For each $v$ in $V$, the graph $G$ has two vertices $v_1, v_2$, and for each $(u,v) \in E$,the graph g has two vertices $s_{u,v}, t_{u,v}$.
+  
+%   The set $A$ of arcs of $G$ is: 
+%   $$ \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(s_{u,v},u_1),(v_2,t_{u,v}) \mid (u,v) \in E \}. $$
   For each edge $(u,v) \in E$, there is a route $s_{u,v},u_1,u_2,v_1,v_2,t_{u,v}$ in ${\cal R}$.  
+  The set of arcs of G is the union between all the arcs of the previous routes.
   The affectation ${\cal C}$ is the set of pair of vertices $(s_{u,v}, t_{u,v})$.
+  
+  All these arcs are of weight $0$. 
+  
     
   Observe that the existence of a $d$-coloring of $H$ is equivalent to the existence of a $(d,1)$-periodic affectation
   of ${\cal R}_{\cal C}$. Indeed, a $d$-coloring of $H$ can be seen as a labeling of its edges by the integers
@@ -425,7 +430,8 @@ minimal period can be large.
       We assume the weight of the central arc to be $0$ since it appears in every route,
       its value does not matter when considering affectations. Collisions between messages can 
       only appear at node $c_s$ on the way forward and at node $c_t$ on the way back. \\
-      Let us call {\bf forward period} and {\bf backward period} the time windows in respectively $c_s$ and $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1})$ in the forward period, and  $c_t$ at time $m_{{\cal C}(s_1)} + t(c_t,r_{{\cal C}(s_1)})$ in the backward period.
+      In such a topology, there is only two possible collision points between the routes : $c_s$ and $c_t$. To avoid collisions, we only have to check if there is no collisions in a period on those two points.
+      Let us take a period P for each central nodes, that are called the {\bf forward period} and the {\bf backward period} for, respectively $c_s$ and $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1})$ in the forward period, and  $c_t$ at time $m_{{\cal C}(s_1)} + t(c_t,r_{{\cal C}(s_1)})$ in the backward period.
       A $(P,\tau)$-periodic affectation consist in choosing $\forall i \in n, m_i$, and $m_{{\cal C}(s_i)}$ such that, for any couples of routes $(r_{s_j}, r_{s_k}), j,k \in n$,
       we have $[t(c_s,r_j)] \cap [t(c_s,r_k)] = \emptyset$.
       and for any couples of routes $(r_{{\cal C}(s_j)}, r_{{\cal C}(s_k)}), j,k \in n$, we have $[t(c_s,r_{{\cal C}(s_j)})] \cap [t(c_s,r_{{\cal C}(s_k)})] = \emptyset$
@@ -447,30 +453,36 @@ minimal period can be large.
   In that case $T_{max}$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
   $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i)$.
   Moreover, in this context the weight of the arcs from $s_i$ to $c_s$ have no impact, therefore we assume they are 
-  equal to $0$. Thus, in this case, we can consider only the forward and backward periods. The goal is now to put messages in the forward periods such that there is no collisions in the both periods.\\
-  In this section, the offsets $m_{s_i}, i<n$ are in reality $[t(c_s,r_{s_i})]$, but to find the real values, there is just to change the values of the offset considering the dealy of the arcs $(s_i, c_s) , \forall i$.
+  equal to $0$. \\
+  For those reasons, in this case, we only have to consider the forward and backward periods. Indeed, setting the offset $m_{s_i}$ in the forward period automatically set the offsets $m_{{\cal C}(s_i)}$ in the backward period.
+  The goal is now to put messages in the forward periods such that there is no collisions in the both periods.\\
+  In this section, the offsets $m_{s_i}$ are in reality $[t(c_s,r_{s_i})]$, but to find the real values, there is just to change the values of the offset considering the delay of the arcs $(s_i, c_s) , \forall i$.
   
   
     \subsubsection{Shortest-longest policy}
     
     \paragraph{Algo}
     We present a simple policy, which works when the period is large with regards to the delay of the routes.
-    We send the messages in order from the shortest route to the longest route, on after each others in the forward period. 
+    Send the messages in order from the shortest route to the longest route, on after each others in the forward period, without any slots between two messages, that is $m_{s_i} = \tau.i$, if the routes $r_i$ are ordered by $\lambda(r_i)$ from the shortest to the longest one. 
       
       
 The message using the shortest route is sent before the others, so it comes back to the central node before the following ones.
-Recursively, the second message is sent before the others, and also will be back before the following messages. 
-Because the second message is sent T slots after the first message ($m_{s_2} = m_{s_1} + \tau$, it comes back after
-the end of the message one: $m_{s_1}+ \tau + 2.\lambda(r_{{\cal C}(s_1)}) \le m_{s_2} + 2.\lambda(r_{{\cal C}(s_2)})$ with $\lambda(r_{{\cal C}(s_2)}) \ge \lambda(r_{{\cal C}(s_1)})$.
+Then, the second message is sent before the others, and also will be back before the third etc... 
+Because the second message is sent $\tau$ slots after the first message ($m_{s_2} = m_{s_1} + \tau$, it comes back after
+the end of the message one: $m_{s_1}+ \tau + 2.\lambda(r_{s_1}) \le m_{s_2} + 2.\lambda(r_{s_2})$ because of $\lambda(r_{s_2}) \ge \lambda(r_{s_1})$.
 
       \paragraph{Period}
-The period given by this policy is $P = \tau * n + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0}))$, if routes $\{r_0,...,r_{s_{n-1}}\}$ are ordered
-from the shortest to the longest. $2.\lambda(r_{s_0})$ is the first slot in which the first message is coming back in the backward period,
+      To ensure that there is no collisions in the backward period, we must ensure that the last message will not collide with the first message of the next period. We have to find the minimum period P such that the last message have totally came back before P slots after the first message.
+      
+      The this policy ensure us a period of $$P = \tau * n + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0}))$$ if routes $\{r_0,...,r_{s_{n-1}}\}$ are ordered
+from the shortest to the longest. 
+ \begin{proof}
+We have to calculate the time taken by the last message to reach $c_t$. $2.\lambda(r_{s_0})$ is the first slot in which the first message is coming back in the backward period,
 and 2$\lambda(r_{s_{n-1}}) + n . \tau $ is the time at which the last message has totally passed the switch.
 Therefore, the period only depends of the difference between the longest and the shortest route: the larger this value is, the larger
 the period is.
-      
-      
+  \end{proof}    
+   
     \subsubsection{Greedy Algorithm}
     
     We introduce a greedy algorithm to build a $(P,\tau)$-periodic affectation, which provably works when
@@ -484,8 +496,8 @@ the period is.
      We consider the forward period and cut it into consecutive macro slots of time of size $\tau$. The algorithm works in the following way: select the first route for which the offset as not been chosen. Try every offset which put the message in a  
      free macro slot in the forward period. It also fixes the position of a message in the backward period, and we choose the first offset which does not create a collision in the backward period. 
      Assume we choose the offset of the route $r_{k+1}$, we have  at least $3n - k$ free macro-slots, since $P \geq 3n\tau$. Each of these $3n - k$ possible offset values translates into $3n - k$ positions of messages in the backward period. All these positions are separated by at least $\tau$ slots. There are already $k$ messages of size $\tau$ in the backward period. One such message can intersect at most $2k$ potential positions, therefore  amongst the possible $3n - k$ positions, there are  $3n - k -2k$ which are without collision. Since $k < n$, one of the choice is without collision, which proves that the algorithm terminates and find a
-     $(P,\tau)$-periodic affectation. To ensure a complexity linear in $n$, it is enough to maintain a list of the free slices in the forward period and a list of the free intervals in the backward period. 
-    \end{proof}
+     $(P,\tau)$-periodic affectation. 
+     \end{proof}
       
       \begin{center}
       \includegraphics[scale=0.3]{ex3nt.png}
@@ -570,6 +582,45 @@ the period is.
      \subsubsection{Intro}
 	Importance des waiting times quand la période est donnée (Résultats D'éxepriences et preuve avec l'exemple)
      \subsubsection{LSG}
+     
+
+To find a solution allowing waiting times, the following heuristic is suggested:
+
+On leaves switch, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route.
+
+On sources switch, the politic is the following one, after setting the clock to 0, do:
+\begin{enumerate}
+ \item To be eligible, a job needs to be able to come back on the switch at the current clock (if clock = 0, take the first message able to come back).
+ \item Between the eligible jobs, schedule first the one which has the longest route gives it the starting time $o_i = clock$.
+ \item Update the clock at the time in which the scheduled task is over: $$clock = clock + message\ length$$.
+\end{enumerate}
+
+This algorithm defines the offsets of the first $P$-periodic affectation by sending the messages from the longest route to the shortest route, then it uses a greedy algorithm to schedule the messages in the second $P$-periodic affectation. We denote this algorithm by LSG (Longest Shortest + Greedy).
+
+\begin{algorithm}[H]
+\caption{LSG}
+\begin{algorithmic}
+\REQUIRE Matched graph $N$, period $P$, packet size T
+\ENSURE 2way Trip affectation in P
+\STATE clock $\leftarrow$ 0
+\FORALL{route i in $\rho$ from the longest to the shortest }
+\STATE  $m_i \leftarrow$ clock
+\STATE clock $\leftarrow$ clock + T
+\ENDFOR
+\STATE clock $\leftarrow$ 0
+\STATE take i such that $r_i$ is the first route to come back in sources switch
+\STATE $o_i \leftarrow $ clock;
+\STATE clock $\leftarrow$ $a_i$ + T
+\WHILE{there is a route which has no $w_i$}
+\STATE take i such that $r_i$ is the eligible route.
+\STATE $o_i \leftarrow $ clock - $a_i$;
+\STATE clock $\leftarrow$ clock + T
+
+\ENDWHILE
+
+\end{algorithmic}
+\end{algorithm}
+
 	\paragraph{Algorithm}
 	\paragraph{Analysis}
 	  Parler de LSO et expliquer pourquoi LSG mieux avec nos params

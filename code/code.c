@@ -291,7 +291,7 @@ void echec(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
 	long long int total_3NT, total_brute, total_sl;
 
 
-	for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=1)
+	for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=100)
 	{
 		
 		total_3NT = 0;
@@ -303,7 +303,7 @@ void echec(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
 			g = init_graphe(nb_routes *2 +1);
 			graphe_etoile(g,taille_routes);
 			if(algo_3NT(g,j,taille_message) != -1) total_3NT++;
-			//if(bruteforceiter(g,j,taille_message) != -1) total_brute++;
+			if(bruteforceiter(g,j,taille_message) != -1) total_brute++;
 			if(algo_shortest_longest(g,j,taille_message)!= -1) total_sl++;
 			libere_matrice(g);
 			fprintf(stdout,"\rStep = %5d/%d [Period : %d]",i+1,nb_simuls,j);fflush(stdout);
@@ -319,7 +319,7 @@ int main()
 {
 	srand(time(NULL));
 	//simuls_periode(15,2500,10000,1000);
-	echec(8,2500,25000,10000);
+	echec(8,2500,25000,1000);
 
 	return 0;
 }

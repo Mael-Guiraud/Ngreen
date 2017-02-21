@@ -118,7 +118,7 @@ void print_sol(int *solution_pos,int *solution_num,int nbr_route,int budget){
 //on pourrait utiliser un entier dont les bits représente les routes restantes et trouver la première route libre avec une instruction processeur spéciale
 
 int bruteforceiter(Graphe g, int periode,int taille_paquets){
-
+  int compteur = 0;
  
   if(!(g.N%2)){printf("G n'est peut être pas une étoile\n");exit(5);}
 
@@ -173,6 +173,16 @@ int bruteforceiter(Graphe g, int periode,int taille_paquets){
 
 
 	while(solution_taille > 0){
+    compteur++;
+    if(compteur==10000000)
+    {
+      free(solution_num);
+    free(solution_pos);
+    free(route_restante);
+    free(temps_retour);
+    return -1;
+
+    }
     if(solution_taille == nbr_route) {
 		//print_sol(solution_pos,solution_num,nbr_route,budget);
 		//printf("PERIODE %d \n",periode);
