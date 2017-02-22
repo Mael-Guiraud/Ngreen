@@ -41,6 +41,8 @@
 \author{DB,CC,MG,OM,YS}
 
 
+
+
 \begin{document}
 
 \maketitle
@@ -49,12 +51,31 @@
 This article treats about Contention Management for 5G.
 \end{abstract}
 
-\section{Introduction}
-  \begin{itemize}
-    \item Context and problematic
-    \item Related works
-    \item Article contribution
-  \end{itemize}
+The evolutions proposed in next generations of mobile network architectures aim at evolving toward centralized radio network architectures (C-RAN, for Cloud Radio Access Network) to reduce consumption costs and power at the base stations \cite{Mo11}. This type of architecture faces the challenge of mastering the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and baseband units (BBUs) in the cloud. Low latency is already critical for the deployment of C-RAN approach. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in less than from 1 to 10ms \cite{BM12}
+(depending on targeted services). One specificity in the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRH and BBU (this HARQ constraints must be enforced for each frame emitted every millisecond).
+
+ Thus in this article, we work on latency and periodicity constraints in fronthaul.  The best current solution is to rely on an almost full optical approach, where each end-points (RRH on one side, BBU on the other side) are connected through direct fiber or full optical switches \cite{GPA16}. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations.  It is then needed to find a solution to offer low latency over commoditized packet based networks. Indeed,  dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as it is considered in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific network architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to $1\mu $s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler.\\
+
+ Thus, new scheduling and routing paradigms and new technologies have to be considered to  guarantee  delay constrained periodic data transfers. One of the most promising approaches relies on the concept of Deterministic Networking (DN) such that one get rid of
+ statistical multiplexing. The traditional queue managements are replaced by time based forwarding. Solutions for Deterministic
+ Networking are under standardization in IEEE 802.1 TSN group \cite{FT16}, as well at IETF DetNet working group \cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example \cite{Ho05,LM16}. To make DN working over a
+ network composed of several nodes, it is required to manage the time at which the packets of deterministic paths are crossing each nodes. The major difficulty of this problem is the periodicity of the process. Indeed, a deterministic sending for the messages
+between each pair BBU/RRH must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous
+and following periods.\\
+
+Considering a graph, modeling the network topology, and a set of routes from source nodes (modeling connections to the BBU) and destination
+nodes (modeling the RRH) in this graph, the purpose is to select, for each destination node a route from one source node to it and a periodic
+routing scheme allowing to periodically sent a packet to each base station without congestion conflicts between all such packets and to insure a minimum latency. In a slotted time model, the aim is here to minimize the duration of the period, with a constraint of the maximum length of routes to be
+selected. Even if the selected set of routes is given this optimization problem has been shown to be  \NP-hard. From an algorithmic point of view,
+the purpose of this project is first, to study the complexity and the approximability of this problem when the length of the routes is small
+(which corresponds to realistic cases), and secondly, to propose and implement some heuristics to solve this problem on realistic topologies.\\
+
+
+This problem may look like wormhole problem \cite{cole1996benefit}, very popular few years ago, but here, we want to minimize the time lost in buffers and not just avoid the deadlock, and the wormhole does not treat about the periodicity. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies \cite{BM98}, bandwidths \cite{EJ01}[17] or routes \cite{CS96}[18] in a network or train schedules \cite{St07}[19]. Unfortunately, they do not take into account the periodicity and the associated problems are also NP-complete. The only model which incorporates some periodicity is the circular coloring \cite{Zho13, Zhu01,Zhu06}but is not expressive enough to capture our problem.
+
+\subsection*{Paper organisation}
+ In the next section, ...
+
 
   
 
@@ -450,7 +471,7 @@ minimal period can be large.
   
   In this subsection, we deal with a simpler version of the problem PALL.
   We ask for a $(P,\tau)$-periodic affectation with all waiting times equal to $0$. 
-  In that case $T_{max}$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
+  In that case $MT({\cal M})$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
   $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i)$.
   Moreover, in this context the weight of the arcs from $s_i$ to $c_s$ have no impact, therefore we assume they are 
   equal to $0$. \\
@@ -461,7 +482,7 @@ minimal period can be large.
   
     \subsubsection{Shortest-longest policy}
     
-    \paragraph{Algo}
+    \paragraph{Algorithm}
     We present a simple policy, which works when the period is large with regards to the delay of the routes.
     Send the messages in order from the shortest route to the longest route, on after each others in the forward period, without any slots between two messages, that is $m_{s_i} = \tau.i$, if the routes $r_i$ are ordered by $\lambda(r_i)$ from the shortest to the longest one. 
       
@@ -579,42 +600,43 @@ the period is.
       Resultats des simulations : Shortest-longest optimal pour ces parametres.
       
    \subsection{Allowing waiting times}
+   
      \subsubsection{Intro}
-	Importance des waiting times quand la période est donnée (Résultats D'éxepriences et preuve avec l'exemple)
+	  We now consider waiting times. The weights on links from sources to $c_s$ are now relevant because the goal is to minimize $MT({\cal M})$, with ${\cal M}$ the $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$.
+	  To build such a $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$, we must choose the offsets $m_{s_i}$ and $m_{\cal C(s_i)}$, such that there is no $PT(s)$ superior than a given $T_{max}$.
+	  As a reminder, $ PT(s)=\lambda(r_s)+ w_s+\lambda(r_{{\cal C}(s)})$.
      \subsubsection{LSG}
      
 
-To find a solution allowing waiting times, the following heuristic is suggested:
+To find a solution with waiting times, the following heuristic is suggested:
 
-On leaves switch, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route.
+On the forward period, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
 
-On sources switch, the politic is the following one, after setting the clock to 0, do:
+On $c_t$, the politic is the following one, after setting the clock to 0, do:
 \begin{enumerate}
  \item To be eligible, a job needs to be able to come back on the switch at the current clock (if clock = 0, take the first message able to come back).
- \item Between the eligible jobs, schedule first the one which has the longest route gives it the starting time $o_i = clock$.
+ \item Between the eligible jobs, schedule first the one which has the longest route gives it the offset time $m_{\cal C(s_i)} = clock$.
  \item Update the clock at the time in which the scheduled task is over: $$clock = clock + message\ length$$.
 \end{enumerate}
-
-This algorithm defines the offsets of the first $P$-periodic affectation by sending the messages from the longest route to the shortest route, then it uses a greedy algorithm to schedule the messages in the second $P$-periodic affectation. We denote this algorithm by LSG (Longest Shortest + Greedy).
 
 \begin{algorithm}[H]
 \caption{LSG}
 \begin{algorithmic}
-\REQUIRE Matched graph $N$, period $P$, packet size T
-\ENSURE 2way Trip affectation in P
+\REQUIRE routage graph ${\cal R_{\cal C}}$, period $P$, packet size $\tau$
+\ENSURE $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$
 \STATE clock $\leftarrow$ 0
-\FORALL{route i in $\rho$ from the longest to the shortest }
-\STATE  $m_i \leftarrow$ clock
-\STATE clock $\leftarrow$ clock + T
+\FORALL{route i in $r_{s_i}$ from the longest to the shortest }
+\STATE  $m_{s_i} \leftarrow$ clock
+\STATE clock $\leftarrow$ clock + $\tau$
 \ENDFOR
 \STATE clock $\leftarrow$ 0
-\STATE take i such that $r_i$ is the first route to come back in sources switch
-\STATE $o_i \leftarrow $ clock;
-\STATE clock $\leftarrow$ $a_i$ + T
-\WHILE{there is a route which has no $w_i$}
-\STATE take i such that $r_i$ is the eligible route.
-\STATE $o_i \leftarrow $ clock - $a_i$;
-\STATE clock $\leftarrow$ clock + T
+\STATE take i such that $r_{\cal C(s_i)}$ is the first route to come back in sources switch
+\STATE $m_{\cal C(s_i)} \leftarrow $ clock;
+\STATE clock $\leftarrow$ $t(c_t,r_{\cal C(s_i)})$ + $\tau$
+\WHILE{there is a route which has not been scheduled}
+\STATE take i such that $r_{\cal C(s_i)}$ is the eligible route.
+\STATE $m_{\cal C(s_i)} \leftarrow $ clock - $t(c_t,r_{\cal C(s_i)})$;
+\STATE clock $\leftarrow$ clock + $\tau$
 
 \ENDWHILE
 
@@ -623,7 +645,20 @@ This algorithm defines the offsets of the first $P$-periodic affectation by send
 
 	\paragraph{Algorithm}
 	\paragraph{Analysis}
-	  Parler de LSO et expliquer pourquoi LSG mieux avec nos params
+	
+One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $2 .\tau$, where n is the number of couples $(s,{\cal C}(s))$. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0 \forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
+
+Another case of this topology is the case in which all the weight on the arcs between $c_s$ and the sources are the same.
+In this case, the algorithm gives optimal solutions too:\\
+
+We consider only the delay between $c_t$ and the targets, that are $\lambda(r_{s})$. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
+The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
+
+The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is so $PT(s_0) = 2.\lambda(r_{s_0}) + \tau$.
+The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1})) +\tau = 2.\lambda(r_{s_0}) + \tau = PT(s_0)$.
+By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
+Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes will take exactly the same time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) + \tau$, which is not alterable
+
      \subsubsection{Results}
 	 \paragraph{Random}
 	 \paragraph{Distributions}
@@ -648,6 +683,31 @@ Open questions. Can we improve the results if:
 
 \bibliographystyle{plain}
 \bibliography{Sources.bib}
+\begin{thebibliography}{abcde}
+ 
+\bibitem{BM12} Y. Bouguen, E. Hardouin, A. Maloberti, and F.-X. Wolff, LTE et les r ́eseaux 4G. Editions Eyrolles, 2012.
+
+\bibitem{Mo11} C. Mobile, “C-ran: the road towards green ran,” White Paper, ver, vol. 2, 2011.
+
+ \bibitem{CS96}R. J. Cole, B. M. Maggs, and R. K. Sitaraman, “On the benefit of sup- porting virtual channels in wormhole routers,” in Proceedings of the eighth annual ACM symposium on Parallel algorithms and architectures, pp. 131– 141, ACM, 1996.
+
+\bibitem{GPA16} G. P. A. W. Group, “View on 5g architecture,” White Paper, ver, vol. 1.0, 2016.
+
+\bibitem{BM98} R. Borndorfer, A. Eisenblatter, M. Grotschel, and A. Martin, “Frequency assignment in cellular phone networks,” Annals of Operations Research, vol. 76, pp. 73–93, 1998.
+\bibitem{EJ01} T. Erlebach and K. Jansen, “The complexity of path coloring and call scheduling,” Theoretical Computer Science, vol. 255, no. 1, pp. 33–50, 2001.
+\bibitem{CS96} R. J. Cole, B. M. Maggs, and R. K. Sitaraman, “On the benefit of sup- porting virtual channels in wormhole routers,” in Proceedings of the eighth annual ACM symposium on Parallel algorithms and architectures, pp. 131– 141, ACM, 1996.
+\bibitem{St07} C. Strotmann, Railway scheduling problems and their decomposition. PhD thesis, PhD thesis, Universit ̈at Osnabru ̈ck, 2007.
+\bibitem{Zhu06} X. Zhu, “Recent developments in circular colouring of graphs,” in Topics in discrete mathematics, pp. 497–550, Springer, 2006.
+\bibitem{Zho13} B. Zhou, “Multiple circular colouring as a model for scheduling,” 2013.
+\bibitem{ZHu01} X. Zhu, “Circular chromatic number: a survey,” Discrete mathematics, vol. 229, no. 1, pp. 371–410, 2001.
+\bibitem{FT16} N. Finn and P. Thubert, “Deterministic Networking Architecture,” Internet-Draft draft-finn-detnet-architecture-08, Internet Engineering Task Force, Sept. 2016. Work in Progress.
+\bibitem{iee802} “Time-sensitive networking task group.” http://www.ieee802.org/1/ pages/tsn.html. Accessed: 2016-09-22.
+\bibitem{Ho05}W. Howe, “Time-scheduled and time-reservation packet switching,” Mar. 17 2005. US Patent App. 10/947,487.
+\bibitem{LM16}B. Leclerc and O. Marce, “Transmission of coherent data flow within packet-switched network,” June 15 2016. EP Patent App. EP20,140,307,006.
+
+
+\end{thebibliography}
+
 
 
 \end{document}
