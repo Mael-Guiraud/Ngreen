@@ -35,7 +35,7 @@ int ajoute_element(intervalle_liste *liste, int debut, int taille, int taille_pa
   int pos=0;
   while(pos != -1){//détecte l'intervalle à découper si il existe
     if(liste[pos].debut <= debut && liste[pos].fin - debut >=  taille_paquets){//l'intervalle existe, on le découpe
-      //on calcule le nombre de slot après décooupage (en prenant en compte les paquets déjà placés)
+      //on calcule le nombre de slot après découpage (en prenant en compte les paquets déjà placés)
       *nombre_slot+= (debut - liste[pos].debut)/taille_paquets +  (liste[pos].fin - debut)/taille_paquets -  (liste[pos].fin - liste[pos].debut)/taille_paquets;
       if(*nombre_slot >= nbr_route){ // si le nombre de slots retour est insuffisant, on ne permet pas l'ajout de l'élément à cet endroit     
       liste[taille].debut = debut + taille_paquets;
@@ -135,7 +135,7 @@ int bruteforceiter(Graphe g, int periode,int taille_paquets){
   assert(solution_pos = malloc(sizeof(int)*nbr_route));
   assert(solution_num = malloc(sizeof(int)*nbr_route));
   assert(temps_retour = malloc(sizeof(int)*nbr_route));
- assert(route_restante = malloc(sizeof(int)*nbr_route));
+  assert(route_restante = malloc(sizeof(int)*nbr_route));
    //affiche les données sur lesquelles on lance le bruteforce
 
   temps_retour[0] = temps_retour_param[0];
@@ -172,18 +172,10 @@ int bruteforceiter(Graphe g, int periode,int taille_paquets){
   /////////////////// Début de l'arbre de recherche ////////////////////////////
 
 
-	while(solution_taille > 0){
+	while(solution_taille > 0 && compteur < 10000000){
     compteur++;
-    if(compteur==10000000)
-    {
-      free(solution_num);
-    free(solution_pos);
-    free(route_restante);
-    free(temps_retour);
-    return -1;
-
-    }
-    if(solution_taille == nbr_route) {
+    
+    if(solution_taille == nbr_route) { //mettre ça à l'extérieur de la boucle pour simplifier
 		//print_sol(solution_pos,solution_num,nbr_route,budget);
 		//printf("PERIODE %d \n",periode);
 
