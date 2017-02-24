@@ -1,5 +1,11 @@
 \begin{thebibliography}{1}
 
+\bibitem{cole1996benefit}
+Richard~J Cole, Bruce~M Maggs, and Ramesh~K Sitaraman.
+\newblock On the benefit of supporting virtual channels in wormhole routers.
+\newblock In {\em Proceedings of the eighth annual ACM symposium on Parallel
+  algorithms and architectures}, pages 131--141. ACM, 1996.
+
 \bibitem{holyer1981np}
 Ian Holyer.
 \newblock The np-completeness of edge-coloring.
