@@ -1,0 +1,19 @@
+################# Commandes d'affichage Gnuplot ###############
+
+
+splot   'results_taille_route_echec.data'  using 1:2:3 title "Shortest Longest"
+
+
+######### Pour une sortie dans un fichier .ps ##################"
+
+set dgrid3d 30,30
+set hidden3d
+set zlabel "reussite"
+set ylabel "taille route"
+set xlabel "periode"
+set term postscript color solid
+set output "echec3d.ps"
+set key left top
+replot
+
+

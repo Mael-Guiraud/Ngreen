@@ -1,6 +1,7 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{xspace}
+\usepackage{url}
 \usepackage{graphicx,graphics} 
 \usepackage{color}
 \usepackage{amsmath}
@@ -46,32 +47,26 @@
 \begin{document}
 
 \maketitle
-
 \begin{abstract}
 This article treats about Contention Management for 5G.
 \end{abstract}
-
-The evolutions proposed in next generations of mobile network architectures aim at evolving toward centralized radio network architectures (C-RAN, for Cloud Radio Access Network) to reduce consumption costs and power at the base stations \cite{Mo11}. This type of architecture faces the challenge of mastering the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and baseband units (BBUs) in the cloud. Low latency is already critical for the deployment of C-RAN approach. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in less than from 1 to 10ms \cite{BM12}
-(depending on targeted services). One specificity in the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRH and BBU (this HARQ constraints must be enforced for each frame emitted every millisecond).
-
- Thus in this article, we work on latency and periodicity constraints in fronthaul.  The best current solution is to rely on an almost full optical approach, where each end-points (RRH on one side, BBU on the other side) are connected through direct fiber or full optical switches \cite{GPA16}. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations.  It is then needed to find a solution to offer low latency over commoditized packet based networks. Indeed,  dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as it is considered in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific network architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to $1\mu $s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler.\\
-
+The evolutions proposed in next generations of mobile network architectures aim at evolving toward centralized radio network architectures (C-RAN, for Cloud Radio Access Network) to reduce consumption costs and power at the base stations \cite{mobile2011c}. This type of architecture faces the challenge of mastering the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and baseband units (BBUs) in the cloud. Low latency is already critical for the deployment of C-RAN approach. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in less than from 1 to 10ms \cite{bouguen2012lte}
+(depending on targeted services). One specificity in the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRH and BBU (this HARQ constraints must be enforced for each frame emitted every millisecond).\\
+ Thus in this article, we work on latency and periodicity constraints in fronthaul.  The best current solution is to rely on an almost full optical approach, where each end-points (RRH on one side, BBU on the other side) are connected through direct fiber or full optical switches \cite{5gppparchitecture}. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations.  It is then needed to find a solution to offer low latency over commoditized packet based networks. Indeed,  dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as it is considered in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific network architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to $1\mu $s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler.\\
  Thus, new scheduling and routing paradigms and new technologies have to be considered to  guarantee  delay constrained periodic data transfers. One of the most promising approaches relies on the concept of Deterministic Networking (DN) such that one get rid of
  statistical multiplexing. The traditional queue managements are replaced by time based forwarding. Solutions for Deterministic
- Networking are under standardization in IEEE 802.1 TSN group \cite{FT16}, as well at IETF DetNet working group \cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example \cite{Ho05,LM16}. To make DN working over a
+ Networking are under standardization in IEEE 802.1 TSN group \cite{finn-detnet-architecture-08}, as well at IETF DetNet working group \cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example \cite{howe2005time,leclerc2016transmission}. To make DN working over a
  network composed of several nodes, it is required to manage the time at which the packets of deterministic paths are crossing each nodes. The major difficulty of this problem is the periodicity of the process. Indeed, a deterministic sending for the messages
 between each pair BBU/RRH must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous
 and following periods.\\
 
-Considering a graph, modeling the network topology, and a set of routes from source nodes (modeling connections to the BBU) and destination
-nodes (modeling the RRH) in this graph, the purpose is to select, for each destination node a route from one source node to it and a periodic
-routing scheme allowing to periodically sent a packet to each base station without congestion conflicts between all such packets and to insure a minimum latency. In a slotted time model, the aim is here to minimize the duration of the period, with a constraint of the maximum length of routes to be
+Considering a graph, modeling the network topology, and a set of routes from source nodes (modeling connections to the BBU) and destination nodes (modeling the RRH) in this graph, the purpose is to select, for each destination node a route from one source node to it and a periodic routing scheme allowing to periodically sent a packet to each base station without congestion conflicts between all such packets and to insure a minimum latency. In a slotted time model, the aim is here to minimize the duration of the period, with a constraint of the maximum length of routes to be
 selected. Even if the selected set of routes is given this optimization problem has been shown to be  \NP-hard. From an algorithmic point of view,
 the purpose of this project is first, to study the complexity and the approximability of this problem when the length of the routes is small
 (which corresponds to realistic cases), and secondly, to propose and implement some heuristics to solve this problem on realistic topologies.\\
 
 
-This problem may look like wormhole problem \cite{cole1996benefit}, very popular few years ago, but here, we want to minimize the time lost in buffers and not just avoid the deadlock, and the wormhole does not treat about the periodicity. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies \cite{BM98}, bandwidths \cite{EJ01}[17] or routes \cite{CS96}[18] in a network or train schedules \cite{St07}[19]. Unfortunately, they do not take into account the periodicity and the associated problems are also NP-complete. The only model which incorporates some periodicity is the circular coloring \cite{Zho13, Zhu01,Zhu06}but is not expressive enough to capture our problem.
+This problem may look like wormhole problem \cite{cole1996benefit}, very popular few years ago, but here, we want to minimize the time lost in buffers and not just avoid the deadlock, and the wormhole does not treat about the periodicity. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies \cite{borndorfer1998frequency}, bandwidths \cite{erlebach2001complexity}[17] or routes \cite{cole1996benefit}[18] in a network or train schedules \cite{strotmann2007railway}[19]. Unfortunately, they do not take into account the periodicity and the associated problems are also NP-complete. The only model which incorporates some periodicity is the circular coloring \cite{zhou2013multiple, zhu2001circular,zhu2006recent}but is not expressive enough to capture our problem.
 
 \subsection*{Paper organisation}
  In the next section, ...
@@ -102,28 +97,28 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
       \todo{Si on s'en sert, ajouter ici que le routage est cohérent.}
 
    \subsection{Slotted time Model}
-      Consider now a positive integer $P$ called the {\bf period}. In our problem, we send in the network
-      messages with period $P$. The time will thus be cut into slices of $P$ discrete slots. Assume we send a message at the source of the route $r$, at the time slot $m$ in the first period, then a message will be sent at time slot $m$ at each new period. We define the first time slot at which the message reaches a vertex $v$ in this route by $t(v,r) = m + \lambda(v,r) \mod P$. 
+      Consider now a positive integer $P$ called the {\bf period}. In our problem, we send messages in the network with period $P$. The time will thus be cut into slices of $P$ discrete slots. Assume we send a message at the source $s_i$ of the route $r_{s_i}$, at the time slot $m_{s_i}$ in the first period, then a message will be sent at time slot $m_{s_i}$ at each new period. We define the first time slot at which the message reaches a vertex $v$ in this route by $t(v,r_{s_i}) = m_{s_i} + \lambda(v,r) \mod P$. 
 
       A message usually cannot be transported in a single time slot. We denote by $\tau$ the number 
-      of consecutive slots necessary to transmit a message. Let us call $[t(v,r)]_{P,\tau}$ the set of time slots used by $r$ at a vertex $v$ in a period $P$, that is $[t(v,r)]_{P,\tau} = \{t(v,r) + i \mod P \mid 0 \leq i < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r)]_{P,\tau}$ by $[t(v,r)]$.
+      of consecutive slots necessary to transmit a message. Let us call $[t(v,r_{s_i})]_{P,\tau}$ the set of time slots used by $r_{s_i}$ at a vertex $v$ in a period $P$, that is $[t(v,r_{s_i})]_{P,\tau} = \{t(v,r_{s_i}) + k \mod P \mid 0 \leq k < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r_{s_i})]_{P,\tau}$ by $[t(v,r_{s_i})]$.
       
       
-      A {\bf $(P,\tau)$-periodic affectation} of a routage graph $\cal R_{\cal C}$ is a sequence  ${\cal M}=(m_0, \ldots ,m_{c-1})$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R_{\cal C}$. The number $m_i$ represents the index of the first slot used in a period  by the route $r_i \in \cal R_{\cal C}$ at its source.
-      A $(P,\tau)$-periodic affectation must have no {\bf collision} between two routes in $\cal R_{\cal C}$, that is $\forall (r_i, r_j) \in {\cal R_{\cal C}}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
-      we have $$[t(u,r_i)] \cap [t(u,r_j)] = \emptyset .$$
+      A {\bf $(P,\tau)$-periodic affectation} of a routage graph $\cal R_{\cal C}$ is a sequence  ${\cal M}=(m_{s_0}, \ldots ,m_{s_{n-1}})$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R_{\cal C}$. The number $m_{s_i}$ represents the index of the first slot used in a period  by the route $r_{s_i} \in \cal R_{\cal C}$ at its source $s_i$.
+      A $(P,\tau)$-periodic affectation must have no {\bf collision} between two routes in $\cal R_{\cal C}$, that is $\forall (r_{s_i}, r_{s_j}) \in {\cal R_{\cal C}}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
+      we have $$[t(u,r_{s_i})] \cap [t(u,r_{s_j})] = \emptyset .$$
       
 
 %       Notice that the notion of $P$-periodic affectation \textbf{is not monotone} with regard to $P$. 
-      As an example of a $(2,1)$-periodic affectation, let consider a routage graph with routes $\{r_i\}_{i=1,\dots,n}$, such that all pairs of routes intersect at a different edge.
-      We set $\tau = 1$ and the delays are chosen so that if $r_i$ and $r_j$ have $v$ as first common vertex then we have $\lambda(v,r_i) - \lambda(v,r_j)=1$.There is a $(2,1)$-periodic affectation by setting all $m_i$ to $0$.
+      As an example of a $(2,1)$-periodic affectation, let consider a routage graph with routes $\{r_{s_i}\}_{i=0,\dots,n-1}$, such that all pairs of routes intersect at a different edge.
+      We set $\tau = 1$ and the delays are chosen so that if $r_{s_i}$ and $r_{s_j}$ have $v$ as first common vertex then we have $\lambda(v,r_{s_i}) - \lambda(v,r_{s_j})=1$.There is a $(2,1)$-periodic affectation by setting all $m_{s_i}$ to $0$.
 
 %       A {\bf conflict graph} represents the collision between the routes of $ {\cal R}_{\cal C}$. The vertices of a conflict graph $G = (V,E)$ are the routes of $ {\cal R}_{\cal C}$, and there is an edge between two vertices if and only if there is a common arc between the two routes in $ {\cal R}_{\cal C}$.
 %       
 %       Given $u$ and $v$ two vertices of the conflict graph, corresponding to two routes colliding in $ {\cal R}_{\cal C}$. The weight of an edge, $w(u,v)$, is the absolute value of the difference between the distance of the two routes between their respective source node and the collision point.
 %       
 %       A labeling $F$ of such a graph is an affectation of an integer to each vertex, such that for each vertex $u$, $f(u) \neq f(v)+w(u,v)\mod P$, where $v$ are the neighbors of $u$ in the conflict graph and $P$ our period.
-      \begin{figure}[h]
+  
+      \begin{figure}[ht]
        \begin{center}
       
 \begin{tikzpicture}
@@ -134,13 +129,13 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
                        font = \bfseries },
   EdgeStyle/.append style = {->} }
   \SetGraphUnit{5}
-  \node[draw,circle] (s3) at (4, 2) {$s_3$}; 
-  \node[draw,circle] (s2) at (0, 4) {$s_2$}; 
-  \node[draw,circle] (s1) at (0, 6) {$s_1$}; 
+  \node[draw,circle] (s3) at (4, 2) {$s_2$}; 
+  \node[draw,circle] (s2) at (0, 4) {$s_1$}; 
+  \node[draw,circle] (s1) at (0, 6) {$s_0$}; 
 
-  \node[draw,circle] (t3) at (14, 7) {$t_3$}; 
-  \node[draw,circle] (t2) at (14, 4) {$t_2$}; 
-  \node[draw,circle] (t1) at (10, 2) {$t_1$}; 
+  \node[draw,circle] (t3) at (14, 7) {$t_2$}; 
+  \node[draw,circle] (t2) at (14, 4) {$t_1$}; 
+  \node[draw,circle] (t1) at (10, 2) {$t_0$}; 
 
   
   \SetVertexNoLabel
@@ -178,7 +173,6 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
       \end{center}
        \caption{A routage graph with $(0,\dots,0)$ as a $(2,1)$-periodic affectation}
       \end{figure}
-
 
 
 
@@ -229,7 +223,7 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
       In the context of cloud-RAN applications, we consider here the digraph $G=(V,A)$ modeling the target network 
       and two disjoint subsets of vertices $S$ and $T$ of equal cardinality, where $S$ is the set of RRHs and $T$ is the set of BBUs. 
       A \textbf{symmetric} assignment ${\cal C}$, is an involutive function from $S$ to $T$, which maps each element $s\in S$ to ${\cal C}(s)$ and ${\cal C}(s)$ to $s$. It can also be seen as the set of pairs $(s,{\cal C}(s))$ and $({\cal C}(s),s)$.\\
-      The Routing function ${\cal R}$ associates to each couple $(s,{\cal C}(s))$ a route called $r_s$ and to each couples $({\cal C}(s),s)$ a route called $r_{{\cal C}(s)}$.\\     
+      The routing function ${\cal R}$ associates to each couple $(s,{\cal C}(s))$ a route called $r_s$ and to each couples $({\cal C}(s),s)$ a route called $r_{{\cal C}(s)}$.\\     
        We are given a period $P$, a routing function ${\cal R}$, and we consider a $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$ which associates $m_s$ to the route $r_s$ which begins by $s$, and $m_{{\cal C}(s)}$ to the routes $r_{{\cal C}(s)}$ which begins by ${\cal C}(s)$.  This affectation represents the following process: first a message is sent at $s$, through the route $r_s$, at time $m_s$.
       
 %       
@@ -257,6 +251,8 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
       $$
       PT(s)=\lambda(r_s)+ w_s+\lambda(r_{{\cal C}(s)}).
       $$
+      
+      The message size $\tau$ in this process time, if we want to consider the time between the emission of the first slot and the reception of the last slot of the message. Since $\tau$ is the same for every routes, it does not change the calculations.
       
     The {\bf maximum process time} of the $(P,\tau)$-periodic affectation ${\cal M} $ is defined by $MT({\cal M})=\max\limits_{s \in S} PT(s)$. The problem we want to solve is the following. 
 
@@ -298,16 +294,15 @@ Problem PRA is $\NP$-complete, when the routing is of conflict depth two.
  
   Let $H=(V,E)$ be a graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is edge-colorable
   with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. 
-  For each $v$ in $V$, the graph $G$ has two vertices $v_1, v_2$, and for each $(u,v) \in E$,the graph g has two vertices $s_{u,v}, t_{u,v}$.
+  For each $v$ in $V$, the graph $G$ has two vertices $v_1, v_2$, and for each $(u,v) \in E$,the graph G has two vertices $s_{u,v}, t_{u,v}$. Set an arbitrary orientation of the edge $(u,v)$, such that the following route is directed from $u$ to $v$.
   
 %   The set $A$ of arcs of $G$ is: 
 %   $$ \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(s_{u,v},u_1),(v_2,t_{u,v}) \mid (u,v) \in E \}. $$
   For each edge $(u,v) \in E$, there is a route $s_{u,v},u_1,u_2,v_1,v_2,t_{u,v}$ in ${\cal R}$.  
+  All these arcs are of weight $0$. 
   The set of arcs of G is the union between all the arcs of the previous routes.
   The affectation ${\cal C}$ is the set of pair of vertices $(s_{u,v}, t_{u,v})$.
-  
-  All these arcs are of weight $0$. 
-  
+   
     
   Observe that the existence of a $d$-coloring of $H$ is equivalent to the existence of a $(d,1)$-periodic affectation
   of ${\cal R}_{\cal C}$. Indeed, a $d$-coloring of $H$ can be seen as a labeling of its edges by the integers
@@ -326,7 +321,7 @@ Problem PALL is $\NP$-complete for routing of conflict depth two.
 \begin{proof}
  We consider $({\cal R}_{\cal C},P,\tau)$ an instance of $PRA$. We assume that no vertex appears both in the first and second position in a pair of ${\cal C}$. Remark that this condition is satisfied in the previous proof, which makes the problem $PRA$ restricted to this kind of instances $\NP$-complete. 
  Let us define $T_{max} = 2 \times \max_{r \in {\cal R}} \lambda(r) + P$. We consider ${\cal C}'$ and ${\cal R}'_{\cal C'}$ symmetrized versions of ${\cal C}$ and  ${\cal R}_{\cal C}$ where for every route there is a symmetric route with new arcs and the same weights.
- The instance $({\cal R'}_{\cal C'},P,\tau,T_{max})$ is in PALL if and only if $({\cal R}_{\cal C},P,\tau)$
+ The instance $({\cal R'}_{\cal C'},P,\tau,T_{max})$ is in PALL if and only if $({\cal R}_{\cal C},P,\tau)	$
  is in $PRA$. Indeed the waiting time of each route is by definition less than $P$ and thus the maximal process time is always less than $T_{max}$. Moreover a $(P,\tau)$-affectation of ${\cal R}_{\cal C}$ can be extended into a $(P,\tau)$-affectation of ${\cal R'}_{\cal C'}$ in the following way. For each route $r_{u,v}$, the time at which the message arrives is $t(v,r_{u,v})$, then we choose as offset for $r_{v,u}$, $-t(v,r_{u,v}) \mod P$. The symmetry ensures that each new route $r_{v,u}$ in ${\cal R'}_{\cal C'}$ uses the same times slot as $r_{u,v}$ and thus avoid collisions.
 \end{proof}
 
@@ -359,13 +354,17 @@ minimal period can be large.
 			  font = \bfseries },
       EdgeStyle/.append style = {->} }
       \SetGraphUnit{5}
-      \Vertex[x=4,y=2]{s3}
-      \Vertex[x=0,y=4]{s2}
-      \Vertex[x=0,y=6]{s1}
       
-      \Vertex[x=12,y=3]{t3}
-      \Vertex[x=14,y=4]{t2}
-      \Vertex[x=10,y=2]{t1}
+      
+      \node[draw,circle] (s3) at (4, 2) {$s_2$}; 
+      \node[draw,circle] (s2) at (0, 4) {$s_1$}; 
+      \node[draw,circle] (s1) at (0, 6) {$s_0$}; 
+
+      \node[draw,circle] (t3) at (12, 3) {$t_2$}; 
+      \node[draw,circle] (t2) at (14, 4) {$t_1$}; 
+      \node[draw,circle] (t1) at (10, 2) {$t_0$}; 
+      
+
       \tikzstyle{VertexStyle}=[shape = circle, draw, minimum size = 20pt]
 	\tikzset{
       VertexStyle/.append style = {blue} }
@@ -440,22 +439,57 @@ minimal period can be large.
       First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
       Moreover, there is a special arc, the central arc, which is shared by all routes.
       All routes consist from an arc from its source to the central source node, denoted by {\bf $c_s$},
-      then the central arc to {\bf $c_t$}, the central target node, and an arc to its target. In addition to those central nodes, there are two sets of vertices, $S$ and $T$, of cardinality $n$ and ${\cal C}$ a symmetric assignment from $S$ to $T$. 
+      then the central arc to {\bf $c_t$}, the central target node, and an arc to its target. In addition to those central nodes, there are two sets of vertices, $S={s_0,...,s_{n-1}}$ and $T={t_0,...,t_{n-1}}$, of cardinality $n$ and ${\cal C}$ a symmetric assignment from $S$ to $T$. 
       The routes are the directed paths of the form $s_i,c_s,c_t,t_i$ and $t_i,c_t,c_s,s_i$. 
       
       
        \begin{center}
-	  \includegraphics[scale=0.8]{Fig4.pdf}
-	\end{center}
+	 
+\begin{tikzpicture}
+
+\tikzset{
+  LabelStyle/.style = { rectangle, rounded corners, draw,
+                       font = \bfseries },
+  EdgeStyle/.append style = {->} }
+
+  \SetGraphUnit{5}
+  
+  \node[draw,circle] (s3) at (0, 0) {$s_2$}; 
+  \node[draw,circle] (s2) at (0, 2) {$s_1$}; 
+  \node[draw,circle] (s1) at (0, 4) {$s_0$}; 
+
+  \node[draw,circle] (t3) at (8, 0) {$t_2$}; 
+  \node[draw,circle] (t2) at (8, 2) {$t_1$}; 
+  \node[draw,circle] (t1) at (8, 4) {$t_0$}; 
+  
+
+  \node[draw,circle] (cs) at (2, 2) {$c_s$}; 
+  \node[draw,circle] (ct) at (6, 2) {$c_t$}; 
+
+  
+  \Edge(s1)(cs)
+  \Edge(s2)(cs)
+  \Edge(s3)(cs)
+  
+  \Edge(ct)(t1)
+  \Edge(ct)(t2)
+  \Edge(ct)(t3)
+  
+  \Edge(cs)(ct)
+
+  
+\end{tikzpicture}
+
+  \end{center}
 	
       We assume the weight of the central arc to be $0$ since it appears in every route,
       its value does not matter when considering affectations. Collisions between messages can 
       only appear at node $c_s$ on the way forward and at node $c_t$ on the way back. \\
-      In such a topology, there is only two possible collision points between the routes : $c_s$ and $c_t$. To avoid collisions, we only have to check if there is no collisions in a period on those two points.
-      Let us take a period P for each central nodes, that are called the {\bf forward period} and the {\bf backward period} for, respectively $c_s$ and $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1})$ in the forward period, and  $c_t$ at time $m_{{\cal C}(s_1)} + t(c_t,r_{{\cal C}(s_1)})$ in the backward period.
+      In such a topology, there is only two possible collision points between the routes: $c_s$ and $c_t$. We only have to check if there is no collisions in a period at those two points.
+      We consider two periods P at these vertices, the the {\bf forward period} at $c_s$, and the {\bf backward period} at $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1})$ in the forward period, and  $c_t$ at time $m_{t_1} + t(c_t,r_{t_1})$ in the backward period.
       A $(P,\tau)$-periodic affectation consist in choosing $\forall i \in n, m_i$, and $m_{{\cal C}(s_i)}$ such that, for any couples of routes $(r_{s_j}, r_{s_k}), j,k \in n$,
       we have $[t(c_s,r_j)] \cap [t(c_s,r_k)] = \emptyset$.
-      and for any couples of routes $(r_{{\cal C}(s_j)}, r_{{\cal C}(s_k)}), j,k \in n$, we have $[t(c_s,r_{{\cal C}(s_j)})] \cap [t(c_s,r_{{\cal C}(s_k)})] = \emptyset$
+      and for any couples of routes $(r_{t_j}, r_{t_k}), j,k \in n$, we have $[t(c_t,r_{t_j})] \cap [t(c_t,r_{t_k})] = \emptyset$
 %       
 %   \todo{Définir la forward period et la backward period et dire à quoi correspond une affectation en terme de forward et backward period (placement de messages dans la première période}     
 %       Therefore, 
@@ -471,38 +505,38 @@ minimal period can be large.
   
   In this subsection, we deal with a simpler version of the problem PALL.
   We ask for a $(P,\tau)$-periodic affectation with all waiting times equal to $0$. 
-  In that case $MT({\cal M})$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
+  In that case $MT({\cal M})$ is equal to twice the delay of the longer route, thus, $T_{max}$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
   $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i)$.
   Moreover, in this context the weight of the arcs from $s_i$ to $c_s$ have no impact, therefore we assume they are 
   equal to $0$. \\
   For those reasons, in this case, we only have to consider the forward and backward periods. Indeed, setting the offset $m_{s_i}$ in the forward period automatically set the offsets $m_{{\cal C}(s_i)}$ in the backward period.
-  The goal is now to put messages in the forward periods such that there is no collisions in the both periods.\\
-  In this section, the offsets $m_{s_i}$ are in reality $[t(c_s,r_{s_i})]$, but to find the real values, there is just to change the values of the offset considering the delay of the arcs $(s_i, c_s) , \forall i$.
-  
+  The goal is now to put messages in the forward period such that there is no collision in both periods.\\
+  Here, weight of arcs $(s_i,c_s)$ can be ignored, thus, the offsets $m_{s_i}$ are calculated like if all these weight are equal to 0. To find the real values, it is easy to delay the real sending in sources by the weight of the corresponding arc.
+    
   
     \subsubsection{Shortest-longest policy}
     
     \paragraph{Algorithm}
     We present a simple policy, which works when the period is large with regards to the delay of the routes.
-    Send the messages in order from the shortest route to the longest route, on after each others in the forward period, without any slots between two messages, that is $m_{s_i} = \tau.i$, if the routes $r_i$ are ordered by $\lambda(r_i)$ from the shortest to the longest one. 
+    Send the messages in order from the shortest route to the longest route, on after each others in the forward period, without any slots between two messages, that is $m_{s_i} = \tau.i$, if the routes $r_i, i \in {0,...,n-1}$ are ordered by $\lambda(r_i)$ from the shortest to the longest one. 
       
       
 The message using the shortest route is sent before the others, so it comes back to the central node before the following ones.
 Then, the second message is sent before the others, and also will be back before the third etc... 
-Because the second message is sent $\tau$ slots after the first message ($m_{s_2} = m_{s_1} + \tau$, it comes back after
-the end of the message one: $m_{s_1}+ \tau + 2.\lambda(r_{s_1}) \le m_{s_2} + 2.\lambda(r_{s_2})$ because of $\lambda(r_{s_2}) \ge \lambda(r_{s_1})$.
+Because the message $i$ is sent $\tau$ slots after the message $i-1$ ($m_{s_i} = m_{s_{i-1}} + \tau$), it comes back after the end of the message $i-1$: $m_{s_{i-1}}+ \tau + 2.\lambda(r_{s_{i-1}}) \le m_{s_i} + 2.\lambda(r_{s_i})$ because of $\lambda(r_{s_i}) \ge \lambda(r_{s_{i-1}})$.
 
       \paragraph{Period}
-      To ensure that there is no collisions in the backward period, we must ensure that the last message will not collide with the first message of the next period. We have to find the minimum period P such that the last message have totally came back before P slots after the first message.
+      Because of $m_{s_i} = \tau.i$ in the forward period, there is no collisions.
+      To ensure that there is no collisions in the backward period, we must ensure that the last message ends before the end of the period P. We have to find the minimum period P such that the last message have totally came back before P slots after the first message.
       
       The this policy ensure us a period of $$P = \tau * n + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0}))$$ if routes $\{r_0,...,r_{s_{n-1}}\}$ are ordered
 from the shortest to the longest. 
- \begin{proof}
+
 We have to calculate the time taken by the last message to reach $c_t$. $2.\lambda(r_{s_0})$ is the first slot in which the first message is coming back in the backward period,
 and 2$\lambda(r_{s_{n-1}}) + n . \tau $ is the time at which the last message has totally passed the switch.
 Therefore, the period only depends of the difference between the longest and the shortest route: the larger this value is, the larger
 the period is.
-  \end{proof}    
+   
    
     \subsubsection{Greedy Algorithm}
     
@@ -514,33 +548,30 @@ the period is.
     There is an algorithm, which finds a $(P,\tau)$-periodic affectation in time $O(n^2)$ when $P \geq 3n\tau$.
     \end{proposition}
     \begin{proof}
-     We consider the forward period and cut it into consecutive macro slots of time of size $\tau$. The algorithm works in the following way: select the first route for which the offset as not been chosen. Try every offset which put the message in a  
-     free macro slot in the forward period. It also fixes the position of a message in the backward period, and we choose the first offset which does not create a collision in the backward period. 
+     We consider the forward period and cut it into consecutive macro slots of time of size $\tau$. The algorithm works in the following way: select the first route $k+1$ for which the offset as not been chosen. Try every of the $3N-k$ offsets which put the message in one free macro slot in the forward period. It also fixes the position of a message in the backward period, and we choose the first offset which does not create a collision in the backward period. 
      Assume we choose the offset of the route $r_{k+1}$, we have  at least $3n - k$ free macro-slots, since $P \geq 3n\tau$. Each of these $3n - k$ possible offset values translates into $3n - k$ positions of messages in the backward period. All these positions are separated by at least $\tau$ slots. There are already $k$ messages of size $\tau$ in the backward period. One such message can intersect at most $2k$ potential positions, therefore  amongst the possible $3n - k$ positions, there are  $3n - k -2k$ which are without collision. Since $k < n$, one of the choice is without collision, which proves that the algorithm terminates and find a
      $(P,\tau)$-periodic affectation. 
      \end{proof}
-      
+     This algorithm works in a complexity $n^2$, since we have to try every free macro-slots for every routes.
       \begin{center}
       \includegraphics[scale=0.3]{ex3nt.png}
       \end{center}
-
     \todo{Avec une structure de données plus maligne on doit pouvoir faire n, non ?}
-   
 	\begin{algorithm}[H]
 	\caption{Greedy affectation}
 	\begin{algorithmic}
 	\REQUIRE ${\cal R}_{\cal C}$, period $P$
 	\ENSURE A P-periodic affectation in p $\leq P$, or FAILURE
-	\STATE $P1[P]$ slots of size $\tau$ in forward period.
-	\STATE $P2[P]$ slots  of size $\tau$ in backward period.
-	\FORALL{source i in S }
+	\STATE $P1[P/\tau]$ slots of size $\tau$ in forward period.
+	\STATE $P2[P]$ slots backward period.
+	\FORALL{source $s_i$ in S }
 
-	\FORALL{slot j in P1}
+	\FORALL{macro slot j in P1}
 
-	\IF{$P1[j]$ is free AND $P2[j+\lambda(r_i)]$ is free}
+	\IF{$P1[j]$ is free AND the corresponding area in P2 is free}
 
 	
-	\STATE $m_{s_i} \leftarrow j$
+	\STATE $m_{s_i} \leftarrow j.\tau$
 	\ENDIF
 
 
@@ -681,33 +712,7 @@ Open questions. Can we improve the results if:
 \end{itemize}
 
 
-\bibliographystyle{plain}
+\bibliographystyle{ieeetr}
 \bibliography{Sources.bib}
-\begin{thebibliography}{abcde}
- 
-\bibitem{BM12} Y. Bouguen, E. Hardouin, A. Maloberti, and F.-X. Wolff, LTE et les r ́eseaux 4G. Editions Eyrolles, 2012.
-
-\bibitem{Mo11} C. Mobile, “C-ran: the road towards green ran,” White Paper, ver, vol. 2, 2011.
-
- \bibitem{CS96}R. J. Cole, B. M. Maggs, and R. K. Sitaraman, “On the benefit of sup- porting virtual channels in wormhole routers,” in Proceedings of the eighth annual ACM symposium on Parallel algorithms and architectures, pp. 131– 141, ACM, 1996.
-
-\bibitem{GPA16} G. P. A. W. Group, “View on 5g architecture,” White Paper, ver, vol. 1.0, 2016.
-
-\bibitem{BM98} R. Borndorfer, A. Eisenblatter, M. Grotschel, and A. Martin, “Frequency assignment in cellular phone networks,” Annals of Operations Research, vol. 76, pp. 73–93, 1998.
-\bibitem{EJ01} T. Erlebach and K. Jansen, “The complexity of path coloring and call scheduling,” Theoretical Computer Science, vol. 255, no. 1, pp. 33–50, 2001.
-\bibitem{CS96} R. J. Cole, B. M. Maggs, and R. K. Sitaraman, “On the benefit of sup- porting virtual channels in wormhole routers,” in Proceedings of the eighth annual ACM symposium on Parallel algorithms and architectures, pp. 131– 141, ACM, 1996.
-\bibitem{St07} C. Strotmann, Railway scheduling problems and their decomposition. PhD thesis, PhD thesis, Universit ̈at Osnabru ̈ck, 2007.
-\bibitem{Zhu06} X. Zhu, “Recent developments in circular colouring of graphs,” in Topics in discrete mathematics, pp. 497–550, Springer, 2006.
-\bibitem{Zho13} B. Zhou, “Multiple circular colouring as a model for scheduling,” 2013.
-\bibitem{ZHu01} X. Zhu, “Circular chromatic number: a survey,” Discrete mathematics, vol. 229, no. 1, pp. 371–410, 2001.
-\bibitem{FT16} N. Finn and P. Thubert, “Deterministic Networking Architecture,” Internet-Draft draft-finn-detnet-architecture-08, Internet Engineering Task Force, Sept. 2016. Work in Progress.
-\bibitem{iee802} “Time-sensitive networking task group.” http://www.ieee802.org/1/ pages/tsn.html. Accessed: 2016-09-22.
-\bibitem{Ho05}W. Howe, “Time-scheduled and time-reservation packet switching,” Mar. 17 2005. US Patent App. 10/947,487.
-\bibitem{LM16}B. Leclerc and O. Marce, “Transmission of coherent data flow within packet-switched network,” June 15 2016. EP Patent App. EP20,140,307,006.
-
-
-\end{thebibliography}
-
-
 
 \end{document}

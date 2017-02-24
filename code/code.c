@@ -315,11 +315,40 @@ void echec(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
 	}
 	fclose(F);
 }
+
+void echec_taille_route(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
+{
+	FILE * F = fopen("results_taille_route_echec.data","w");
+	Graphe g;
+	long long int total;
+
+	for(int k = 1000;k<taille_routes;k+=1000)
+	{
+		for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=100)
+		{
+			total = 0;
+
+			for(int i = 0;i<nb_simuls;i++)
+			{
+				g = init_graphe(nb_routes *2 +1);
+				graphe_etoile(g,k);
+				if(algo_shortest_longest(g,j,taille_message)!= -1) total++;
+				libere_matrice(g);
+				fprintf(stdout,"\rStep = %5d/%d [Period : %d| Routes : %d]",i+1,nb_simuls,j,k);fflush(stdout);
+			}
+
+		
+			fprintf(F, "%d %d %lld \n",j,k,total);
+
+		}
+	}
+	fclose(F);
+}
 int main()
 {
 	srand(time(NULL));
 	//simuls_periode(15,2500,10000,1000);
-	echec(8,2500,25000,1000);
+	echec_taille_route(8,2500,25000,1000);
 
 	return 0;
 }
