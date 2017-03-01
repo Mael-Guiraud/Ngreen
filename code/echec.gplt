@@ -4,6 +4,7 @@
 plot   'results_echec.data'  using 1:2 title "Shortest Longest"
 replot   'results_echec.data'  using 1:3 title "3LT"
 replot   'results_echec.data'  using 1:4 title "bruteforce"
+replot   'results_echec.data'  using 1:5 title "theorique"
 
 ######### Pour une sortie dans un fichier .ps ##################"
 

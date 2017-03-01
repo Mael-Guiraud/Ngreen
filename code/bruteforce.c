@@ -174,13 +174,13 @@ int bruteforceiter(Graphe g, int periode,int taille_paquets){
 
 	while(solution_taille > 0){
     compteur++;
-    if(compteur==10000000)
+    if(compteur==100000000)
     {
       free(solution_num);
     free(solution_pos);
     free(route_restante);
     free(temps_retour);
-    return -1;
+    return -2;
 
     }
     if(solution_taille == nbr_route) {

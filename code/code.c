@@ -85,7 +85,7 @@ void affiche_periode(int *p, int periode)
 	{
 		if(p[i]!=actuel)
 		{
-			if(actuel)printf("-%d[ ",i);
+			if(actuel)printf("-%d] ",i-1);
 			else	  printf("[%d",i);
 			actuel = 1-actuel;
 		}
@@ -185,7 +185,8 @@ int algo_3NT(Graphe g,int periode,int taille_message)
 int linear_3NT(Graphe g,int taille_message)
 {
 	int result;
-	for(int i =0;i<taille_message*(g.N/2)*3;i++)
+	int nb_routes = g.N/2;
+	for(int i =nb_routes*taille_message;i<taille_message*(nb_routes)*3;i+=2500)
 	{
 		result = algo_3NT(g,i,taille_message);
 		if(result != -1)
@@ -217,13 +218,13 @@ int algo_prime(Graphe g,int periode,int taille_message)
 	for(int i=0;i<nb_routes;i++)
 	{
 		//On recherche le depart le plus petit
-		for(int j=0;j<=periode-taille_message;j++)
+		for(int j=0;j<periode;j++)
 		{
-			if(!aller[j] && !aller[(j+taille_message)%periode] && !retour[(j*taille_message+routes[i])%periode] && !retour[(j*taille_message+routes[i]+taille_message-1)%periode])
+			if(!aller[j] && !aller[(j+taille_message)%periode] && !retour[(j+routes[i])%periode] && !retour[(j+routes[i]+taille_message-1)%periode])
 			{
 
-				ecrire_message_periode(aller,periode,j,(j+taille_message)%periode);
-				ecrire_message_periode(retour,periode,(j*taille_message+routes[i])%periode,(j*taille_message+routes[i]+taille_message-1)%periode);
+				ecrire_message_periode(aller,periode,j,(j+taille_message-1)%periode);
+				ecrire_message_periode(retour,periode,(j+routes[i])%periode,(j+routes[i]+taille_message-1)%periode);
 				assigned = 1;
 				break;
 			}
@@ -232,13 +233,17 @@ int algo_prime(Graphe g,int periode,int taille_message)
 			return -1;
 		assigned = 0;
 	}
+	affiche_periode(aller,periode);
+	affiche_periode(retour,periode);
+	printf("%d \n",periode);
 	return periode;
 }
 
 int linear_prime(Graphe g,int taille_message)
 {
 	int result;
-	for(int i =0;i<taille_message*(g.N/2)*3;i++)
+	int nb_routes = g.N/2;
+	for(int i =nb_routes*taille_message;i<taille_message*(nb_routes)*3;i++)
 	{
 		result = algo_prime(g,i,taille_message);
 		if(result != -1)
@@ -253,8 +258,8 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 {
 	FILE * F = fopen("results_periode.data","w");
 	Graphe g;
-	long long int total_3NT, total_prime;
-
+	long long int total_3NT, total_prime,total_sl;
+	int res_sl,res_prime,res_3NT;
 
 	for(int j = 1 ; j<=nb_routes;j++)
 	{
@@ -262,23 +267,31 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 		
 		total_3NT = 0;
 		total_prime = 0;
+		total_sl =0;
 
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(j*2 + 1);
-			graphe_etoile(g,j*taille_message);
-			total_3NT += linear_3NT(g,taille_message);
-			total_prime += linear_prime(g,taille_message);
+			graphe_etoile(g,taille_routes);
+			res_3NT = linear_3NT(g,taille_message);
+			if(res_3NT != -1)total_3NT+=res_3NT;
+			else printf("error (3nt = -1)\n");
+
+			res_prime = linear_prime(g,taille_message);
+			if(res_prime != -1)total_prime+=res_prime;
+			else printf("error (prime = -1)\n");
+
+			res_sl = algo_shortest_longest(g,3*taille_message*nb_routes,taille_message);
+			if(res_sl != -1)total_sl+=res_sl;
+			else printf("error (Sl = -1)\n");
+
+			if(res_sl < res_prime)affiche_matrice(g);
 			fprintf(stdout,"\rStep%5d /%d",i+1,nb_simuls);fflush(stdout);
 			libere_matrice(g);
 		}
 		printf("\n");
-		printf("P moyen (sur %d simulations) 3NT  : %lld\n",nb_simuls,total_3NT/nb_simuls);
-		printf("P moyen (sur %d simulations) Prime: %lld\n",nb_simuls,total_prime/nb_simuls);
-
-
 		
-		fprintf(F, "%d %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_prime/nb_simuls,j*taille_message,2*j*taille_message);
+		fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_prime/nb_simuls,total_sl/nb_simuls,j*taille_message,2*j*taille_message);
 		printf("\n");
 	}
 	fclose(F);
@@ -288,67 +301,80 @@ void echec(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
 {
 	FILE * F = fopen("results_echec.data","w");
 	Graphe g;
-	long long int total_3NT, total_brute, total_sl;
+	long long int total_3NT, total_brute, total_sl,total_theorique;
+	int res_brute;
 
-
-	for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=100)
+	for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=1000)
 	{
 		
 		total_3NT = 0;
 		total_brute = 0;
 		total_sl = 0;
+		total_theorique = 0;
 
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(nb_routes *2 +1);
 			graphe_etoile(g,taille_routes);
 			if(algo_3NT(g,j,taille_message) != -1) total_3NT++;
-			if(bruteforceiter(g,j,taille_message) != -1) total_brute++;
+			res_brute = bruteforceiter(g,j,taille_message);
+			if(res_brute == -2) total_theorique++;
+			else
+				if(res_brute != -1 ){ total_brute++;total_theorique++;}
 			if(algo_shortest_longest(g,j,taille_message)!= -1) total_sl++;
 			libere_matrice(g);
 			fprintf(stdout,"\rStep = %5d/%d [Period : %d]",i+1,nb_simuls,j);fflush(stdout);
 		}
 
 	
-		fprintf(F, "%d %lld %lld %lld \n",j,total_sl,total_3NT,total_brute);
+		fprintf(F, "%d %lld %lld %lld %lld\n",j,total_sl,total_3NT,total_brute,total_theorique);
 
 	}
 	fclose(F);
+	printf("\n");
 }
 
 void echec_taille_route(int nb_routes, int taille_message,int taille_routes, int nb_simuls)
 {
 	FILE * F = fopen("results_taille_route_echec.data","w");
 	Graphe g;
-	long long int total;
+	long long int total_sl,total_3nt;
 
 	for(int k = 1000;k<taille_routes;k+=1000)
 	{
-		for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=100)
+		for(int j = taille_message*nb_routes ; j<=3*taille_message*nb_routes;j+=1000)
 		{
-			total = 0;
+			total_sl = 0;
+			total_3nt = 0;
 
 			for(int i = 0;i<nb_simuls;i++)
 			{
 				g = init_graphe(nb_routes *2 +1);
 				graphe_etoile(g,k);
-				if(algo_shortest_longest(g,j,taille_message)!= -1) total++;
+				if(algo_shortest_longest(g,j,taille_message)!= -1) total_sl++;
+				if(algo_3NT(g,j,taille_message)!= -1) total_3nt++;
 				libere_matrice(g);
 				fprintf(stdout,"\rStep = %5d/%d [Period : %d| Routes : %d]",i+1,nb_simuls,j,k);fflush(stdout);
 			}
 
 		
-			fprintf(F, "%d %d %lld \n",j,k,total);
+			fprintf(F, "%d %d %d \n",j,k,(total_3nt>total_sl));
+			//printf("%d %d %d \n",j,k,(total_3nt>total_sl));
 
 		}
+		fprintf(F, "\n");
 	}
 	fclose(F);
+	printf("\n");
 }
+
+
 int main()
 {
 	srand(time(NULL));
-	//simuls_periode(15,2500,10000,1000);
-	echec_taille_route(8,2500,25000,1000);
+	simuls_periode(8,2500,700,100);
+	//echec(8,2500,25000,1000);
+	//echec_taille_route(8,2500,25000,1000);
 
 	return 0;
 }
