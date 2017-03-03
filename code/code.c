@@ -372,8 +372,8 @@ void echec_taille_route(int nb_routes, int taille_message,int taille_routes, int
 int main()
 {
 	srand(time(NULL));
-	simuls_periode(8,2500,700,100);
-	//echec(8,2500,25000,1000);
+	//simuls_periode(8,2500,700,100);
+	echec(8,2500,700,10000);
 	//echec_taille_route(8,2500,25000,1000);
 
 	return 0;
