@@ -1,9 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "struct.h"
+typedef struct element{
+	int index;
+	int release;
+	int deadline;
+	struct element * next;
+} Element;
+
+typedef struct ensemble{
+	int numero_element; // vaut -1 si c'est un ensemble
+	int temps_depart;
+	struct ensemble * filsG;
+	struct ensemble * frereG;
+	struct ensemble * frereD;
+} Ensemble;
 
 
+Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element * touselems, int taille_paquet);
 Ensemble * init_ensemble(){return NULL;}
 Element * init_element(){return NULL;}
+
+//Retourne l'indice du min d'un tableau d'int
+int lower(int * tab,int taille)
+{
+	int i;
+	int min = tab[0];
+	int indice_min = 0;
+	for(i=1;i<taille;i++)
+	{
+		if(tab[i] < min)
+		{
+			min = tab[i];
+			indice_min = i;
+		}
+		
+	}
+	return indice_min;
+}
+int max(int a, int b)
+{
+	if(a>b)
+		return a;
+	return b;
+}
+int min(int a,int b)
+{
+	if(a<b)
+		return a;
+	return b;
+}
+//Retourne le max tableau d'int
+int greater(int * tab,int taille)
+{
+	int i;
+	int max = tab[0];
+	int indice_max = 0;
+	for(i=1;i<taille;i++)
+	{
+		if(tab[i] > max)
+		{
+			max = tab[i];
+			indice_max = i;
+		}
+		
+	}
+	return indice_max;
+}
+
 
 void affiche_ensemble_unique(Ensemble * ens)
 {
@@ -171,7 +235,7 @@ Element * cpy_elems(Element * elems)
 	}
 	return new;
 }
-int date_fin(Ensemble * ens)
+int date_fin(Ensemble * ens,int taille_paquet)
 {
 	while(ens->frereD)
 	{
@@ -180,7 +244,7 @@ int date_fin(Ensemble * ens)
 	//affiche_ensemble_unique(ens);
 	if(ens->numero_element == -1)
 	{
-		return date_fin(ens->filsG);
+		return date_fin(ens->filsG,taille_paquet);
 	}
 	else
 	{
@@ -249,7 +313,7 @@ Ensemble * cpyens(Ensemble * ens)
 		cpy->frereD->frereG = cpy;
 	return cpy;
 }
-Ensemble * invade(Ensemble * ens,Element * touselems,int depart)
+Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paquet)
 {
 
 	Ensemble * ens2 = NULL;
@@ -346,7 +410,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart)
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
 					elems = ajoute_elemt(elems,99999,99999,999999);
-				ens3 = crisis(ens3,crisisrec,elems,touselems);
+				ens3 = crisis(ens3,crisisrec,elems,touselems,taille_paquet);
 				//printf("-------------\n\n\n");
 				//affichejobs(elems);
 				//affiche_ensemble(ens2);		printf("\n");
@@ -360,7 +424,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart)
 				while(ens3->frereD)
 					ens3 = ens3->frereD;
 				//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
-				date = date_fin(ens3);
+				date = date_fin(ens3,taille_paquet);
 				
 				
 				//rajouter un element pour rescheduler PULL(X) apres la crisis dans l'invasion
@@ -402,7 +466,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart)
 						if(date+taille_paquet>=ens2->frereD->temps_depart)//ET que ca INVADE
 						{
 							//printf("%d INVADE date %d\n",elemtmp->index,date);
-							ens2->frereD->filsG = invade(ens2->frereD->filsG,touselems,date+taille_paquet);
+							ens2->frereD->filsG = invade(ens2->frereD->filsG,touselems,date+taille_paquet,taille_paquet);
 							ens2->frereD->temps_depart = ens->frereD->filsG->temps_depart;
 							
 						}
@@ -429,7 +493,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart)
 				ens3 = ens3->frereD;
 			}
 			//affiche_ensemble(ens2);
-			date = date_fin(ens3);//printf("fin = %d \n",date);
+			date = date_fin(ens3,taille_paquet);//printf("fin = %d \n",date);
 
 		}
 		tmp = ens2;
@@ -446,7 +510,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart)
 	return ens3;
 		
 }
-Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element * touselems)
+Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element * touselems, int taille_paquet)
 {
 	printf("------------------ENTREE DANS LA FONCTION CRISIS-----------------------------\n");
 	if(ens == NULL)
@@ -583,7 +647,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
 					elems = ajoute_elemt(elems,99999,99999,999999);
-				ens3 = crisis(ens3,crisisrec,elems,touselems);
+				ens3 = crisis(ens3,crisisrec,elems,touselems,taille_paquet);
 				if(ens3 == NULL)
 				{
 					//printf(" NO PULL(%d) FOUND\n",elemtmp->index);
@@ -592,7 +656,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				while(ens3->frereD)
 					ens3 = ens3->frereD;
 				//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
-				date = date_fin(ens3);
+				date = date_fin(ens3,taille_paquet);
 				
 			}
 			
@@ -619,7 +683,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 						{
 							//printf("%d INVADE date %d\n",elemtmp->index,date);
 							
-							ens2->frereD->filsG = invade(ens2->frereD->filsG,touselems,date);
+							ens2->frereD->filsG = invade(ens2->frereD->filsG,touselems,date,taille_paquet);
 							
 							ens2->frereD->temps_depart = ens2->frereD->filsG->temps_depart;
 							
@@ -649,7 +713,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				ens3 = ens3->frereD;
 			}
 			//affiche_ensemble(ens2);
-			date = date_fin(ens3);//printf("fin = %d \n",date);
+			date = date_fin(ens3,taille_paquet);//printf("fin = %d \n",date);
 
 		}
 		
@@ -681,72 +745,76 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 }
 
 //Algo naif
-TwoWayTrip simons(Graphe g)
+int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 {
 	
 	
-	TwoWayTrip t ;
-	t.taille=g.sources;
-	//offsets
-	t.M = malloc(sizeof(int)*g.sources);
-	t.W = malloc(sizeof(int)*g.sources);
-	int  Dl[g.sources];
-	int  lambdaV[g.sources]; 
-	//booleans 1= route affecté 0=route non traitée
-	int a_affecter=g.sources;
+	 if (!(g.N % 2))
+    {
+      printf ("G n'est peut être pas une étoile\n");
+      exit (5);
+    }
+
+	  int nbr_route = g.N / 2;
+	  int Dl[nbr_route];
+	  int lambdaV[nbr_route];
+	  int m_i[nbr_route];
+	  int w_i[nbr_route];
 	int i;
+	  for (i = 0; i < nbr_route; i++)
+	    {
+	      Dl[i] = g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1];
+	      lambdaV[i] = g.matrice[nbr_route][i];
+	    }
+
+	int a_affecter=nbr_route;
+
 	int offset = 0;
 	
-	//init
-	for(i=0;i<g.sources;i++)
-	{
-		Dl[i] = distance(g.routes[i],g.routes[i].route_lenght);
-		lambdaV[i] = distance(g.routes[i],1);
-	}
 	
 	//tant qu'on n'a pas affecté toutes les routes
 	while(a_affecter != 0)
 	{
-		i=greater(Dl,g.sources);
+		i=greater(Dl,nbr_route);
 		//Si on est le premier
 		if(offset==0)
 		{
-			t.M[i] = 0;
+			m_i[i] = 0;
 			offset=taille_paquet+lambdaV[i];
 		}
 		else
 		{
-			t.M[i] = offset-lambdaV[i];
+			m_i[i] = offset-lambdaV[i];
 			offset += taille_paquet;
 		}
 		a_affecter--;
 		Dl[i]=0;
 	}
-	
-	//init second offset : waiting times
-	Graphe gr = renverse(g);
-	//release times
-	int arrivee[gr.sources];
-	offset = 0;
-	for(i=0;i<gr.sources;i++)
-	{
-		Dl[i] = distance(gr.routes[i],gr.routes[i].route_lenght);
 
-		arrivee[i] = Dl[i]+t.M[i]+distance(gr.routes[i],1);
+	
+
+	//release times
+	int arrivee[nbr_route];
+	offset = 0;
+	for(i=0;i<nbr_route;i++)
+	{
+		Dl[i] = g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1];
+
+		arrivee[i] = Dl[i]+m_i[i]+g.matrice[nbr_route][i+nbr_route+1];
 	}
 			
-		i=lower(arrivee,gr.sources);
+		i=lower(arrivee,nbr_route);
 		
 	int	date=arrivee[i];
-	int deadline_fenetre = date + 19500;
+	int deadline_fenetre = date + Periode;
 	int j;
 	//affichetab(arrivee,g.sources);
 	//afficheTwoWayTrip(t);
 	Element * elems = init_element();
 	int deadline_route;
-	for(j=0;j<g.sources;j++)
+	for(j=0;j<nbr_route;j++)
 	{
-		deadline_route = 7800+t.M[j]-distance(g.routes[j],2);
+		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][i];
 		elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_fenetre,deadline_route));
 
 	}
@@ -754,7 +822,7 @@ TwoWayTrip simons(Graphe g)
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
 	
-	int a_scheduler = g.sources;
+	int a_scheduler = nbr_route;
 	Ensemble * ens = NULL;
 	Ensemble * ensembletmp;
 	while(a_scheduler != 0)//tant qu'on n'a pas schedul tous les elements
@@ -765,16 +833,14 @@ TwoWayTrip simons(Graphe g)
 		if(i==-1)
 		{
 			printf("Failure 1\n");
-			t.window_size = -1;
-			return t;
+			return -1;
 		}
 		tmp = get_element_i(elems2,i);
 		
 		if(tmp == NULL)
 		{
 			printf("Failure 0\n");
-			t.window_size = -1;
-			return t;
+			return -1;
 		}
 		
 		date = max(date,tmp->release);
@@ -788,22 +854,21 @@ TwoWayTrip simons(Graphe g)
 			if(!elems2)
 					elems2 = ajoute_elemt(elems2,99999,99999,999999);
 			//affiche_ensemble(ens);printf(" Avant\n");
-			ens = crisis(ens,crisise,elems2,elems);
+			ens = crisis(ens,crisise,elems2,elems,taille_paquet);
 			
 			//affiche_ensemble(ens);printf(" Apres\n");
 			if(ens == NULL)
 			{
 				//affichejobs(elems2);
 				//printf(" NO PULL(%d) FOUND\n",crisise->index);
-				t.window_size = -1;
-				return t;
+				return -1;
 			}
 			//on se remet a droite de l'ensemble
 			ensembletmp = ens;
 			while(ensembletmp->frereD)
 				ensembletmp = ensembletmp->frereD;
 			//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
-			date = date_fin(ens);
+			date = date_fin(ens, taille_paquet);
 			
 			//printf("APRESCRISIS\n");
 			//printf("Date %d : ",date);
@@ -843,7 +908,7 @@ TwoWayTrip simons(Graphe g)
 	//ecriture des temps trouvés
 	while(ens)
 	{
-		t.W[ens->numero_element] = ens->temps_depart-arrivee[ens->numero_element];
+		w_i[ens->numero_element] = ens->temps_depart-arrivee[ens->numero_element];
 		ens=ens->frereD;
 	}
 	
@@ -851,6 +916,13 @@ TwoWayTrip simons(Graphe g)
 	libereens(ens);
 	freeelems(elems);
 	freeelems(elems2);
+
+	int max = w_i[0]+2*Dl[0];
+	for(int i=0;i<nbr_route;i++)
+	{
+		if(w_i[i]+2*Dl[i] > max)
+			max= w_i[i]+2*Dl[i];
+	}
 	
-	return t;
+	return max;
 }
