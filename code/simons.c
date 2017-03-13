@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "struct.h"
+
 typedef struct element{
 	int index;
 	int release;
@@ -319,7 +321,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 	Ensemble * ens2 = NULL;
 	Ensemble * tmp = NULL;
 	
-	//printf("ENTREE DANS LA FONCTION INVADE date %d-------------------------------\n",depart);
+	printf("ENTREE DANS LA FONCTION INVADE date %d-------------------------------\n",depart);
 	//affiche_ensemble(ens);printf("\n");
 	//on se place a droite de l'ensemble qui a crisis
 	while(ens->frereD)
@@ -646,7 +648,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				Element * crisisrec = ajoute_elemt(NULL,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
-					elems = ajoute_elemt(elems,99999,99999,999999);
+					elems = ajoute_elemt(elems,INT_MAX,INT_MAX,INT_MAX);
 				ens3 = crisis(ens3,crisisrec,elems,touselems,taille_paquet);
 				if(ens3 == NULL)
 				{
@@ -802,9 +804,11 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 
 		arrivee[i] = Dl[i]+m_i[i]+g.matrice[nbr_route][i+nbr_route+1];
 	}
-			
-		i=lower(arrivee,nbr_route);
-		
+	
+
+	i=lower(arrivee,nbr_route);
+	
+
 	int	date=arrivee[i];
 	int deadline_fenetre = date + Periode;
 	int j;
@@ -812,12 +816,18 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	//afficheTwoWayTrip(t);
 	Element * elems = init_element();
 	int deadline_route;
+	printf(" Deadline Routes = ");
 	for(j=0;j<nbr_route;j++)
 	{
-		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][i];
+		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
 		elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_fenetre,deadline_route));
+		printf(" %d ",deadline_route);
 
 	}
+	printf("\nDeadline Fenetre = %d \n",deadline_fenetre);
+	
+	
+	//affichejobs(elems);
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
@@ -908,15 +918,16 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	//ecriture des temps trouvés
 	while(ens)
 	{
-		w_i[ens->numero_element] = ens->temps_depart-arrivee[ens->numero_element];
+		w_i[ens->numero_element] = ens->temps_depart-m_i[ens->numero_element]-routes[ens->numero_element];
 		ens=ens->frereD;
 	}
-	
 	
 	libereens(ens);
 	freeelems(elems);
 	freeelems(elems2);
 
+	affiche_tab(m_i,nbr_route);
+	affiche_tab(w_i,nbr_route);
 	int max = w_i[0]+2*Dl[0];
 	for(int i=0;i<nbr_route;i++)
 	{

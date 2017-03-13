@@ -471,7 +471,6 @@ int first_back(int * tab, int taille)
 	}
 	return indice_min;
 }
-
 int longest_etoile(Graphe g,int taille_paquets, int Tmax)
 {
 	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
@@ -559,6 +558,112 @@ int longest_etoile(Graphe g,int taille_paquets, int Tmax)
 		noeud_retour[eligible]=-1;
 
 	}
+
+	affiche_tab(m_i,nb_routes);
+	affiche_tab(w_i,nb_routes);
+	int max = w_i[0]+2*routes[0];
+	for(int i=0;i<nb_routes;i++)
+	{
+		if(w_i[i]+2*routes[i] > Tmax)
+			return -1;
+		if(w_i[i]+2*routes[i] > max)
+			max= w_i[i]+2*routes[i];
+	}
+	
+	return max;
+}
+
+int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
+{
+	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
+	int nb_routes = g.N/2;
+	int offset;
+	int nb_assigned;
+	int m_i[nb_routes];
+	int w_i[nb_routes];
+
+	int ordre[nb_routes];
+	int routes[nb_routes];
+
+	int noeud_retour[nb_routes];
+	int temps_restant[nb_routes];
+
+	//Initialisation des tableaux
+	for(int i=0;i<nb_routes;i++){m_i[i]=0;w_i[i]=0;ordre[i]=i;noeud_retour[i]=0;}
+
+	//Calcul de la taille des routes
+	for(int i=0;i<nb_routes;i++)
+	{
+		routes[i]=g.matrice[nb_routes][i]+g.matrice[nb_routes][i+nb_routes+1];
+	}
+	//Tri du tableau ordre
+	tri_bulles(routes,ordre,nb_routes);
+
+	//On envoie les messages de longest a shortest
+	m_i[ordre[0]]=0;
+	offset = taille_paquets+g.matrice[nb_routes][ordre[0]];
+	for(int i=1;i<nb_routes;i++)
+	{
+		m_i[ordre[i]]=offset-g.matrice[nb_routes][ordre[i]];
+		offset+=taille_paquets;
+	}
+
+	//Calcul de la position potentielle dans ct
+	for(int i=0;i<nb_routes;i++){
+		noeud_retour[i]=m_i[i]+routes[i]+g.matrice[nb_routes][i+nb_routes+1];
+		ordre[i]=i;
+	}
+
+
+
+	//Le premier a arriver passe direct
+	int eligible = first_back(noeud_retour,nb_routes);
+	w_i[eligible]=0;
+	offset = taille_paquets+noeud_retour[eligible];
+	noeud_retour[eligible] = -1;
+	nb_assigned = 1;
+	
+	while(nb_assigned<nb_routes)
+	{
+		for(int i=0;i<nb_routes;i++){temps_restant[i] = Tmax-routes[i]-offset;}
+		eligible = -1;
+		for(int i=0;i<nb_routes;i++)
+		{
+			if((noeud_retour[i]!=-1)&&(noeud_retour[i]<=offset ))
+			{
+				
+				if(eligible == -1)
+					eligible = i;
+				else
+				{
+					if(temps_restant[i]>temps_restant[eligible])
+						eligible = i;
+				}
+			}
+			
+		}
+
+		if(eligible == -1)
+		{
+			eligible = first_back(noeud_retour,nb_routes);
+		
+			w_i[eligible]=0;
+			offset+=taille_paquets;
+		}
+		else
+		{
+		
+			w_i[eligible]=(offset-g.matrice[nb_routes][eligible+nb_routes+1])-(m_i[eligible]+routes[eligible] );			
+			offset=taille_paquets+noeud_retour[eligible];
+		}
+	
+		nb_assigned++;
+		noeud_retour[eligible]=-1;
+
+	}
+
+	affiche_tab(m_i,nb_routes);
+	affiche_tab(w_i,nb_routes);
 	int max = w_i[0]+2*routes[0];
 	for(int i=0;i<nb_routes;i++)
 	{
@@ -578,10 +683,11 @@ int main()
 	//	echec(8,2500,700,10000);
 	//echec_taille_route(8,2500,25000,1000);
 	Graphe g = init_graphe(15);
-	graphe_etoile(g,700);
-
-	printf("%d\n",longest_etoile(g,2500,4000));
-	printf("%d\n",simons(g, 2500, 40000,20000));
+	graphe_etoile(g,7000);
+	affiche_matrice(g);
+	printf("%d\n",longest_etoile(g,2500,40000));
+	printf("%d\n",longest_etoile_2(g,2500,40000));
+	printf("%d\n",simons(g, 2500, 40000,200000));
 
 	return 0;
 }
