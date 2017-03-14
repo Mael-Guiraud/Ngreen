@@ -261,7 +261,7 @@ int eligible(Element * elems, int time)
 	if(elems == NULL)
 		return -1;
 	//printf("pointeur envoyé = %p\n",elems);
-	int deadline_min=9999;
+	int deadline_min=INT_MAX;
 	int elu = -1;
 	while(elems)
 	{
@@ -352,6 +352,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 			//printf("Ajout de %d dans elems \n",elemtmp->index);
 			//affichejobs(elems);
 		}
+
 		else //si c'est un ensemble
 		{
 			if(ens2== NULL)
@@ -816,15 +817,15 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	//afficheTwoWayTrip(t);
 	Element * elems = init_element();
 	int deadline_route;
-	printf(" Deadline Routes = ");
+
 	for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
-		elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_fenetre,deadline_route));
-		printf(" %d ",deadline_route);
+		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
+		//printf(" %d ",deadline_route);
 
 	}
-	printf("\nDeadline Fenetre = %d \n",deadline_fenetre);
+
 	
 	
 	//affichejobs(elems);
@@ -918,7 +919,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	//ecriture des temps trouvés
 	while(ens)
 	{
-		w_i[ens->numero_element] = ens->temps_depart-m_i[ens->numero_element]-routes[ens->numero_element];
+		w_i[ens->numero_element] = ens->temps_depart-arrivee[ens->numero_element];
 		ens=ens->frereD;
 	}
 	

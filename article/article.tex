@@ -633,7 +633,27 @@ the period is.
 
 
     \subsubsection{Results}
-      Resultats des simulations : Shortest-longest optimal pour ces parametres.
+      The following performance evaluation results compares the previous algorithms in terms of periods, and success rate for given instances. 
+      In a first time, we will have a look at the results with the parameters corresponding to Cloud-RAN context, then some more global results will be shown.
+      \paragraph{Short routes}
+      To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(r_{s_i}) < 2100}$, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
+      
+      For each algorithm, we made a linear research of the minimal period for which, there is a solution on the given instance. The following figure shows us the average periods on 1000 graphs, for a growing number of routes.
+      The results of the Exhaustive generation can be considered as a lower bound, indeed, for a given period, this algorithm finds the solution, if it exists.
+      As an information, we drew the $\tau.n$ (i.e. the size taken by the messages in the period) and the $2.(\tau.n) $ lines.
+      
+      Since we try to find a linear solution for the problem PALL, Exhaustive Generation is not a good solution. However, Greedy 3NT and Shortest-Longest are some greedy heuristics and gives us linear solutions.
+      With those parameters, we can observe that the average period of the Shortest-Longest algorithm, which is determined by the difference between the longest and the shortest route, is always equal to the Exhaustive generation, that is, the lower bound.
+      The next results is to theoretically prove that, with those parameters, the Shortest-Longest algorithm gives optimal solutions, like this experimental study suggests it does. 
+      About the Greedy 3NT Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. 
+      We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes. Thus, the following experiences are made on a fixed number of routes : 8.
+      
+      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, for 8 routes of size 14000 max, according to the period.
+      
+      As we can see, the Shortest longest has a very low success rate, because of the distribution of the size of the routes is now broader, so is the required period.
+      Whereas, the Geedy 3NT gives us solutions with much lower period than Shortest Longest.
+      Because of it's polynomial complexity, the Exhaustive generation can freeze the simulation when the solution is not easy to find. Thus, we let it stop after a defined number of calculation. 
+      The Exhaustive Generation curve gives us the solution when the algorithm has found a solution, and the theoretical curve gives us the number of found solutions plus the number of time the algorithm stopped. The real lower bound is probably between those two curves.
       
    \subsection{Allowing waiting times}
    
