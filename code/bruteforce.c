@@ -174,8 +174,21 @@ int bruteforceiter(Graphe g, int periode,int taille_paquets){
 
 	while(solution_taille > 0 && compteur < 10000000){
     compteur++;
+<<<<<<< HEAD
     
     if(solution_taille == nbr_route) { //mettre ça à l'extérieur de la boucle pour simplifier
+=======
+    if(compteur==100000000)
+    {
+      free(solution_num);
+    free(solution_pos);
+    free(route_restante);
+    free(temps_retour);
+    return -2;
+
+    }
+    if(solution_taille == nbr_route) {
+>>>>>>> 5312739ba49d39dde71ddb8e42ea56fa008dabb1
 		//print_sol(solution_pos,solution_num,nbr_route,budget);
 		//printf("PERIODE %d \n",periode);
 

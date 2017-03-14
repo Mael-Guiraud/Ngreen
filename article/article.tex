@@ -562,20 +562,20 @@ the period is.
 	\begin{algorithmic}
 	\REQUIRE ${\cal R}_{\cal C}$, period $P$
 	\ENSURE A P-periodic affectation in p $\leq P$, or FAILURE
-	\STATE $P1[P/\tau]$ slots of size $\tau$ in forward period.
+	\STATE $P1[P/\tau]$ macro slots of size $\tau$ in forward period.
 	\STATE $P2[P]$ slots backward period.
 	\FORALL{source $s_i$ in S }
 
 	\FORALL{macro slot j in P1}
 
-	\IF{$P1[j]$ is free AND the corresponding area in P2 is free}
+	\IF{$P1[j]$ is free AND the corresponding slots in P2 are free}
 
 	
 	\STATE $m_{s_i} \leftarrow j.\tau$
 	\ENDIF
 
 
-	\IF{No intervals are found for i}
+	\IF{No intervals are found for $s_i$}
 	\STATE return FAILURE
 	\ENDIF
 	\ENDFOR
@@ -599,10 +599,10 @@ the period is.
 	\ENSURE $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$
 	\STATE Forward-budget $\leftarrow$ $P$ - n * $\tau$
 	\STATE Backward-budget $\leftarrow$ $P$ - n * $\tau$
-	\STATE Free-Intervals $\leftarrow$ list of free intervals, init to $[0;P[$
-	\FORALL{route i in  ${\cal R}_{\cal C}$}
+	\STATE Free-Intervals $\leftarrow$ list of free intervals in the backward period, init to $[0;P[$
+	\FORALL{source $s_i$ in S}
 	\FORALL{j in Free-Intervals }
-	\IF{Message of the route i does not collides with scheduled routes}
+	\IF{Message of the route $r_{s_i}$ does not collides with scheduled routes}
 	\STATE $m_{s_i} \leftarrow $ the first slot of Free-Intervals[j]
 	\STATE Split the Free-Intervals considering the new packet
 	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
@@ -616,16 +616,21 @@ the period is.
       \end{algorithmic}
       \end{algorithm}
       {\bf {\em Lost size}}, is the size lost when an interval is too few to put another packet. Ex : if the interval [250;3250[ receives a packet of size 2500, there is 500 slots lost, because there is no way to uses the slots for another packet.\\
-      
+      \todo{ecrire l'algo? si ou le réécrire}
 	    
       This algorithm enumerates all the solutions by traversing a tree. The leaves of the tree are 
       the $(P\tau)$-periodic affectations, and the nodes are partial solutions. A partial solution is a choice of a starting time for a subset of the routes.
       For each route, the algorithm tries every possible starting offset until it finds one available (that allows the message to come back without collisions). When a route have been scheduled, it take another route that have not been scheduled yet.
       This creates a new sub-tree in which the algorithm will try every possible starting offset too, and create a sub-tree on the following route too.
-      If no offset are available for a route, this means that the partial solution is not good, so the algorithm backtracks over the tree that is,
-      it goes back to the father of the current sub-tree.
-      Once a leaf is obtained, the algorithm stops and return the scheduling.\\      
-      To reduce the number of useless calculation, in each time we add another packet, we consider the lost size in both periods, thus, we know when a period has no many great enough free area to put a packet.
+      If no offset are available for a route, this means that the partial solution is not good, so the algorithm backtracks over the tree that is,  it goes back to the father of the current sub-tree, and continue from there.
+      Once a leaf is obtained, the algorithm stops and return the $(P\tau)$-periodic affectation.\\      
+      To reduce the number of useless calculation, we can imagine cuts in the tree :
+      \begin{enumerate}
+       \item In the forward windows, each message is placed after the previous one, that is $m_{s_i} > m_{s_j}$ (here, $s_i$ is the source taken first in the algorithm, the order is not fixed). Thus, if the number of the remaining slots in the forward period is inferior than the number of slots needed to put the remaining messages, we can consider that the actual partial solution is not good.
+       \item  Each time we add a new message, we cut a free interval in two new free intervals, plus the scheduled message. Each free intervals has a number of macro slots (ex: 2,6), and if the number of all macro slots is inferior than the number of remaining messages, the actual partial solution is not good.
+       \item ...
+      \end{enumerate}
+
 
     \subsubsection{Results}
       Resultats des simulations : Shortest-longest optimal pour ces parametres.
