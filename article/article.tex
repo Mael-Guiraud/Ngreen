@@ -483,9 +483,9 @@ minimal period can be large.
   \end{center}
 	
       We assume the weight of the central arc to be $0$ since it appears in every route,
-      its value does not matter when considering affectations. Collisions between messages can 
-      only appear at node $c_s$ on the way forward and at node $c_t$ on the way back. \\
-      In such a topology, there is only two possible collision points between the routes: $c_s$ and $c_t$. We only have to check if there is no collisions in a period at those two points.
+      its value does not matter when considering affectations.\\
+      Collisions between messages can only appear at node $c_s$ on the way forward and at node $c_t$ on the way back.
+      Thus, we only have to check if there is no collisions in a period at those two points.
       We consider two periods P at these vertices, the the {\bf forward period} at $c_s$, and the {\bf backward period} at $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1})$ in the forward period, and  $c_t$ at time $m_{t_1} + t(c_t,r_{t_1})$ in the backward period.
       A $(P,\tau)$-periodic affectation consist in choosing $\forall i \in n, m_i$, and $m_{{\cal C}(s_i)}$ such that, for any couples of routes $(r_{s_j}, r_{s_k}), j,k \in n$,
       we have $[t(c_s,r_j)] \cap [t(c_s,r_k)] = \emptyset$.
@@ -591,76 +591,91 @@ the period is.
 % 	When $k < c$ messages are put in the forward period, and we want to add another message, there is $3.c - k$ free slots of size $\tau$ in the forward period. Those $3.c - k$ gives us $3.c - k$ possible slots in the backward periods.\\
 % 	The $k$ messages uses at most $2k$ slots of size $\tau$ used in the backward period. Since $k<c$,  $2k < 3.c - k$, thus using the pigeonhole principle, there is at least one free slot in the backward period for the new message.
 	
-    \subsubsection{Exhaustive generation}
-	\begin{algorithm}[H]
-	\caption{Exhaustive Generation}  
-	\begin{algorithmic}
-	\REQUIRE A routage graph ${\cal R}_{\cal C}$, period $P$, packet size $\tau$
-	\ENSURE $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$
-	\STATE Forward-budget $\leftarrow$ $P$ - n * $\tau$
-	\STATE Backward-budget $\leftarrow$ $P$ - n * $\tau$
-	\STATE Free-Intervals $\leftarrow$ list of free intervals in the backward period, init to $[0;P[$
-	\FORALL{source $s_i$ in S}
-	\FORALL{j in Free-Intervals }
-	\IF{Message of the route $r_{s_i}$ does not collides with scheduled routes}
-	\STATE $m_{s_i} \leftarrow $ the first slot of Free-Intervals[j]
-	\STATE Split the Free-Intervals considering the new packet
-	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
-	\STATE Backward-budget $\leftarrow$ Backward-budget - {\em lost size}
-	\STATE call Exhaustive Generation on remaining routes
-	\ENDIF
-	\ENDFOR
-	\ENDFOR
-
-
-      \end{algorithmic}
-      \end{algorithm}
-      {\bf {\em Lost size}}, is the size lost when an interval is too few to put another packet. Ex : if the interval [250;3250[ receives a packet of size 2500, there is 500 slots lost, because there is no way to uses the slots for another packet.\\
-      \todo{ecrire l'algo? si ou le réécrire}
-	    
-      This algorithm enumerates all the solutions by traversing a tree. The leaves of the tree are 
-      the $(P\tau)$-periodic affectations, and the nodes are partial solutions. A partial solution is a choice of a starting time for a subset of the routes.
+%     \subsubsection{Exhaustive generation}
+% 	\begin{algorithm}[H]
+% 	\caption{Exhaustive Generation}  
+% 	\begin{algorithmic}
+% 	\REQUIRE A routage graph ${\cal R}_{\cal C}$, period $P$, packet size $\tau$
+% 	\ENSURE $(P,\tau)$-periodic affectation of ${\cal R}_{\cal C}$
+% 	\STATE Forward-budget $\leftarrow$ $P$ - n * $\tau$
+% 	\STATE Backward-budget $\leftarrow$ $P$ - n * $\tau$
+% 	\STATE Free-Intervals $\leftarrow$ list of free intervals in the backward period, init to $[0;P[$
+% 	\FORALL{source $s_i$ in S}
+% 	\FORALL{j in Free-Intervals }
+% 	\IF{Message of the route $r_{s_i}$ does not collides with scheduled routes}
+% 	\STATE $m_{s_i} \leftarrow $ the first slot of Free-Intervals[j]
+% 	\STATE Split the Free-Intervals considering the new packet
+% 	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
+% 	\STATE Backward-budget $\leftarrow$ Backward-budget - {\em lost size}
+% 	\STATE call Exhaustive Generation on remaining routes
+% 	\ENDIF
+% 	\ENDFOR
+% 	\ENDFOR
+% 
+% 
+%       \end{algorithmic}
+%       \end{algorithm}
+%       {\bf {\em Lost size}}, is the size lost when an interval is too few to put another packet. Ex : if the interval [250;3250[ receives a packet of size 2500, there is 500 slots lost, because there is no way to uses the slots for another packet.\\
+%       \todo{ecrire l'algo? si ou le réécrire}
+% 	    
+      We can try to enumerates all the solutions by traversing a tree. The leaves of the tree are 
+      the $(P-\tau)$-periodic affectations, and the nodes are partial solutions. A partial solution is a choice of a starting time for a subset of the routes.
       For each route, the algorithm tries every possible starting offset until it finds one available (that allows the message to come back without collisions). When a route have been scheduled, it take another route that have not been scheduled yet.
       This creates a new sub-tree in which the algorithm will try every possible starting offset too, and create a sub-tree on the following route too.
       If no offset are available for a route, this means that the partial solution is not good, so the algorithm backtracks over the tree that is,  it goes back to the father of the current sub-tree, and continue from there.
-      Once a leaf is obtained, the algorithm stops and return the $(P\tau)$-periodic affectation.\\      
+      Once a leaf is obtained, the algorithm stops and return the $(P-\tau)$-periodic affectation.\\  
+      Such an algorithm is an {\bf Exhaustive Generation} and has an exponential complexity. Thus, once we search for $(P-\tau)$-periodic affectations on graphs with a huge number of routes and an huge period P, if there is no solutions available, this algorithm takes too many time.
       To reduce the number of useless calculation, we can imagine cuts in the tree :
       \begin{enumerate}
-       \item In the forward windows, each message is placed after the previous one, that is $m_{s_i} > m_{s_j}$ (here, $s_i$ is the source taken first in the algorithm, the order is not fixed). Thus, if the number of the remaining slots in the forward period is inferior than the number of slots needed to put the remaining messages, we can consider that the actual partial solution is not good.
-       \item  Each time we add a new message, we cut a free interval in two new free intervals, plus the scheduled message. Each free intervals has a number of macro slots (ex: 2,6), and if the number of all macro slots is inferior than the number of remaining messages, the actual partial solution is not good.
+       \item In the forward windows, each message is placed after the previous one, that is $m_{s_i} > m_{s_j}$ (here, $s_i$ is the source placed before $s_j$ by the algorithm). Each time a new message is scheduled, there is some possible lost slots between $m_{s_i}+\tau$ and $ m_{s_j}$. We hold a counter of remaining slots and decrease it from the number of lost slots each time a new message is scheduled. Thus, if the number of the remaining slots in the forward period is lower than the number of slots needed to put the remaining messages, we can consider that the actual partial solution is not good.
+       \item  Each time we add a new message in the backward period, we cut a free interval in two new smaller free intervals, plus the scheduled message. Each free intervals has a number of macro slots (ex: 2,6). If the sum of all the integer parts of the macro slots is lower than the number of remaining messages to schedule, the actual partial solution is not good.
        \item ...
       \end{enumerate}
 
 
     \subsubsection{Results}
-      The following performance evaluation results compares the previous algorithms in terms of periods, and success rate for given instances. 
-      In a first time, we will have a look at the results with the parameters corresponding to Cloud-RAN context, then some more global results will be shown.
+      The following performance evaluation results compares the previous algorithms. Since we try to find a linear time algorithm for the problem PALL, Exhaustive Generation is not a good solution. However, Greedy 3NT and Shortest-Longest are some greedy heuristics and gives us a linear complexity. We tried to determine which algorithm gives a solution with the minimal period.
+      In a first time, we will have a look at the results with the parameters corresponding to Cloud-RAN context.
       \paragraph{Short routes}
-      To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(r_{s_i}) < 2100}$, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
+      To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(r_{s_i}) < 2100$ slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
       
       For each algorithm, we made a linear research of the minimal period for which, there is a solution on the given instance. The following figure shows us the average periods on 1000 graphs, for a growing number of routes.
       The results of the Exhaustive generation can be considered as a lower bound, indeed, for a given period, this algorithm finds the solution, if it exists.
       As an information, we drew the $\tau.n$ (i.e. the size taken by the messages in the period) and the $2.(\tau.n) $ lines.
       
-      Since we try to find a linear solution for the problem PALL, Exhaustive Generation is not a good solution. However, Greedy 3NT and Shortest-Longest are some greedy heuristics and gives us linear solutions.
+      \begin{center}
+      \includegraphics[scale=0.4]{periode_petite.pdf}
+      \end{center}
+     
+
+      
+     
       With those parameters, we can observe that the average period of the Shortest-Longest algorithm, which is determined by the difference between the longest and the shortest route, is always equal to the Exhaustive generation, that is, the lower bound.
       The next results is to theoretically prove that, with those parameters, the Shortest-Longest algorithm gives optimal solutions, like this experimental study suggests it does. 
       About the Greedy 3NT Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. 
       We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes. Thus, the following experiences are made on a fixed number of routes : 8.
       
-      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, for 8 routes of size 14000 max, according to the period.
+      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, for 8 routes of size between 0 and 60000 slots, according to the period.
+      
+       \begin{center}
+      \includegraphics[scale=0.4]{echec_longues.pdf}
+      \end{center}
+     
       
       As we can see, the Shortest longest has a very low success rate, because of the distribution of the size of the routes is now broader, so is the required period.
       Whereas, the Geedy 3NT gives us solutions with much lower period than Shortest Longest.
       Because of it's polynomial complexity, the Exhaustive generation can freeze the simulation when the solution is not easy to find. Thus, we let it stop after a defined number of calculation. 
-      The Exhaustive Generation curve gives us the solution when the algorithm has found a solution, and the theoretical curve gives us the number of found solutions plus the number of time the algorithm stopped. The real lower bound is probably between those two curves.
+      The Exhaustive Generation curve gives us the solution when the algorithm has found a solution, and the Upper bound gives us the number of found solutions plus the number of time the algorithm stopped. The real Upper bound is probably between those two curves.
+      
+      So, those experiences shows us that for real topologies with small routes, the Shortest-Longest algorithm finds some affectations with small Periods, but, the longer the routes are, the better it is to use the Greedy policy to find a solution without waiting times.\\
+      Nevertheless, if we want to consider networks, the period is fixed. As we just saw, if the load increases, the needed period increases too, and it is not possible anymore to find a solution without waiting times with a small period. The solution is to allow some messages to wait on target nodes, as described in the next section.
       
    \subsection{Allowing waiting times}
    
      \subsubsection{Intro}
 	  We now consider waiting times. The weights on links from sources to $c_s$ are now relevant because the goal is to minimize $MT({\cal M})$, with ${\cal M}$ the $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$.
-	  To build such a $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$, we must choose the offsets $m_{s_i}$ and $m_{\cal C(s_i)}$, such that there is no $PT(s)$ superior than a given $T_{max}$.
-	  As a reminder, $ PT(s)=\lambda(r_s)+ w_s+\lambda(r_{{\cal C}(s)})$.
+	  To build such a $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$, we must choose the offsets $m_{s_i}$ and $m_{t_i}$, such that there is no $PT(s)$ greater than a given $T_{max}$.
+	  As a reminder, $ PT(s)=\lambda(r_s)+ w_s+\lambda(r_{t_i})$.
      \subsubsection{LSG}
      
 
@@ -668,10 +683,10 @@ To find a solution with waiting times, the following heuristic is suggested:
 
 On the forward period, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
 
-On $c_t$, the politic is the following one, after setting the clock to 0, do:
+On $c_t$, the policy is the following one, after setting the clock to 0:
 \begin{enumerate}
  \item To be eligible, a job needs to be able to come back on the switch at the current clock (if clock = 0, take the first message able to come back).
- \item Between the eligible jobs, schedule first the one which has the longest route gives it the offset time $m_{\cal C(s_i)} = clock$.
+ \item Between the eligible jobs, schedule first the one which has the longest route and gives it the offset time $m_{\cal C(s_i)} = clock$.
  \item Update the clock at the time in which the scheduled task is over: $$clock = clock + message\ length$$.
 \end{enumerate}
 
@@ -702,7 +717,7 @@ On $c_t$, the politic is the following one, after setting the clock to 0, do:
 	\paragraph{Algorithm}
 	\paragraph{Analysis}
 	
-One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $2 .\tau$, where n is the number of couples $(s,{\cal C}(s))$. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0 \forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
+One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $n.\tau$, where $n$ is the number of couples $(s,{\cal C}(s))$. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
 
 Another case of this topology is the case in which all the weight on the arcs between $c_s$ and the sources are the same.
 In this case, the algorithm gives optimal solutions too:\\

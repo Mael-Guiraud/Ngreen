@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <math.h>
 #include "struct.h"
 
 typedef struct element{
@@ -746,6 +747,28 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	return debut;
 	
 }
+int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
+{
+	int nbr_route = g.N /2;
+	for(int i=0;i<nbr_route;i++)
+	{
+		for(int j=0;j<i;j++)
+		{
+			if( fabs(mi[j]+g.matrice[nbr_route][j]-mi[i]-g.matrice[nbr_route][i]) <taille_paquet )
+				return 0;
+		}
+	}
+
+	for(int i=0;i<nbr_route;i++)
+	{
+		for(int j=0;j<i;j++)
+		{
+			if( fabs(mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]-mi[i]-g.matrice[nbr_route][i]-2*g.matrice[nbr_route][nbr_route+1+i]) <taille_paquet )
+				return 0;
+		}
+	}
+	return 1;
+}
 
 //Algo naif
 int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
@@ -929,6 +952,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 
 	affiche_tab(m_i,nbr_route);
 	affiche_tab(w_i,nbr_route);
+	printf("IS OK = %d\n",is_ok(g,taille_paquet,m_i,w_i));
 	int max = w_i[0]+2*Dl[0];
 	for(int i=0;i<nbr_route;i++)
 	{

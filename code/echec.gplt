@@ -1,18 +1,19 @@
 ################# Commandes d'affichage Gnuplot ###############
 
 
-plot   'results_echec.data'  using 1:2 title "Shortest Longest"
-replot   'results_echec.data'  using 1:3 title "3LT"
-replot   'results_echec.data'  using 1:4 title "bruteforce"
-replot   'results_echec.data'  using 1:5 title "theorique"
+plot   'results_echec_longues.data'  using 1:2 linetype 0 pointtype 1 title "Shortest Longest"
+replot   'results_echec_longues.data'  using 1:3 linetype 3 pointtype 2 title "Greedy 3LT"
+replot   'results_echec_longues.data'  using 1:4 linetype 4 pointtype 4 title "Exhaustive Generation"
+replot   'results_echec_longues.data'  using 1:5 linetype 2 pointtype 4 title "Upper Bound"
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
-set ylabel "nombre de reussite"
-set xlabel "periode"
+set title "Sucess Rate ({/Symbol l} > {/Symbol t})"
+set ylabel "Sucess(%) "
+set xlabel "Period"
 set term postscript color solid
-set output "echec.ps"
-set key left top
+set output "echec_longues.ps"
+set key right top
 replot
 
 
