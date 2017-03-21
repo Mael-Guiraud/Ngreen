@@ -747,15 +747,19 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	return debut;
 	
 }
+
 int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
 {
 	int nbr_route = g.N /2;
-	for(int i=0;i<nbr_route;i++)
+	for(int i=1;i<nbr_route;i++)
 	{
-		for(int j=0;j<i;j++)
+		for(int j=i-1;j>=0;j--)
 		{
 			if( fabs(mi[j]+g.matrice[nbr_route][j]-mi[i]-g.matrice[nbr_route][i]) <taille_paquet )
+			{
+				printf("PB(aller) entre %d(%d) et %d(%d)\n",i,mi[j]+g.matrice[nbr_route][j],j,mi[i]+g.matrice[nbr_route][i]);
 				return 0;
+			}
 		}
 	}
 
@@ -763,8 +767,11 @@ int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
 	{
 		for(int j=0;j<i;j++)
 		{
-			if( fabs(mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]-mi[i]-g.matrice[nbr_route][i]-2*g.matrice[nbr_route][nbr_route+1+i]) <taille_paquet )
+			if( fabs(mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j]-wi[i]-mi[i]-g.matrice[nbr_route][i]-2*g.matrice[nbr_route][nbr_route+1+i]) <taille_paquet )
+			{
+				printf("PB(retour) entre %d(%d) et %d(%d)\n",i,mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j],j,mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]);
 				return 0;
+			}	
 		}
 	}
 	return 1;

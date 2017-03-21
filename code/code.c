@@ -716,7 +716,7 @@ int main()
 	int c=0;	
 	for(int i = 0;i<10000;i++)
 	{
-		g = init_graphe(15);
+		g = init_graphe(7);
 		graphe_etoile(g,7000);
 		affiche_matrice(g);
 		//printf("normal\n");
