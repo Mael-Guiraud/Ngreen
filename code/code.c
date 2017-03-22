@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <time.h>
-#include <limits.h>
 
+#include <limits.h>
+#include <math.h>
 #include "struct.h"
 #include "bruteforce.h"
 #include "simons.h"
@@ -487,6 +488,7 @@ int first_back(int * tab, int taille)
 	}
 	return indice_min;
 }
+
 int longest_etoile(Graphe g,int taille_paquets, int Tmax)
 {
 	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
@@ -580,7 +582,7 @@ int longest_etoile(Graphe g,int taille_paquets, int Tmax)
 	//affiche_tab(routes,nb_routes);
 	//affiche_tab(m_i,nb_routes);
 	//affiche_tab(w_i,nb_routes);
-
+if(!is_ok(g,taille_paquets,m_i,w_i))printf("ERROR !!\n");
 	int max = w_i[0]+2*routes[0];
 	for(int i=0;i<nb_routes;i++)
 	{
@@ -592,6 +594,7 @@ int longest_etoile(Graphe g,int taille_paquets, int Tmax)
 	
 	return max;
 }
+
 
 int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
 {
@@ -645,7 +648,7 @@ int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
 	
 	for(int i=0;i<nb_routes;i++){date_limite[i] = m_i[i]+Tmax-routes[i];}
 
-	//		affiche_tab(date_limite,nb_routes);
+			//affiche_tab(date_limite,nb_routes);
 	while(nb_assigned<nb_routes)
 	{
 		
@@ -687,8 +690,9 @@ int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
 
 	}
 
-	affiche_tab(m_i,nb_routes);
-	affiche_tab(w_i,nb_routes);
+	//affiche_tab(m_i,nb_routes);
+	//affiche_tab(w_i,nb_routes);
+	if(!is_ok(g,taille_paquets,m_i,w_i))printf("ERROR !!\n");
 	int max = w_i[0]+2*routes[0];
 	for(int i=0;i<nb_routes;i++)
 	{
@@ -701,6 +705,32 @@ int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
 	return max;
 }
 
+void departs(int nb_routes, int taille_paquets,int taille_route,int tmax, int nb_simuls)
+{
+	FILE * F = fopen("results_departs.data","w");
+	Graphe g ;
+	long long int a,b,c;
+	for(int j=1;j<nb_routes;j++)
+	{
+		a=0;
+		b=0;
+		c=0;
+		for(int i = 0;i<nb_simuls;i++)
+		{
+			g = init_graphe(2*j+1);
+			graphe_etoile(g,taille_route);
+			//affiche_matrice(g);
+			
+			//b=longest_etoile_2(g,2500,40000);
+			a+=simons(g, taille_paquets, tmax,400000,0);
+			b+=simons(g, taille_paquets, tmax,400000,1);
+			c+=simons(g, taille_paquets, tmax,400000,2);
+			libere_matrice(g);
+		}
+		fprintf(F,"%d %lld %lld %lld\n",j,a/nb_simuls,b/nb_simuls,c/nb_simuls);
+	}
+	fclose(F);
+}
 int main()
 {
 	srand(time(NULL));
@@ -709,31 +739,7 @@ int main()
 	//echec_taille_route(8,2500,25000,1000);
 
 
-	Graphe g ;
+	departs(8,2500,7000,40000,100000);
 
-	
-	int a=0,b=0;
-	int c=0;	
-	for(int i = 0;i<10000;i++)
-	{
-		g = init_graphe(7);
-		graphe_etoile(g,7000);
-		affiche_matrice(g);
-		//printf("normal\n");
-		a=longest_etoile(g,2500,40000);
-		//printf("2 \n");
-		b=longest_etoile_2(g,2500,40000);
-		c =simons(g, 2500, 40000,200000);
-		printf("%d %d %d\n",b-a, c-a, c-b);
-		libere_matrice(g);
-	}
-
-	
-	//printf("%d\n",c);
-	/*
-	printf("%d\n",longest_etoile(g,2500,40000));
-	printf("%d\n",longest_etoile_2(g,2500,40000));
-	printf("%d\n",simons(g, 2500, 40000,200000));
-	*/
 	return 0;
 }

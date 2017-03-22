@@ -748,6 +748,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	
 }
 
+
 int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
 {
 	int nbr_route = g.N /2;
@@ -776,9 +777,51 @@ int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
 	}
 	return 1;
 }
+//Permute les elements d'un tableau
+void fisher_yates(int * tab, int taille)
+{
+	int r;
+	int tmp;
+	for(int i=taille-1;i>0;i--)
+	{
+		r=rand()%(i+1);
+		tmp = tab[i];
+		tab[i]= tab[r];
+		tab[r]=tmp;
+	}
+}
+void tri_bulles_inverse(int* tab,int* ordre,int taille)
+{
+	int sorted;
+	int tmp;
+	int tmp_ordre;
 
+	int tabcpy[taille];
+	for(int i=0;i<taille;i++)tabcpy[i]=tab[i];
+
+	for(int i=taille-1;i>=1;i--)
+	{
+		sorted = 1;
+		for(int j = 0;j<=i-1;j++)
+		{
+
+			if(tabcpy[j+1]<tabcpy[j])
+			{
+				tmp_ordre = ordre[j+1];
+				ordre[j+1]=ordre[j];
+				ordre[j]=tmp_ordre;
+				tmp = tabcpy[j+1];
+				tabcpy[j+1]= tabcpy[j];
+				tabcpy[j]= tmp;
+				sorted = 0;
+			}
+		}
+		if(sorted){return;}
+	}
+
+}
 //Algo naif
-int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
+int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 {
 	
 	
@@ -794,8 +837,11 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	  int m_i[nbr_route];
 	  int w_i[nbr_route];
 	int i;
+
+	int permutation[nbr_route];
 	  for (i = 0; i < nbr_route; i++)
 	    {
+	    	permutation[i]=i;
 	      Dl[i] = g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1];
 	      lambdaV[i] = g.matrice[nbr_route][i];
 	    }
@@ -805,25 +851,59 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	int offset = 0;
 	
 	
-	//tant qu'on n'a pas affecté toutes les routes
-	while(a_affecter != 0)
+	if(mode == 0)
 	{
-		i=greater(Dl,nbr_route);
-		//Si on est le premier
-		if(offset==0)
+
+		fisher_yates(permutation,nbr_route);
+		//affiche_tab(permutation,nbr_route);
+		m_i[permutation[0]]=0;
+		offset=taille_paquet+g.matrice[nbr_route][permutation[0]];
+		for(i=1;i<nbr_route;i++)
 		{
-			m_i[i] = 0;
-			offset=taille_paquet+lambdaV[i];
+			m_i[permutation[i]]=offset-g.matrice[nbr_route][permutation[i]];
+			offset+=taille_paquet;
+		}
+	}
+	else
+	{
+		if(mode == 1)
+		{
+			//tant qu'on n'a pas affecté toutes les routes
+			while(a_affecter != 0)
+			{
+				i=greater(Dl,nbr_route);
+				//Si on est le premier
+				if(offset==0)
+				{
+					m_i[i] = 0;
+					offset=taille_paquet+lambdaV[i];
+				}
+				else
+				{
+					m_i[i] = offset-lambdaV[i];
+					offset += taille_paquet;
+				}
+				a_affecter--;
+				Dl[i]=0;
+			}
 		}
 		else
-		{
-			m_i[i] = offset-lambdaV[i];
-			offset += taille_paquet;
-		}
-		a_affecter--;
-		Dl[i]=0;
-	}
 
+		{
+			//Tri du tableau ordre
+			tri_bulles_inverse(Dl,permutation,nbr_route);
+			//affiche_tab(Dl,nbr_route);
+			//affiche_tab(permutation,nbr_route);
+			//On envoie les messages de longest a shortest
+			m_i[permutation[0]]=0;
+			offset = taille_paquet+g.matrice[nbr_route][permutation[0]];
+			for(int i=1;i<nbr_route;i++)
+			{
+				m_i[permutation[i]]=offset-g.matrice[nbr_route][permutation[i]];
+				offset+=taille_paquet;
+			}
+		}
+	}
 	
 
 	//release times
@@ -957,9 +1037,9 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	freeelems(elems);
 	freeelems(elems2);
 
-	affiche_tab(m_i,nbr_route);
-	affiche_tab(w_i,nbr_route);
-	printf("IS OK = %d\n",is_ok(g,taille_paquet,m_i,w_i));
+	//affiche_tab(m_i,nbr_route);
+	//affiche_tab(w_i,nbr_route);
+	if(!is_ok(g,taille_paquet,m_i,w_i))printf("ERROR\n");
 	int max = w_i[0]+2*Dl[0];
 	for(int i=0;i<nbr_route;i++)
 	{
