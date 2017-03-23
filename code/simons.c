@@ -646,7 +646,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 			if(date+taille_paquet > elemtmp->deadline)//CRISIS
 			{
 				
-				//printf("crisis(crisis) sur la tache %d\n",elemtmp->index);
+				printf("crisis(crisis) sur la tache %d\n",elemtmp->index);
 				Element * crisisrec = ajoute_elemt(NULL,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
@@ -868,13 +868,17 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	{
 		if(mode == 1)
 		{
+			//printf("mode 1\n");
 			//tant qu'on n'a pas affecté toutes les routes
 			while(a_affecter != 0)
 			{
+
 				i=greater(Dl,nbr_route);
 				//Si on est le premier
+				//printf("i = %d\n",i);
 				if(offset==0)
 				{
+
 					m_i[i] = 0;
 					offset=taille_paquet+lambdaV[i];
 				}
@@ -884,7 +888,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 					offset += taille_paquet;
 				}
 				a_affecter--;
-				Dl[i]=0;
+				Dl[i]=-1;
 			}
 		}
 		else
@@ -921,6 +925,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	
 
 	int	date=arrivee[i];
+	//int date = 0;
 	int deadline_fenetre = date + Periode;
 	int j;
 	//affichetab(arrivee,g.sources);
@@ -935,8 +940,19 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 		//printf(" %d ",deadline_route);
 
 	}
-
-	
+/*
+	elems= ajoute_elemt(elems,0,0,74);
+	elems= ajoute_elemt(elems,1,21,46);
+	elems= ajoute_elemt(elems,2,2,60);
+	elems= ajoute_elemt(elems,3,50,68);
+	elems= ajoute_elemt(elems,4,4,34);
+	elems= ajoute_elemt(elems,5,10,36);
+	elems= ajoute_elemt(elems,6,28,38);
+	elems= ajoute_elemt(elems,7,54,62);
+	elems= ajoute_elemt(elems,8,30,48);
+	elems= ajoute_elemt(elems,9,52,68);
+	elems= ajoute_elemt(elems,10,25,40);
+	*/
 	
 	//affichejobs(elems);
 	//affichejobs(elems);
@@ -944,6 +960,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	Element * tmp = elems2;
 	
 	int a_scheduler = nbr_route;
+	//int a_scheduler = 11;
 	Ensemble * ens = NULL;
 	Ensemble * ensembletmp;
 	while(a_scheduler != 0)//tant qu'on n'a pas schedul tous les elements
