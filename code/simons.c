@@ -151,6 +151,27 @@ Element * ajoute_elemt(Element * elem,int index, int release, int deadline)
 	elem->next = new;
 	return tmp;
 }
+
+Element * ajoute_elemt_fin(Element * elem,int index, int release, int deadline)
+{
+	Element * tmp = elem;
+	Element * new = malloc(sizeof(Element));
+	new->index = index;
+	new->release = release;
+	new->deadline = deadline;
+	new->next = NULL;
+	if(elem == NULL)//0 element
+	{
+		return new;
+	}
+	while(elem->next)
+	{
+		
+		elem = elem->next;
+	}
+	elem->next = new;
+	return tmp;
+}
 Ensemble * cree_ensemble(int numero, int temps)
 {
 	Ensemble * ens = malloc(sizeof(Ensemble));
@@ -160,6 +181,50 @@ Ensemble * cree_ensemble(int numero, int temps)
 	ens->frereG = NULL;
 	ens->frereD = NULL;
 	return ens;
+}
+
+int compte_elems(Element * l)
+{
+	if(l==NULL)return 0;
+	int compteur = 1;
+	while(l->next)
+	{
+		compteur++;
+		l = l->next;
+	}
+	return compteur;
+}
+Element* tri_elems(Element * l)
+{
+	int taille = compte_elems(l);
+	if(taille < 2)return l;
+	int i,j;
+	Element* debut = l;
+	Element* tmp;
+	for(i=taille-1;i>0;i--)
+	{
+		l = debut;
+		if(l->release > l->next->release)
+		{
+			tmp = l->next;
+			l->next = l->next->next;
+			tmp->next = l;
+			debut = tmp;
+			l=debut;
+		}
+		for(j=0;j<i-1;j++)
+		{
+			if(l->next->release > l->next->next->release)
+			{
+				tmp = l->next;
+				l->next = l->next->next;
+				tmp->next = l->next->next;
+				l->next->next = tmp;
+			}
+			l = l->next;
+		}
+	}
+	return debut;
 }
 
 
@@ -520,7 +585,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	if(ens == NULL)
 		return NULL;
 	printf("ens != NULL\n");
-	//affiche_ensemble(ens);printf("\n");
+	affiche_ensemble(ens);printf("\n");
 	Ensemble * ens2 = NULL;
 	Ensemble * tmp = NULL;
 	Ensemble * debut = ens;
@@ -540,9 +605,11 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		if(ens->numero_element != -1) // si c'est un element
 		{
 			elemtmp = get_element_i(touselems,ens->numero_element);
+			printf("Elemtmp = %d\n",elemtmp->index);
 			if(elemtmp->deadline > crisise->deadline)//si on est sur PULL(X)
 			{	
-				ajoute_elemt(elemspere,elemtmp->index,elemtmp->release,elemtmp->deadline);
+				printf("PULL X = %d\n",elemtmp->index);
+				ajoute_elemt_fin(elemspere,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				date = ens->temps_depart;
 				//printf("PULL(%d) = %d\n",crisise->index,elemtmp->index);
 				if(ens2 == NULL)
@@ -749,6 +816,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 }
 
 
+
 int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
 {
 	int nbr_route = g.N /2;
@@ -824,7 +892,7 @@ void tri_bulles_inverse(int* tab,int* ordre,int taille)
 int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 {
 	
-	
+	taille_paquet = 6;
 	 if (!(g.N % 2))
     {
       printf ("G n'est peut être pas une étoile\n");
@@ -924,8 +992,8 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	i=lower(arrivee,nbr_route);
 	
 
-	int	date=arrivee[i];
-	//int date = 0;
+	//int	date=arrivee[i];
+	int date = 0;
 	int deadline_fenetre = date + Periode;
 	int j;
 	//affichetab(arrivee,g.sources);
@@ -933,14 +1001,14 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	Element * elems = init_element();
 	int deadline_route;
 
-	for(j=0;j<nbr_route;j++)
+	/*for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
 		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
 		//printf(" %d ",deadline_route);
 
-	}
-/*
+	}*/
+
 	elems= ajoute_elemt(elems,0,0,74);
 	elems= ajoute_elemt(elems,1,21,46);
 	elems= ajoute_elemt(elems,2,2,60);
@@ -952,15 +1020,15 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	elems= ajoute_elemt(elems,8,30,48);
 	elems= ajoute_elemt(elems,9,52,68);
 	elems= ajoute_elemt(elems,10,25,40);
-	*/
 	
-	//affichejobs(elems);
+	
+	affichejobs(elems);
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
 	
-	int a_scheduler = nbr_route;
-	//int a_scheduler = 11;
+	//int a_scheduler = nbr_route;
+	int a_scheduler = 11;
 	Ensemble * ens = NULL;
 	Ensemble * ensembletmp;
 	while(a_scheduler != 0)//tant qu'on n'a pas schedul tous les elements
@@ -988,9 +1056,10 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 			printf("Crisis(main) sur la tache %d\n",tmp->index);
 			Element * crisise = NULL;
 			crisise = ajoute_elemt(crisise,tmp->index,tmp->release,tmp->deadline);
+
 			elems2=retire_element_i(elems2,crisise->index);
 			if(!elems2)
-					elems2 = ajoute_elemt(elems2,99999,99999,999999);
+					elems2 = ajoute_elemt(elems2,INT_MAX,INT_MAX,INT_MAX);
 			//affiche_ensemble(ens);printf(" Avant\n");
 			ens = crisis(ens,crisise,elems2,elems,taille_paquet);
 			
@@ -1008,10 +1077,11 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 			//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
 			date = date_fin(ens, taille_paquet);
 			
-			//printf("APRESCRISIS\n");
-			//printf("Date %d : ",date);
-			//affichejobs(elems2);
-			//affiche_ensemble(ens);printf("\n\n\n");
+			/*printf("APRESCRISIS\n");
+			printf("Date %d : ",date);*/
+			elems2 = tri_elems(elems2);
+			/*affichejobs(elems2);
+			affiche_ensemble(ens);printf("\n\n\n");*/
 		}
 		else // pas crisis
 		{
@@ -1043,6 +1113,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 		
 	
 	}
+	affiche_ensemble(ens);printf("\n\n\n");
 	//ecriture des temps trouvés
 	while(ens)
 	{

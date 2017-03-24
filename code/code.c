@@ -737,7 +737,7 @@ int main()
 	//simuls_periode(8,2500,7000,1000);
 	//echec(8,2500,30000,1000);
 	//echec_taille_route(8,2500,25000,1000);
-	Graphe g;
+	/*Graphe g;
 
 	int a=0,b=0;
 	for(int i=0;i<1;i++)
@@ -751,8 +751,13 @@ int main()
 		libere_matrice(g);
 		
 
-	}
-	printf("%d %d %d\n",a,b,a-b);
+	}*/
+	Graphe g = init_graphe(15);
+		graphe_etoile(g,7000);
+		//affiche_matrice(g);
+		 simons(g,6,30000,0,1);
+		libere_matrice(g);
+	//printf("%d %d %d\n",a,b,a-b);
 //	departs(8,2500,7000,40000,100000);
 
 	return 0;
