@@ -1,6 +1,6 @@
 *.data
 a.out
-*.pdf
+article.pdf
 *.aux
 *.log
 *.tex.backup

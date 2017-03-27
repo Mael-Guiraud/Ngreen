@@ -202,7 +202,7 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
 
       Consider the routage graph ${\cal R_{\cal C}}$ given in the previous subsection. 
       We change the delays so that for $v$, the first vertex which belongs to $r_i$ and $r_j$,
-      we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $n$, the number of routes in ${\cal R_{\cal C}}$. In such a graph, there is no $(P,\tau)$-periodic affectation, because of $P < n$.\\
+      we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $n$, the number of routes in ${\cal R_{\cal C}}$. In such a graph, there is no $(P,\tau)$-periodic affectation, since the problem reduces to finding a $P$-coloring in a complete graph with $n > P$ vertices.\\
       If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) \mod 2 = 1$ . Therefore $(0,\dots,0)$ is a $(2,1)$-periodic affectation of ${\cal R_{\cal C}}$.
 
       
@@ -268,18 +268,23 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
 
 
 
-  In this article, we works on given routages, but we could imagine a problem, in which, considering a given graph $G = (V,A)$ and a period P, the question is to find, if it exists, a routage graph ${\cal R}_{\cal C}$, in which there is $(P,\tau)$-periodic affectation.
+  In this article, we works on a given routage, but we could imagine a problem, in which, considering a given graph $G = (V,A)$ and a period P, the question is to find, if it exists, a routage graph ${\cal R}_{\cal C}$, in which there is $(P,\tau)$-periodic affectation.
+  
+  
+  \todo{Dire si on regle le probleme de trouver un bon routage dans un cas particulier après}
+  
+  
 \section{Solving PRA}
   \label{sec:complexity}
   \subsection{NP-Hardness}
 
  In this section we assume that the size of a message $\tau$ is equal to one. 
  We will prove the hardness of PRA and PALL for this parameter, which implies the hardness of the general problems. 
-Consider an instance of the problem PRA, i.e., a routage graph $\cal{R_{\cal C}}$, a message size $\tau$ and a period $P$. \\
+Consider an instance of the problem PRA, i.e., a routage graph $\cal{R_{\cal C}}$ and a period $P$. \\
 The {\bf conflict depth} of a route is the number of other routes which share an edge with it. 
 The conflict depth of a routage graph  $\cal{R_{\cal C}}$ is the maximum of the conflict depth of the routes in $\cal{R_{\cal C}}$.\\
 The {\bf load} of a routage graph is the maximal number of routes sharing the same arc.
-It is clear that a $(P,\tau)$-periodic affectation must satisfy that $P$ is larger or equal to the load times $\tau$.
+It is clear that a $(P,1)$-periodic affectation must satisfy that $P$ is larger or equal to the load.
 
 
 We give two alternate proofs that PRA is $\NP$-complete.
@@ -439,7 +444,7 @@ minimal period can be large.
       First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
       Moreover, there is a special arc, the central arc, which is shared by all routes.
       All routes consist from an arc from its source to the central source node, denoted by {\bf $c_s$},
-      then the central arc to {\bf $c_t$}, the central target node, and an arc to its target. In addition to those central nodes, there are two sets of vertices, $S={s_0,...,s_{n-1}}$ and $T={t_0,...,t_{n-1}}$, of cardinality $n$ and ${\cal C}$ a symmetric assignment from $S$ to $T$. 
+      then the central arc to {\bf $c_t$}, the central target node, and an arc to its target. In addition to those central nodes, there are two sets of vertices, $S=\{s_0,...,s_{n-1}\}$ and $T=\{t_0,...,t_{n-1}\}$, of cardinality $n$ and ${\cal C}$ a symmetric assignment from $S$ to $T$. 
       The routes are the directed paths of the form $s_i,c_s,c_t,t_i$ and $t_i,c_t,c_s,s_i$. 
       
       
@@ -486,57 +491,73 @@ minimal period can be large.
       its value does not matter when considering affectations.\\
       Collisions between messages can only appear at node $c_s$ on the way forward and at node $c_t$ on the way back.
       Thus, we only have to check if there is no collisions in a period at those two points.
-      We consider two periods P at these vertices, the the {\bf forward period} at $c_s$, and the {\bf backward period} at $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1})$ in the forward period, and  $c_t$ at time $m_{t_1} + t(c_t,r_{t_1})$ in the backward period.
-      A $(P,\tau)$-periodic affectation consist in choosing $\forall i \in n, m_i$, and $m_{{\cal C}(s_i)}$ such that, for any couples of routes $(r_{s_j}, r_{s_k}), j,k \in n$,
-      we have $[t(c_s,r_j)] \cap [t(c_s,r_k)] = \emptyset$.
-      and for any couples of routes $(r_{t_j}, r_{t_k}), j,k \in n$, we have $[t(c_t,r_{t_j})] \cap [t(c_t,r_{t_k})] = \emptyset$
-%       
-%   \todo{Définir la forward period et la backward period et dire à quoi correspond une affectation en terme de forward et backward period (placement de messages dans la première période}     
-%       Therefore, 
-%       finding an $(P,\tau)$-periodic affectation without collision, is equivalent to fix ...
+      We consider two periods P at these vertices, the the {\bf forward period} at $c_s$, and the {\bf backward period} at $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1}) \mod P$ in the forward period, and  $c_t$ at time $m_{t_1} + t(c_t,r_{t_1})\mod P$ in the backward period.
+      A $(P,\tau)$-periodic affectation consist in choosing for all $i < n$, $m_i$ and $m_{{\cal C}(s_i)}$ such that, for any couple $(j,k)$,
+      we have $[t(c_s,r_{s_{j}})] \cap [t(c_s,r_{s_k})] = \emptyset$ and $[t(c_t,r_{t_j})] \cap [t(c_t,r_{t_k})] = \emptyset$
 
-      
-%       
-%       between the two central nodes is simplified in the forthcoming calculations.
-%       Let us call {\bf SN} (source node) the central node connected to leaves, and {\bf SN} (sources node), the one connected to sources. The period in those nodes are respectively called {\em forward period}, and {\em backward period}.
       
 
   \subsection{Solving PALL without waiting times}
   
   In this subsection, we deal with a simpler version of the problem PALL.
-  We ask for a $(P,\tau)$-periodic affectation with all waiting times equal to $0$. 
-  In that case $MT({\cal M})$ is equal to twice the delay of the longer route, thus, $T_{max}$ is not relevant anymore. Since $w_i=0$, choosing $m_i$, the offset of the route from
-  $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i)$.
-  Moreover, in this context the weight of the arcs from $s_i$ to $c_s$ have no impact, therefore we assume they are 
-  equal to $0$. \\
-  For those reasons, in this case, we only have to consider the forward and backward periods. Indeed, setting the offset $m_{s_i}$ in the forward period automatically set the offsets $m_{{\cal C}(s_i)}$ in the backward period.
-  The goal is now to put messages in the forward period such that there is no collision in both periods.\\
-  Here, weight of arcs $(s_i,c_s)$ can be ignored, thus, the offsets $m_{s_i}$ are calculated like if all these weight are equal to 0. To find the real values, it is easy to delay the real sending in sources by the weight of the corresponding arc.
+  We ask for a $(P,\tau)$-periodic affectation {\bf with all waiting times equal to $0$} and we call this restricted problem  ??????????????? . 
+  In that case $MT({\cal M})$ is equal to twice the delay of the longer route, thus $T_{max}$ is not relevant anymore. 
+  Since $w_i=0$, choosing $m_i$, the offset of the route from $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i) \mod P$.
+  Remark that we can assume that the weight of the arcs from $s_i$ to $c_s$ are all equal to $0$, since we can change 
+  all $m_i$ into $m_i - t(c_s,r_i) \mod P$ and obtain the same affectation.
+  
+  
     
   
     \subsubsection{Shortest-longest policy}
     
-    \paragraph{Algorithm}
+
+    
     We present a simple policy, which works when the period is large with regards to the delay of the routes.
-    Send the messages in order from the shortest route to the longest route, on after each others in the forward period, without any slots between two messages, that is $m_{s_i} = \tau.i$, if the routes $r_i, i \in {0,...,n-1}$ are ordered by $\lambda(r_i)$ from the shortest to the longest one. 
+    The message are sent in order from the shortest route to the longest route, without any gap between two messages in the forward period.
+    In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{s_i} = i\tau$.
+    We call this algorithm {\bf Shortest-Longest}.
+      
+     By definition, there are no collision in the forward period and if the period is long enough, 
+     it is easy to see that the order of the messages are the same as in the forward period and that no collision can occur. 
       
       
-The message using the shortest route is sent before the others, so it comes back to the central node before the following ones.
-Then, the second message is sent before the others, and also will be back before the third etc... 
-Because the message $i$ is sent $\tau$ slots after the message $i-1$ ($m_{s_i} = m_{s_{i-1}} + \tau$), it comes back after the end of the message $i-1$: $m_{s_{i-1}}+ \tau + 2.\lambda(r_{s_{i-1}}) \le m_{s_i} + 2.\lambda(r_{s_i})$ because of $\lambda(r_{s_i}) \ge \lambda(r_{s_{i-1}})$.
+      \begin{proposition}
+       The algorithm Shortest-Longest solves ??????????? if $n\tau + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0})) \leq P$.
+      \end{proposition}
+      \begin{proof}
+       Since $m_{s_i} = i\tau$, $[t(c_s,r_{s_i})] = \{i\tau,\dots, (i+1)\tau -1\}$ and there are no collision on the forward period.
+       We assume that $\lambda(r_{s_0}) = 0$, by removing $\lambda(r_{s_0})$ to every route, it does not change their order
+       or the result of this algorithm.
+      
+      
+      We have  $[t(c_s,r_{t_i})] = \{2 \lambda(r_{s_i}) + i\tau, \dots,  2 \lambda(r_{s_i}) + (i+1)\tau -1\}$ since $2 \lambda(r_{s_{n-1 }}) + n\tau \leq P$.
+       Since $ \lambda(r_{s_i}) \leq  \lambda(r_{s_{i+1}})$ by construction, we have  $2 \lambda(r_{s_i}) + (i+1)\tau -1 < 2 \lambda(r_{s_{i+1}}) + (i+1)\tau$
+       which proves that there are no collision on the backward period. 
+      \end{proof}
 
-      \paragraph{Period}
-      Because of $m_{s_i} = \tau.i$ in the forward period, there is no collisions.
-      To ensure that there is no collisions in the backward period, we must ensure that the last message ends before the end of the period P. We have to find the minimum period P such that the last message have totally came back before P slots after the first message.
       
-      The this policy ensure us a period of $$P = \tau * n + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0}))$$ if routes $\{r_0,...,r_{s_{n-1}}\}$ are ordered
-from the shortest to the longest. 
-
-We have to calculate the time taken by the last message to reach $c_t$. $2.\lambda(r_{s_0})$ is the first slot in which the first message is coming back in the backward period,
-and 2$\lambda(r_{s_{n-1}}) + n . \tau $ is the time at which the last message has totally passed the switch.
-Therefore, the period only depends of the difference between the longest and the shortest route: the larger this value is, the larger
-the period is.
-   
+      If the period is slightly smaller that the bound, a collision will occur on the route in the backward period, making 
+      this policy not useful even as a heuristic for longer routes. 
+      
+%       
+% The message using the shortest route is sent before the others, therefore on the backward period it cannot conflict 
+% 
+% comes back to the central node before the following ones.
+% Then, the second message is sent before the others, and also will be back before the third etc... 
+% Because the message $i$ is sent $\tau$ slots after the message $i-1$ ($m_{s_i} = m_{s_{i-1}} + \tau$), it comes back after the end of the message $i-1$: $m_{s_{i-1}}+ \tau + 2.\lambda(r_{s_{i-1}}) \le m_{s_i} + 2.\lambda(r_{s_i})$ because of $\lambda(r_{s_i}) \ge \lambda(r_{s_{i-1}})$.
+% 
+%       Because of $m_{s_i} = \tau.i$ in the forward period, there is no collisions.
+%       To ensure that there is no collisions in the backward period, we must ensure that the last message ends before the end of the period P. We have to find the minimum period P such that the last message have totally came back before P slots after the first message.
+%       
+%       The this policy ensure us a period of $$P = \tau * n + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0}))$$ if routes $\{r_0,...,r_{s_{n-1}}\}$ are ordered
+% from the shortest to the longest. 
+% 
+% We have to calculate the time taken by the last message to reach $c_t$. $2.\lambda(r_{s_0})$ is the first slot in which the first message is coming back in the backward period,
+% and 2$\lambda(r_{s_{n-1}}) + n . \tau $ is the time at which the last message has totally passed the switch.
+% Therefore, the period only depends of the difference between the longest and the shortest route: the larger this value is, the larger
+% the period is.
+%    
    
     \subsubsection{Greedy Algorithm}
     
