@@ -30,17 +30,20 @@ We consider a ring as a graph model. The weight of the arcs is the time taken by
 \section*{Periodic process}
 We define a set $\cal C$ of couple of vertices $(u,v) \in V$. Between each couple of $\cal C$, the following periodic process of period $P$ ($P$ is a multiple of $N$) is observed.
 \begin{enumerate}
- \item The node $u$ receives (from an external way) some latency critical data addressed to $v$.
+ \item The node $u$ receives (from another source) some latency critical data addressed to $v$.
  \item Those data are transferred to $v$ through the ring .
- \item After reception and computing of the message, the node $v$ sends an answer to $u$.
+ \item After a computation time of the message, the node $v$ sends an answer to $u$.
 \end{enumerate}
  This periodic process has a critical end to end latency, thus a messages has to be the less buffered as possible before being send in the ring.
  
 \section*{Sending policy}
-In the studied model, the ring has a {\bf broadcast and select} policy: when a node sends some data in a slot, this slot is {\em taken} by this node for an entire ride of the ring. This means that every nodes of the ring can collect the information addressed to it, but it does not delete the data in the slot. The slot is fully cleared by the node that sent it, when it came back after a ride of the ring.
+In the studied model, the ring has a {\bf broadcast and select} policy.
+When a node send some a packet on the ring, it contains data for several destinations. Every node of the ring reads all the slots and keep the data addressed to it. It copy the data of the packet in the slot, but does not remove anything. The only node that can free a slot is the one which sent a packet in it.
+
+/%when a node sends some data in a slot, this slot is {\em taken} by this node for an entire ride of the ring. This means that every nodes of the ring can collect the information addressed to it, but it does not delete the data in the slot. The slot is fully cleared by the node that sent it, when it came back after a ride of the ring.
 
 Thus, a node has to wait for a free slot before sending some data in the ring. To avoid overloading the ring, a node sends some data only if some criteria  are satisfied.
-We define by $Q$ the size of the buffer of a node, $\alpha$ the {\em minimum load} of the buffer, $0 \leq  \alpha \leq 1$, and $\delta$ the {\em maximum delay}.
+We define by $Q$ the capacity of the buffer of a node, $\alpha$ the {\em minimum load} of the buffer, $0 \leq  \alpha \leq 1$, and $\delta$ the {\em maximum delay}.
 
 The node sends some data in a slot if:
 \begin{itemize}
