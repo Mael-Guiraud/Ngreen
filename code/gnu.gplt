@@ -1,20 +1,20 @@
 ################# Commandes d'affichage Gnuplot ###############
 
 
-plot   'results_periode.data'  using 1:2 title "3NT"
-replot   'results_periode.data'  using 1:3 title "prime"
-replot   'results_periode.data'  using 1:4 title "sl"
-replot   'results_periode.data'  using 1:5 title "LT" with lines
-replot   'results_periode.data'  using 1:6 title "2LT" with lines
+plot   'results_periode.data'  using 1:2 linetype 3 pointtype 2 title "Greedy 3NT"
+replot   'results_periode.data'  using 1:3 linetype 4 pointtype 4 title "Exhaustive Generation"
+replot   'results_periode.data'  using 1:4 linetype 0 pointtype 1 title "Shortest Longest"
+replot   'results_periode.data'  using 1:5 linetype 2 title "LT" with lines
+replot   'results_periode.data'  using 1:6 linetype 7 title "2LT" with lines
 
 
 
 ######### Pour une sortie dans un fichier .ps ##################"
-set title "periode min moyenne /nb routes"
-set ylabel "periode"
-set xlabel "nb routes"
+set title "Average Minimal Period ({/Symbol l} < {/Symbol t})"
+set ylabel "Period (slots)"
+set xlabel "# routes"
 set term postscript color solid
-set output "periode.ps"
+set output "periode_petite.ps"
 set key left top
 replot
 

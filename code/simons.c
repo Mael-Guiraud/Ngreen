@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <math.h>
 #include "struct.h"
 
 typedef struct element{
@@ -261,7 +262,7 @@ int eligible(Element * elems, int time)
 	if(elems == NULL)
 		return -1;
 	//printf("pointeur envoyé = %p\n",elems);
-	int deadline_min=9999;
+	int deadline_min=INT_MAX;
 	int elu = -1;
 	while(elems)
 	{
@@ -352,6 +353,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 			//printf("Ajout de %d dans elems \n",elemtmp->index);
 			//affichejobs(elems);
 		}
+
 		else //si c'est un ensemble
 		{
 			if(ens2== NULL)
@@ -746,8 +748,80 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	
 }
 
+
+int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
+{
+	int nbr_route = g.N /2;
+	for(int i=1;i<nbr_route;i++)
+	{
+		for(int j=i-1;j>=0;j--)
+		{
+			if( fabs(mi[j]+g.matrice[nbr_route][j]-mi[i]-g.matrice[nbr_route][i]) <taille_paquet )
+			{
+				printf("PB(aller) entre %d(%d) et %d(%d)\n",i,mi[j]+g.matrice[nbr_route][j],j,mi[i]+g.matrice[nbr_route][i]);
+				return 0;
+			}
+		}
+	}
+
+	for(int i=0;i<nbr_route;i++)
+	{
+		for(int j=0;j<i;j++)
+		{
+			if( fabs(mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j]-wi[i]-mi[i]-g.matrice[nbr_route][i]-2*g.matrice[nbr_route][nbr_route+1+i]) <taille_paquet )
+			{
+				printf("PB(retour) entre %d(%d) et %d(%d)\n",i,mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j],j,mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]);
+				return 0;
+			}	
+		}
+	}
+	return 1;
+}
+//Permute les elements d'un tableau
+void fisher_yates(int * tab, int taille)
+{
+	int r;
+	int tmp;
+	for(int i=taille-1;i>0;i--)
+	{
+		r=rand()%(i+1);
+		tmp = tab[i];
+		tab[i]= tab[r];
+		tab[r]=tmp;
+	}
+}
+void tri_bulles_inverse(int* tab,int* ordre,int taille)
+{
+	int sorted;
+	int tmp;
+	int tmp_ordre;
+
+	int tabcpy[taille];
+	for(int i=0;i<taille;i++)tabcpy[i]=tab[i];
+
+	for(int i=taille-1;i>=1;i--)
+	{
+		sorted = 1;
+		for(int j = 0;j<=i-1;j++)
+		{
+
+			if(tabcpy[j+1]<tabcpy[j])
+			{
+				tmp_ordre = ordre[j+1];
+				ordre[j+1]=ordre[j];
+				ordre[j]=tmp_ordre;
+				tmp = tabcpy[j+1];
+				tabcpy[j+1]= tabcpy[j];
+				tabcpy[j]= tmp;
+				sorted = 0;
+			}
+		}
+		if(sorted){return;}
+	}
+
+}
 //Algo naif
-int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
+int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 {
 	
 	
@@ -763,8 +837,11 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	  int m_i[nbr_route];
 	  int w_i[nbr_route];
 	int i;
+
+	int permutation[nbr_route];
 	  for (i = 0; i < nbr_route; i++)
 	    {
+	    	permutation[i]=i;
 	      Dl[i] = g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1];
 	      lambdaV[i] = g.matrice[nbr_route][i];
 	    }
@@ -774,25 +851,59 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	int offset = 0;
 	
 	
-	//tant qu'on n'a pas affecté toutes les routes
-	while(a_affecter != 0)
+	if(mode == 0)
 	{
-		i=greater(Dl,nbr_route);
-		//Si on est le premier
-		if(offset==0)
+
+		fisher_yates(permutation,nbr_route);
+		//affiche_tab(permutation,nbr_route);
+		m_i[permutation[0]]=0;
+		offset=taille_paquet+g.matrice[nbr_route][permutation[0]];
+		for(i=1;i<nbr_route;i++)
 		{
-			m_i[i] = 0;
-			offset=taille_paquet+lambdaV[i];
+			m_i[permutation[i]]=offset-g.matrice[nbr_route][permutation[i]];
+			offset+=taille_paquet;
+		}
+	}
+	else
+	{
+		if(mode == 1)
+		{
+			//tant qu'on n'a pas affecté toutes les routes
+			while(a_affecter != 0)
+			{
+				i=greater(Dl,nbr_route);
+				//Si on est le premier
+				if(offset==0)
+				{
+					m_i[i] = 0;
+					offset=taille_paquet+lambdaV[i];
+				}
+				else
+				{
+					m_i[i] = offset-lambdaV[i];
+					offset += taille_paquet;
+				}
+				a_affecter--;
+				Dl[i]=0;
+			}
 		}
 		else
-		{
-			m_i[i] = offset-lambdaV[i];
-			offset += taille_paquet;
-		}
-		a_affecter--;
-		Dl[i]=0;
-	}
 
+		{
+			//Tri du tableau ordre
+			tri_bulles_inverse(Dl,permutation,nbr_route);
+			//affiche_tab(Dl,nbr_route);
+			//affiche_tab(permutation,nbr_route);
+			//On envoie les messages de longest a shortest
+			m_i[permutation[0]]=0;
+			offset = taille_paquet+g.matrice[nbr_route][permutation[0]];
+			for(int i=1;i<nbr_route;i++)
+			{
+				m_i[permutation[i]]=offset-g.matrice[nbr_route][permutation[i]];
+				offset+=taille_paquet;
+			}
+		}
+	}
 	
 
 	//release times
@@ -816,15 +927,15 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	//afficheTwoWayTrip(t);
 	Element * elems = init_element();
 	int deadline_route;
-	printf(" Deadline Routes = ");
+
 	for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
-		elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_fenetre,deadline_route));
-		printf(" %d ",deadline_route);
+		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
+		//printf(" %d ",deadline_route);
 
 	}
-	printf("\nDeadline Fenetre = %d \n",deadline_fenetre);
+
 	
 	
 	//affichejobs(elems);
@@ -918,7 +1029,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	//ecriture des temps trouvés
 	while(ens)
 	{
-		w_i[ens->numero_element] = ens->temps_depart-m_i[ens->numero_element]-routes[ens->numero_element];
+		w_i[ens->numero_element] = ens->temps_depart-arrivee[ens->numero_element];
 		ens=ens->frereD;
 	}
 	
@@ -926,8 +1037,9 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode)
 	freeelems(elems);
 	freeelems(elems2);
 
-	affiche_tab(m_i,nbr_route);
-	affiche_tab(w_i,nbr_route);
+	//affiche_tab(m_i,nbr_route);
+	//affiche_tab(w_i,nbr_route);
+	if(!is_ok(g,taille_paquet,m_i,w_i))printf("ERROR\n");
 	int max = w_i[0]+2*Dl[0];
 	for(int i=0;i<nbr_route;i++)
 	{

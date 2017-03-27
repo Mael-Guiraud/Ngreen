@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0
-%%Title: echec.ps
+%%Title: echec_longues.ps
 %%Creator: gnuplot 5.0 patchlevel 3
-%%CreationDate: Wed Mar 15 12:08:01 2017
+%%CreationDate: Wed Mar 15 16:12:24 2017
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 554 770
 %%Orientation: Landscape
@@ -466,13 +466,13 @@ systemdict /pdfmark known not {
   userdict /pdfmark systemdict /cleartomark get put
 } if
 SDict begin [
-  /Title (echec.ps)
+  /Title (echec_longues.ps)
   /Subject (gnuplot plot)
   /Creator (gnuplot 5.0 patchlevel 3)
   /Author (merelas)
 %  /Producer (gnuplot)
 %  /Keywords ()
-  /CreationDate (Wed Mar 15 12:08:01 2017)
+  /CreationDate (Wed Mar 15 16:12:24 2017)
   /DOCINFO pdfmark
 end
 } ifelse
@@ -702,7 +702,7 @@ LCb setrgbcolor
 LCb setrgbcolor
 112 2533 M
 currentpoint gsave translate -270 rotate 0 0 moveto
-[ [(Helvetica) 140.0 0.0 true true 0 (Sucess )]
+[ [(Helvetica) 140.0 0.0 true true 0 (Sucess\(%\) )]
 ] -46.7 MCshow
 grestore
 LTb
@@ -725,7 +725,7 @@ LCb setrgbcolor
 LTa
 LCa setrgbcolor
 LCb setrgbcolor
-6296 1001 M
+6296 4486 M
 [ [(Helvetica) 140.0 0.0 true true 0 (Shortest Longest)]
 ] -46.7 MRshow
 1.000 UP
@@ -733,30 +733,30 @@ LCb setrgbcolor
 LTa
 LCa setrgbcolor
 770 448 Pls
-1156 4619 Pls
-1542 4619 Pls
-1928 4619 Pls
-2314 4619 Pls
-2700 4619 Pls
-3086 4619 Pls
-3472 4619 Pls
-3859 4619 Pls
-4245 4619 Pls
-4631 4619 Pls
-5017 4619 Pls
-5403 4619 Pls
-5789 4619 Pls
-6175 4619 Pls
-6561 4619 Pls
-6947 4619 Pls
-6579 1001 Pls
+1156 448 Pls
+1542 448 Pls
+1928 448 Pls
+2314 448 Pls
+2700 448 Pls
+3086 448 Pls
+3472 448 Pls
+3859 461 Pls
+4245 490 Pls
+4631 494 Pls
+5017 511 Pls
+5403 598 Pls
+5789 690 Pls
+6175 823 Pls
+6561 986 Pls
+6947 1257 Pls
+6579 4486 Pls
 % End plot #1
 % Begin plot #2
 1.000 UP
 1.000 UL
 LTb
 0.34 0.71 0.91 C LCb setrgbcolor
-6296 861 M
+6296 4346 M
 [ [(Helvetica) 140.0 0.0 true true 0 (Greedy 3LT)]
 ] -46.7 MRshow
 1.000 UP
@@ -764,40 +764,70 @@ LTb
 LTb
 0.34 0.71 0.91 C 770 448 Crs
 1156 448 Crs
-1542 527 Crs
-1928 1620 Crs
-2314 3547 Crs
-2700 4502 Crs
-3086 4615 Crs
-3472 4619 Crs
-3859 4619 Crs
-4245 4619 Crs
-4631 4619 Crs
-5017 4619 Crs
-5403 4619 Crs
+1542 502 Crs
+1928 736 Crs
+2314 1420 Crs
+2700 2671 Crs
+3086 3505 Crs
+3472 4043 Crs
+3859 4427 Crs
+4245 4523 Crs
+4631 4569 Crs
+5017 4611 Crs
+5403 4611 Crs
 5789 4619 Crs
 6175 4619 Crs
 6561 4619 Crs
 6947 4619 Crs
-6579 861 Crs
+6579 4346 Crs
 % End plot #2
 % Begin plot #3
 1.000 UP
 1.000 UL
 LTb
 0.90 0.62 0.00 C LCb setrgbcolor
-6296 721 M
+6296 4206 M
 [ [(Helvetica) 140.0 0.0 true true 0 (Exhaustive Generation)]
 ] -46.7 MRshow
 1.000 UP
 1.000 UL
 LTb
 0.90 0.62 0.00 C 770 448 Box
-1156 4619 Box
-1542 4619 Box
-1928 4619 Box
-2314 4619 Box
-2700 4619 Box
+1156 581 Box
+1542 1945 Box
+1928 3276 Box
+2314 3747 Box
+2700 4169 Box
+3086 4394 Box
+3472 4548 Box
+3859 4581 Box
+4245 4594 Box
+4631 4611 Box
+5017 4619 Box
+5403 4615 Box
+5789 4619 Box
+6175 4619 Box
+6561 4619 Box
+6947 4619 Box
+6579 4206 Box
+% End plot #3
+% Begin plot #4
+1.000 UP
+1.000 UL
+LTb
+0.00 0.62 0.45 C LCb setrgbcolor
+6296 4066 M
+[ [(Helvetica) 140.0 0.0 true true 0 (Upper Bound)]
+] -46.7 MRshow
+1.000 UP
+1.000 UL
+LTb
+0.00 0.62 0.45 C 770 448 Box
+1156 4360 Box
+1542 4565 Box
+1928 4602 Box
+2314 4615 Box
+2700 4611 Box
 3086 4619 Box
 3472 4619 Box
 3859 4619 Box
@@ -809,37 +839,7 @@ LTb
 6175 4619 Box
 6561 4619 Box
 6947 4619 Box
-6579 721 Box
-% End plot #3
-% Begin plot #4
-1.000 UP
-1.000 UL
-LTb
-0.00 0.62 0.45 C LCb setrgbcolor
-6296 581 M
-[ [(Helvetica) 140.0 0.0 true true 0 (Theoretical)]
-] -46.7 MRshow
-1.000 UP
-1.000 UL
-LTb
-0.00 0.62 0.45 C 770 448 Crs
-1156 4619 Crs
-1542 4619 Crs
-1928 4619 Crs
-2314 4619 Crs
-2700 4619 Crs
-3086 4619 Crs
-3472 4619 Crs
-3859 4619 Crs
-4245 4619 Crs
-4631 4619 Crs
-5017 4619 Crs
-5403 4619 Crs
-5789 4619 Crs
-6175 4619 Crs
-6561 4619 Crs
-6947 4619 Crs
-6579 581 Crs
+6579 4066 Box
 % End plot #4
 2.000 UL
 LTb

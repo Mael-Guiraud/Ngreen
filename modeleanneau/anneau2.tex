@@ -1,0 +1,32 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% \psscalebox{1.0 1.0} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-4.384483)(7.640009,4.384483)
+\definecolor{colour1}{rgb}{0.99607843,0.99607843,0.99607843}
+\definecolor{colour2}{rgb}{0.0,0.21960784,1.0}
+\definecolor{colour0}{rgb}{0.003921569,0.003921569,0.003921569}
+\pscircle[linecolor=black, linewidth=0.04, dimen=outer](3.9169683,-0.7844828){3.6}
+\psline[linecolor=black, linewidth=0.04](3.2710423,3.40811)(3.2710423,3.0881097)(3.9110425,3.0881097)(3.9110425,3.40811)(3.9110425,3.0881097)
+\psline[linecolor=black, linewidth=0.04](4.2497125,3.3680239)(4.2118726,3.050269)(4.8473825,2.9745896)(4.885222,3.2923446)(4.8473825,2.9745896)
+\psline[linecolor=black, linewidth=0.04](5.1756554,3.2069407)(5.0436735,2.915426)(5.626703,2.6514623)(5.7586846,2.942977)(5.626703,2.6514623)
+\psdots[linecolor=black, dotsize=0.4](3.531783,2.756258)
+\psdots[linecolor=black, dotsize=0.4](0.346598,-0.88818645)
+\psdots[linecolor=black, dotsize=0.4](1.9910425,-3.8215199)
+\psdots[linecolor=black, dotsize=0.4](6.1688204,-3.6141124)
+\psdots[linecolor=black, dotsize=0.4](7.4428945,-0.058556832)
+\psline[linecolor=black, linewidth=0.04](5.9804435,2.86024)(5.803907,2.5933414)(6.3377037,2.2402682)(6.5142403,2.5071669)(6.3377037,2.2402682)
+\rput{-6.5902286}(-0.33567917,0.5439651){\psframe[linecolor=colour1, linewidth=0.002, fillstyle=solid,fillcolor=red, dimen=outer](4.862943,3.3443186)(4.249467,3.0300333)}
+\rput{-23.5285}(-0.7229311,2.4049232){\psframe[linecolor=colour1, linewidth=0.002, fillstyle=solid,fillcolor=colour2, dimen=outer](5.7149525,3.0919552)(5.109824,2.784263)}
+\psbezier[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(1.5919684,2.9530172)(-0.19553162,2.4530172)(0.041968383,0.50301725)(0.041968383,1.303017241379314)
+\rput[bl](3.1859338,4.0844827){\textcolor{colour0}{Step $t = 10 \mu s$}}
+\end{pspicture}
+}
+
