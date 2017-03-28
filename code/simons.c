@@ -892,7 +892,7 @@ void tri_bulles_inverse(int* tab,int* ordre,int taille)
 int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 {
 	
-	taille_paquet = 6;
+	///////////////////////////////////////////////////////taille_paquet = 6;
 	 if (!(g.N % 2))
     {
       printf ("G n'est peut être pas une étoile\n");
@@ -992,23 +992,23 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	i=lower(arrivee,nbr_route);
 	
 
-	//int	date=arrivee[i];
-	int date = 0;
+	int	date=arrivee[i];
+	//////////////////////////////////////////////////////////////////int date = 0;
 	int deadline_fenetre = date + Periode;
 	int j;
-	//affichetab(arrivee,g.sources);
+	for(i=0;i<nbr_route;i++) printf("%d ",arrivee[i]);printf("\n");
 	//afficheTwoWayTrip(t);
 	Element * elems = init_element();
 	int deadline_route;
 
-	/*for(j=0;j<nbr_route;j++)
+	for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
 		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
 		//printf(" %d ",deadline_route);
 
-	}*/
-
+	}
+/*
 	elems= ajoute_elemt(elems,0,0,74);
 	elems= ajoute_elemt(elems,1,21,46);
 	elems= ajoute_elemt(elems,2,2,60);
@@ -1021,14 +1021,16 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	elems= ajoute_elemt(elems,9,52,68);
 	elems= ajoute_elemt(elems,10,25,40);
 	
-	
+	*/
+
+
 	affichejobs(elems);
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
 	
-	//int a_scheduler = nbr_route;
-	int a_scheduler = 11;
+	int a_scheduler = nbr_route;
+	/////////////////////////////////////////////////////int a_scheduler = 11;
 	Ensemble * ens = NULL;
 	Ensemble * ensembletmp;
 	while(a_scheduler != 0)//tant qu'on n'a pas schedul tous les elements
@@ -1113,7 +1115,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 		
 	
 	}
-	affiche_ensemble(ens);printf("\n\n\n");
+	//affiche_ensemble(ens);printf("\n\n\n");
 	//ecriture des temps trouvés
 	while(ens)
 	{
@@ -1125,8 +1127,8 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	freeelems(elems);
 	freeelems(elems2);
 
-	//affiche_tab(m_i,nbr_route);
-	//affiche_tab(w_i,nbr_route);
+	affiche_tab(m_i,nbr_route);
+	affiche_tab(w_i,nbr_route);
 	if(!is_ok(g,taille_paquet,m_i,w_i))printf("ERROR\n");
 	int max = w_i[0]+2*Dl[0];
 	for(int i=0;i<nbr_route;i++)

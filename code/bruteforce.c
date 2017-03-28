@@ -14,7 +14,7 @@ typedef struct
 } intervalle_liste;
 
 intervalle_liste *initialise (int nbr_route, int taille_paquets, int periode)
-{				//initialise les intervalles de temps restants pour le retour
+{       //initialise les intervalles de temps restants pour le retour
   intervalle_liste *l = malloc (sizeof (intervalle_liste) * nbr_route);
   l[0].suivant = -1;
   l[0].debut = taille_paquets;
@@ -35,78 +35,57 @@ void affiche_intervalle (intervalle_liste * liste)
 
 
 int ajoute_element (intervalle_liste * liste, int debut, int taille,
-		int taille_paquets, int *nombre_slot, int nbr_route)
-{				//renvoie 0 si l'insertion n'est pas possible, 1 sinon et modifie alors liste
+    int taille_paquets, int *nombre_slot, int nbr_route)
+{       //renvoie 0 si l'insertion n'est pas possible, 1 sinon et modifie alors liste
   //pour couper en deux l'intervalle approprié
-<<<<<<< HEAD
-  int pos=0;
-  while(pos != -1){//détecte l'intervalle à découper si il existe
-    if(liste[pos].debut <= debut && liste[pos].fin - debut >=  taille_paquets){//l'intervalle existe, on le découpe
-      //on calcule le nombre de slot après découpage (en prenant en compte les paquets déjà placés)
-      *nombre_slot+= (debut - liste[pos].debut)/taille_paquets +  (liste[pos].fin - debut)/taille_paquets -  (liste[pos].fin - liste[pos].debut)/taille_paquets;
-      if(*nombre_slot >= nbr_route){ // si le nombre de slots retour est insuffisant, on ne permet pas l'ajout de l'élément à cet endroit     
-      liste[taille].debut = debut + taille_paquets;
-      liste[taille].fin = liste[pos].fin;
-      liste[taille].suivant = liste[pos].suivant;
-      liste[pos].fin = debut;
-      liste[pos].suivant = taille;
-      return 1;
-      }
-      else{  
-		*nombre_slot+=1;
-		return 0;
-		}
-		
-=======
   int pos = 0;
   while (pos != -1)
-    {				//détecte l'intervalle à découper si il existe
+    {       //détecte l'intervalle à découper si il existe
       if (liste[pos].debut <= debut
-	  && liste[pos].fin - debut >= taille_paquets)
-	{			//l'intervalle existe, on le découpe
-	  //on calcule le nombre de slot après décooupage (en prenant en compte les paquets déjà placés)
-	  *nombre_slot +=
-	    (debut - liste[pos].debut) / taille_paquets + (liste[pos].fin -
-							   debut) /
-	    taille_paquets - (liste[pos].fin -
-			      liste[pos].debut) / taille_paquets;
-	  if (*nombre_slot >= nbr_route)
-	    {			// si le nombre de slots retour est insuffisant, on ne permet pas l'ajout de l'élément à cet endroit     
-	      liste[taille].debut = debut + taille_paquets;
-	      liste[taille].fin = liste[pos].fin;
-	      liste[taille].suivant = liste[pos].suivant;
-	      liste[pos].fin = debut;
-	      liste[pos].suivant = taille;
-	      return 1;
-	    }
-	  else
-	    {
-	      *nombre_slot += 1;
-	      return 0;
-	    }
+    && liste[pos].fin - debut >= taille_paquets)
+  {     //l'intervalle existe, on le découpe
+    //on calcule le nombre de slot après décooupage (en prenant en compte les paquets déjà placés)
+    *nombre_slot +=
+      (debut - liste[pos].debut) / taille_paquets + (liste[pos].fin -
+                 debut) /
+      taille_paquets - (liste[pos].fin -
+            liste[pos].debut) / taille_paquets;
+    if (*nombre_slot >= nbr_route)
+      {     // si le nombre de slots retour est insuffisant, on ne permet pas l'ajout de l'élément à cet endroit     
+        liste[taille].debut = debut + taille_paquets;
+        liste[taille].fin = liste[pos].fin;
+        liste[taille].suivant = liste[pos].suivant;
+        liste[pos].fin = debut;
+        liste[pos].suivant = taille;
+        return 1;
+      }
+    else
+      {
+        *nombre_slot += 1;
+        return 0;
+      }
 
-	}
+  }
       pos = liste[pos].suivant;
->>>>>>> 560bd1d0ac1025b0709c7f580b56dd7723d6aa85
     }
   return 0;
 }
 
 void
 retire_element (intervalle_liste * liste, int debut, int taille,
-		int *nombre_slot, int taille_paquets)
-{				//enlève une route et fusionne les intervalles correspondants
+    int *nombre_slot, int taille_paquets)
+{       //enlève une route et fusionne les intervalles correspondants
   int i;
   for (i = 0; i < taille; i++)
     {
       if (liste[i].fin == debut)
-	{
-	  break;
-	}
-    }				//cherche l'intervalle à fusionner, l'autre est en dernière position par construction
+  {
+    break;
+  }
+    }       //cherche l'intervalle à fusionner, l'autre est en dernière position par construction
   *nombre_slot +=
     -(debut - liste[i].debut) / taille_paquets - (liste[taille].fin -
-						  debut) / taille_paquets +
+              debut) / taille_paquets +
     (liste[taille].fin - liste[i].debut) / taille_paquets;
   liste[i].suivant = liste[taille].suivant;
   liste[i].fin = liste[taille].fin;
@@ -114,40 +93,40 @@ retire_element (intervalle_liste * liste, int debut, int taille,
 
 int
 prochain_debut (intervalle_liste * liste, int debut, int taille,
-		int taille_paquets)
-{				//renvoie la prochaine position possible pour la route (décalage à la position actuelle donnée par debut)
+    int taille_paquets)
+{       //renvoie la prochaine position possible pour la route (décalage à la position actuelle donnée par debut)
   int pos = 0;
   while (liste[pos].suivant != -1)
     {
       if (debut < liste[pos].fin)
-	{
-	  break;
-	}
+  {
+    break;
+  }
       pos = liste[pos].suivant;
-    }				//trouve le premier intervalle qui peut contenir la route
+    }       //trouve le premier intervalle qui peut contenir la route
   if (debut < liste[pos].debut)
-    {				//debut avant l'intervalle
+    {       //debut avant l'intervalle
       if (liste[pos].fin - liste[pos].debut >= taille_paquets)
-	{			//on met la route au début de l'intervalle si assez de place
-	  return liste[pos].debut - debut;
-	}
+  {     //on met la route au début de l'intervalle si assez de place
+    return liste[pos].debut - debut;
+  }
     }
   else
     {
       if (debut < liste[pos].debut + taille_paquets)
-	{			//debut dans une partie proche du début de l'intervalle 
-	  if (liste[pos].fin - liste[pos].debut >= 2 * taille_paquets)
-	    {			// Evite les intervalles inférieur à taille_paquet qui sont inutiles
-	      return liste[pos].debut + taille_paquets - debut;
-	    }
-	}
+  {     //debut dans une partie proche du début de l'intervalle 
+    if (liste[pos].fin - liste[pos].debut >= 2 * taille_paquets)
+      {     // Evite les intervalles inférieur à taille_paquet qui sont inutiles
+        return liste[pos].debut + taille_paquets - debut;
+      }
+  }
       else
-	{			//si il y a la place on décale juste de 1
-	  if (liste[pos].fin - debut >= taille_paquets)
-	    {
-	      return 1;
-	    }
-	}
+  {     //si il y a la place on décale juste de 1
+    if (liste[pos].fin - debut >= taille_paquets)
+      {
+        return 1;
+      }
+  }
     }
   //dans les cas restants on renvoie le début du premier intervalle qui peut contenir une route
 
@@ -155,11 +134,11 @@ prochain_debut (intervalle_liste * liste, int debut, int taille,
     {
       pos = liste[pos].suivant;
       if (liste[pos].fin - liste[pos].debut >= taille_paquets)
-	{
-	  return liste[pos].debut - debut;
-	}
+  {
+    return liste[pos].debut - debut;
+  }
     }
-  return liste[pos].fin - debut + taille_paquets;	//on a pas trouvé de bon emplacement, on retourne au début des temps retour 
+  return liste[pos].fin - debut + taille_paquets; //on a pas trouvé de bon emplacement, on retourne au début des temps retour 
 }
 
 
@@ -209,26 +188,17 @@ bruteforceiter (Graphe g, int periode, int taille_paquets)
     }
 
 
-<<<<<<< HEAD
-  int *solution_pos,*solution_num ,*temps_retour,*route_restante;
-  assert(solution_pos = malloc(sizeof(int)*nbr_route));
-  assert(solution_num = malloc(sizeof(int)*nbr_route));
-  assert(temps_retour = malloc(sizeof(int)*nbr_route));
-  assert(route_restante = malloc(sizeof(int)*nbr_route));
-   //affiche les données sur lesquelles on lance le bruteforce
-=======
   int *solution_pos, *solution_num, *temps_retour, *route_restante;
   assert (solution_pos = malloc (sizeof (int) * nbr_route));
   assert (solution_num = malloc (sizeof (int) * nbr_route));
   assert (temps_retour = malloc (sizeof (int) * nbr_route));
   assert (route_restante = malloc (sizeof (int) * nbr_route));
   //affiche les données sur lesquelles on lance le bruteforce
->>>>>>> 560bd1d0ac1025b0709c7f580b56dd7723d6aa85
 
   temps_retour[0] = temps_retour_param[0];
   for (int j = 1; j < nbr_route; j++)
     {
-      route_restante[j] = 1;	//on pourrait juste virer la première route ?
+      route_restante[j] = 1;  //on pourrait juste virer la première route ?
       temps_retour[j] = temps_retour_param[j];
 
     }
@@ -242,7 +212,7 @@ bruteforceiter (Graphe g, int periode, int taille_paquets)
   route_restante[0] = 0;
   solution_pos[0] = 0;
   solution_num[0] = 0;
-  int solution_taille = 1;	//première route fixée
+  int solution_taille = 1;  //première route fixée
   int budget = periode - nbr_route * taille_paquets;
   int num_courant = 1, decalage_courant = 0;
   intervalle_liste *retour = initialise (nbr_route, taille_paquets, periode);
@@ -261,108 +231,86 @@ bruteforceiter (Graphe g, int periode, int taille_paquets)
   /////////////////// Début de l'arbre de recherche ////////////////////////////
 
 
-<<<<<<< HEAD
-	while(solution_taille > 0 && compteur < 10000000){
-    compteur++;
-<<<<<<< HEAD
-    
-    if(solution_taille == nbr_route) { //mettre ça à l'extérieur de la boucle pour simplifier
-=======
-    if(compteur==100000000)
-    {
-      free(solution_num);
-    free(solution_pos);
-    free(route_restante);
-    free(temps_retour);
-    return -2;
-
-    }
-    if(solution_taille == nbr_route) {
->>>>>>> 5312739ba49d39dde71ddb8e42ea56fa008dabb1
-		//print_sol(solution_pos,solution_num,nbr_route,budget);
-		//printf("PERIODE %d \n",periode);
-=======
   while (compteur < 100000000)
     {
       compteur++;
       if (solution_taille == nbr_route)
-    	{
-    	  //print_sol(solution_pos,solution_num,nbr_route,budget);
-    	  //printf("PERIODE %d \n",periode);
->>>>>>> 560bd1d0ac1025b0709c7f580b56dd7723d6aa85
+      {
+        //print_sol(solution_pos,solution_num,nbr_route,budget);
+        //printf("PERIODE %d \n",periode);
 
-    	  free (solution_num);
-    	  free (solution_pos);
-    	  free (route_restante);
-    	  free (temps_retour);
-    	  return periode;
-    	}			//sortir la solution et arrêt
+        free (solution_num);
+        free (solution_pos);
+        free (route_restante);
+        free (temps_retour);
+        return periode;
+      }     //sortir la solution et arrêt
       if (num_courant == nbr_route)
-    	{			//plus de route à utiliser, on revient en arrière et on utilise un début de route plus élevé
-    	  solution_taille--;
-    	  if (solution_taille == 0)
-    	    {
-    	      free (solution_num);
-    	      free (solution_pos);
-    	      free (route_restante);
-    	      free (temps_retour);
+      {     //plus de route à utiliser, on revient en arrière et on utilise un début de route plus élevé
+        solution_taille--;
+        if (solution_taille == 0)
+          {
+            free (solution_num);
+            free (solution_pos);
+            free (route_restante);
+            free (temps_retour);
 
-    	      return -1;
-    	    }
-    	  num_courant = solution_num[solution_taille];
-    	  route_restante[num_courant] = 1;
-    	  debut_retour = solution_pos[solution_taille] + temps_retour[num_courant];
-    	  if (debut_retour >= periode)
-    	    {
-    	      debut_retour -= periode;	// valeur au plus deux fois la période
-    	    }
-    	  //printf("Taille %d, debut %d \n",solution_taille, debut_retour);
-    	  //affiche_intervalle(retour);
-    	  retire_element (retour, debut_retour, solution_taille, &nombre_slot,
-    			  taille_paquets);
-    	  //affiche_intervalle(retour);
-    	  decalage_courant = solution_pos[solution_taille] - solution_pos[solution_taille - 1] - taille_paquets;	//decalage de la route qu'on enlève
-    	  //de la solution avec la précédente
-    	  budget += decalage_courant;
-    	  decalage_courant += prochain_debut (retour, debut_retour, solution_taille, taille_paquets);	//calcul le prochain point ou on va placer le paquet de num_courant 
-    	}
+            return -1;
+          }
+        num_courant = solution_num[solution_taille];
+        route_restante[num_courant] = 1;
+        debut_retour = solution_pos[solution_taille] + temps_retour[num_courant];
+        if (debut_retour >= periode)
+          {
+            debut_retour -= periode;  // valeur au plus deux fois la période
+          }
+        //printf("Taille %d, debut %d \n",solution_taille, debut_retour);
+        //affiche_intervalle(retour);
+        retire_element (retour, debut_retour, solution_taille, &nombre_slot,
+            taille_paquets);
+        //affiche_intervalle(retour);
+        decalage_courant = solution_pos[solution_taille] - solution_pos[solution_taille - 1] - taille_paquets;  //decalage de la route qu'on enlève
+        //de la solution avec la précédente
+        budget += decalage_courant;
+        decalage_courant += prochain_debut (retour, debut_retour, solution_taille, taille_paquets); //calcul le prochain point ou on va placer le paquet de num_courant 
+      }
       else
-    	{
-    	  if (budget - decalage_courant < 0)
-    	    {			// plus de budget pour la route, on essaye de mettre la route suivante à la place
-    	      for (i = num_courant + 1; i < nbr_route && !route_restante[i];
-    		   i++){}
-    	      num_courant = i;
-    	      decalage_courant = 0;
-    	    }
-    	  else
-    	    {
-        	      debut_retour =solution_pos[solution_taille - 1] + taille_paquets +	decalage_courant + temps_retour[num_courant];
-        	      if (debut_retour >= periode)
-          		{
-          		  debut_retour -= periode;	// valeur au plus deux fois la période
-          		}
-        	      if (ajoute_element(retour, debut_retour, solution_taille, taille_paquets,&nombre_slot, nbr_route))
-                {	//on agrandit ici la solution partielle d'une nouvelle route
-            		  solution_pos[solution_taille] = solution_pos[solution_taille - 1] + decalage_courant + taille_paquets;
-            		  solution_num[solution_taille] = num_courant;
-            		  budget -= decalage_courant;
-            		  solution_taille++;
-            		  route_restante[num_courant] = 0;
-            		  for (i = 0; i < nbr_route && !route_restante[i]; i++)
-            		    {
-            		    }
-            		  num_courant = i;	//on utilise la première route libre comme nouveau candidat à placer
-            		  decalage_courant = 0;	//avec un décalage de 0
-            		  //print_sol(solution_pos,solution_num,solution_taille,budget);
-            		  //affiche_intervalle(retour);
-            		}
-        	      else
-            		{		//pas de place pour le retour, on essaye le décalage suivant.
-            		  decalage_courant += prochain_debut (retour, debut_retour, solution_taille,taille_paquets);
-            		}
-    	    }
-    	}
+      {
+        if (budget - decalage_courant < 0)
+          {     // plus de budget pour la route, on essaye de mettre la route suivante à la place
+            for (i = num_courant + 1; i < nbr_route && !route_restante[i];
+           i++){}
+            num_courant = i;
+            decalage_courant = 0;
+          }
+        else
+          {
+                debut_retour =solution_pos[solution_taille - 1] + taille_paquets +  decalage_courant + temps_retour[num_courant];
+                if (debut_retour >= periode)
+              {
+                debut_retour -= periode;  // valeur au plus deux fois la période
+              }
+                if (ajoute_element(retour, debut_retour, solution_taille, taille_paquets,&nombre_slot, nbr_route))
+                { //on agrandit ici la solution partielle d'une nouvelle route
+                  solution_pos[solution_taille] = solution_pos[solution_taille - 1] + decalage_courant + taille_paquets;
+                  solution_num[solution_taille] = num_courant;
+                  budget -= decalage_courant;
+                  solution_taille++;
+                  route_restante[num_courant] = 0;
+                  for (i = 0; i < nbr_route && !route_restante[i]; i++)
+                    {
+                    }
+                  num_courant = i;  //on utilise la première route libre comme nouveau candidat à placer
+                  decalage_courant = 0; //avec un décalage de 0
+                  //print_sol(solution_pos,solution_num,solution_taille,budget);
+                  //affiche_intervalle(retour);
+                }
+                else
+                {   //pas de place pour le retour, on essaye le décalage suivant.
+                  decalage_courant += prochain_debut (retour, debut_retour, solution_taille,taille_paquets);
+                }
+          }
+      }
     }
   //printf("Pas de solution \n");
   free (solution_num);
