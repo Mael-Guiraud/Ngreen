@@ -15,7 +15,8 @@
 \maketitle
 
 \section*{Definitions, model}
-We consider an optical ring composed of $k$ nodes. We can see this ring like $N$ slots rotating to the following position at each time step $t$. The number of slots is given by the length of the ring, and the time step $t$ is the switching granularity. The capacity of a slot depends of the bandwidth of the network (eg, 100 Gbit/s).
+We consider an optical ring composed of $k$ nodes.
+We are in a discrete time model: The time is split in $N$ slot, rotating to the following position each time step $t$. The number of slots is given by the length of the ring, and the time step $t$ is the switching granularity. 
 \begin{center}   
 
       \includegraphics[scale=0.5]{anneau1.pdf}
@@ -23,28 +24,44 @@ We consider an optical ring composed of $k$ nodes. We can see this ring like $N$
       \includegraphics[scale=0.5]{anneau2.pdf}
   
 \end{center}
-This optical ring is modelled by a graph $G=(V,A)$, in which the vertices in $V$ are the nodes of the ring, and the arcs in $A$ are the links between the nodes. The weight of the arcs is the time taken by a slot to travel the link, i.e. a multiple of $t$. The sum of all the weight of the arcs in the graph is equal to $t.N$.
+
+We consider a ring as a graph model. The weight of the arcs is the time taken by a slot to travel the link, i.e. a multiple of $t$. The sum of all the weight of the arcs in the graph is equal to $t.N$.
 
 \section*{Periodic process}
-We define a set $\cal C$ of pair of vertices $(u,v) \in V$. Between each pair of $\cal C$, the following periodic process of period $P$ ($P$ is a multiple of $N$) is observed.
+We define a set $\cal C$ of couple of vertices $(u,v) \in V$. Between each couple of $\cal C$, the following periodic process of period $P$ ($P$ is a multiple of $N$) is observed.
 \begin{enumerate}
- \item The node $u$ receives (from an external way) some latency critical data addressed to $v$.
+ \item The node $u$ receives (from another source) some latency critical data addressed to $v$.
  \item Those data are transferred to $v$ through the ring .
- \item After reception and computing of the message, the node $v$ sends an answer to $u$.
+ \item After a computation time of the message, the node $v$ sends an answer to $u$.
 \end{enumerate}
- This periodic process has a critical end to end latency, thus a messages has to be the less buffered as possible before being send in the ring.
+ This periodic process has a critical end to end latency, thus a messages has to be as little buffered as possible before being sent in the ring.
  
 \section*{Sending policy}
-In the studied model, the ring has a {\bf broadcast and select} policy: when a node sends some data in a slot, this slot is {\em taken} by this node for an entire ride of the ring. This means that every nodes of the ring can collect the information addressed to it, but it does not delete the data in the slot. The slot is fully cleared by the node that sent it, when it came back after a ride of the ring.
+In the studied model, the nodes of the ring have a {\bf broadcast and select} policy.
+When a node sends a packet on the ring, it contains data for several destinations. Every node of the ring reads all the slots and keep the data addressed to it. It copy the data of the packet in the slot, but does not remove anything. The only node that can free a slot is the one which send a packet in it.
 
-Thus, a node has to wait for a free slot before sending some data in the ring. To avoid overloading the ring, a node sends some data only if some criteria  are satisfied.
-We define by $Q$ the size of the buffer of a node, $\alpha$ the {\em minimum load} of the buffer, $0 \leq  \alpha \leq 1$, and $\delta$ the {\em maximum delay}.
+%when a node sends some data in a slot, this slot is {\em taken} by this node for an entire ride of the ring. This means that every nodes of the ring can collect the information addressed to it, but it does not delete the data in the slot. The slot is fully cleared by the node that sent it, when it came back after a ride of the ring.
 
-The node sends some data in a slot if:
+
+Thus, a node has to wait for a free slot before sending a packet in the ring. To avoid overloading the ring, a node sends a packet only if some criteria  are satisfied.
+We define by $Q$ the capacity of the buffer of a node, $\alpha$ the {\em minimum load} of the buffer, $0 \leq  \alpha \leq 1$, and $\delta$ the {\em maximum delay}.
+
+The node sends a packet in a slot if:
 \begin{itemize}
  \item The amount of data $q$ in the buffer is greater than $\alpha . Q$,
  \item or the older data in the buffer is waiting for more than $\delta$.
 \end{itemize}
+
+The buffer of a node is filled with the FIFO rule by a traffic coming from external sources. Then, when the node has an available free slot, the packet is inserted in the slot if one of the previous constraints are satisfied. Otherwise the node does not send anything in the ring and wait for the next free slot.
+
+\begin{center}   
+
+      \includegraphics[scale=0.7]{insertion0.pdf}
+
+  
+\end{center}
+
+\section{C-RAN context}
 
 In C-RAN context, this amount of data $q$ contains two kinds of data: the latency critical flow coming from RRH or BBU, and an other flow, called {\em best effort}.
 
@@ -76,8 +93,7 @@ The following parameters are considered for the study:
  \item The length of the ring = 50km. Thus $N = 25$ slots.
  \item Capacity of one slot $= 1Mb$.
  \item One slot of the ring can carry all the data stacked in $Q$ ($Q < 1Mb$).
- \item $\delta =$ ?
- \item $\alpha =$ ?
+
 \end{itemize}
 
 
