@@ -561,23 +561,26 @@ minimal period can be large.
    
     \subsubsection{Greedy Algorithm}
     
-    We introduce a greedy algorithm to build a $(P,\tau)$-periodic affectation, which provably works when
+    We propose a greedy algorithm to build a $(P,\tau)$-periodic affectation, which provably works when
     the period is large enough with regards to the number of routes and size of messages. In other words, 
     we can always find a solution when the network is far from saturated. 
     
     \begin{proposition}
-    There is an algorithm, which finds a $(P,\tau)$-periodic affectation in time $O(n^2)$ when $P \geq 3n\tau$.
+    There is an algorithm, which finds a $(P,\tau)$-periodic affectation in time $O(n^2)$ when $P \geq 3n\tau$,
+    where $n$ is the number of routes.
     \end{proposition}
     \begin{proof}
-     We consider the forward period and cut it into consecutive macro slots of time of size $\tau$. The algorithm works in the following way: select the first route $k+1$ for which the offset as not been chosen. Try every of the $3N-k$ offsets which put the message in one free macro slot in the forward period. It also fixes the position of a message in the backward period, and we choose the first offset which does not create a collision in the backward period. 
-     Assume we choose the offset of the route $r_{k+1}$, we have  at least $3n - k$ free macro-slots, since $P \geq 3n\tau$. Each of these $3n - k$ possible offset values translates into $3n - k$ positions of messages in the backward period. All these positions are separated by at least $\tau$ slots. There are already $k$ messages of size $\tau$ in the backward period. One such message can intersect at most $2k$ potential positions, therefore  amongst the possible $3n - k$ positions, there are  $3n - k -2k$ which are without collision. Since $k < n$, one of the choice is without collision, which proves that the algorithm terminates and find a
-     $(P,\tau)$-periodic affectation. 
+     We consider the forward period and cut it into consecutive macro slots of $\tau$ time slots. The algorithm works by chosing an offset for each route in the following way: try all offests which put the message in a yet not used macro slot in the forward
+     period. An offset also fixes the position of the message in the backwward period, chose the first one which does not create a collision. We now prove that this algorithm always find an offset for all routes when $P \geq 3n\tau$.
+     
+     Assume we are choosing the offset of the route $r_{k+1}$, we have  at least $P - k \geq 3n - k$ free macro-slots, since $P \geq 3n\tau$. Each of these $3n - k$ possible offset values translates into $3n - k$ positions of messages in the backward period. All these positions are separated by at least $\tau$ slots. There are already $k$ messages of size $\tau$ in the backward period. One such message can intersect at most $2$ potential positions since they are disjoint intervals. Therefore  amongst the possible $3n - k$ positions, there are  $3n - k -2k$ which are without collision. Since $k < n$, one of the choice is without collision, which proves that the algorithm terminates and find a  $(P,\tau)$-periodic affectation. 
+     
+     This algorithm works with a complexity $O(n^2)$, since for the $k^{\text{th}}$ route we have to try at most $2k$ offsets before finding a correct one. We can test the $2k$ offsets of the backward period in time $O(k)$ by maintaining an ordered list of the intervals used by already set routes.
      \end{proof}
-     This algorithm works in a complexity $n^2$, since we have to try every free macro-slots for every routes.
+     
       \begin{center}
       \includegraphics[scale=0.3]{ex3nt.png}
       \end{center}
-    \todo{Avec une structure de données plus maligne on doit pouvoir faire n, non ?}
 	\begin{algorithm}[H]
 	\caption{Greedy affectation}
 	\begin{algorithmic}
@@ -605,14 +608,11 @@ minimal period can be large.
 
 	\end{algorithmic}
 	\end{algorithm}
-%       \paragraph{Period}
-% 	This algorithm gives us a solution without waiting times in a maximum period $3.\tau.c$, if we have $c$ routes.\\
-% 	Suppose that we have a period of $3.\tau.c$ slots, divided in $\tau$ macro-slots. Put a message in the first slot of size $\tau$ in the forward period, such that the corresponding area in the backward period is free.This message takes at most 2 slots of time $\tau$ in the backward period.\\
-
-% 	When $k < c$ messages are put in the forward period, and we want to add another message, there is $3.c - k$ free slots of size $\tau$ in the forward period. Those $3.c - k$ gives us $3.c - k$ possible slots in the backward periods.\\
-% 	The $k$ messages uses at most $2k$ slots of size $\tau$ used in the backward period. Since $k<c$,  $2k < 3.c - k$, thus using the pigeonhole principle, there is at least one free slot in the backward period for the new message.
 	
-%     \subsubsection{Exhaustive generation}
+This algorithm, contrarily to the previous one, may work well, even when the condition $P \geq 3n\tau$ is not true.
+In fact, experimental data in Subsection~\cite{} suggest that the algorithm works well as soon as $P \geq ????? \tau$.
+	
+	\subsubsection{Exhaustive generation}
 % 	\begin{algorithm}[H]
 % 	\caption{Exhaustive Generation}  
 % 	\begin{algorithmic}
@@ -636,22 +636,51 @@ minimal period can be large.
 % 
 %       \end{algorithmic}
 %       \end{algorithm}
-%       {\bf {\em Lost size}}, is the size lost when an interval is too few to put another packet. Ex : if the interval [250;3250[ receives a packet of size 2500, there is 500 slots lost, because there is no way to uses the slots for another packet.\\
-%       \todo{ecrire l'algo? si ou le réécrire}
+
 % 	    
-      We can try to enumerates all the solutions by traversing a tree. The leaves of the tree are 
-      the $(P-\tau)$-periodic affectations, and the nodes are partial solutions. A partial solution is a choice of a starting time for a subset of the routes.
-      For each route, the algorithm tries every possible starting offset until it finds one available (that allows the message to come back without collisions). When a route have been scheduled, it take another route that have not been scheduled yet.
-      This creates a new sub-tree in which the algorithm will try every possible starting offset too, and create a sub-tree on the following route too.
-      If no offset are available for a route, this means that the partial solution is not good, so the algorithm backtracks over the tree that is,  it goes back to the father of the current sub-tree, and continue from there.
-      Once a leaf is obtained, the algorithm stops and return the $(P-\tau)$-periodic affectation.\\  
-      Such an algorithm is an {\bf Exhaustive Generation} and has an exponential complexity. Thus, once we search for $(P-\tau)$-periodic affectations on graphs with a huge number of routes and an huge period P, if there is no solutions available, this algorithm takes too many time.
-      To reduce the number of useless calculation, we can imagine cuts in the tree :
+      We now present an exhaustive search algorithm, which tries to set the offsets in all possible ways until it has found
+      a $(P,\tau)$-periodic affectation. The algorithm is a depth-first traversal of a tree whose leaves are the $(P,\tau)$-periodic
+      affectations or failures and the nodes are partial solutions. A partial solution $S$ is a choice of a starting time for a subset of the routes such that none of these routes collide in the forward or backward period. For simplicity we will also denote by $S$ the set of routes whose offsets are fixed by $S$. A partial solution $S'$ extends $S$ if $S' = S \cup \{r'\}$ and for all $r \in S$, $m_r + \tau \leq m_{r'}$, that is the route $r'$ comes after all routes in $S$ in the forward period. In the tree, the children of a partial solutions are all partial solutions which extend it. Therefore a node corresponding to $k$ fixed routes can have as many as $(n-k)P$ children. Since the tree is of depth $n$, we can have as many as $n!P^n$ elements and while $n$ is often small, $P$ may be large.  Therefore we have to find cuts in the tree to avoid to explore it entirely and henceforth make the algorithm practical. We propose the three following ones, the first two being useful when the period is small with regards to the number of routes:
+      
+      
+      \todo{       Trouver un meilleur vocabulaire, peut-être avec des intervalles triés pour représenter les solutions partielles}
+      
       \begin{enumerate}
-       \item In the forward windows, each message is placed after the previous one, that is $m_{s_i} > m_{s_j}$ (here, $s_i$ is the source placed before $s_j$ by the algorithm). Each time a new message is scheduled, there is some possible lost slots between $m_{s_i}+\tau$ and $ m_{s_j}$. We hold a counter of remaining slots and decrease it from the number of lost slots each time a new message is scheduled. Thus, if the number of the remaining slots in the forward period is lower than the number of slots needed to put the remaining messages, we can consider that the actual partial solution is not good.
-       \item  Each time we add a new message in the backward period, we cut a free interval in two new smaller free intervals, plus the scheduled message. Each free intervals has a number of macro slots (ex: 2,6). If the sum of all the integer parts of the macro slots is lower than the number of remaining messages to schedule, the actual partial solution is not good.
-       \item ...
-      \end{enumerate}
+       \item We maintain a counter $c_f$ which counts the number of routes which can be placed in the forward
+       period. If at some point this number is less than the number of routes which are not in the partial solution,
+       it is a failure and the algorithm backtracks. At the beginning of the algorithm $c_f = P / \tau$.
+       Then when a route is fixed at some offset $m_r$, larger than all previous offsets, then $c_f = (P - m_r) / \tau $. 
+       
+       
+       \item We maintain a counter $c_b$ which counts the number of routes which can be placed in the backward
+       period. If at some point this number is less than the number of routes which are not in the partial solution,
+       it is a failure and the algorithm backtracks. At the beginning of the algorithm $c_f = P / \tau$.
+       Consider a partial solution with $k$ routes and denote by $a_i$ their offset in the backward period.
+       The $a_i$ are in increasing order and without loss of generality we assume that $a_1 = 0$. Remark that the number of routes which can be placed in the interval of free slots $\{a_i+\tau, a_{i+1}-1\}$
+       is $(a_{i+1} -a_i) / \tau) -1 $. Therefore the total number of routes which can be placed in the backward period is $\displaystyle{\left( \sum_{i=1}^{k-1} (a_{i+1} -a_i)/\tau - 1 \right)} + (P - a_k) / \tau $.
+       The counter $c_b$ can be maintained in constant time since each time a route is added, an interval is split into two and we can 
+       use these two new intervals only to update its value.
+       
+%        In the forward windows, each message is placed after the previous one, that is $m_{s_i} > m_{s_j}$ (here, $s_i$ is the source placed before $s_j$ by the algorithm). Each time a new message is scheduled, there is some possible lost slots between $m_{s_i}+\tau$ and $ m_{s_j}$. We hold a counter of remaining slots and decrease it from the number of lost slots each time a new message is scheduled. Thus, if the number of the remaining slots in the forward period is lower than the number of slots needed to put the remaining messages, we can consider that the actual partial solution is not good.
+%        \item  Each time we add a new message in the backward period, we cut a free interval in two new smaller free intervals, plus the scheduled message. Each free intervals has a number of macro slots (ex: 2,6). If the sum of all the integer parts of the macro slots is lower than the number of remaining messages to schedule, the actual partial solution is not good.
+       \item 
+       Let $S_1$ and $S_2$ be two partial solutions with the same subset of fixed routes, but different offsets.
+       A sequence of extensions of a partial solution $S$ is a sequence of pair of route and offset, which define a path from $S$ in the tree. We say that $S_1$ dominates $S_2$, if any sequences of extensions of $S_2$, is a sequence of extensions of $S_1$.
+       Then if there is a solution in $S_2$, there must be also one in $S_1$, therefore if we detect that some node is dominated in the tree we can backtrak when we encounter it. 
+       
+       %Meilleure explication notion de slots utilisables. Si une solution partielle a strictement moins de slots utilisables (vu en tant qu'ensemble) qu'une autre avec les mêmes routes alors elle est dominée
+       
+       Consider a partial solution $S$ which we extend into $S' = S \cup \{ r \}$ such that the offset of 
+       $r$ is the smallest possible, denoted by $m$.
+       Say that the offset of $r$ in the backward period is $m+ \lambda$ and that the end of the message before $m + \lambda$ in the backward period is $a$. Then all extensions of $S$ into $S'' = S \cup \{ r \}$ with $ m < m_r < a + \tau - \lambda$.
+       are dominated by $S'$. Indeed, $S''$ have striclty less empty slots in the forward period and in the backward period, there are only two intervals ... 
+       
+       \todo{       Mettre un dessin !!!!  Dire comment la coupe 3 interragit bien avec la 1, car elle force $m_i$ à croitre vite, ce qui
+       permet d'appliquer rapidement la coupe}
+           
+             \end{enumerate}
+      
+      
 
 
     \subsubsection{Results}
