@@ -611,7 +611,11 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	if(ens == NULL)
 		return NULL;
 	//printf("ens != NULL\n");
-	//affiche_ensemble(ens);printf("\n");
+	printf("Ensemble et elems pere a l'entree de crisis\n");
+	affiche_ensemble(ens);printf("\n");
+	affichejobs(elemspere);
+	printf("\n Et la crisis est :");affichejobs(crisise);printf("\n");
+	printf("fin\n");
 	Ensemble * ens2 = NULL;
 	Ensemble * tmp = NULL;
 	Ensemble * debut = ens;
@@ -637,7 +641,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				//printf("PULL X = %d\n",elemtmp->index);
 				ajoute_elemt_fin(elemspere,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				date = ens->temps_depart;
-				//printf("PULL(%d) = %d\n",crisise->index,elemtmp->index);
+				printf("PULL(%d) = %d\n",crisise->index,elemtmp->index);
 				if(ens2 == NULL)
 				{
 					ens2 = cree_ensemble(-2,-1);
@@ -696,14 +700,14 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		if(ens->frereG)//on regarde si on est pas au debut de l'ensemble
 		{
 			
-			//printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
+			printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
 			ens = ens->frereG;
 			libereens(ens->frereD);
 			ens->frereD = NULL;
 		}
 		else
 		{
-			//printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
+			printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
 			libereens(ens);
 			ens = NULL;
 		}
@@ -712,18 +716,22 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		if(ens == NULL)return NULL;
 	}
 	
-	//affiche_ensemble(ens2);printf(" R.S.\n");
-	//affichejobs(elems);
+
 	
 	Ensemble* ens3 = NULL;
+	Ensemble * ens4 = NULL;
 	int i;
-	//printf("avant le rescheduling date = %d\n",date);
+	printf("avant le rescheduling date = %d\n",date);
+	affiche_ensemble(ens2);
+	affichejobs(elems);
+	printf("\n");
 	while(ens2)//parcours de ens2
 	{
 		if(ens2->numero_element == -2)//si on attend un element
 		{
 			
 			i = eligible(elems,date);
+			printf("I = %d \n",i);
 			if(i==-1)
 			{
 				//printf("Failure 1\n");
@@ -745,20 +753,21 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
 					elems = ajoute_elemt(elems,INT_MAX,INT_MAX,INT_MAX);
-				printf("\n\n\n--------------\n");affichejobs(elems);printf(" \n---------------\n\n\n");
-				ens3 = crisis(ens3,crisisrec,elems,touselems,taille_paquet);
-				printf("\n\n\n--------------\n");affichejobs(elems);printf(" \n---------------\n\n\n");
-				if(ens3 == NULL)
+				printf("Jobs avant crisis\n");affichejobs(elems);printf(" \n");
+				ens4 = crisis(ens4,crisisrec,elems,touselems,taille_paquet);
+				printf("Ensemble apres crisis\n");affiche_ensemble(ens4);printf(" \n");
+				printf("jobs apres crisis\n");affichejobs(elems);printf(" \n");
+				if(ens4 == NULL)
 				{
-					//printf(" NO PULL(%d) FOUND\n",elemtmp->index);
+					printf(" NO PULL(%d) FOUND\n",elemtmp->index);
 					return NULL;
 				}
+				ens3 = ens4;
 				while(ens3->frereD)
 					ens3 = ens3->frereD;
 				//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
 				date = date_fin(ens3,taille_paquet);
 				elems = tri_elems(elems);
-				printf("\n\n\n--------------\n");affichejobs(elems);printf(" \n---------------\n\n\n");
 				
 			}
 			
@@ -768,6 +777,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				if(ens3 == NULL)//premier element de ens3
 				{
 					ens3=cree_ensemble(elemtmp->index,date);
+					ens4 = ens3;
 				}
 				else
 				{
@@ -797,7 +807,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				}
 			}
 			
-			//affiche_ensemble(ens3);printf(" Element\n");
+			affiche_ensemble(ens3);printf(" Element\n");
 		}
 		else//si c'est un ensemble
 		{
@@ -825,6 +835,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		ens2 = ens2->frereD;
 		free(tmp);
 	}
+	ens3 = ens4;
 
 	//on remet ens3 a son debut
 	//affiche_ensemble(ens);printf(" -----------------------------\n");
@@ -834,15 +845,15 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	newfils->filsG = ens3; 
 	if(!ens)//si ens est vide, alors on est au tout debut 
 	{
-		//printf("RETOUR DE CRISIS--------------------------------------");
-		//affiche_ensemble(newfils);printf("\n");
+		printf("RETOUR DE CRISIS--------------------------------------");
+		affiche_ensemble(newfils);printf("\n");
 		return newfils;
 	}
 	ens->frereD = newfils;
 	newfils->frereG = ens;
 	//on donne a ens un element avec ens3 comme filsgauche
-	//printf("RETOUR DE CRISIS--------------------------------------");
-	//affiche_ensemble(debut);printf("\n");
+	printf("RETOUR DE CRISIS--------------------------------------");
+	affiche_ensemble(debut);printf("\n");
 	
 	return debut;
 	
@@ -871,7 +882,7 @@ int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
 		{
 			if( fabs(mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j]-wi[i]-mi[i]-g.matrice[nbr_route][i]-2*g.matrice[nbr_route][nbr_route+1+i]) <taille_paquet )
 			{
-				printf("PB(retour) entre %d(%d) et %d(%d)\n",i,mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j],j,mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i]);
+				printf("PB(retour) entre %d(%d) et %d(%d)\n",j,mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j],i,mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i]);
 				return 0;
 			}	
 		}
@@ -1089,7 +1100,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	{
 		//printf("test %p\n",elems2);
 		i = eligible(elems2,date);
-		//printf("i = %d\n",i);
+		printf("i = %d\n",i);
 		if(i==-1)
 		{
 			printf("Failure 1\n");
@@ -1115,9 +1126,11 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 			elems2=retire_element_i(elems2,crisise->index);
 			if(!elems2)
 					elems2 = ajoute_elemt(elems2,INT_MAX,INT_MAX,INT_MAX);
-			printf("\n\n\n--------------\n");affichejobs(elems2);printf(" \n---------------\n\n\n");
+			printf("Taches avant crisis\n");affichejobs(elems2);printf("\n");
+			printf("ens avant crisis\n");affiche_ensemble(ens);printf("\n");
 			ens = crisis(ens,crisise,elems2,elems,taille_paquet);
-			
+			printf("Taches apres crisis\n");affichejobs(elems2);printf("\n");
+			printf("ens apres crisis\n");affiche_ensemble(ens);printf("\n");
 			//affiche_ensemble(ens);printf(" Apres\n");
 			if(ens == NULL)
 			{
