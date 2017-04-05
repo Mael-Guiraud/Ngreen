@@ -410,7 +410,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 	Ensemble * tmp = NULL;
 	
 	printf("ENTREE DANS LA FONCTION INVADE date %d-------------------------------\n",depart);
-	//affiche_ensemble(ens);printf("\n");
+	affiche_ensemble(ens);printf("\n");
 	//on se place a droite de l'ensemble qui a crisis
 	while(ens->frereD)
 	{
@@ -572,7 +572,19 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 		}
 		else//si c'est un ensemble
 		{
-			
+			if(date+taille_paquet>=ens2->temps_depart)// INVADE Si besoin
+			{
+
+				ens2->filsG = invade(ens2->filsG,touselems,date+taille_paquet,taille_paquet);
+				if(ens2->frereD->filsG)
+					ens2->temps_depart = ens2->frereD->filsG->temps_depart;
+				else
+					return NULL;
+				
+			}
+
+			//On recopie ens2 dans ens3
+
 			if(ens3== NULL)
 			{
 				
@@ -601,7 +613,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 	
 	while(ens3->frereG)
 		ens3 = ens3->frereG;
-	//affiche_ensemble(ens3);printf("RETOUR INVADE --------------------\n");
+	affiche_ensemble(ens3);printf("RETOUR INVADE --------------------\n");
 	return ens3;
 		
 }
@@ -639,7 +651,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 			if(elemtmp->deadline > crisise->deadline)//si on est sur PULL(X)
 			{	
 				//printf("PULL X = %d\n",elemtmp->index);
-				ajoute_elemt_fin(elemspere,elemtmp->index,elemtmp->release,elemtmp->deadline);
+				elemspere=ajoute_elemt_fin(elemspere,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				date = ens->temps_depart;
 				printf("PULL(%d) = %d\n",crisise->index,elemtmp->index);
 				if(ens2 == NULL)
@@ -768,7 +780,12 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
 				date = date_fin(ens3,taille_paquet);
 				elems = tri_elems(elems);
-				
+				//ajoute d'un elem -2 a ens 2
+
+				Ensemble * temporaire = ens2->frereD;
+				ens2->frereD = cree_ensemble(-2,-1);
+				ens2->frereD->frereG = ens2;
+				ens2->frereD->frereD = temporaire;
 			}
 			
 			else// PAS DE CRISE
@@ -817,7 +834,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				
 				ens3 =  cree_ensemble(-1,ens2->temps_depart);
 				ens3->filsG = cpyens(ens2->filsG);
-				
+				ens4= ens3;
 			}
 			else
 			{
@@ -828,7 +845,24 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 			}
 			//affiche_ensemble(ens2);
 			date = date_fin(ens3,taille_paquet);//printf("fin = %d \n",date);
-
+			if(ens2->frereD)//Si il y a un prochain element
+			{
+				if(ens2->frereD->numero_element == -1)//et que c'est un ensemble
+				{
+					if(date>=ens2->frereD->temps_depart)//ET que ca INVADE
+					{
+						//printf("%d INVADE date %d\n",elemtmp->index,date);
+						
+						ens2->frereD->filsG = invade(ens2->frereD->filsG,touselems,date,taille_paquet);
+						if(ens2->frereD->filsG)
+							ens2->frereD->temps_depart = ens2->frereD->filsG->temps_depart;
+						else
+							return NULL;
+						
+						
+					}
+				}
+			}
 		}
 		
 		tmp = ens2;
