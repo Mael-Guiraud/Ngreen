@@ -241,7 +241,8 @@ Element* retire_element_i(Element * elem, int index)
 	{
 		tmp = elem;
 		debut = elem->next;
-		free(tmp);
+		if(tmp)
+			free(tmp);
 		return debut;
 	}
 	while(elem->next)
@@ -250,7 +251,8 @@ Element* retire_element_i(Element * elem, int index)
 		{
 			tmp = elem->next;
 			elem->next = elem->next->next;
-			free(tmp);
+			if(tmp)
+				free(tmp);
 			return debut;
 		}
 		elem = elem->next;
@@ -278,7 +280,8 @@ void freeelems(Element * elem)
 	{
 		tmp = elem;
 		elem=elem->next;
-		free(tmp);
+		if(tmp)
+			free(tmp);
 	}
 }
 void affichejobs(Element* elem)
@@ -374,6 +377,7 @@ int eligible(Element * elems, int time)
 }
 void libereens(Ensemble * ens)
 {
+
 	//printf("entree dans la fonction libere\n");
 	if(ens)
 	{
@@ -409,8 +413,8 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 	Ensemble * ens2 = NULL;
 	Ensemble * tmp = NULL;
 	
-	printf("ENTREE DANS LA FONCTION INVADE date %d-------------------------------\n",depart);
-	affiche_ensemble(ens);printf("\n");
+	//printf("ENTREE DANS LA FONCTION INVADE date %d-------------------------------\n",depart);
+	//affiche_ensemble(ens);printf("\n");
 	//on se place a droite de l'ensemble qui a crisis
 	while(ens->frereD)
 	{
@@ -473,6 +477,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 	//affichejobs(elems);
 	
 	Ensemble* ens3 = NULL;
+	Ensemble* ens4 = NULL;
 	int i;
 
 	while(ens2)//parcours de ens2
@@ -484,24 +489,33 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 			if(i==-1)
 			{
 				//printf("Failure 1\n");
+				libereens(ens2);
+			
+
+				libereens(ens4);
+				freeelems(elems);
 				return NULL;
 			}
 			elemtmp = get_element_i(touselems,i);
 			if(elemtmp == NULL)
 			{
 				//printf("Failure 0\n");
+				libereens(ens2);
+				libereens(ens4);
+				freeelems(elems);
 				return NULL;
 			}
 			
 			date = max(date,elemtmp->release);
 			if(date+taille_paquet > elemtmp->deadline)//CRISIS
 			{
-				printf("Crisis(invade) sur la tache %d\n",elemtmp->index);
+				//printf("Crisis(invade) sur la tache %d\n",elemtmp->index);
 				Element * crisisrec = ajoute_elemt(NULL,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
 					elems = ajoute_elemt(elems,99999,99999,999999);
 				ens3 = crisis(ens3,crisisrec,elems,touselems,taille_paquet);
+				freeelems(crisisrec);
 				//printf("-------------\n\n\n");
 				//affichejobs(elems);
 				//affiche_ensemble(ens2);		printf("\n");
@@ -510,6 +524,8 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 				if(ens3 == NULL)
 				{
 					//printf(" NO PULL(%d) FOUND(invade)\n",elemtmp->index);
+					libereens(ens2);
+					freeelems(elems);
 					return NULL;
 				}
 				while(ens3->frereD)
@@ -538,6 +554,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 				if(ens3 == NULL)//premier element de ens3
 				{
 					ens3=cree_ensemble(elemtmp->index,date);
+					ens4 = ens3;
 					
 				}
 				else
@@ -562,7 +579,13 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 							if(ens2->frereD->filsG)
 								ens2->frereD->temps_depart = ens2->frereD->filsG->temps_depart;
 							else
+							{
+								libereens(ens2);
+								libereens(ens4);
+								freeelems(elems);
+
 								return NULL;
+							}
 							
 						}
 					}
@@ -579,7 +602,13 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 				if(ens2->frereD->filsG)
 					ens2->temps_depart = ens2->frereD->filsG->temps_depart;
 				else
+				{
+					libereens(ens2);
+					libereens(ens4);
+					freeelems(elems);
+
 					return NULL;
+				}
 				
 			}
 
@@ -590,6 +619,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 				
 				ens3 =  cree_ensemble(-1,ens2->temps_depart);
 				ens3->filsG = cpyens(ens2->filsG);
+				ens4 = ens3;
 				
 			}
 			else
@@ -605,7 +635,8 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 		}
 		tmp = ens2;
 		ens2 = ens2->frereD;
-		free(tmp);
+		if(tmp)
+			free(tmp);
 		
 	}
 
@@ -613,21 +644,21 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 	
 	while(ens3->frereG)
 		ens3 = ens3->frereG;
-	affiche_ensemble(ens3);printf("RETOUR INVADE --------------------\n");
+	//affiche_ensemble(ens3);printf("RETOUR INVADE --------------------\n");
 	return ens3;
 		
 }
 Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element * touselems, int taille_paquet)
 {
-	printf("------------------ENTREE DANS LA FONCTION CRISIS-----------------------------\n");
+	//printf("------------------ENTREE DANS LA FONCTION CRISIS-----------------------------\n");
 	if(ens == NULL)
 		return NULL;
 	//printf("ens != NULL\n");
-	printf("Ensemble et elems pere a l'entree de crisis\n");
-	affiche_ensemble(ens);printf("\n");
-	affichejobs(elemspere);
-	printf("\n Et la crisis est :");affichejobs(crisise);printf("\n");
-	printf("fin\n");
+	//printf("Ensemble et elems pere a l'entree de crisis\n");
+	//affiche_ensemble(ens);printf("\n");
+	//affichejobs(elemspere);
+	//printf("\n Et la crisis est :");affichejobs(crisise);printf("\n");
+	//printf("fin\n");
 	Ensemble * ens2 = NULL;
 	Ensemble * tmp = NULL;
 	Ensemble * debut = ens;
@@ -653,7 +684,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				//printf("PULL X = %d\n",elemtmp->index);
 				elemspere=ajoute_elemt_fin(elemspere,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				date = ens->temps_depart;
-				printf("PULL(%d) = %d\n",crisise->index,elemtmp->index);
+				//printf("PULL(%d) = %d\n",crisise->index,elemtmp->index);
 				if(ens2 == NULL)
 				{
 					ens2 = cree_ensemble(-2,-1);
@@ -676,6 +707,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				{
 					libereens(ens);
 					ens = NULL;
+					debut = NULL;
 				}
 				break;
 			}
@@ -712,20 +744,27 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		if(ens->frereG)//on regarde si on est pas au debut de l'ensemble
 		{
 			
-			printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
+			//printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
 			ens = ens->frereG;
 			libereens(ens->frereD);
 			ens->frereD = NULL;
 		}
 		else
 		{
-			printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
+			//printf("On ajoute ");affiche_ensemble(ens);printf("au r.s\n");
 			libereens(ens);
 			ens = NULL;
+			debut = NULL;
 		}
 		
 		//si ens est null alors on n'a pas trouvé PULL(X) (si on a trouvé pull X on break)
-		if(ens == NULL)return NULL;
+		if(ens == NULL)
+
+			{
+				libereens(ens2);
+				freeelems(elems);
+				return NULL;
+			}
 	}
 	
 
@@ -733,26 +772,34 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 	Ensemble* ens3 = NULL;
 	Ensemble * ens4 = NULL;
 	int i;
-	printf("avant le rescheduling date = %d\n",date);
-	affiche_ensemble(ens2);
-	affichejobs(elems);
-	printf("\n");
+	//printf("avant le rescheduling date = %d\n",date);
+	//affiche_ensemble(ens2);
+	//affichejobs(elems);
+	//printf("\n");
 	while(ens2)//parcours de ens2
 	{
 		if(ens2->numero_element == -2)//si on attend un element
 		{
 			
 			i = eligible(elems,date);
-			printf("I = %d \n",i);
+			//printf("I = %d \n",i);
 			if(i==-1)
 			{
 				//printf("Failure 1\n");
+				libereens(ens2);
+				libereens(debut);
+				freeelems(elems);
+				libereens(ens4);
 				return NULL;
 			}
 			elemtmp = get_element_i(touselems,i);
 			if(elemtmp == NULL)
 			{
 				//printf("Failure 0\n");
+				libereens(ens2);
+				libereens(debut);
+				freeelems(elems);
+				libereens(ens4);
 				return NULL;
 			}
 			
@@ -760,18 +807,23 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 			if(date+taille_paquet > elemtmp->deadline)//CRISIS
 			{
 				
-				printf("crisis(crisis) sur la tache %d\n",elemtmp->index);
+				//printf("crisis(crisis) sur la tache %d\n",elemtmp->index);
 				Element * crisisrec = ajoute_elemt(NULL,elemtmp->index,elemtmp->release,elemtmp->deadline);
 				elems=retire_element_i(elems,crisisrec->index);
 				if(!elems)
 					elems = ajoute_elemt(elems,INT_MAX,INT_MAX,INT_MAX);
-				printf("Jobs avant crisis\n");affichejobs(elems);printf(" \n");
+				//printf("Jobs avant crisis\n");affichejobs(elems);printf(" \n");
 				ens4 = crisis(ens4,crisisrec,elems,touselems,taille_paquet);
-				printf("Ensemble apres crisis\n");affiche_ensemble(ens4);printf(" \n");
-				printf("jobs apres crisis\n");affichejobs(elems);printf(" \n");
+				freeelems(crisisrec);
+				//printf("Ensemble apres crisis\n");affiche_ensemble(ens4);printf(" \n");
+				//printf("jobs apres crisis\n");affichejobs(elems);printf(" \n");
 				if(ens4 == NULL)
 				{
-					printf(" NO PULL(%d) FOUND\n",elemtmp->index);
+					//printf(" NO PULL(%d) FOUND\n",elemtmp->index);
+					libereens(ens2);
+					libereens(debut);
+					libereens(ens4);
+					freeelems(elems);
 					return NULL;
 				}
 				ens3 = ens4;
@@ -816,7 +868,13 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 							if(ens2->frereD->filsG)
 								ens2->frereD->temps_depart = ens2->frereD->filsG->temps_depart;
 							else
+							{
+								libereens(ens2);
+								libereens(ens4);
+								libereens(debut);
+								freeelems(elems);
 								return NULL;
+							}
 							
 							
 						}
@@ -824,7 +882,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				}
 			}
 			
-			affiche_ensemble(ens3);printf(" Element\n");
+			//affiche_ensemble(ens3);printf(" Element\n");
 		}
 		else//si c'est un ensemble
 		{
@@ -857,7 +915,13 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 						if(ens2->frereD->filsG)
 							ens2->frereD->temps_depart = ens2->frereD->filsG->temps_depart;
 						else
+						{
+							libereens(ens2);
+							libereens(debut);
+							freeelems(elems);
+							libereens(ens4);
 							return NULL;
+						}
 						
 						
 					}
@@ -867,7 +931,8 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		
 		tmp = ens2;
 		ens2 = ens2->frereD;
-		free(tmp);
+		if(tmp)
+			free(tmp);
 	}
 	ens3 = ens4;
 
@@ -877,17 +942,19 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		ens3 = ens3->frereG;
 	Ensemble * newfils = cree_ensemble(-1,ens3->temps_depart);
 	newfils->filsG = ens3; 
+
+	freeelems(elems);
 	if(!ens)//si ens est vide, alors on est au tout debut 
 	{
-		printf("RETOUR DE CRISIS--------------------------------------");
-		affiche_ensemble(newfils);printf("\n");
+		//printf("RETOUR DE CRISIS--------------------------------------");
+		//affiche_ensemble(newfils);printf("\n");
 		return newfils;
 	}
 	ens->frereD = newfils;
 	newfils->frereG = ens;
 	//on donne a ens un element avec ens3 comme filsgauche
-	printf("RETOUR DE CRISIS--------------------------------------");
-	affiche_ensemble(debut);printf("\n");
+	//printf("RETOUR DE CRISIS--------------------------------------");
+	//affiche_ensemble(debut);printf("\n");
 	
 	return debut;
 	
@@ -985,7 +1052,7 @@ void transforme_waiting(Ensemble * ens, int * wi)
 	}
 }
 //Algo naif
-int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
+int simons(Graphe g, int taille_paquet, int TMAX, int mode_test,int mode)
 {
 	
 	///////////////////////////////////////////////////////taille_paquet = 6;
@@ -1091,7 +1158,6 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 
 	int	date=arrivee[i];
 	//////////////////////////////////////////////////////////////////int date = 0;
-	int deadline_fenetre = date + Periode;
 	int j;
 
 	//afficheTwoWayTrip(t);
@@ -1134,7 +1200,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 	{
 		//printf("test %p\n",elems2);
 		i = eligible(elems2,date);
-		printf("i = %d\n",i);
+		//printf("i = %d\n",i);
 		if(i==-1)
 		{
 			printf("Failure 1\n");
@@ -1152,7 +1218,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 		if(date+taille_paquet > tmp->deadline)//CRISIS
 		{
 			
-			printf("Crisis(main) sur la tache %d\n",tmp->index);
+			//printf("Crisis(main) sur la tache %d\n",tmp->index);
 			//affiche_ensemble(ens);printf(" Avant\n");
 			Element * crisise = NULL;
 			crisise = ajoute_elemt(crisise,tmp->index,tmp->release,tmp->deadline);
@@ -1160,16 +1226,19 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 			elems2=retire_element_i(elems2,crisise->index);
 			if(!elems2)
 					elems2 = ajoute_elemt(elems2,INT_MAX,INT_MAX,INT_MAX);
-			printf("Taches avant crisis\n");affichejobs(elems2);printf("\n");
-			printf("ens avant crisis\n");affiche_ensemble(ens);printf("\n");
+			//printf("Taches avant crisis\n");affichejobs(elems2);printf("\n");
+			//printf("ens avant crisis\n");affiche_ensemble(ens);printf("\n");
 			ens = crisis(ens,crisise,elems2,elems,taille_paquet);
-			printf("Taches apres crisis\n");affichejobs(elems2);printf("\n");
-			printf("ens apres crisis\n");affiche_ensemble(ens);printf("\n");
+			freeelems(crisise);
+			//printf("Taches apres crisis\n");affichejobs(elems2);printf("\n");
+			//printf("ens apres crisis\n");affiche_ensemble(ens);printf("\n");
 			//affiche_ensemble(ens);printf(" Apres\n");
 			if(ens == NULL)
 			{
 				//affichejobs(elems2);
 				//printf(" NO PULL(%d) FOUND\n",crisise->index);
+				freeelems(elems);
+				freeelems(elems2);
 				return -1;
 			}
 			//on se remet a droite de l'ensemble
@@ -1215,7 +1284,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 		
 	
 	}
-	affiche_ensemble(ens);
+	//affiche_ensemble(ens);
 	//ecriture des temps trouvés
 	Ensemble * a_free = ens;
 
@@ -1233,13 +1302,33 @@ int simons(Graphe g, int taille_paquet, int TMAX, int Periode,int mode)
 
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
-	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR\n"); exit(25);}
-	int max = w_i[0]+2*Dl[0]+2500;
-	for(int i=0;i<nbr_route;i++)
+	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR\n");}
+
+	int maximum ;
+
+	if(mode_test == 0)
 	{
-		if(w_i[i]+2*Dl[i]+2500 > max)
-			max= w_i[i]+2*Dl[i]+2500;
+		maximum= w_i[0]+2*Dl[0]+2500;
+		for(int i=0;i<nbr_route;i++)
+		{
+			if(w_i[i]+2*Dl[i]+2500 > maximum)
+				maximum= w_i[i]+2*Dl[i]+2500;
+		}
+	}
+	else
+	{
+		int aller[nbr_route];
+		int retour[nbr_route];
+		for(int i=0;i<nbr_route;i++)
+		{
+			aller[i] = m_i[i]+g.matrice[nbr_route][i];
+			retour[i] = aller[i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
+		}
+		int periode_aller = aller[greater(aller,nbr_route)]-aller[lower(aller,nbr_route)]+taille_paquet;
+		int periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
+		maximum = max(periode_retour,periode_aller);
+
 	}
 	
-	return max;
+	return maximum;
 }
