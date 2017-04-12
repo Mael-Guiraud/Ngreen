@@ -1327,7 +1327,7 @@ int simons(Graphe g, int taille_paquet, int TMAX, int mode_test,int mode)
 		int periode_aller = aller[greater(aller,nbr_route)]-aller[lower(aller,nbr_route)]+taille_paquet;
 		int periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
 		maximum = max(periode_retour,periode_aller);
-
+		affiche_tab(retour,nbr_route);printf("maximum = %d\n",maximum);
 	}
 	
 	return maximum;

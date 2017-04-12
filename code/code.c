@@ -698,9 +698,8 @@ void echec_periode(int nb_routes, int taille_paquets,int taille_route,int tmax, 
 	FILE * F = fopen("results_echec_periode.data","w");
 	Graphe g ;
 	float a,b,c;
-	int resultat = INT_MAX;
 	int tmp;
-	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*2;j+=1000)
+	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes+2500;j+=100)
 	{
 		a=0;
 		b=0;
@@ -712,21 +711,21 @@ void echec_periode(int nb_routes, int taille_paquets,int taille_route,int tmax, 
 			//affiche_matrice(g);
 			
 			//b=longest_etoile_2(g,2500,40000);
-			for(int k =0;k<1000;k++)
+			for(int k =0;k<10;k++)
 			{
 				tmp = simons(g, taille_paquets,tmax,1,0);
 				
-				if(tmp != -1)
-					if(tmp < j)
-						if(tmp < resultat)
-							resultat = tmp;
+				if(tmp != -1)//si tmax trop petite (peu probable)
+					if(tmp <= j)
+					{
+						a++;
+						break;
+					}
 			}
 			
-			if(resultat != INT_MAX)
-				a++;
-			if(simons(g, taille_paquets, tmax,1,1) < j)
+			if(simons(g, taille_paquets, tmax,1,1) <= j)
 				b++;
-			if(simons(g, taille_paquets, tmax,1,2)< j)
+			if(simons(g, taille_paquets, tmax,1,2)<= j)
 				c++;
 			libere_matrice(g);
 		}
@@ -768,8 +767,8 @@ int main()
 		 simons(g,2500,28000,400000,0);
 		libere_matrice(g);
 	*/
-	departs(8,2500,7000,31000,1000);
-	//echec_periode(8,2500,7000,31000,1000);
+	//departs(8,2500,7000,31000,1000);
+	echec_periode(8,2500,7000,31000,1000);
 	//echec_tmax(8,2500,7000,40000,1000);
 
 	return 0;
