@@ -501,7 +501,7 @@ int first_back(int * tab,int * deadline, int taille)
 	return indice_min;
 }
 
-int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
+int longest_etoile_2(Graphe g,int taille_paquets, int Tmax,int mode)
 {
 	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
 	int nb_routes = g.N/2;
@@ -527,14 +527,58 @@ int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
 	//Tri du tableau ordre
 	tri_bulles(routes,ordre,nb_routes);
 
-	//On envoie les messages de longest a shortest
-	m_i[ordre[0]]=0;
-	offset = taille_paquets+g.matrice[nb_routes][ordre[0]];
-	for(int i=1;i<nb_routes;i++)
+
+	if(mode == 0)
 	{
-		m_i[ordre[i]]=offset-g.matrice[nb_routes][ordre[i]];
-		offset+=taille_paquets;
+
+		fisher_yates(ordre,nb_routes);
+		//affiche_tab(ordre,nb_routes);
+		m_i[ordre[0]]=0;
+		offset=taille_paquets+g.matrice[nb_routes][ordre[0]];
+		for(int i=1;i<nb_routes;i++)
+		{
+			m_i[ordre[i]]=offset-g.matrice[nb_routes][ordre[i]];
+			offset+=taille_paquets;
+		}
 	}
+	else
+	{
+		if(mode == 1)
+		{
+			tri_bulles(routes,ordre,nb_routes);
+
+			//On envoie les messages de longest a shortest
+			m_i[ordre[0]]=0;
+			offset = taille_paquets+g.matrice[nb_routes][ordre[0]];
+			for(int i=1;i<nb_routes;i++)
+			{
+				m_i[ordre[i]]=offset-g.matrice[nb_routes][ordre[i]];
+				offset+=taille_paquets;
+			}
+		}
+		else
+
+		{
+			//Tri du tableau ordre
+			tri_bulles_inverse(routes,ordre,nb_routes);
+			//affiche_tab(Dl,nb_routes);
+			//affiche_tab(ordre,nb_routes);
+			//On envoie les messages de longest a shortest
+			m_i[ordre[0]]=0;
+			offset = taille_paquets+g.matrice[nb_routes][ordre[0]];
+			for(int i=1;i<nb_routes;i++)
+			{
+				m_i[ordre[i]]=offset-g.matrice[nb_routes][ordre[i]];
+				offset+=taille_paquets;
+			}
+		}
+	}
+
+
+
+
+
+
 
 	//Calcul de la position potentielle dans ct
 	for(int i=0;i<nb_routes;i++){
@@ -600,8 +644,8 @@ int longest_etoile_2(Graphe g,int taille_paquets, int Tmax)
 	//affiche_tab(m_i,nb_routes);
 	//printf("longest wi\n");affiche_tab(w_i,nb_routes);
 	if(!is_ok(g,taille_paquets,m_i,w_i))printf("ERROR !!\n");
-	int max = w_i[0]+2*routes[0];
-	for(int i=0;i<nb_routes;i++)
+	int max = w_i[0]+2*routes[0]+2500;
+	for(int i=1;i<nb_routes;i++)
 	{
 		if(w_i[i]+2*routes[i]+2500 > Tmax)
 			return -1;
@@ -648,6 +692,45 @@ void departs(int nb_routes, int taille_paquets,int taille_route,int tmax, int nb
 
 	fclose(F);
 }
+
+
+void departs2(int nb_routes, int taille_paquets,int taille_route,int tmax, int nb_simuls)
+{
+	FILE * F = fopen("results_departs2.data","w");
+	Graphe g ;
+	long long int a,b,c;
+	a=0;
+	b=0;
+	c=0;
+	int resultat = INT_MAX;
+	int tmp;
+	for(int i = 0;i<nb_simuls;i++)
+	{
+		g = init_graphe(2*nb_routes+1);
+		graphe_etoile(g,taille_route);
+		//affiche_matrice(g);
+		
+		//b=longest_etoile_2(g,2500,40000);
+		for(int k =0;k<1000;k++)
+			{
+				tmp = longest_etoile_2(g, taille_paquets,tmax,0);
+				
+				
+				if(tmp != -1)
+					if(tmp < resultat)
+						resultat = tmp;
+			}
+		a+=resultat;
+		b+=longest_etoile_2(g, taille_paquets, tmax,1);
+		c+=longest_etoile_2(g, taille_paquets, tmax,2);
+		libere_matrice(g);
+	}
+	printf("%lld %lld %lld\n",a/nb_simuls,b/nb_simuls,c/nb_simuls);
+	fprintf(F,"%lld %lld %lld\n",a/nb_simuls,b/nb_simuls,c/nb_simuls);
+
+	fclose(F);
+}
+
 
 void echec_tmax(int nb_routes, int taille_paquets,int taille_route,int tmax, int nb_simuls)
 {
@@ -741,34 +824,37 @@ int main()
 	//simuls_periode(8,2500,7000,1000);
 	//echec(8,2500,30000,1000);
 //echec_taille_route(8,2500,25000,1000);
-	/*Graphe g;
+	Graphe g;
+	int tmax=30000;
 
-	int a=0,b=0,c=0;
+	int a=0,b=0,c=0,d=0;
 	for(int i=0;i<10000;i++)
 	{
 
 	 	g = init_graphe(15);
 		graphe_etoile(g,7000);
 		//affiche_matrice(g);
-		a=simons(g,2500,28000,0,0);
-		//b=longest_etoile_2(g,2500,28000);
+		a=simons(g,2500,tmax,0,0);
+		b=longest_etoile_2(g,2500,tmax,0);
 		//printf("%d %d %d \n",a ,b,a-b);
 
-		if(a != b)
+		if(a == -1)
 			c++;	
+		if(b == -1)
+			d++;
 		libere_matrice(g);
 		
 
 	}
-	printf("%d \n",c);*/
+	printf("%d %d\n",c,d);
 	/*Graphe g = init_graphe(15);
 		graphe_etoile(g,7000);
 		//affiche_matrice(g);
 		 simons(g,2500,28000,400000,0);
-		libere_matrice(g);
-	*/
+		libere_matrice(g);*/
+	
 	//departs(8,2500,7000,31000,1000);
-	echec_periode(8,2500,7000,31000,1000);
+	//echec_periode(8,2500,7000,31000,1000);
 	//echec_tmax(8,2500,7000,40000,1000);
 
 	return 0;
