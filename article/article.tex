@@ -176,7 +176,7 @@ This problem may look like wormhole problem \cite{cole1996benefit}, very popular
 
 
 
-   \subsection{Problems}
+   \subsection{Problems}\label{nonmonotone}
 
     We want to ensure that there is an affectation which allows to send periodic messages from sources to target
     without collisions. The problem we need to solve is thus the following:
@@ -612,7 +612,7 @@ minimal period can be large.
 This algorithm, contrarily to the previous one, may work well, even when the condition $P \geq 3n\tau$ is not true.
 In fact, experimental data in Subsection~\cite{} suggest that the algorithm works well as soon as $P \geq ????? \tau$.
 	
-	\subsubsection{Exhaustive generation}
+	\subsubsection{Exhaustive search}
 % 	\begin{algorithm}[H]
 % 	\caption{Exhaustive Generation}  
 % 	\begin{algorithmic}
@@ -684,14 +684,14 @@ In fact, experimental data in Subsection~\cite{} suggest that the algorithm work
 
 
     \subsubsection{Results}
-      The following performance evaluation results compares the previous algorithms. Since we try to find a linear time algorithm for the problem PALL, Exhaustive Generation is not a good solution. However, Greedy 3NT and Shortest-Longest are some greedy heuristics and gives us a linear complexity. We tried to determine which algorithm gives a solution with the minimal period.
+      The following performance evaluation results compares the previous algorithms. Since we try to find a polynomial time algorithm for the problem PALL, Exhaustive Generation is not a good solution. However, Greedy $3.n.\tau$ and Shortest-Longest are some greedy heuristics and gives us a polynomial complexity. We tried to determine which algorithm gives a solution with the minimal period.
       In a first time, we will have a look at the results with the parameters corresponding to Cloud-RAN context.
       \paragraph{Short routes}
-      To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(r_{s_i}) < 2100$ slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
+      To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 700 slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
       
-      For each algorithm, we made a linear research of the minimal period for which, there is a solution on the given instance. The following figure shows us the average periods on 1000 graphs, for a growing number of routes.
+      To find the minimal period on a given instance with an algorithm, it is necessary to run the algorithm with some different periods and take the shortest one that does not fail. Since the existence of a $(P-\tau)-periodic affectation)$ is not monotone with regard to P (see section \ref{nonmonotone}), a dichotomous search is not appropriate. Thus, for each algorithm, we made a linear search of the minimal period for which, there is a solution on the given instance. The following figure shows us the average periods on 1000 graphs, for a growing number of routes.
       The results of the Exhaustive generation can be considered as a lower bound, indeed, for a given period, this algorithm finds the solution, if it exists.
-      As an information, we drew the $\tau.n$ (i.e. the size taken by the messages in the period) and the $2.(\tau.n) $ lines.
+      As an information, we drew the $\tau.n$ (i.e. the size taken by the messages in the period) and the $3.(\tau.n) $ lines.
       
       \begin{center}
       \includegraphics[scale=0.4]{periode_petite.pdf}
@@ -702,21 +702,25 @@ In fact, experimental data in Subsection~\cite{} suggest that the algorithm work
      
       With those parameters, we can observe that the average period of the Shortest-Longest algorithm, which is determined by the difference between the longest and the shortest route, is always equal to the Exhaustive generation, that is, the lower bound.
       The next results is to theoretically prove that, with those parameters, the Shortest-Longest algorithm gives optimal solutions, like this experimental study suggests it does. 
-      About the Greedy 3NT Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. 
+      About the Greedy $3.n.\tau$ Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. 
       We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes. Thus, the following experiences are made on a fixed number of routes : 8.
       
-      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, for 8 routes of size between 0 and 60000 slots, according to the period.
+      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, according to the period, for 8 routes in which  $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 30000 slots, that correspond to have the size of the route and the period approximately in the same order of magnitude.
       
+      By increasing the size of the routes, the cuts of the exhaustive search, are less efficient. Thus, we defined a counter that allow the search to end if no solution are found. On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
+      
+      The reason why the shortest longest were optimal in the previous experiences (i.e. having routes shorter than message size) is no longer reviewed. We can also imagine that sending the shortest route first on long routes significantly increases the period, because there will be a lot of lost size in the backward and forward periods.
+      
+      One the other hand, one can imagine that the greedy $3.n.\tau$ algorithm finds reasonable solutions, because the algorithm does not consider the size of the route, and thus, is not impacted by this parameter.
        \begin{center}
       \includegraphics[scale=0.4]{echec_longues.pdf}
       \end{center}
      
       
       As we can see, the Shortest longest has a very low success rate, because of the distribution of the size of the routes is now broader, so is the required period.
-      Whereas, the Geedy 3NT gives us solutions with much lower period than Shortest Longest.
-      Because of it's polynomial complexity, the Exhaustive generation can freeze the simulation when the solution is not easy to find. Thus, we let it stop after a defined number of calculation. 
-      The Exhaustive Generation curve gives us the solution when the algorithm has found a solution, and the Upper bound gives us the number of found solutions plus the number of time the algorithm stopped. The real Upper bound is probably between those two curves.
-      
+      Whereas, the Geedy 3NT gives us solutions with much lower period than Shortest Longest. The exhaustive search keeps finding good solutions in short periods but it fails a lot for periods until $2.n.\tau$.
+
+          
       So, those experiences shows us that for real topologies with small routes, the Shortest-Longest algorithm finds some affectations with small Periods, but, the longer the routes are, the better it is to use the Greedy policy to find a solution without waiting times.\\
       Nevertheless, if we want to consider networks, the period is fixed. As we just saw, if the load increases, the needed period increases too, and it is not possible anymore to find a solution without waiting times with a small period. The solution is to allow some messages to wait on target nodes, as described in the next section.
       
@@ -736,9 +740,11 @@ On the forward period, the messages are scheduled so that they are following eac
 On $c_t$, the policy is the following one, after setting the clock to 0:
 \begin{enumerate}
  \item To be eligible, a job needs to be able to come back on the switch at the current clock (if clock = 0, take the first message able to come back).
- \item Between the eligible jobs, schedule first the one which has the longest route and gives it the offset time $m_{\cal C(s_i)} = clock$.
- \item Update the clock at the time in which the scheduled task is over: $$clock = clock + message\ length$$.
+ \item Between the eligible jobs, schedule first the one which has the lowest deadline.
+ \item Repeat until all the messages had been scheduled.
 \end{enumerate}
+
+For any route i, the deadline correspond to $m_{s_i} + T_{max}$.
 
 \begin{algorithm}[H]
 \caption{LSG}
@@ -764,7 +770,6 @@ On $c_t$, the policy is the following one, after setting the clock to 0:
 \end{algorithmic}
 \end{algorithm}
 
-	\paragraph{Algorithm}
 	\paragraph{Analysis}
 	
 One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $n.\tau$, where $n$ is the number of couples $(s,{\cal C}(s))$. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
