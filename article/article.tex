@@ -493,7 +493,7 @@ minimal period can be large.
       Thus, we only have to check if there is no collisions in a period at those two points.
       We consider two periods P at these vertices, the the {\bf forward period} at $c_s$, and the {\bf backward period} at $c_t$. A message issued by the source $s_1$ at time $m_{s_1}$ will reach $c_s$ at time $m_{s_1} + t(c_s,r_{s_1}) \mod P$ in the forward period, and  $c_t$ at time $m_{t_1} + t(c_t,r_{t_1})\mod P$ in the backward period.
       A $(P,\tau)$-periodic affectation consist in choosing for all $i < n$, $m_i$ and $m_{{\cal C}(s_i)}$ such that, for any couple $(j,k)$,
-      we have $[t(c_s,r_{s_{j}})] \cap [t(c_s,r_{s_k})] = \emptyset$ and $[t(c_t,r_{t_j})] \cap [t(c_t,r_{t_k})] = \emptyset$
+      we have $[t(c_s,r_{s_{j}})] \cap [t(c_s,r_{s_k})] = \emptyset$ and $[t(c_t,r_{t_j})] \cap [t(c_t,r_{t_k})] = \emptyset$.
 
       
 
@@ -506,7 +506,7 @@ minimal period can be large.
   Remark that we can assume that the weight of the arcs from $s_i$ to $c_s$ are all equal to $0$, since we can change 
   all $m_i$ into $m_i - t(c_s,r_i) \mod P$ and obtain the same affectation.
   
-  
+  \todo{Attention cette simplification n'est pas assez explicite.}
     
   
     \subsubsection{Shortest-longest policy}
@@ -610,9 +610,9 @@ minimal period can be large.
 	\end{algorithm}
 	
 This algorithm, contrarily to the previous one, may work well, even when the condition $P \geq 3n\tau$ is not true.
-In fact, experimental data in Subsection~\cite{} suggest that the algorithm works well as soon as $P \geq ????? \tau$.
+In fact, experimental data in Subsection~\ref{} suggest that the algorithm works well as soon as $P \geq ????? \tau$.
 	
-	\subsubsection{Exhaustive generation}
+	\subsubsection{Exhaustive search}
 % 	\begin{algorithm}[H]
 % 	\caption{Exhaustive Generation}  
 % 	\begin{algorithmic}
@@ -729,6 +729,12 @@ In fact, experimental data in Subsection~\cite{} suggest that the algorithm work
      \subsubsection{LSG}
      
 
+     \todo{Il faut faire une présentation modulaire avec d'un coté choix de de départ des messages, ->LS, ->SL, ->RANDOM
+     puis choix de retour, Greedy et Optimal. Ensuite on montre que dans le cas simple de toutes les arêtes de départ à la même valeur,
+     LSG est optimal (dire que c'est un cas raisonnable). Éventuellement deux valeurs différentes serait raisonnable mais je n'ai pas trouvé de bons algos.
+     Ensuite il faut expliquer proprement greedy et Simons (sans donner tous les détails pour Simons) et expliquer les limitations -> pas de gestion de la période pour Simons.
+     On peut gérer la période pour Simons en bruteforce sur les routes. Il faut que j'écrive mes algos FPTs en le nombre de routes même si on ne les implémente pas.}
+     
 To find a solution with waiting times, the following heuristic is suggested:
 
 On the forward period, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
