@@ -1,0 +1,18 @@
+################# Commandes d'affichage Gnuplot ###############
+
+
+plot   'gvsgp.data'  using 1:2  title "Greedy Periodic"
+replot   'gvsgp.data'  using 1:3 title "Greedy"
+
+
+######### Pour une sortie dans un fichier .ps ##################"
+
+set title "Echec Periode"
+set ylabel "% de reuissite"
+set xlabel "Periode"
+set term postscript color solid
+set output "gvsgp.ps"
+set key right bot
+replot
+
+
