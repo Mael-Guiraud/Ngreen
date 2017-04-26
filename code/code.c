@@ -646,11 +646,14 @@ int longest_etoile_2(Graphe g,int taille_paquets,int periode, int Tmax,int mode)
 int premier_libre(int *periode_retour, int i,int taille_paquets, int periode)
 {
 	if(i<0)i=0;
+	if(i>=periode-taille_paquets)
+			return -1;
 	while( periode_retour[i] || periode_retour[i+taille_paquets-1])
 	{
 		i++;
-		if(i==periode-taille_paquets)
+		if(i>=periode-taille_paquets)
 			return -1;
+		//printf("i =%d , periode = %d\n",i,periode);
 	}
 	return i;
 }
@@ -745,10 +748,10 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	for(int i=0;i<taille_paquets;i++)
 		periode_retour[i]=1;
 
-	printf("Avant scheduling debut periode = %d, eligible = %d\n",debut_periode,eligible);
-	printf("Fin periode = %d \n",fin_periode);
-	affiche_tab(noeud_retour,nb_routes);
-	affiche_tab(date_limite,nb_routes);
+	//printf("Avant scheduling debut periode = %d, eligible = %d\n",debut_periode,eligible);
+	//printf("Fin periode = %d \n",fin_periode);
+	//affiche_tab(noeud_retour,nb_routes);
+	//affiche_tab(date_limite,nb_routes);
 	while(nb_assigned<nb_routes)
 	{
 		
@@ -772,14 +775,14 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 		if(eligible == -1)
 		{
 			eligible = first_back(noeud_retour,date_limite,nb_routes);
-			printf("eligible etait -1, now %d\n",eligible);
+			//printf("eligible etait -1, now %d\n",eligible);
 			if((noeud_retour[eligible]+taille_paquets > fin_periode)||(debut_seconde_periode != -1))
 			{
-				printf("1 on essaye de lire premier libre (%d %d %d) \n",noeud_retour[eligible],periode,debut_periode);
+			//	printf("1 on essaye de lire premier libre (%d %d %d) \n",noeud_retour[eligible],periode,debut_periode);
 				if(debut_seconde_periode == -1)
 					debut_seconde_periode = eligible;
 				offset = premier_libre(periode_retour,noeud_retour[eligible]-periode-debut_periode,taille_paquets,periode);
-				printf("1 Premier libre(%d) = %d\n",noeud_retour[eligible]-periode-debut_periode,offset);
+			//	printf("1 Premier libre(%d) = %d\n",noeud_retour[eligible]-periode-debut_periode,offset);
 				
 				if((offset == -1)||(offset+debut_periode+taille_paquets > fin_periode))
 				{
@@ -798,15 +801,15 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 		}
 		else
 		{
-			printf("ELIGIBLE EST = %d\n",eligible);
+			//printf("ELIGIBLE EST = %d\n",eligible);
 			if((offset+taille_paquets > fin_periode)||(debut_seconde_periode != -1))
 			{
-				printf("2 on essaye de lire premier libre (%d %d %d) \n",offset,periode,debut_periode);
+			//	printf("2 on essaye de lire premier libre (%d %d %d) \n",offset,periode,debut_periode);
 				if(debut_seconde_periode == -1)
 					debut_seconde_periode = eligible;
 					
 				offset = premier_libre(periode_retour,offset-periode-debut_periode,taille_paquets,periode);
-				printf("2 Premier libre(%d) = %d\n",offset-periode-debut_periode,offset);
+			//	printf("2 Premier libre(%d) = %d\n",offset-periode-debut_periode,offset);
 				
 				if((offset == -1)||(offset+debut_periode+taille_paquets > fin_periode))
 				{
@@ -825,7 +828,7 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 
 		}
 
-		printf(" Eligible = %d , offset = %d, wi = %d, et on rempli la periode de %d à %d\n",eligible,offset,w_i[eligible],offset-taille_paquets-debut_periode,offset-debut_periode);
+		//printf(" Eligible = %d , offset = %d, wi = %d, et on rempli la periode de %d à %d\n",eligible,offset,w_i[eligible],offset-taille_paquets-debut_periode,offset-debut_periode);
 		for(int i=offset-debut_periode-taille_paquets;i<offset-debut_periode;i++)
 			periode_retour[i]=1;
 		nb_assigned++;
@@ -835,10 +838,10 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 
 	}
 
-	affiche_tab(m_i,nb_routes);
-	affiche_tab(w_i,nb_routes);
+	//affiche_tab(m_i,nb_routes);
+	//affiche_tab(w_i,nb_routes);
 	if(!is_ok(g,taille_paquets,m_i,w_i)){printf("ERROR 2!!\n");exit(16);}
-	printf("-------------------------\n\n");
+	//printf("-------------------------\n\n");
 	int max = w_i[0]+2*routes[0]+2500;
 	for(int i=1;i<nb_routes;i++)
 	{
@@ -1035,7 +1038,7 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 		{
 			g = init_graphe(2*nb_routes+1);
 			graphe_etoile(g,taille_route);
-			affiche_matrice(g);
+			//affiche_matrice(g);
 			if(longest_etoile_periodique(g,2500,j, 7800,mode) != -2)
 				a++;
 
@@ -1076,7 +1079,7 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,10000,1000000, 10000,3);
+	echec_periode_gvsgp(8,2500,20000,1000000, 10000,3);
 	
 	/*Graphe g = init_graphe(15);
 		graphe_etoile(g,7000);
