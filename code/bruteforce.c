@@ -165,7 +165,7 @@ print_sol (int *solution_pos, int *solution_num, int nbr_route, int budget)
 
 int bruteforceiter (Graphe g, int periode, int taille_paquets)
 {
-  int compteur = 0;
+  long long int compteur = 0;
 
   if (!(g.N % 2))
     {
@@ -225,7 +225,7 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
   /////////////////// Début de l'arbre de recherche ////////////////////////////
 
 
-  while (compteur < 100000000)
+  while (compteur < 500000000)
     {
       compteur++;
       if (solution_taille == nbr_route)
