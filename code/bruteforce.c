@@ -43,7 +43,7 @@ int ajoute_element (intervalle_liste * liste, int debut, int taille,
     {       //détecte l'intervalle à découper si il existe
       if (liste[pos].debut <= debut
     && liste[pos].fin - debut >= taille_paquets)
-  {     //l'intervalle existe, on le découpe
+    {     //l'intervalle existe, on le découpe
     //on calcule le nombre de slot après décooupage (en prenant en compte les paquets déjà placés)
     *nombre_slot +=
       (debut - liste[pos].debut) / taille_paquets + (liste[pos].fin -
@@ -65,7 +65,7 @@ int ajoute_element (intervalle_liste * liste, int debut, int taille,
         return 0;
       }
 
-  }
+    }
       pos = liste[pos].suivant;
     }
   return 0;
@@ -91,19 +91,15 @@ retire_element (intervalle_liste * liste, int debut, int taille,
   liste[i].fin = liste[taille].fin;
 }
 
-int
-prochain_debut (intervalle_liste * liste, int debut, int taille,
-    int taille_paquets)
+int prochain_debut (intervalle_liste * liste, int debut, int taille, int taille_paquets)
 {       //renvoie la prochaine position possible pour la route (décalage à la position actuelle donnée par debut)
   int pos = 0;
-  while (liste[pos].suivant != -1)
-    {
-      if (debut < liste[pos].fin)
-  {
-    break;
-  }
-      pos = liste[pos].suivant;
-    }       //trouve le premier intervalle qui peut contenir la route
+  while (liste[pos].suivant != -1){
+    if (debut < liste[pos].fin){
+      break;
+    }
+    pos = liste[pos].suivant;
+  }       //trouve le premier intervalle qui peut contenir la route
   if (debut < liste[pos].debut)
     {       //debut avant l'intervalle
       if (liste[pos].fin - liste[pos].debut >= taille_paquets)
@@ -142,8 +138,7 @@ prochain_debut (intervalle_liste * liste, int debut, int taille,
 }
 
 
-int *
-genere_reseau (int nbr_route, int taille_route)
+int *genere_reseau (int nbr_route, int taille_route)
 {
   int *temps_retour = malloc (sizeof (int) * nbr_route);
   for (int i = 0; i < nbr_route; i++)
@@ -168,8 +163,7 @@ print_sol (int *solution_pos, int *solution_num, int nbr_route, int budget)
 //mettre debut_courant à la place de décalage_courant partout ? Ca pourrait simplifier un peu
 //on pourrait utiliser un entier dont les bits représente les routes restantes et trouver la première route libre avec une instruction processeur spéciale
 
-int
-bruteforceiter (Graphe g, int periode, int taille_paquets)
+int bruteforceiter (Graphe g, int periode, int taille_paquets)
 {
   int compteur = 0;
 
