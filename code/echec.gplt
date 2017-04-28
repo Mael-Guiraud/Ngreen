@@ -1,10 +1,10 @@
 ################# Commandes d'affichage Gnuplot ###############
 
 
-plot   'results_echec_longues.data'  using 1:2 linetype 0 pointtype 1 smooth bezier title "Shortest Longest"
-replot   'results_echec_longues.data'  using 1:3 linetype 3 pointtype 2 smooth bezier title "Greedy 3.n.{/Symbol t}"
-replot   'results_echec_longues.data'  using 1:4 linetype 4 pointtype 4 smooth bezier title "Exhaustive Generation"
-replot   'results_echec_longues.data'  using 1:5 linetype 2 pointtype 4 smooth bezier title "Upper Bound"
+plot   'results_echec_longues.data'  using 1:2 linetype 0 pointtype 1  title "Shortest Longest"
+replot   'results_echec_longues.data'  using 1:3 linetype 3 pointtype 2  title "Greedy 3.n.{/Symbol t}"
+replot   'results_echec_longues.data'  using 1:4 linetype 4 pointtype 4  title "Exhaustive Generation"
+replot   'results_echec_longues.data'  using 1:5 linetype 2 pointtype 4  title "Upper Bound"
 
 ######### Pour une sortie dans un fichier .ps ##################"
 

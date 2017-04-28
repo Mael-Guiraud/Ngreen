@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: article.aux
+The style file: ieeetr.bst
+Database file #1: Sources.bib.bib
+Warning--empty journal in zhou2013multiple
+You've used 16 entries,
+            1876 wiz_defined-function locations,
+            570 strings with 5692 characters,
+and the built_in function-call counts, 3560 in all, are:
+= -- 367
+> -- 100
+< -- 1
++ -- 42
+- -- 26
+* -- 223
+:= -- 502
+add.period$ -- 22
+call.type$ -- 16
+change.case$ -- 14
+chr.to.int$ -- 0
+cite$ -- 17
+duplicate$ -- 188
+empty$ -- 376
+format.name$ -- 26
+if$ -- 877
+int.to.chr$ -- 0
+int.to.str$ -- 16
+missing$ -- 12
+newline$ -- 57
+num.names$ -- 15
+pop$ -- 65
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 113
+stack$ -- 0
+substring$ -- 208
+swap$ -- 64
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 36
+width$ -- 18
+write$ -- 156
+(There was 1 warning)

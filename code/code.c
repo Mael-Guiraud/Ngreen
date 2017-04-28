@@ -967,6 +967,56 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 	fclose(F);
 }
 
+
+void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, int nb_simuls, int mode)
+{
+
+	char nom[64];
+	sprintf(nom,"gvsgp3D_%d.data",mode);
+	FILE * F = fopen(nom,"w");
+	Graphe g ;
+	int resa,resb;
+	float c,d;
+
+	for(int k=2*taille_route;k<=4*taille_route;k+=10000)
+	{
+		for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*3;j+=1000)
+		{
+
+			c=0;
+			d=0;
+			for(int i = 0;i<nb_simuls;i++)
+			{
+				g = init_graphe(2*nb_routes+1);
+				graphe_etoile(g,taille_route);
+				//affiche_matrice(g);
+				resa = longest_etoile_periodique(g,2500,j, k,mode);
+				resb = longest_etoile_2(g,2500,j,k,mode);
+				//printf("%d %d \n",resa,resb);
+				if(resa != -2)
+				{	
+					if(resa != -1)
+						c++;
+				}
+				if(resb != -2)
+				{
+					if(resb != -1)	
+						d++;
+				}
+				
+
+			
+				libere_matrice(g);
+			}
+
+			fprintf(F,"%d %d %f %f\n",j,k,c/nb_simuls*100,d/nb_simuls*100);
+			//fprintf(stdout,"%d %d %f %f\n",j,k,c/nb_simuls*100,d/nb_simuls*100);
+		}
+		fprintf(F, "\n" );
+	}
+	fclose(F);
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -991,7 +1041,9 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,20000,80000, 10000,1);
+	//echec_periode_gvsgp(8,2500,20000,70000, 10000,1);
+	for(int i=0;i<5;i++)
+		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
 	
 	/*Graphe g = init_graphe(15);
 		graphe_etoile(g,7000);
