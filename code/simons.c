@@ -1212,8 +1212,9 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	
 
 	
-
-	int	date=arrivee[premier];
+	i=lower(arrivee,nbr_route);
+	
+	int	date=arrivee[i];
 	//////////////////////////////////////////////////////////////////int date = 0;
 	int j;
 
@@ -1224,7 +1225,6 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
-		if(j != premier)
 		elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_periode,deadline_route));
 		//printf(" %d ",deadline_route);
 
@@ -1361,7 +1361,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
-	affiche_solutions(g,taille_paquet,m_i,w_i);
+	//affiche_solutions(g,taille_paquet,m_i,w_i);
 	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR\n");}
 
 	int maximum ;
