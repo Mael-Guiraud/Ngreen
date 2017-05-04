@@ -808,14 +808,6 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 			}
 	}
 
-	//Si on a backtrack le dernier element
-	if(ens == NULL)
-	{
-		libereens(ens2);
-		freeelems(elems);	
-		return NULL;
-	}
-	
 
 	
 	Ensemble* ens3 = NULL;
@@ -1132,7 +1124,7 @@ void affiche_solutions(Graphe g, int taille_paquet, int * mi, int * wi)
 
 
 //Algo naif
-int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int mode, int premier)
+int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int mode)
 {
 	
 	///////////////////////////////////////////////////////taille_paquet = 6;
@@ -1221,11 +1213,11 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	//afficheTwoWayTrip(t);
 	Element * elems = init_element();
 	int deadline_route;
-	int deadline_periode = date + periode;
+	//int deadline_periode = date + periode;
 	for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
-		elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_periode,deadline_route));
+		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
 		//printf(" %d ",deadline_route);
 
 	}
@@ -1362,7 +1354,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
 	//affiche_solutions(g,taille_paquet,m_i,w_i);
-	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR\n");}
+	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR simons\n");}
 
 	int maximum ;
 
