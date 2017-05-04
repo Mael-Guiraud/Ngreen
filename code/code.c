@@ -126,6 +126,32 @@ Routage_Graph graphe_anneau(int nb_sommets,int nb_routes,int taille_liens)
 }
 
 
+void affiche_solution(Graphe g, int taille_paquet, int * mi, int * wi)
+{
+	int nbr_route = g.N /2;
+	int a,b;
+	
+	//aller
+	printf("----ALLER----\n");
+	for(int i=0;i<nbr_route;i++)
+	{
+		a= mi[i]+g.matrice[nbr_route][i];
+		b= a+taille_paquet-1;
+		printf("(%d[%d-%d]),",i,a,b);
+	}
+	printf("------------\n");
+
+	//retour
+	printf("----Retour----\n");
+	for(int i=0;i<nbr_route;i++)
+	{
+		a= mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i];
+		b= a+taille_paquet-1;
+		printf("(%d[%d-%d]),",i,a,b);
+	}
+	printf("------------\n");
+}
+
 //met toutes les cases du message a 1 dans la periode
 void ecrire_message_periode(int * p,int periode, int debut, int fin)
 {
@@ -295,6 +321,8 @@ int linear_prime(Graphe g,int taille_message)
 	}
 	return -1;
 }
+
+
 
 int linear_brute(Graphe g,int taille_message)
 {
@@ -600,7 +628,7 @@ int longest_etoile_2(Graphe g,int taille_paquets,int periode, int Tmax,int mode)
 	int taille_periode_retour = retour[greater(retour,nb_routes)]-retour[lower(retour,nb_routes)]+taille_paquets;
 	if(taille_periode_retour > periode)return -2;
 
-	if(!is_ok(g,taille_paquets,m_i,w_i))printf("ERROR !!\n");
+	if(!is_ok(g,taille_paquets,m_i,w_i,periode))printf("ERROR !!\n");
 	int max = w_i[0]+2*routes[0]+2500;
 	for(int i=1;i<nb_routes;i++)
 	{
@@ -693,12 +721,14 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	//Calcul de la position potentielle dans ct
 	for(int i=0;i<nb_routes;i++){
 		noeud_retour[i]=m_i[i]+routes[i]+g.matrice[nb_routes][i+nb_routes+1];
-		ordre[i]=i;
+		//ordre[i]=i;
 	}
 
 	//affiche_tab(noeud_retour,nb_routes);
 
-	for(int i=0;i<nb_routes;i++){date_limite[i] = m_i[i]+Tmax-g.matrice[nb_routes][i];}
+	for(int i=0;i<nb_routes;i++){
+		date_limite[i] = m_i[i]+Tmax-g.matrice[nb_routes][i];
+	}
 
 	//Le premier a arriver passe direct
 	int eligible = first_back(noeud_retour,date_limite,nb_routes);
@@ -714,6 +744,7 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	int debut_seconde_periode = -1;
 
 	int periode_retour[periode];
+
 	for(int i=0;i<periode;i++)
 		periode_retour[i]=0;
 
@@ -812,18 +843,22 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 
 	//affiche_tab(m_i,nb_routes);
 	//affiche_tab(w_i,nb_routes);
-	if(!is_ok(g,taille_paquets,m_i,w_i)){printf("ERROR 2!!\n");exit(16);}
+
+	if(!is_ok(g,taille_paquets,m_i,w_i,periode)){printf("ERROR 2!!\n");exit(16);}
 	//printf("-------------------------\n\n");
-	int max = w_i[0]+2*routes[0]+2500;
+	int max = w_i[0]+2*routes[0]+taille_paquets;
 	for(int i=1;i<nb_routes;i++)
 	{
-		if(w_i[i]+2*routes[i]+2500 > Tmax)
+		if(w_i[i]+2*routes[i]+taille_paquets > Tmax)
 		{
-			//printf("Tmax depassé\n");
+			/*affiche_matrice(g);
+			affiche_solution(g,taille_paquets,m_i, w_i);
+
+			printf("Tmax depassé (%d = %d + %d + %d)\n\n",w_i[i]+2*routes[i]+taille_paquets,w_i[i],2*routes[i],taille_paquets);*/
 			return -1;
 		}
-		if(w_i[i]+2*routes[i]+2500 > max)
-			max= w_i[i]+2*routes[i]+2500;
+		if(w_i[i]+2*routes[i]+taille_paquets > max)
+			max= w_i[i]+2*routes[i]+taille_paquets;
 	}
 	
 	return max;
@@ -926,43 +961,57 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 	sprintf(nom,"gvsgp_%d.data",mode);
 	FILE * F = fopen(nom,"w");
 	Graphe g ;
-	int resa,resb;
-	float a,b,c,d;
+	int resa,resb,resc;
+	float a,b,c,d,e;
 
-	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*3;j+=1000)
+	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*2;j+=500)
 	{
 		a=0;
 		b=0;
 		c=0;
 		d=0;
+		e=0;
+
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
 			graphe_etoile(g,taille_route);
 			//affiche_matrice(g);
-			resa = longest_etoile_periodique(g,2500,j, tmax,mode);
-			resb = longest_etoile_2(g,2500,j,tmax,mode);
+			resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
+			resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
+			resc = simons(g,taille_paquets,tmax,j,0,mode);
 			//printf("%d %d \n",resa,resb);
 			if(resa != -2)
 			{	
 				a++;
 				if(resa != -1)
+				{
+
 					c++;
+				}
+				
 			}
 			if(resb != -2)
 			{
 				b++;
 				if(resb != -1)	
+				{
 					d++;
+				}
 			}
+			if(resc != -1)
+			{
+				e++;
+			}
+			
 			
 
 		
 			libere_matrice(g);
 		}
-
-		fprintf(F,"%d %f %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100);
-		fprintf(stdout,"%d %f %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100);
+	
+		    fprintf(F,"%d %f %f %f %f %f \n",j,a/nb_simuls*100,c/nb_simuls*100,b/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
+		fprintf(stdout,"%d (%f %f) (%f %f) %f\n",j,a/nb_simuls*100,c/nb_simuls*100,b/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
 	}
 	fclose(F);
 }
@@ -1041,18 +1090,24 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	//echec_periode_gvsgp(8,2500,20000,70000, 10000,1);
-	for(int i=0;i<5;i++)
+	echec_periode_gvsgp(8,2500,20000, 70000, 10000,3);
+	/*for(int i=0;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
+	*/
+	/*Graphe g ;
+
+	for(int i=0;i<10000;i++)
+	{
 	
-	/*Graphe g = init_graphe(15);
-		graphe_etoile(g,7000);
-		//affiche_matrice(g);
-		printf("%d\n",simons(g,2500,28000,28000,0,3));
+		 g = init_graphe(15);
+		graphe_etoile(g,20000);
+		
+		printf("%d\n",longest_etoile_periodique(g,2500,22000,70000,2));
+
 
 		libere_matrice(g);
-	*/
-
+	}*/
+	
 	//echec_periode(8,2500,7000,31000,1000);
 	//echec_tmax(8,2500,7000,40000,1000);
 
