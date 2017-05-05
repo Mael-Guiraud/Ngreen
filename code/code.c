@@ -1004,6 +1004,7 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 				e++;
 			}
 			
+
 			
 
 		
@@ -1090,7 +1091,7 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,20000, 70000, 10000,3);
+	echec_periode_gvsgp(8,2500,20000, 80500, 10000,3);
 	/*for(int i=0;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
 	*/
