@@ -225,7 +225,8 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
   /////////////////// Début de l'arbre de recherche ////////////////////////////
 
 
-  while (compteur < 500000000)
+  //while (compteur < 500000000)
+  while (solution_taille > 0)
     {
       compteur++;
       if (solution_taille == nbr_route)

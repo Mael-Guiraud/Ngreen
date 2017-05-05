@@ -686,9 +686,9 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
       find optimal solutions. On the other hand, the exhaustive search will find an optimal solution, if it exists, but works in exponential time.
       We will compare the performance of the algorithms in two different regimes: the routes are either smaller than 
       the size of a message or they are arbitrary long.
-            
-            The graphs 
-      To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 700 slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
+%             
+%             The graphs 
+%       To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 700 slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
 
       \todo{Mettre les données concrètes plus proprement et éventuellement ne pas les mettre si on envoie pas à un truc de télécom}
 
@@ -715,14 +715,14 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
      
       With those parameters, we can observe that the average period of the Shortest-Longest algorithm, which is determined by the difference between the longest and the shortest route, is always equal to the Exhaustive generation, that is, the lower bound.
       The next results is to theoretically prove that, with those parameters, the Shortest-Longest algorithm gives optimal solutions, like this experimental study suggests it does. 
-      About the Greedy $3.n.\tau$ Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. 
-      We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes. Thus, the following experiences are made on a fixed number of routes : 8.
+      About the Greedy Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. However, the results show that this algorithm gives average periods lower theoretical upper bound of this algorithm ($3n\tau$).
+      We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes.
       
-      
+      \todo{regression linéaire}
       
       \paragraph{Long routes}
       
-      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, according to the period, for 8 routes in which  $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 30000 slots, that correspond to have the size of the route and the period approximately in the same order of magnitude.
+      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, according to the period, for 8 routes in which  $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform distribution between 0 and 30000 slots, that correspond to have the size of the route and the period approximately in the same order of magnitude.
       
       By increasing the size of the routes, the cuts of the exhaustive search, are less efficient. Thus, we defined a counter that allow the search to end if no solution are found. On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
       

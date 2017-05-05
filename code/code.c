@@ -1070,7 +1070,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 int main()
 {
 	srand(time(NULL));
-	//simuls_periode(8,2500,7000,1000);
+	//simuls_periode(12,2500,700,1000);
 	//echec(8,2500,30000,1000);
 //echec_taille_route(8,2500,25000,1000);
 	/*Graphe g;
@@ -1091,7 +1091,7 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,20000, 80500, 10000,3);
+	echec_periode_gvsgp(8,2500,20000, 81000, 10000,3);
 	/*for(int i=0;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
 	*/
