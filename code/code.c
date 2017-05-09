@@ -1018,7 +1018,7 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 				e++;
 			}
 			
-
+			
 			
 
 		
