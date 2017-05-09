@@ -928,7 +928,7 @@ void echec_periode(int nb_routes, int taille_paquets,int taille_route,int tmax, 
 			//affiche_matrice(g);
 			
 			//b=longest_etoile_2(g,2500,40000);
-			for(int k =0;k<10;k++)
+			for(int k =0;k<1000;k++)
 			{
 				tmp = simons(g, taille_paquets,tmax,9999,1,0);
 				
@@ -975,6 +975,7 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 	int resa,resb,resc;
 	float a,b,c,d,e;
 	int tmax;
+
 	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*2;j+=500)
 	{
 		a=0;
@@ -992,6 +993,7 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 			resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
 			resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
 			resc = simons(g,taille_paquets,tmax,j,0,mode);
+
 			//printf("%d %d \n",resa,resb);
 			if(resa != -2)
 			{	
@@ -1103,7 +1105,7 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,20000, 8000, 100000,3);
+	echec_periode_gvsgp(8,2500,20000, 500, 10000,3);
 	/*for(int i=0;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
 	*/
