@@ -840,94 +840,6 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 }
 
 
-
-void echec_tmax(int nb_routes, int taille_paquets,int taille_route,int tmax, int nb_simuls)
-{
-	FILE * F = fopen("results_echec_tmax.data","w");
-	Graphe g ;
-	float a,b,c;
-	int resultat = INT_MAX;
-	int tmp;
-	for(int j=taille_route*3;j<taille_route*5;j+=1000)
-	{
-		a=0;
-		b=0;
-		c=0;
-		for(int i = 0;i<nb_simuls;i++)
-		{
-			g = init_graphe(2*nb_routes+1);
-			graphe_etoile(g,taille_route);
-			//affiche_matrice(g);
-			
-			//b=longest_etoile_2(g,2500,40000);
-			for(int k =0;k<1000;k++)
-			{
-				tmp = simons(g, taille_paquets,j,9999,0,0);
-				
-				
-				if(tmp != -1)
-					if(tmp < resultat)
-						resultat = tmp;
-			}
-
-			if(resultat != INT_MAX)
-				a++;
-			if(simons(g, taille_paquets, j,9999,0,1) != -1)
-				b++;
-			if(simons(g, taille_paquets, j,9999,0,2) != -1)
-				c++;
-			libere_matrice(g);
-		}
-
-		fprintf(F,"%d %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100);
-		fprintf(stdout,"%d %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100);
-	}
-	fclose(F);
-}
-
-void echec_periode(int nb_routes, int taille_paquets,int taille_route,int tmax, int nb_simuls)
-{
-	FILE * F = fopen("results_echec_periode.data","w");
-	Graphe g ;
-	float a,b,c;
-	int tmp;
-	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes+2500;j+=100)
-	{
-		a=0;
-		b=0;
-		c=0;
-		for(int i = 0;i<nb_simuls;i++)
-		{
-			g = init_graphe(2*nb_routes+1);
-			graphe_etoile(g,taille_route);
-			//affiche_matrice(g);
-			
-			//b=longest_etoile_2(g,2500,40000);
-			for(int k =0;k<1000;k++)
-			{
-				tmp = simons(g, taille_paquets,tmax,9999,1,0);
-				
-				if(tmp != -1)//si tmax trop petite (peu probable)
-					if(tmp <= j)
-					{
-						a++;
-						break;
-					}
-			}
-			
-			if(simons(g, taille_paquets, tmax,9999,1,1) <= j)
-				b++;
-			if(simons(g, taille_paquets, tmax,9999,1,2)<= j)
-				c++;
-			libere_matrice(g);
-		}
-
-		fprintf(F,"%d %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100);
-		fprintf(stdout,"%d %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100);
-	}
-	fclose(F);
-}
-
 int longest_route(Graphe g)
 {
 	int nb_routes = g.N/2;
@@ -974,7 +886,7 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 				
 				resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
 				resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
-				resc = simons(g,taille_paquets,tmax,j,0,mode);
+				resc = simons(g,taille_paquets,tmax,j,mode);
 				resd = simons_periodique(g,taille_paquets,tmax,j,mode);
 				//printf("%d %d \n",resa,resb);
 				if(resa != -2)
@@ -993,10 +905,13 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 						b++;
 					}
 				}
-				if(resc != -1)
+				if(resc != -2)
 				{
+					if(resc != -1)
+					{
 
-					c++;
+						c++;
+					}
 				}
 				if(resd != -1)
 				{
@@ -1040,16 +955,18 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 				}
 				for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
 				{
-					resc = simons(g,taille_paquets,tmax,j,0,mode);
+					resc = simons(g,taille_paquets,tmax,j,mode);
 	
-						if(resc != -1)
+						if(resc != -2)
 						{
+							if(resc != -1)
+							{
 
-							c++;
-							//printf("On a trouvé pour e au %d ieme tick\n",compteur_rand);
-							break;
+								c++;
+								break;
+							}
 						}
-						
+			
 					
 				}	
 				for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
@@ -1117,7 +1034,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 						
 						resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
 						resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
-						resc = simons(g,taille_paquets,tmax,j,0,mode);
+						resc = simons(g,taille_paquets,tmax,j,mode);
 						resd = simons_periodique(g,taille_paquets,tmax,j,mode);
 						//printf("%d %d \n",resa,resb);
 						if(resa != -2)
@@ -1136,10 +1053,13 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 								b++;
 							}
 						}
-						if(resc != -1)
+						if(resc != -2)
 						{
+							if(resc != -1)
+							{
 
-							c++;
+								c++;
+							}
 						}
 						if(resd != -1)
 						{
@@ -1183,16 +1103,18 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 						}
 						for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
 						{
-							resc = simons(g,taille_paquets,tmax,j,0,mode);
+							resc = simons(g,taille_paquets,tmax,j,mode);
 			
+							if(resc != -2)
+							{
 								if(resc != -1)
 								{
 
 									c++;
-									//printf("On a trouvé pour e au %d ieme tick\n",compteur_rand);
 									break;
 								}
-								
+							}
+												
 							
 						}	
 						for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)

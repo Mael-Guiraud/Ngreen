@@ -1117,37 +1117,48 @@ void transforme_waiting(Ensemble * ens, int * wi)
 }
 
 
-
-
 void affiche_solution(Graphe g, int taille_paquet, int * mi, int * wi)
 {
 	int nbr_route = g.N /2;
 	int a,b;
-	
-	//aller
-	printf("----ALLER----\n");
+
+	int aller[nbr_route];
+	int retour[nbr_route];
+	int ordrea[nbr_route];
+	int ordrer[nbr_route];
 	for(int i=0;i<nbr_route;i++)
 	{
-		a= mi[i]+g.matrice[nbr_route][i];
-		b= a+taille_paquet-1;
-		printf("(%d[%d-%d]),",i,a,b);
+		ordrea[i]=i;
+		ordrer[i]=i;
+		aller[i]=mi[i]+g.matrice[nbr_route][i];
+		retour[i]=mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i];
 	}
-	printf("------------\n");
+	tri_bulles_inverse(aller,ordrea,nbr_route);
+	tri_bulles_inverse(retour,ordrer,nbr_route);
+	//aller
+	printf("\n----ALLER----\n");
+	for(int i=0;i<nbr_route;i++)
+	{
+		a= aller[ordrea[i]];
+		b= a+taille_paquet-1;
+		printf("(%d[%d-%d]),",ordrea[i],a,b);
+	}
+	printf("\n------------\n");
 
 	//retour
-	printf("----Retour----\n");
+	printf("\n----Retour----\n");
 	for(int i=0;i<nbr_route;i++)
 	{
-		a= mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i];
+		a= retour[ordrer[i]];
 		b= a+taille_paquet-1;
-		printf("(%d[%d-%d]),",i,a,b);
+		printf("(%d[%d-%d]),",ordrer[i],a,b);
 	}
-	printf("------------\n\n\n");
+	printf("\n------------\n\n\n");
 }
 
 
 //Algo naif
-int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int mode)
+int simons(Graphe g, int taille_paquet, int TMAX,int periode,int mode)
 {
 	
 	///////////////////////////////////////////////////////taille_paquet = 6;
@@ -1381,30 +1392,27 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 
 	int maximum ;
 
-	if(mode_test == 0)
+
+	//CALCUL TMAX
+	maximum= w_i[0]+2*Dl[0];
+	for(int i=0;i<nbr_route;i++)
 	{
-		maximum= w_i[0]+2*Dl[0];
-		for(int i=0;i<nbr_route;i++)
-		{
-			if(w_i[i]+2*Dl[i] > maximum)
-				maximum= w_i[i]+2*Dl[i];
-		}
+		if(w_i[i]+2*Dl[i] > maximum)
+			maximum= w_i[i]+2*Dl[i];
 	}
-	else
+	
+
+	//TEST DEPASSEMENT PERIODE
+	int retour[nbr_route];
+	for(int i=0;i<nbr_route;i++)
 	{
-		int aller[nbr_route];
-		int retour[nbr_route];
-		for(int i=0;i<nbr_route;i++)
-		{
-			aller[i] = m_i[i]+g.matrice[nbr_route][i];
-			retour[i] = aller[i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
-		}
-		int periode_aller = aller[greater(aller,nbr_route)]-aller[lower(aller,nbr_route)]+taille_paquet;
-		int periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
-		maximum = max(periode_retour,periode_aller);
+		retour[i] = m_i[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
+	}
+	int taille_periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
+	if(taille_periode_retour > periode)return -2;	
 		//affiche_tab(retour,nbr_route);printf("maximum = %d\n",maximum);
-	}
-		affiche_solution(g,taille_paquet,m_i,w_i);
+	
+		//affiche_solution(g,taille_paquet,m_i,w_i);
 	return maximum;
 }
 
