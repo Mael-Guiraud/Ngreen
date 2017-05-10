@@ -976,13 +976,14 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 	float a,b,c,d,e;
 	int tmax;
 
-	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*2;j+=500)
+	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*1.5;j+=500)
 	{
 		a=0;
 		b=0;
 		c=0;
 		d=0;
 		e=0;
+
 
 		for(int i = 0;i<nb_simuls;i++)
 		{
@@ -1025,8 +1026,8 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 			libere_matrice(g);
 		}
 	
-		    fprintf(F,"%d %f %f %f %f %f \n",j,a/nb_simuls*100,c/nb_simuls*100,b/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
-		fprintf(stdout,"%d (%f %f) (%f %f) %f\n",j,a/nb_simuls*100,c/nb_simuls*100,b/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
+		     fprintf(F,"%d %f %f %f \n",j,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
+		fprintf(stdout,"%d %f %f %f \n",j,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
 	}
 	fclose(F);
 }
