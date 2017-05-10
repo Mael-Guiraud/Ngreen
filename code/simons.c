@@ -1087,6 +1087,17 @@ void tri_bulles_inverse(int* tab,int* ordre,int taille)
 
 }
 
+
+void affiche_etoile(Graphe g)
+{
+	int nbr_route = g.N /2;
+	printf("Graphe :\n");
+
+	for( int i=0;i<nbr_route;i++)
+		printf("route %d, taille %5d %5d - %5d \n",i,g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1],g.matrice[nbr_route][i],g.matrice[nbr_route][i+nbr_route+1]);
+
+	printf("\n");
+}
 void transforme_waiting(Ensemble * ens, int * wi)
 {
 
@@ -1228,7 +1239,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	//int deadline_periode = date + periode;
 	for(j=0;j<nbr_route;j++)
 	{
-		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
+		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j]+taille_paquet;
 		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
 
 	}
@@ -1246,9 +1257,11 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	elems= ajoute_elemt(elems,10,25,40);
 	
 	*/
-	affiche_etoile(g);
+	/*affiche_etoile(g);
+	affiche_tab(m_i,nbr_route);
+	printf("%d tmax \n", TMAX);
 
-	affichejobs(elems);
+	affichejobs(elems);*/
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
@@ -1290,8 +1303,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 			//printf("Taches avant crisis\n");affichejobs(elems2);printf("\n");
 			//printf("ens avant crisis\n");affiche_ensemble(ens);printf("\n");
 			ens = crisis(ens,crisise,elems2,elems,taille_paquet,periode);
-				if(ens == NULL)
-				printf(" NO PULL(%d) FOUND\n",crisise->index);
+				
 			freeelems(crisise);
 			//printf("Taches apres crisis\n");affichejobs(elems2);printf("\n");
 			//printf("ens apres crisis\n");affiche_ensemble(ens);printf("\n");
@@ -1299,7 +1311,6 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 			if(ens == NULL)
 			{
 				//affichejobs(elems2);
-				printf(" NO PULL(%d) FOUND\n",crisise->index);
 				freeelems(elems);
 				freeelems(elems2);
 				return -1;
@@ -1366,7 +1377,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
-	if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons\n");}
+	//if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons\n");}
 
 	int maximum ;
 
@@ -1393,7 +1404,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 		maximum = max(periode_retour,periode_aller);
 		//affiche_tab(retour,nbr_route);printf("maximum = %d\n",maximum);
 	}
-	
+		affiche_solution(g,taille_paquet,m_i,w_i);
 	return maximum;
 }
 
