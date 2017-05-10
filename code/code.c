@@ -965,6 +965,8 @@ int longest_route(Graphe g)
 	return 2*max;
 }
 
+
+
 void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int marge, int nb_simuls, int mode)
 {
 
@@ -972,62 +974,134 @@ void echec_periode_gvsgp(int nb_routes, int taille_paquets,int taille_route,int 
 	sprintf(nom,"gvsgp_%d.data",mode);
 	FILE * F = fopen(nom,"w");
 	Graphe g ;
-	int resa,resb,resc;
-	float a,b,c,d,e;
+	int resa,resb,resc,resd;
+	float a,b,c,d;
 	int tmax;
-
+	int nb_rand = 100;
 	for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*1.5;j+=500)
 	{
 		a=0;
 		b=0;
 		c=0;
 		d=0;
-		e=0;
-
 
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
 			graphe_etoile(g,taille_route);
 			tmax = marge + longest_route(g);
+			//affiche_etoile(g);
+			//printf("TMAX = %d\n",tmax);
+			//printf("tmax = %d(%d + %d) \n",tmax,longest_route(g),marge);
+			if(mode != 0)
+			{
+				
+				
+				resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
+				resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
+				resc = simons(g,taille_paquets,tmax,j,0,mode);
+				resd = simons_periodique(g,taille_paquets,tmax,j,mode);
+				//printf("%d %d \n",resa,resb);
+				if(resa != -2)
+				{	
+					if(resa != -1)
+					{
 
-			resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
-			resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
-			resc = simons(g,taille_paquets,tmax,j,0,mode);
-
-			//printf("%d %d \n",resa,resb);
-			if(resa != -2)
-			{	
-				a++;
-				if(resa != -1)
+						a++;
+					}
+					
+				}
+				if(resb != -2)
+				{
+					if(resb != -1)	
+					{
+						b++;
+					}
+				}
+				if(resc != -1)
 				{
 
 					c++;
 				}
-				
-			}
-			if(resb != -2)
-			{
-				b++;
-				if(resb != -1)	
+				if(resd != -1)
 				{
+
 					d++;
 				}
-			}
-			if(resc != -1)
-			{
-				e++;
-			}
-			
-			
-			
 
-		
+
+			}
+			else
+			{
+				for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+				{
+					resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
+					if(resa != -2)
+					{	
+						if(resa != -1)
+						{
+
+							a++;
+							//printf("On a trouvé pour a au %d ieme tick (%d) \n",compteur_rand,resa);
+							break;
+						}
+						
+					}
+				}
+				for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+				{
+					resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
+					if(resb != -2)
+					{	
+						if(resb != -1)
+						{
+
+							b++;
+							//printf("On a trouvé pour b au %d ieme tick (%d) \n",compteur_rand,resb);
+							break;
+						}
+						
+					}
+				}
+				for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+				{
+					resc = simons(g,taille_paquets,tmax,j,0,mode);
+	
+						if(resc != -1)
+						{
+
+							c++;
+							//printf("On a trouvé pour e au %d ieme tick\n",compteur_rand);
+							break;
+						}
+						
+					
+				}	
+				for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+				{
+					resd = simons_periodique(g,taille_paquets,tmax,j,mode);
+	
+						if(resd != -1)
+						{
+
+							d++;
+							//printf("On a trouvé pour e au %d ieme tick\n",compteur_rand);
+							break;
+						}
+						
+					
+				}
+				//if(resc == -1){printf("ON NA PAS TROUVE POUR e (Tmax = %d)\n",tmax);exit(40);}
+			}
+
+
+
+			//printf("-----------------------------------------\n");
 			libere_matrice(g);
 		}
 	
-		     fprintf(F,"%d %f %f %f \n",j,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
-		fprintf(stdout,"%d %f %f %f \n",j,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
+   		     fprintf(F,"%d %f %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100);
+		fprintf(stdout,"%d %f %f %f %f\n",j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100);
 	}
 	fclose(F);
 }
@@ -1040,41 +1114,137 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 	sprintf(nom,"gvsgp3D_%d.data",mode);
 	FILE * F = fopen(nom,"w");
 	Graphe g ;
-	int resa,resb;
-	float c,d;
+	int resa,resb,resc,resd;
+	float a,b,c,d;
+	int tmax;
 
-	for(int k=2*taille_route;k<=4*taille_route;k+=10000)
+	int nb_rand = 100;
+	for(int marge=0;marge<=1000;marge+=100)
 	{
-		for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*3;j+=1000)
-		{
-
-			c=0;
-			d=0;
-			for(int i = 0;i<nb_simuls;i++)
+		for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*1.5;j+=500)
 			{
-				g = init_graphe(2*nb_routes+1);
-				graphe_etoile(g,taille_route);
-				//affiche_matrice(g);
-				resa = longest_etoile_periodique(g,2500,j, k,mode);
-				resb = longest_etoile_2(g,2500,j,k,mode);
-				//printf("%d %d \n",resa,resb);
-				if(resa != -2)
-				{	
-					if(resa != -1)
-						c++;
-				}
-				if(resb != -2)
+				a=0;
+				b=0;
+				c=0;
+				d=0;
+
+				for(int i = 0;i<nb_simuls;i++)
 				{
-					if(resb != -1)	
-						d++;
-				}
-				
+					g = init_graphe(2*nb_routes+1);
+					graphe_etoile(g,taille_route);
+					tmax = marge + longest_route(g);
+					//affiche_etoile(g);
+					//printf("TMAX = %d\n",tmax);
+					//printf("tmax = %d(%d + %d) \n",tmax,longest_route(g),marge);
+					if(mode != 0)
+					{
+						
+						
+						resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
+						resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
+						resc = simons(g,taille_paquets,tmax,j,0,mode);
+						resd = simons_periodique(g,taille_paquets,tmax,j,mode);
+						//printf("%d %d \n",resa,resb);
+						if(resa != -2)
+						{	
+							if(resa != -1)
+							{
 
+								a++;
+							}
+							
+						}
+						if(resb != -2)
+						{
+							if(resb != -1)	
+							{
+								b++;
+							}
+						}
+						if(resc != -1)
+						{
+
+							c++;
+						}
+						if(resd != -1)
+						{
+
+							d++;
+						}
+
+
+					}
+					else
+					{
+						for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+						{
+							resa = longest_etoile_periodique(g,taille_paquets,j, tmax,mode);
+							if(resa != -2)
+							{	
+								if(resa != -1)
+								{
+
+									a++;
+									//printf("On a trouvé pour a au %d ieme tick (%d) \n",compteur_rand,resa);
+									break;
+								}
+								
+							}
+						}
+						for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+						{
+							resb = longest_etoile_2(g,taille_paquets,j,tmax,mode);
+							if(resb != -2)
+							{	
+								if(resb != -1)
+								{
+
+									b++;
+									//printf("On a trouvé pour b au %d ieme tick (%d) \n",compteur_rand,resb);
+									break;
+								}
+								
+							}
+						}
+						for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+						{
+							resc = simons(g,taille_paquets,tmax,j,0,mode);
 			
-				libere_matrice(g);
-			}
+								if(resc != -1)
+								{
 
-			fprintf(F,"%d %d %f %f\n",j,k,c/nb_simuls*100,d/nb_simuls*100);
+									c++;
+									//printf("On a trouvé pour e au %d ieme tick\n",compteur_rand);
+									break;
+								}
+								
+							
+						}	
+						for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+						{
+							resd = simons_periodique(g,taille_paquets,tmax,j,mode);
+			
+								if(resd != -1)
+								{
+
+									d++;
+									//printf("On a trouvé pour e au %d ieme tick\n",compteur_rand);
+									break;
+								}
+								
+							
+						}
+						//if(resc == -1){printf("ON NA PAS TROUVE POUR e (Tmax = %d)\n",tmax);exit(40);}
+					}
+
+
+
+					//printf("-----------------------------------------\n");
+					libere_matrice(g);
+				}
+			
+		   		     fprintf(F,"%d %d %f %f %f %f\n",marge,j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100);
+				fprintf(stdout,"%d %d %f %f %f %f\n",marge,j,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100);
 			//fprintf(stdout,"%d %d %f %f\n",j,k,c/nb_simuls*100,d/nb_simuls*100);
 		}
 		fprintf(F, "\n" );
@@ -1106,10 +1276,10 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
-	/*for(int i=0;i<5;i++)
+	//echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
+	for(int i=0;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
-	*/
+	
 	/*Graphe g ;
 
 	for(int i=0;i<10000;i++)

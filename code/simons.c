@@ -1388,8 +1388,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 
 //Algo naif
 int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int premier)
-{
-	
+{	
 	///////////////////////////////////////////////////////taille_paquet = 6;
 	 if (!(g.N % 2))
     {
@@ -1478,7 +1477,7 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 	Element * elems = init_element();
 	int deadline_route;
 	int deadline_periode = arrivee[premier] + periode;
-//	printf("date = %d, arrive premier = %d periode = %d, tmax = %d\n",date, arrivee[premier],periode,TMAX);
+	//	printf("date = %d, arrive premier = %d periode = %d, tmax = %d\n",date, arrivee[premier],periode,TMAX);
 	for(j=0;j<nbr_route;j++)
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j]+taille_paquet;
@@ -1489,7 +1488,7 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 		}
 
 	}
-/*
+	/*
 	elems= ajoute_elemt(elems,0,0,74);
 	elems= ajoute_elemt(elems,1,21,46);
 	elems= ajoute_elemt(elems,2,2,60);
@@ -1628,17 +1627,17 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
 	//affiche_solution(g,taille_paquet,m_i,w_i);
-/*
-	int retour[nbr_route];
-	for(int i=0;i<nbr_route;i++)
-	{
-		retour[i] = m_i[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
-	}
-	int taille_periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
-	printf("Periode de taille %d \n\n",taille_periode_retour);
-*/
+	/*
+		int retour[nbr_route];
+		for(int i=0;i<nbr_route;i++)
+		{
+			retour[i] = m_i[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
+		}
+		int taille_periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
+		printf("Periode de taille %d \n\n",taille_periode_retour);
+	*/
 
-	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR\n");}
+	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR simons per\n");}
 
 	int maximum ;
 
@@ -1652,6 +1651,7 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 	
 	return maximum;
 }
+
 int simons_periodique(Graphe g, int taille_paquet,int TMAX, int periode, int mode)
 {
 	int min = -1;
