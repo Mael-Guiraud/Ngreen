@@ -629,13 +629,13 @@ int longest_etoile_2(Graphe g,int taille_paquets,int periode, int Tmax,int mode)
 	if(taille_periode_retour > periode)return -2;
 
 	if(!is_ok(g,taille_paquets,m_i,w_i,periode))printf("ERROR !!\n");
-	int max = w_i[0]+2*routes[0]+2500;
+	int max = w_i[0]+2*routes[0];
 	for(int i=1;i<nb_routes;i++)
 	{
-		if(w_i[i]+2*routes[i]+2500 > Tmax)
+		if(w_i[i]+2*routes[i] > Tmax)
 			return -1;
-		if(w_i[i]+2*routes[i]+2500 > max)
-			max= w_i[i]+2*routes[i]+2500;
+		if(w_i[i]+2*routes[i] > max)
+			max= w_i[i]+2*routes[i];
 	}
 	
 	return max;
@@ -846,10 +846,10 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 
 	if(!is_ok(g,taille_paquets,m_i,w_i,periode)){printf("ERROR 2!!\n");exit(16);}
 	//printf("-------------------------\n\n");
-	int max = w_i[0]+2*routes[0]+taille_paquets;
+	int max = w_i[0]+2*routes[0];
 	for(int i=1;i<nb_routes;i++)
 	{
-		if(w_i[i]+2*routes[i]+taille_paquets > Tmax)
+		if(w_i[i]+2*routes[i] > Tmax)
 		{
 			/*affiche_matrice(g);
 			affiche_solution(g,taille_paquets,m_i, w_i);
@@ -857,8 +857,8 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 			printf("Tmax depassé (%d = %d + %d + %d)\n\n",w_i[i]+2*routes[i]+taille_paquets,w_i[i],2*routes[i],taille_paquets);*/
 			return -1;
 		}
-		if(w_i[i]+2*routes[i]+taille_paquets > max)
-			max= w_i[i]+2*routes[i]+taille_paquets;
+		if(w_i[i]+2*routes[i] > max)
+			max= w_i[i]+2*routes[i];
 	}
 	
 	return max;
