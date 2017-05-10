@@ -126,31 +126,6 @@ Routage_Graph graphe_anneau(int nb_sommets,int nb_routes,int taille_liens)
 }
 
 
-void affiche_solution(Graphe g, int taille_paquet, int * mi, int * wi)
-{
-	int nbr_route = g.N /2;
-	int a,b;
-	
-	//aller
-	printf("----ALLER----\n");
-	for(int i=0;i<nbr_route;i++)
-	{
-		a= mi[i]+g.matrice[nbr_route][i];
-		b= a+taille_paquet-1;
-		printf("(%d[%d-%d]),",i,a,b);
-	}
-	printf("------------\n");
-
-	//retour
-	printf("----Retour----\n");
-	for(int i=0;i<nbr_route;i++)
-	{
-		a= mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i];
-		b= a+taille_paquet-1;
-		printf("(%d[%d-%d]),",i,a,b);
-	}
-	printf("------------\n");
-}
 
 //met toutes les cases du message a 1 dans la periode
 void ecrire_message_periode(int * p,int periode, int debut, int fin)

@@ -1003,28 +1003,40 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 }
 
 
-int is_ok(Graphe g, int taille_paquet, int * mi, int * wi)
+int is_ok(Graphe g, int taille_paquet, int * mi, int * wi,int p)
 {
 	int nbr_route = g.N /2;
+	int a,b,c,d;
+	//aller
 	for(int i=1;i<nbr_route;i++)
 	{
+		a= (mi[i]+g.matrice[nbr_route][i])%p;
+		b= (a+taille_paquet-1)%p;
 		for(int j=i-1;j>=0;j--)
 		{
-			if( fabs(mi[j]+g.matrice[nbr_route][j]-mi[i]-g.matrice[nbr_route][i]) <taille_paquet )
+			c= (mi[j]+g.matrice[nbr_route][j])%p;
+			d= (c+taille_paquet-1)%p;
+			if( ( (c>=a)&&(c<=b) ) || ( (d>=a)&&(d<=b) ) )
 			{
-				printf("PB(aller) entre %d(%d) et %d(%d)\n",i,mi[j]+g.matrice[nbr_route][j],j,mi[i]+g.matrice[nbr_route][i]);
+				printf("PB(aller ) entre %d(%d-%d) et %d(%d-%d)\n",i,a,b,j,c,d);
 				return 0;
 			}
 		}
 	}
 
+	//retour
+
 	for(int i=0;i<nbr_route;i++)
 	{
+		a= (mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i])%p;
+		b= (a+taille_paquet-1)%p;
 		for(int j=0;j<i;j++)
 		{
-			if( fabs(mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j]-wi[i]-mi[i]-g.matrice[nbr_route][i]-2*g.matrice[nbr_route][nbr_route+1+i]) <taille_paquet )
+			c= (mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j])%p;
+			d= (c+taille_paquet-1)%p;
+			if( ( (c>=a)&&(c<=b) ) || ( (d>=a)&&(d<=b) ) )
 			{
-				printf("PB(retour) entre %d(%d) et %d(%d)\n",j,mi[j]+g.matrice[nbr_route][j]+2*g.matrice[nbr_route][nbr_route+1+j]+wi[j],i,mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i]);
+				printf("PB(retour ) entre %d(%d-%d) et %d(%d-%d)\n",i,a,b,j,c,d);
 				return 0;
 			}	
 		}
@@ -1096,7 +1108,7 @@ void transforme_waiting(Ensemble * ens, int * wi)
 
 
 
-void affiche_solutions(Graphe g, int taille_paquet, int * mi, int * wi)
+void affiche_solution(Graphe g, int taille_paquet, int * mi, int * wi)
 {
 	int nbr_route = g.N /2;
 	int a,b;
@@ -1203,9 +1215,9 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	}
 	
 
-	
 	i=lower(arrivee,nbr_route);
 	
+
 	int	date=arrivee[i];
 	//////////////////////////////////////////////////////////////////int date = 0;
 	int j;
@@ -1218,7 +1230,6 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	{
 		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
 		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
-		//printf(" %d ",deadline_route);
 
 	}
 /*
@@ -1235,14 +1246,14 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 	elems= ajoute_elemt(elems,10,25,40);
 	
 	*/
+	affiche_etoile(g);
 
-
-	//affichejobs(elems);
+	affichejobs(elems);
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
 	
-	int a_scheduler = nbr_route-1;
+	int a_scheduler = nbr_route;
 	/////////////////////////////////////////////////////int a_scheduler = 11;
 	Ensemble * ens = NULL;
 	Ensemble * ensembletmp;
@@ -1279,6 +1290,8 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 			//printf("Taches avant crisis\n");affichejobs(elems2);printf("\n");
 			//printf("ens avant crisis\n");affiche_ensemble(ens);printf("\n");
 			ens = crisis(ens,crisise,elems2,elems,taille_paquet,periode);
+				if(ens == NULL)
+				printf(" NO PULL(%d) FOUND\n",crisise->index);
 			freeelems(crisise);
 			//printf("Taches apres crisis\n");affichejobs(elems2);printf("\n");
 			//printf("ens apres crisis\n");affiche_ensemble(ens);printf("\n");
@@ -1286,7 +1299,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 			if(ens == NULL)
 			{
 				//affichejobs(elems2);
-				//printf(" NO PULL(%d) FOUND\n",crisise->index);
+				printf(" NO PULL(%d) FOUND\n",crisise->index);
 				freeelems(elems);
 				freeelems(elems2);
 				return -1;
@@ -1353,18 +1366,17 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int 
 
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
-	//affiche_solutions(g,taille_paquet,m_i,w_i);
-	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR simons\n");}
+	if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons\n");}
 
 	int maximum ;
 
 	if(mode_test == 0)
 	{
-		maximum= w_i[0]+2*Dl[0]+2500;
+		maximum= w_i[0]+2*Dl[0];
 		for(int i=0;i<nbr_route;i++)
 		{
-			if(w_i[i]+2*Dl[i]+2500 > maximum)
-				maximum= w_i[i]+2*Dl[i]+2500;
+			if(w_i[i]+2*Dl[i] > maximum)
+				maximum= w_i[i]+2*Dl[i];
 		}
 	}
 	else
@@ -1637,7 +1649,7 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 		printf("Periode de taille %d \n\n",taille_periode_retour);
 	*/
 
-	if(!is_ok(g,taille_paquet,m_i,w_i)){printf("ERROR simons per\n");}
+	if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons per\n");}
 
 	int maximum ;
 
