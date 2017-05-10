@@ -1105,7 +1105,7 @@ int main()
 		printf("%d %d\n",a,b);
 
 	}*/
-	echec_periode_gvsgp(8,2500,20000, 800, 10000,3);
+	echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
 	/*for(int i=0;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
 	*/
