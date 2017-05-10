@@ -352,7 +352,7 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 		}
 		printf("\n");
 		
-		fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_sl/nb_simuls,j*taille_message,2*j*taille_message);
+		fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_sl/nb_simuls,j*taille_message,3*j*taille_message);
 		printf("\n");
 	}
 	fclose(F);
@@ -1003,8 +1003,10 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 {
 
 	char nom[64];
-	sprintf(nom,"gvsgp3D_%d.data",mode);
+	sprintf(nom,"3d/gvsgp3D_%d.data",mode);
+
 	FILE * F = fopen(nom,"w");
+
 	Graphe g ;
 	int resa,resb,resc,resd;
 	float a,b,c,d;
@@ -1015,10 +1017,10 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 	{
 		for(int j=taille_paquets*nb_routes;j<taille_paquets*nb_routes*1.5;j+=500)
 			{
-				a=0;
-				b=0;
-				c=0;
-				d=0;
+				a=0.0;
+				b=0.0;
+				c=0.0;
+				d=0.0;
 
 				for(int i = 0;i<nb_simuls;i++)
 				{
@@ -1175,7 +1177,7 @@ int main()
 	}*/
 	//echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
 	for(int i=0;i<5;i++)
-		echec_periode_gvsgp3D(8,2500,20000, 1000,i);
+		echec_periode_gvsgp3D(8,2500,700, 1000,i);
 	
 	/*Graphe g ;
 

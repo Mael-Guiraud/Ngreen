@@ -684,8 +684,7 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
       The following performance evaluation results compares the three presented algorithms.
       Notice that both Greedy algorithm and the Shortest-Longest are polynomial time algorithm but are not always able to
       find optimal solutions. On the other hand, the exhaustive search will find an optimal solution, if it exists, but works in exponential time.
-      We will compare the performance of the algorithms in two different regimes: the routes are either smaller than 
-      the size of a message or they are arbitrary long.
+      We will compare the performance of the algorithms in two different regimes: the routes are either short or arbitrary long.
 %             
 %             The graphs 
 %       To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 700 slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
@@ -694,7 +693,11 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
 
       \paragraph{Short routes}
       
-       We chose parameters coming from our C-RAN settings. A message is of $2500$ slots, while the values $\lambda(c_t,r_{t_i})$ are drawn uniformly between $0$ and $700$ slots. For each of the three different algorithms and for a given instance we look for the minimal period $P$ for which the problem has a $(P,\tau)$ periodic affectation. We then compute the average of these minimal periods for $1000$ random star topologies for different number of routes. To find the minimum period, we need to do a linear search on the value $P$, a dichotomy would not work because of Lemma~\ref{lemma:monotonic}.
+      Firstly, we made some performance evaluation on graphs in which the values $\lambda(c_t,r_{t_i})$ are drawn uniformly between $0$ and $700$ slots. This parameter is coming from our C-RAN context, in which the physical links are short enough. In C-RAN context, the size of a message is of $2500$ slots.\\
+      
+      For a given instance, we try to determine the minimum period $P$ for which the graph has a $(P,\tau)$ periodic affectation; to that end,  we need to do a linear search on the value $P$, a dichotomy would not work because of Lemma~\ref{lemma:monotonic}.
+      We generated $1000$ random instances of PAZL, and we applied the linear search with each of the three algorithm. Then we measure the average minimal period, for each algorithm. We applied this test increasing the number of routes, until it was too long for the exhaustive search to find a solution quickly.
+
        
 %our network has a throughput of 10Gbps throughput and 
 %       
@@ -702,9 +705,8 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
 %       The messages size $\tau$ is of 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
            
       
-      Since in this setting the exhaustive generation was always finishing in less than ten seconds, the results corresponding to this
-      algorithms are optimal and are a lower bounds for the period found for the other algorithms.
-      As an information, we draw the $f(n) = n\tau$, which is an absolute lower bound on the period and $g(n) = 3n\tau$ lines which is an upper bound on the period found by the greedy algorithm.
+      Since the exhaustive search is optimal, the average periods founds by this algorithm is the lower lower bounds for the other algorithms.
+      As an information, we draw the $f(n) = n\tau$, which is an absolute lower bound on the period and $g(n) = 3n\tau$ lines which is the theoretical upper bound of the greedy algorithm.
       
       \begin{center}
       \includegraphics[scale=0.4]{periode_petite.pdf}
@@ -712,10 +714,10 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
      
 
       
-     
-      With those parameters, we can observe that the average period of the Shortest-Longest algorithm, which is determined by the difference between the longest and the shortest route, is always equal to the Exhaustive generation, that is, the lower bound.
-      The next results is to theoretically prove that, with those parameters, the Shortest-Longest algorithm gives optimal solutions, like this experimental study suggests it does. 
-      About the Greedy Algorithm, with those parameters, it always gives us bigger periods than the Shortest longest. However, the results show that this algorithm gives average periods lower theoretical upper bound of this algorithm ($3n\tau$).
+      As a reminder, the period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route. Here, because of the routes are short, this difference is small in regards to the period. Thus, we can imagine that this algorithm gives good solutions when the routes are short.
+      With those parameters, we can observe that the average period of Shortest-Longest is always equal to the Exhaustive generation, that is, the lower bound.
+      The next results is to theoretically prove that, with those parameters, Shortest-Longest gives optimal solutions, like this experimental study suggests it does. 
+      About the Greedy Algorithm, with those parameters, it always gives us bigger periods than Shortest longest. However, the results show that this algorithm gives average periods lower than the theoretical upper bound of this algorithm ($3n\tau$).
       We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes.
       
       \todo{regression linéaire}

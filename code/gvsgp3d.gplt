@@ -1,7 +1,7 @@
 ################# Commandes d'affichage Gnuplot ###############
 
 
-splot   'gvsgp3D_4.data'  using 1:2:4 notitle with pm3d
+splot   'gvsgp3D_3.data'  using 1:2:3 notitle with pm3d
 
 
 ######### Pour une sortie dans un fichier .ps ##################"
@@ -13,10 +13,10 @@ set view map
 
 set cblabel "reussite"
 
-set ylabel "tmax"
-set xlabel "periode"
+set ylabel "periode"
+set xlabel "marge"
 set term postscript color solid
-set output "g3d_4.ps"
+set output "gp3d_2.ps"
 set key left top
 replot
 
