@@ -1,6 +1,7 @@
 ################# Commandes d'affichage Gnuplot ###############
 
 
+
 plot   'results_periode.data'  using 1:2 linetype 3 pointtype 2 title "Greedy "
 replot   'results_periode.data'  using 1:3 linetype 4 pointtype 4 title "Exhaustive Search"
 replot   'results_periode.data'  using 1:4 linetype 0 pointtype 1 title "Shortest Longest"
@@ -8,12 +9,11 @@ replot   'results_periode.data'  using 1:5 linetype 2 title "n{/Symbol t}" with 
 replot   'results_periode.data'  using 1:6 linetype 7 title "3n{/Symbol t}" with lines
 
 
-
 ######### Pour une sortie dans un fichier .ps ##################"
-set title "Average Minimal Period ({/Symbol l} short)"
-set ylabel "Period (slots)"
+
+set ylabel "Average Minimum Period (slots)"
 set xlabel "# routes"
-set xrange [0:13]
+set xrange [1:12]
 set term postscript color solid
 set output "periode_petite.ps"
 set key left top

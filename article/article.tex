@@ -707,45 +707,51 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
       
       Since the exhaustive search is optimal, the average periods founds by this algorithm is the lower lower bounds for the other algorithms.
       As an information, we draw the $f(n) = n\tau$, which is an absolute lower bound on the period and $g(n) = 3n\tau$ lines which is the theoretical upper bound of the greedy algorithm.
-      
+        
+        \begin{figure}
+
       \begin{center}
       \includegraphics[scale=0.4]{periode_petite.pdf}
       \end{center}
-     
-
+     \caption{Average minimum period of the algorithms according to the period for short routes.}
+\end{figure}
       
       As a reminder, the period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route. Here, because of the routes are short, this difference is small in regards to the period. Thus, we can imagine that this algorithm gives good solutions when the routes are short.
       With those parameters, we can observe that the average period of Shortest-Longest is always equal to the Exhaustive generation, that is, the lower bound.
       The next results is to theoretically prove that, with those parameters, Shortest-Longest gives optimal solutions, like this experimental study suggests it does. 
       About the Greedy Algorithm, with those parameters, it always gives us bigger periods than Shortest longest. However, the results show that this algorithm gives average periods lower than the theoretical upper bound of this algorithm ($3n\tau$).
-      We can also observe that, for any algorithm, the average minimal periods increases linearly with the number of routes.
-      
-      \todo{regression linéaire}
-      
+      We can also observe that, for any algorithm, the average minimal periods seems increasing linearly with the number of routes. We made a linear regression on every set of data, and we observed that for the three algorithm, the correlation coefficient is greater than $0,999$.
+
       \paragraph{Long routes}
+      We now want to look at the performance of those algorithm if we significantly increase the size of the route. By increasing the size of the routes, the cuts of the exhaustive search, are less efficient. Thus, we defined a counter that allow the exhaustive search to end if no solutions are found.
       
-      Then, we looked at the evolution of the minimal period required with the different algorithm if we significantly increase the size of the route. The following figure shows us the success rate of the algorithms, according to the period, for 8 routes in which  $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform distribution between 0 and 30000 slots, that correspond to have the size of the route and the period approximately in the same order of magnitude.
+      Since the exhaustive generation can fail, this is necessary to change the method to measure the minimum period for each algorithm, when the routes are long.      
+      The following figure shows us the average success rate of the algorithms, on $1000$ instances, according to the period, with 8 routes, in which $\lambda(c_t,r_{t_i})$, are drawn following an uniform distribution between $0$ and $30000$ slots, that correspond to have the size of the route and the period approximately in the same range.
       
-      By increasing the size of the routes, the cuts of the exhaustive search, are less efficient. Thus, we defined a counter that allow the search to end if no solution are found. On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
-      
-      The reason why the shortest longest were optimal in the previous experiences (i.e. having routes shorter than message size) is no longer reviewed. We can also imagine that sending the shortest route first on long routes significantly increases the period, because there will be a lot of lost size in the backward and forward periods.
+      The reason why the shortest longest were optimal in the previous experiences ,i.e. having a small difference between the longest and the shortest route, is no longer reviewed. In this situation, this difference can be considerable, and then the required period too.
       
       One the other hand, one can imagine that the greedy $3.n.\tau$ algorithm finds reasonable solutions, because the algorithm does not consider the size of the route, and thus, is not impacted by this parameter.
+      
+      On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
+\begin{figure}
+
        \begin{center}
       \includegraphics[scale=0.4]{echec_longues.pdf}
       \end{center}
-     
+      \caption{Success rate of the algorithms according to the period for long routes.}
+     \end{figure}
       
-      As we can see, the Shortest longest has a very low success rate, because of the distribution of the size of the routes is now broader, so is the required period.
-      Whereas, the Geedy 3NT gives us solutions with much lower period than Shortest Longest. The exhaustive search keeps finding good solutions in short periods but it fails a lot for periods until $2.n.\tau$.
+      As we can see, Shortest longest has a very low success rate, and is not efficient anymore with those parameters.
+      Whereas, the greedy algorithm gives us solutions with much lower period than Shortest Longest. The exhaustive search keeps finding good solutions in short periods but it fails a lot for periods that does not give a lot of flexibility in the backward period. This mean that, for a small period, a solution may exists, but the exhaustive search needs too much time to find it. In this situation, it could be better to use the greedy algorithm, that find a good solution in a polynomial time.
 
           
-      So, those experiences shows us that for real topologies with small routes, the Shortest-Longest algorithm finds some affectations with small Periods, but, the longer the routes are, the better it is to use the Greedy policy to find a solution without waiting times.\\
-      Nevertheless, if we want to consider networks, the period is fixed. As we just saw, if the load increases, the needed period increases too, and it is not possible anymore to find a solution without waiting times with a small period. The solution is to allow some messages to wait on target nodes, as described in the next section.
-      
+      So, those experiences shows us that, for C-RAN topologies, with small routes, shortest-longest finds some optimal affectations in a polynomial time, but, the longer the routes are, the better it is to use the greedy policy to find a solution without waiting times in a polynomial time.\\
+    
+      As we just saw, if the load increases, the needed period increases too, and it is not possible anymore to find a solution without waiting times with a small period. The next sections treats about the proposed solutions to find a $(P,\tau)$ periodic affectation when the period is small.
    \subsection{Allowing waiting times}
-   
+    
      \subsubsection{Intro}
+     
 	  We now consider waiting times. The weights on links from sources to $c_s$ are now relevant because the goal is to minimize $MT({\cal M})$, with ${\cal M}$ the $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$.
 	  To build such a $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$, we must choose the offsets $m_{s_i}$ and $m_{t_i}$, such that there is no $PT(s)$ greater than a given $T_{max}$.
 	  As a reminder, $ PT(s)=\lambda(r_s)+ w_s+\lambda(r_{t_i})$.

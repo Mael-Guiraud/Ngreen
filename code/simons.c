@@ -569,6 +569,7 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 					freeelems(elems);
 					return NULL;
 				}
+				
 				while(ens3->frereD)
 					ens3 = ens3->frereD;
 				//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
