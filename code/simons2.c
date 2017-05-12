@@ -569,7 +569,6 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 					freeelems(elems);
 					return NULL;
 				}
-				
 				while(ens3->frereD)
 					ens3 = ens3->frereD;
 				//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
@@ -677,8 +676,6 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 		}
 		tmp = ens2;
 		ens2 = ens2->frereD;
-		if(ens2 != NULL)
-			ens2->frereG = NULL;
 		if(tmp)
 			free(tmp);
 		
@@ -810,7 +807,10 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 				return NULL;
 			}
 	}
-
+	//if ens = NULL alors pull(X) etait le premier element, il faut recalculer toutes les deadlines
+	/*if(ens == NULL)
+		recalculer_deadlines(touselems,crisise->release+periode);
+	*/
 
 	
 	Ensemble* ens3 = NULL;
@@ -976,8 +976,6 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 		
 		tmp = ens2;
 		ens2 = ens2->frereD;
-		if(ens2 != NULL)
-			ens2->frereG = NULL;
 		if(tmp)
 			free(tmp);
 	}
@@ -1008,6 +1006,7 @@ Ensemble * crisis(Ensemble * ens,Element * crisise, Element * elemspere,Element 
 }
 
 
+
 int is_ok(Graphe g, int taille_paquet, int * mi, int * wi,int p)
 {
 	int nbr_route = g.N /2;
@@ -1023,7 +1022,7 @@ int is_ok(Graphe g, int taille_paquet, int * mi, int * wi,int p)
 			d= (c+taille_paquet-1)%p;
 			if( ( (c>=a)&&(c<=b) ) || ( (d>=a)&&(d<=b) ) )
 			{
-				printf("PB(aller ) entre %d(%d-%d) et %d(%d-%d)\n",i,a,b,j,c,d);
+				printf("PB(aller) entre %d(%d-%d) et %d(%d-%d)\n",i,a,b,j,c,d);
 				return 0;
 			}
 		}
@@ -1041,7 +1040,7 @@ int is_ok(Graphe g, int taille_paquet, int * mi, int * wi,int p)
 			d= (c+taille_paquet-1)%p;
 			if( ( (c>=a)&&(c<=b) ) || ( (d>=a)&&(d<=b) ) )
 			{
-				printf("PB(retour ) entre %d(%d-%d) et %d(%d-%d)\n",i,a,b,j,c,d);
+				printf("PB(retour) entre %d(%d-%d) et %d(%d-%d)\n",i,a,b,j,c,d);
 				return 0;
 			}	
 		}
@@ -1092,17 +1091,6 @@ void tri_bulles_inverse(int* tab,int* ordre,int taille)
 
 }
 
-
-void affiche_etoile(Graphe g)
-{
-	int nbr_route = g.N /2;
-	printf("Graphe :\n");
-
-	for( int i=0;i<nbr_route;i++)
-		printf("route %d, taille %5d %5d - %5d \n",i,g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1],g.matrice[nbr_route][i],g.matrice[nbr_route][i+nbr_route+1]);
-
-	printf("\n");
-}
 void transforme_waiting(Ensemble * ens, int * wi)
 {
 
@@ -1122,48 +1110,8 @@ void transforme_waiting(Ensemble * ens, int * wi)
 }
 
 
-void affiche_solution(Graphe g, int taille_paquet, int * mi, int * wi)
-{
-	int nbr_route = g.N /2;
-	int a,b;
-
-	int aller[nbr_route];
-	int retour[nbr_route];
-	int ordrea[nbr_route];
-	int ordrer[nbr_route];
-	for(int i=0;i<nbr_route;i++)
-	{
-		ordrea[i]=i;
-		ordrer[i]=i;
-		aller[i]=mi[i]+g.matrice[nbr_route][i];
-		retour[i]=mi[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+1+i]+wi[i];
-	}
-	tri_bulles_inverse(aller,ordrea,nbr_route);
-	tri_bulles_inverse(retour,ordrer,nbr_route);
-	//aller
-	printf("\n----ALLER----\n");
-	for(int i=0;i<nbr_route;i++)
-	{
-		a= aller[ordrea[i]];
-		b= a+taille_paquet-1;
-		printf("(%d[%d-%d]),",ordrea[i],a,b);
-	}
-	printf("\n------------\n");
-
-	//retour
-	printf("\n----Retour----\n");
-	for(int i=0;i<nbr_route;i++)
-	{
-		a= retour[ordrer[i]];
-		b= a+taille_paquet-1;
-		printf("(%d[%d-%d]),",ordrer[i],a,b);
-	}
-	printf("\n------------\n\n\n");
-}
-
-
 //Algo naif
-int simons(Graphe g, int taille_paquet, int TMAX,int periode,int mode)
+int simons(Graphe g, int taille_paquet, int TMAX,int periode, int mode_test,int mode)
 {
 	
 	///////////////////////////////////////////////////////taille_paquet = 6;
@@ -1255,7 +1203,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode,int mode)
 	//int deadline_periode = date + periode;
 	for(j=0;j<nbr_route;j++)
 	{
-		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j]+taille_paquet;
+		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j];
 		elems = ajoute_elemt(elems,j,arrivee[j],deadline_route);
 
 	}
@@ -1273,278 +1221,14 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode,int mode)
 	elems= ajoute_elemt(elems,10,25,40);
 	
 	*/
-	/*affiche_etoile(g);
-	affiche_tab(m_i,nbr_route);
-	printf("%d tmax \n", TMAX);
 
-	affichejobs(elems);*/
+
+	//affichejobs(elems);
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
 	
 	int a_scheduler = nbr_route;
-	/////////////////////////////////////////////////////int a_scheduler = 11;
-	Ensemble * ens = NULL;
-	Ensemble * ensembletmp;
-	while(a_scheduler != 0)//tant qu'on n'a pas schedul tous les elements
-	{
-		//printf("test %p\n",elems2);
-		i = eligible(elems2,date);
-		//printf("i = %d\n",i);
-		if(i==-1)
-		{
-			printf("Failure 1\n");
-			return -1;
-		}
-		tmp = get_element_i(elems2,i);
-		
-		if(tmp == NULL)
-		{
-			printf("Failure 0\n");
-			return -1;
-		}
-		
-		date = max(date,tmp->release);
-		if(date+taille_paquet > tmp->deadline)//CRISIS
-		{
-			
-			//printf("Crisis(main) sur la tache %d\n",tmp->index);
-			//affiche_ensemble(ens);printf(" Avant\n");
-			Element * crisise = NULL;
-			crisise = ajoute_elemt(crisise,tmp->index,tmp->release,tmp->deadline);
-
-			elems2=retire_element_i(elems2,crisise->index);
-			if(!elems2)
-					elems2 = ajoute_elemt(elems2,INT_MAX,INT_MAX,INT_MAX);
-			//printf("Taches avant crisis\n");affichejobs(elems2);printf("\n");
-			//printf("ens avant crisis\n");affiche_ensemble(ens);printf("\n");
-			ens = crisis(ens,crisise,elems2,elems,taille_paquet,periode);
-				
-			freeelems(crisise);
-			//printf("Taches apres crisis\n");affichejobs(elems2);printf("\n");
-			//printf("ens apres crisis\n");affiche_ensemble(ens);printf("\n");
-			//affiche_ensemble(ens);printf(" Apres\n");
-			if(ens == NULL)
-			{
-				//affichejobs(elems2);
-				freeelems(elems);
-				freeelems(elems2);
-				return -1;
-			}
-			//on se remet a droite de l'ensemble
-			ensembletmp = ens;
-			while(ensembletmp->frereD)
-				ensembletmp = ensembletmp->frereD;
-			//affiche_ensemble(ensembletmp);printf("Elemenent le plus a droite\n");
-			date = date_fin(ens, taille_paquet);
-			
-			/*printf("APRESCRISIS\n");
-			printf("Date %d : ",date);*/
-			//recalculer_deadlines(elems2,ens->temps_depart+periode);
-			elems2 = tri_elems(elems2);
-			/*affichejobs(elems2);
-			affiche_ensemble(ens);printf("\n\n\n");*/
-		}
-		else // pas crisis
-		{
-			//printf("AVANT eligible = %d\n",i);
-			//printf("Date %d : ",date);
-			//affichejobs(elems2);
-			//affiche_ensemble(ens);printf("\n");
-			if(ens == NULL)//si c'est la premiere fois
-			{
-				ens = cree_ensemble(tmp->index,date);
-				ensembletmp = ens;
-			}
-			else
-			{
-				ensembletmp->frereD = cree_ensemble(tmp->index,date);
-				ensembletmp->frereD->frereG = ensembletmp;
-				ensembletmp = ensembletmp->frereD;
-			}
-			//printf("APRES\n");
-			elems2= retire_element_i(elems2,tmp->index);
-			a_scheduler--;
-			//printf("Date %d : ",date);
-			//affichejobs(elems2);
-			//affiche_ensemble(ens);printf("\n\n\n");
-			date+=taille_paquet;
-			
-		}
-		
-		
-	
-	}
-	//affiche_ensemble(ens);
-	//ecriture des temps trouvés
-	Ensemble * a_free = ens;
-
-	transforme_waiting(ens,w_i);
-
-	//printf("apres transforme wi\n");affiche_tab(w_i,nbr_route);
-	for(i=0;i<nbr_route;i++)
-	{
-		w_i[i] -= arrivee[i];
-	}
-
-	libereens(a_free);
-	freeelems(elems);
-	freeelems(elems2);
-
-	//affiche_tab(m_i,nbr_route);
-	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
-	//if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons\n");}
-
-	int maximum ;
-
-
-	//CALCUL TMAX
-	maximum= w_i[0]+2*Dl[0];
-	for(int i=0;i<nbr_route;i++)
-	{
-		if(w_i[i]+2*Dl[i] > maximum)
-			maximum= w_i[i]+2*Dl[i];
-	}
-	
-
-	//TEST DEPASSEMENT PERIODE
-	int retour[nbr_route];
-	for(int i=0;i<nbr_route;i++)
-	{
-		retour[i] = m_i[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
-	}
-	int taille_periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
-	if(taille_periode_retour > periode)return -2;	
-		//affiche_tab(retour,nbr_route);printf("maximum = %d\n",maximum);
-	
-		//affiche_solution(g,taille_paquet,m_i,w_i);
-	return maximum;
-}
-
-
-//Algo naif
-int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int premier)
-{	
-	///////////////////////////////////////////////////////taille_paquet = 6;
-	 if (!(g.N % 2))
-    {
-      printf ("G n'est peut être pas une étoile\n");
-      exit (5);
-    }
-
-	  int nbr_route = g.N / 2;
-	  int Dl[nbr_route];
-	  int m_i[nbr_route];
-	  int w_i[nbr_route];
-	int i;
-
-	int permutation[nbr_route];
-	int routes_retour[nbr_route];
-
-
-
-	  for (i = 0; i < nbr_route; i++)
-	    {
-	    	permutation[i]=i;
-	      Dl[i] = g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1];
-
-	      routes_retour[i]=g.matrice[nbr_route][i+nbr_route+1];
-	    }
-
-
-
-	int offset = 0;
-	
-
-	switch(mode)
-	{
-		case 1:
-			tri_bulles(Dl,permutation,nbr_route);
-		break;
-		case 2:
-			tri_bulles_inverse(Dl,permutation,nbr_route);
-		break;
-		case 3:
-			tri_bulles(routes_retour,permutation,nbr_route);
-		break;
-		case 4:
-			tri_bulles_inverse(routes_retour,permutation,nbr_route);
-		break;
-		default:
-			fisher_yates(permutation,nbr_route);
-		break;
-	}
-
-	m_i[permutation[0]]=0;
-	offset = taille_paquet+g.matrice[nbr_route][permutation[0]];
-	for(int i=1;i<nbr_route;i++)
-	{
-		m_i[permutation[i]]=offset-g.matrice[nbr_route][permutation[i]];
-		offset+=taille_paquet;
-	}
-
-
-
-
-
-
-	
-	//affiche_tab(permutation,nbr_route);
-	//affiche_tab(m_i,nbr_route);
-
-	//release times
-	int arrivee[nbr_route];
-	offset = 0;
-	for(i=0;i<nbr_route;i++)
-	{
-		Dl[i] = g.matrice[nbr_route][i]+g.matrice[nbr_route][i+nbr_route+1];
-
-		arrivee[i] = Dl[i]+m_i[i]+g.matrice[nbr_route][i+nbr_route+1];
-	}
-	
-
-	
-
-	int	date=arrivee[premier]+taille_paquet;
-	//////////////////////////////////////////////////////////////////int date = 0;
-	int j;
-
-	//afficheTwoWayTrip(t);
-	Element * elems = init_element();
-	int deadline_route;
-	int deadline_periode = arrivee[premier] + periode;
-	//	printf("date = %d, arrive premier = %d periode = %d, tmax = %d\n",date, arrivee[premier],periode,TMAX);
-	for(j=0;j<nbr_route;j++)
-	{
-		deadline_route = TMAX+m_i[j]- g.matrice[nbr_route][j]+taille_paquet;
-		if(j != premier)
-		{
-			elems = ajoute_elemt(elems,j,arrivee[j],min(deadline_periode,deadline_route));
-			//printf("ajout de %d ( %d, min(%d %d) )\n",j,arrivee[j],deadline_route,deadline_periode);
-		}
-
-	}
-	/*
-	elems= ajoute_elemt(elems,0,0,74);
-	elems= ajoute_elemt(elems,1,21,46);
-	elems= ajoute_elemt(elems,2,2,60);
-	elems= ajoute_elemt(elems,3,50,68);
-	elems= ajoute_elemt(elems,4,4,34);
-	elems= ajoute_elemt(elems,5,10,36);
-	elems= ajoute_elemt(elems,6,28,38);
-	elems= ajoute_elemt(elems,7,54,62);
-	elems= ajoute_elemt(elems,8,30,48);
-	elems= ajoute_elemt(elems,9,52,68);
-	elems= ajoute_elemt(elems,10,25,40);
-	
-	*/
-	//affiche_etoile(g);
-
-	//affichejobs(elems);
-	Element *  elems2 = cpy_elems(elems);
-	Element * tmp = elems2;
-	
-	int a_scheduler = nbr_route-1;
 	/////////////////////////////////////////////////////int a_scheduler = 11;
 	Ensemble * ens = NULL;
 	Ensemble * ensembletmp;
@@ -1639,15 +1323,8 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 	}
 	//affiche_ensemble(ens);
 	//ecriture des temps trouvés
-
-
-	ens->frereG = cree_ensemble(premier,arrivee[premier]);
-	ens->frereG->frereD = ens;
-	ens = ens->frereG;
 	Ensemble * a_free = ens;
-	
-	
-	//affiche_ensemble(ens);printf("\n");
+
 	transforme_waiting(ens,w_i);
 
 	//printf("apres transforme wi\n");affiche_tab(w_i,nbr_route);
@@ -1662,49 +1339,33 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 
 	//affiche_tab(m_i,nbr_route);
 	//printf("simons wi\n");affiche_tab(w_i,nbr_route);
-	//affiche_solution(g,taille_paquet,m_i,w_i);
-	/*
-		int retour[nbr_route];
-		for(int i=0;i<nbr_route;i++)
-		{
-			retour[i] = m_i[i]+g.matrice[nbr_route][i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
-		}
-		int taille_periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
-		printf("Periode de taille %d \n\n",taille_periode_retour);
-	*/
-
-	if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons per\n");}
+	if(!is_ok(g,taille_paquet,m_i,w_i,periode)){printf("ERROR simons\n");}
 
 	int maximum ;
 
-		maximum= w_i[0]+2*Dl[0];
+	if(mode_test == 0)
+	{
+		maximum= w_i[0]+2*Dl[0]+2500;
 		for(int i=0;i<nbr_route;i++)
 		{
-			if(w_i[i]+2*Dl[i] > maximum)
-				maximum= w_i[i]+2*Dl[i];
-		}
-
-	
-	return maximum;
-}
-
-int simons_periodique(Graphe g, int taille_paquet,int TMAX, int periode, int mode)
-{
-	int min = -1;
-	int res;
-	int nbr_route = g.N/2;
-
-	for(int i=0;i<nbr_route;i++)
-	{
-		//printf("On fixe la route %d en premier\n",i);
-		//affiche_etoile(g);
-		res= simons_per(g,taille_paquet,TMAX,periode,mode,i);
-		//printf("%d\n",res);
-		if(res != -1)
-		{
-			if((res < min)||(min == -1))
-				min = res;
+			if(w_i[i]+2*Dl[i]+2500 > maximum)
+				maximum= w_i[i]+2*Dl[i]+2500;
 		}
 	}
-	return (min>TMAX)?-1:min;
+	else
+	{
+		int aller[nbr_route];
+		int retour[nbr_route];
+		for(int i=0;i<nbr_route;i++)
+		{
+			aller[i] = m_i[i]+g.matrice[nbr_route][i];
+			retour[i] = aller[i]+2*g.matrice[nbr_route][nbr_route+i+1]+w_i[i];
+		}
+		int periode_aller = aller[greater(aller,nbr_route)]-aller[lower(aller,nbr_route)]+taille_paquet;
+		int periode_retour = retour[greater(retour,nbr_route)]-retour[lower(retour,nbr_route)]+taille_paquet;
+		maximum = max(periode_retour,periode_aller);
+		//affiche_tab(retour,nbr_route);printf("maximum = %d\n",maximum);
+	}
+	
+	return maximum;
 }
