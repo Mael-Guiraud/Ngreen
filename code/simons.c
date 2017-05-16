@@ -639,10 +639,11 @@ Ensemble * invade(Ensemble * ens,Element * touselems,int depart,int taille_paque
 		{
 			if(date+taille_paquet>=ens2->temps_depart)// INVADE Si besoin
 			{
+				//j'ai modifié ici
 
 				ens2->filsG = invade(ens2->filsG,touselems,date+taille_paquet,taille_paquet,periode);
-				if(ens2->frereD->filsG)
-					ens2->temps_depart = ens2->frereD->filsG->temps_depart;
+				if(ens2->filsG)
+					ens2->temps_depart = ens2->filsG->temps_depart;
 				else
 				{
 					libereens(ens2);
