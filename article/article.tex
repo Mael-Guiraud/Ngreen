@@ -445,7 +445,7 @@ minimal period can be large.
   
    
     
-      In this section, we consider graphs with a very simple topology that we call the {\bf star topology}. 
+      In this paper, we consider graphs with a very simple topology that we call the {\bf star topology}. 
       First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
       Moreover, there is a special arc, the central arc, which is shared by all routes.
       All routes consist from an arc from its source to the central source node, denoted by {\bf $c_s$},
@@ -752,84 +752,86 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
     
      \subsubsection{Intro}
      
-	  We now consider waiting times. The weights on links from sources to $c_s$ are now relevant because the goal is to minimize $MT({\cal M})$, with ${\cal M}$ the $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$.
-	  To build such a $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$, we must choose the offsets $m_{s_i}$ and $m_{t_i}$, such that there is no $PT(s)$ greater than a given $T_{max}$.
-	  As a reminder, $ PT(s)=\lambda(r_s)+ w_s+\lambda(r_{t_i})$.
-     \subsubsection{LSG}
-     
+	  In the previous section, we described some algorithm to solve an easier version of PALL, in which there is no waiting times. As we just conclude, this problem cannot be solved when the period is too small. The C-RAN context gives us a fixed period, thus, some topologies with a lot of routes might be impossible to schedule with the previous algorithms. We propose to allow some message to wait in the target vertices (BBU), with the aim of giving an higher degree of freedom for the scheduling. In this section, the waiting times $w_i$ are not necessarily null anymore. Thus, $MT({\cal M})$ might be superior to $T_{max}$ and it is necessary to minimize $MT({\cal M})$.
+	   
+	   
+% 	  We now consider waiting times. The weights on links from sources to $c_s$ are now relevant because the goal is to minimize $MT({\cal M})$, with ${\cal M}$ the $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$.
+% 	  To build such a $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$, we must choose the offsets $m_{s_i}$ and $m_{t_i}$, such that there is no $PT(s)$ greater than a given $T_{max}$.
+% 	  As a reminder, $ PT(s)=\lambda(r_s)+ w_s+\lambda(r_{t_i})$.
 
-To find a solution with waiting times, the following heuristic is suggested:
-
-On the forward period, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
-
-On $c_t$, the policy is the following one, after setting the clock to 0:
-\begin{enumerate}
- \item To be eligible, a job needs to be able to come back on the switch at the current clock (if clock = 0, take the first message able to come back).
- \item Between the eligible jobs, schedule first the one which has the lowest deadline.
- \item Repeat until all the messages had been scheduled.
-\end{enumerate}
-
-For any route i, the deadline correspond to $m_{s_i} + T_{max}$.
-
-\begin{algorithm}[H]
-\caption{LSG}
-\begin{algorithmic}
-\REQUIRE routage graph ${\cal R_{\cal C}}$, period $P$, packet size $\tau$
-\ENSURE $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$
-\STATE clock $\leftarrow$ 0
-\FORALL{route i in $r_{s_i}$ from the longest to the shortest }
-\STATE  $m_{s_i} \leftarrow$ clock
-\STATE clock $\leftarrow$ clock + $\tau$
-\ENDFOR
-\STATE clock $\leftarrow$ 0
-\STATE take i such that $r_{\cal C(s_i)}$ is the first route to come back in sources switch
-\STATE $m_{\cal C(s_i)} \leftarrow $ clock;
-\STATE clock $\leftarrow$ $t(c_t,r_{\cal C(s_i)})$ + $\tau$
-\WHILE{there is a route which has not been scheduled}
-\STATE take i such that $r_{\cal C(s_i)}$ is the eligible route.
-\STATE $m_{\cal C(s_i)} \leftarrow $ clock - $t(c_t,r_{\cal C(s_i)})$;
-\STATE clock $\leftarrow$ clock + $\tau$
-
-\ENDWHILE
-
-\end{algorithmic}
-\end{algorithm}
-
-	\paragraph{Analysis}
 	
-One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $n.\tau$, where $n$ is the number of couples $(s,{\cal C}(s))$. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
 
-Another case of this topology is the case in which all the weight on the arcs between $c_s$ and the sources are the same.
-In this case, the algorithm gives optimal solutions too:\\
+     \subsubsection{A first approach}
+	  
 
-We consider only the delay between $c_t$ and the targets, that are $\lambda(r_{s})$. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
-The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
+      To find a solution with waiting times, the following heuristic is suggested:
 
-The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is so $PT(s_0) = 2.\lambda(r_{s_0}) + \tau$.
-The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1})) +\tau = 2.\lambda(r_{s_0}) + \tau = PT(s_0)$.
-By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
-Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes will take exactly the same time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) + \tau$, which is not alterable
+      On the forward period, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
 
-     \subsubsection{Results}
-	 \paragraph{Random}
-	 \paragraph{Distributions}
+      On $c_t$, the policy is the following one, after setting the clock to 0:
+      \begin{enumerate}
+      \item To be eligible, a message needs to be able to come back on $c_t$ at the current clock (if clock = 0, take the first message able to come back).
+      \item Between the eligible messages, schedule first the one which has the lowest deadline.
+      \item Repeat until all the messages had been scheduled.
+      \end{enumerate}
+
+      For any route i, the deadline correspond to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$. This deadline corresponds to the latest date at which a message is able to quit the target switch without exceed $T_{max}$.
+% 
+% \begin{algorithm}[H]
+% \caption{Longest Shortest Greedy (LSG)}
+% \begin{algorithmic}
+% \REQUIRE routage graph ${\cal R_{\cal C}}$, period $P$, packet size $\tau$
+% \ENSURE $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$
+% \STATE clock $\leftarrow$ 0
+% \FORALL{route i in $r_{s_i}$ from the longest to the shortest }
+% \STATE  $m_{s_i} \leftarrow$ clock
+% \STATE clock $\leftarrow$ clock + $\tau$
+% \ENDFOR
+% \STATE clock $\leftarrow$ 0
+% \STATE take i such that $r_{\cal C(s_i)}$ is the first route to come back in sources switch
+% \STATE $m_{\cal C(s_i)} \leftarrow $ clock;
+% \STATE clock $\leftarrow$ $t(c_t,r_{\cal C(s_i)})$ + $\tau$
+% \WHILE{there is a route which has not been scheduled}
+% \STATE take i such that $r_{\cal C(s_i)}$ is the eligible route.
+% \STATE $m_{\cal C(s_i)} \leftarrow $ clock - $t(c_t,r_{\cal C(s_i)})$;
+% \STATE clock $\leftarrow$ clock + $\tau$
+% 
+% \ENDWHILE
+% 
+% \end{algorithmic}
+% \end{algorithm}
+\todo{ecrire l'algo}
+
+	\paragraph{Particular case corresponding to C-RAN}
+		
+	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
+
+	Another case of this topology is the case in which all the weight on the arcs between $c_s$ and the sources are the same.
+	In this case, the algorithm gives optimal solutions too:\\
+
+	We consider only the delay between $c_t$ and the targets, that are $\lambda(r_{s})$. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
+	The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
+
+	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is so $PT(s_0) = 2.\lambda(r_{s_0}) + \tau$.
+	The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1})) +\tau = 2.\lambda(r_{s_0}) + \tau = PT(s_0)$.
+	By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
+	Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes will take exactly the same time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) + \tau$, which is not alterable
+
+	
+	
+
+     \subsubsection{Sending order}
+     
+     \subsubsection{A better Algorithm : periodicity}
+     
+     \subsubsection{Another better Algorithm : $T_{MAX}$}
+     
+     \subsubsection{Mix : Simons periodic}
+     
+	
    
 \section{Conclusion}
 
-
-Open questions. Can we improve the results if:
-\begin{itemize}
- \item The routes are smaller than the size of a message. 
-\item The routes are smaller than the period.
-\item The largest difference between two routes is smallest than one of these parameters
-\end{itemize}
-
- On a general graph:
- 
-\begin{itemize}
-\item The routing is coherent
- \item The graph is symmetric
-\end{itemize}
 
 
 \bibliographystyle{ieeetr}

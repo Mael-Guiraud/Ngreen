@@ -85,6 +85,20 @@ void graphe_etoile(Graphe g,int taille_liens)
 	}
 	g.matrice[pivot][pivot] = 0;
 }
+//prends un graphe vide en argument et le transforme en etoile
+void graphe_etoile_opti(Graphe g,int taille_liens)
+{
+	if(!(g.N%2)){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
+	int pivot = g.N/2;
+	int alea;
+	for(int i=pivot+1;i<g.N;i++)
+	{
+		alea = rand()%taille_liens;
+		g.matrice[pivot][i] = alea;
+		g.matrice[i][pivot] = alea;
+	}
+	g.matrice[pivot][pivot] = 0;
+}
 
 //prends un graphe vide en argument et le transforme en etoile
 void graphe_etoile_moitier(Graphe g,int taille_liens)
@@ -629,14 +643,14 @@ int longest_etoile_2(Graphe g,int taille_paquets,int periode, int Tmax,int mode)
 
 	if(!is_ok(g,taille_paquets,m_i,w_i,periode))printf("ERROR !!\n");
 	int max = w_i[0]+2*routes[0];
-	for(int i=1;i<nb_routes;i++)
+	for(int i=0;i<nb_routes;i++)
 	{
 		if(w_i[i]+2*routes[i] > Tmax)
 			return -1;
 		if(w_i[i]+2*routes[i] > max)
 			max= w_i[i]+2*routes[i];
 	}
-	
+	//affiche_solution(g,taille_paquets,m_i,w_i);
 	return max;
 }
 
@@ -846,7 +860,7 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	if(!is_ok(g,taille_paquets,m_i,w_i,periode)){printf("ERROR 2!!\n");exit(16);}
 	//printf("-------------------------\n\n");
 	int max = w_i[0]+2*routes[0];
-	for(int i=1;i<nb_routes;i++)
+	for(int i=0;i<nb_routes;i++)
 	{
 		if(w_i[i]+2*routes[i] > Tmax)
 		{
@@ -1051,7 +1065,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 				for(int i = 0;i<nb_simuls;i++)
 				{
 					g = init_graphe(2*nb_routes+1);
-					graphe_etoile_moitier(g,taille_route);
+					graphe_etoile_opti(g,taille_route);
 					tmax = marge + longest_route(g);
 					//affiche_etoile(g);
 					//printf("TMAX = %d\n",tmax);
@@ -1088,8 +1102,10 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 							{
 
 								c++;
+								
 							}
 						}
+						if( ( (resc == -2)||(resc == -1) ) && ( (resb != -2)&&(resb !=-1) )  ) {printf("%d %d \n",resb,resc);exit(11);}
 						if(resd != -1)
 						{
 
@@ -1163,7 +1179,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 						}
 						//if(resc == -1){printf("ON NA PAS TROUVE POUR e (Tmax = %d)\n",tmax);exit(40);}
 					}
-
+					
 
 
 					//printf("-----------------------------------------\n");
@@ -1205,7 +1221,7 @@ int main()
 	}*/
 	//echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
 	for(int i=0;i<5;i++)
-		echec_periode_gvsgp3D(20,2500,20000, 1000,i);
+		echec_periode_gvsgp3D(8,2500,700, 1000,i);
 	
 	/*Graphe g ;
 
