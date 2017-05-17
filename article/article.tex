@@ -694,14 +694,17 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
       \begin{center}
       \includegraphics[scale=0.4]{periode_petite.pdf}
       \end{center}
-     \caption{Average minimum period of the algorithms according to the period for short routes.}
+     \caption{Minimum period found by the algorithms averaged over $1000$ random instances for each number of routes.}
 \end{figure}
       
-      As a reminder, the period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route. Here, because of the routes are short, this difference is small in regards to the period. Thus, we can imagine that this algorithm gives good solutions when the routes are short.
-      With those parameters, we can observe that the average period of Shortest-Longest is always equal to the Exhaustive generation, that is, the lower bound.
-      The next results is to theoretically prove that, with those parameters, Shortest-Longest gives optimal solutions, like this experimental study suggests it does. 
-      About the Greedy Algorithm, with those parameters, it always gives us bigger periods than Shortest longest. However, the results show that this algorithm gives average periods lower than the theoretical upper bound of this algorithm ($3n\tau$).
-      We can also observe that, for any algorithm, the average minimal periods seems increasing linearly with the number of routes. We made a linear regression on every set of data, and we observed that for the three algorithm, the correlation coefficient is greater than $0,999$.
+      First, we remark that the period found by the exhaustive search is only very slightly above the lower bound 
+      $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
+      
+      The period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route and could be easily determined theoretically. The algorithm was expected to be good since the routes are short, but it turns out it always finds the optimal solution in our experiments. Therefore, we should use it in practical application, in this regime, instead of the exhaustive search which is much more computationally expensive. 
+      
+      Finally we remark that the greedy algorithm have an average period much lower than the theoretical upper bound of $3n\tau$. We made a linear regression on this value and with a correlation coefficient greater than $0,999$ we find a slope of $1.53n\tau$.
+      
+      
 
       \paragraph{Long routes}
       We now want to look at the performance of those algorithm if we significantly increase the size of the route. By increasing the size of the routes, the cuts of the exhaustive search, are less efficient. Thus, we defined a counter that allow the exhaustive search to end if no solutions are found.
