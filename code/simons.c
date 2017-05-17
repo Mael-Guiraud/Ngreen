@@ -1279,6 +1279,7 @@ int simons(Graphe g, int taille_paquet, int TMAX,int periode,int mode)
 	printf("%d tmax \n", TMAX);
 
 	affichejobs(elems);*/
+	//affiche_tab(m_i,nbr_route);
 	//affichejobs(elems);
 	Element *  elems2 = cpy_elems(elems);
 	Element * tmp = elems2;
