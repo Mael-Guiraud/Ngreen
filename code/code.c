@@ -91,7 +91,7 @@ void graphe_etoile_opti(Graphe g,int taille_liens)
 	if(!(g.N%2)){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
 	int pivot = g.N/2;
 	int alea;
-	for(int i=pivot+1;i<g.N;i++)
+	for(int i=0;i<pivot;i++)
 	{
 		alea = rand()%taille_liens;
 		g.matrice[pivot][i] = alea;

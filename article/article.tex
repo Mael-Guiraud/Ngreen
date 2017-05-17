@@ -806,23 +806,40 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggest 
 		
 	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
 
+	\paragraph{Another particular case}
 	Another case of this topology is the case in which all the weight on the arcs between $c_s$ and the sources are the same.
 	In this case, the algorithm gives optimal solutions too:\\
 
-	We consider only the delay between $c_t$ and the targets, that are $\lambda(r_{s})$. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
+	Since we can simplify the weight on the arcs between $c_s$ and the sources, we consider only the delay between $c_t$ and the targets. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
 	The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
-
-	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is so $PT(s_0) = 2.\lambda(r_{s_0}) + \tau$.
-	The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1})) +\tau = 2.\lambda(r_{s_0}) + \tau = PT(s_0)$.
+	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is $PT(s_0) = 2.\lambda(r_{s_0}) $.
+	The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))  = 2.\lambda(r_{s_0})  = PT(s_0)$.
 	By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
-	Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes will take exactly the same time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) + \tau$, which is not alterable
+	Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes has the exact same process time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) $.
 
-	
-	
+	This results is available because we do not consider the weight on links before $c_s$.
 
      \subsubsection{Sending order}
-     
+	When then tried to look at the behaviour of the greedy policy with different kind of sending the messages, in the first way.
+	
+	We tried the five following sending policy, on the first way, and we applied the greedy heuristic to the way back, considering the offsets given by the sending policy used.
+	The different sending policy are the following :
+	\begin{enumerate}
+	 \item trying $X$ random permutations of the routes, until one gives an available $(P,\tau)$ periodic affectation.
+	 \item from the longest to the shortest route.
+	 \item from the shortest to the longest route.
+	 \item from the longest to the shortest arc between $c_t$ an the target.
+	 \item from the shortest to the longest arc between $c_t$ an the target.
+	\end{enumerate}
+
+
+	\todo{Mettre les prametres d'une experience ou on voit le taux de réussite des différents départs}
      \subsubsection{A better Algorithm : periodicity}
+     
+     The previous algorithm is a greedy heuristic, which does not take the period into account. Thus, some given solution by this algorithm need a too large period an thus, are not available. 
+     We propose an improved version of the algorithm, still greedy, but which consider the period.
+     
+     The greedy policy is the same, but
      
      \subsubsection{Another better Algorithm : $T_{MAX}$}
      
