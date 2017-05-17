@@ -1,22 +1,22 @@
 ################# Commandes d'affichage Gnuplot ###############
 
 
-splot   'results_taille_route_echec.data'  using 1:2:3 notitle with pm3d
+splot   'gvsgp3D_1.data'  using 1:2:3 notitle with pm3d
 
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
 
-set palette defined (0 "blue", 1 "red")
+
 set pm3d interpolate 10,10
 set view map
 
 set cblabel "reussite"
-unset cbtics
-set ylabel "taille route"
+
+set ylabel "tmax"
 set xlabel "periode"
 set term postscript color solid
-set output "echec3d.ps"
+set output "gp3d_0.ps"
 set key left top
 replot
 

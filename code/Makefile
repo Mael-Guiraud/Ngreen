@@ -17,5 +17,6 @@ bruteforce.o: bruteforce.c struct.h
 simons.o: simons.c 
 	gcc $(CFLAGS) simons.c
 
+
 clean:
 	rm -f *.o
