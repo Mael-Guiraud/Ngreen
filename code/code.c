@@ -359,8 +359,11 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 	Graphe g;
 	long long int total_3NT, total_brute,total_sl;
 	int res_sl,res_brute,res_3NT;
+	int nb3nt = 0;
+	int nbbrute = 0;
+	int nbsl = 0;
 
-	for(int j = 1 ; j<=nb_routes;j++)
+	for(int j = 8 ; j<nb_routes;j++)
 	{
 		printf("Calculs pour %d routes: \n",j);
 		
@@ -373,16 +376,19 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 			g = init_graphe(j*2 + 1);
 			graphe_etoile(g,taille_routes);
 			res_3NT = linear_3NT(g,taille_message);
-			if(res_3NT != -1)total_3NT+=res_3NT;
-			else printf("error (3nt = -1)\n");
+			//if(res_3NT > total_3NT)total_3NT = res_3NT;
+			if(res_3NT != -1){total_3NT+=res_3NT;nb3nt++;}
+			//else printf("error (3nt = -1)\n");
 
 			res_brute = linear_brute(g,taille_message);
-			if(res_brute != -1)total_brute+=res_brute;
-			else printf("error (brute = -1)\n");
+			//if(res_brute > total_brute)total_brute = res_brute;
+			if(res_brute != -1){total_brute+=res_brute;nbbrute++;}
+			//else printf("error (brute = -1)\n");
 
 			res_sl = algo_shortest_longest(g,3*taille_message*nb_routes,taille_message);
-			if(res_sl != -1)total_sl+=res_sl;
-			else printf("error (Sl = -1)\n");
+			//if(res_sl > total_sl)total_sl = res_sl;
+			if(res_sl != -1){total_sl+=res_sl;nbsl++;}
+			//else printf("error (Sl = -1)\n");
 
 			//if(res_sl < res_brute)affiche_matrice(g);
 			fprintf(stdout,"\rStep%5d /%d",i+1,nb_simuls);fflush(stdout);
@@ -390,7 +396,9 @@ void simuls_periode(int nb_routes, int taille_message, int taille_routes,int nb_
 		}
 		printf("\n");
 		
-		fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_sl/nb_simuls,j*taille_message,3*j*taille_message);
+		fprintf(F, "%d %lld (%d) %lld (%d) %lld (%d) %d %d\n",j,total_3NT/nb3nt,nb3nt,total_brute/nbbrute,nbbrute,total_sl/nbsl,nbsl,j*taille_message,3*j*taille_message);
+		fprintf(stdout, "%d %lld (%d) %lld (%d) %lld (%d) %d %d\n",j,total_3NT/nb3nt,nb3nt,total_brute/nbbrute,nbbrute,total_sl/nbsl,nbsl,j*taille_message,3*j*taille_message);
+		//fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT,total_brute,total_sl,j*taille_message,3*j*taille_message);
 		printf("\n");
 	}
 	fclose(F);
@@ -1199,7 +1207,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 int main()
 {
 	srand(time(NULL));
-	//simuls_periode(12,2500,700,1000);
+	simuls_periode(9,2500,20000,1000);
 	//echec(8,2500,30000,1000);
 //echec_taille_route(8,2500,25000,1000);
 	/*Graphe g;
@@ -1221,9 +1229,9 @@ int main()
 
 	}*/
 	//echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
-	for(int i=3;i<5;i++)
+	/*for(int i=3;i<5;i++)
 		echec_periode_gvsgp3D(8,2500,5000, 1000,i);
-	
+	*/
 	/*Graphe g ;
 
 	for(int i=0;i<10000;i++)

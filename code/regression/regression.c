@@ -10,7 +10,7 @@ int y[nb_points];
 
 void lire_fichier(int algo_choisi)
 {
-	FILE * f = fopen("results_periode.data","r");
+	FILE * f = fopen("results_periodea.data","r");
 
 	int nombre_lu;
 	int colonne=0;
@@ -100,7 +100,7 @@ int main()
 	for(int i=1;i<4;i++)
 	{
 		lire_fichier(i);
-		printf("L'équation de la droite est : y = %f x + %f.\n Le coefficiant de corélation est : %f.\n\n",coef_dir(),ordonee_origine(),coefficient_correlation());
+		printf("L'équation de la droite est : y = %f x + %f.\n Le coefficient de corélation est : %f.\n\n",coef_dir(),ordonee_origine(),coefficient_correlation());
 
 	}
 }

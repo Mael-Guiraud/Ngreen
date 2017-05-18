@@ -11,11 +11,11 @@ replot   'results_periode.data'  using 1:6 linetype 7 title "3n{/Symbol t}" with
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
-set ylabel "Average Minimum Period (slots)"
+set ylabel "Worst Minimum Period (slots)"
 set xlabel "# routes"
 set xrange [1:12]
 set term postscript color solid
-set output "periode_petite.ps"
+set output "periode_max.ps"
 set key left top
 replot
 
