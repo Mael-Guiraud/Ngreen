@@ -599,7 +599,8 @@ minimal period can be large.
 % 	\end{algorithm}
 	
 This algorithm, contrarily to the previous one, may work well, even when the condition $P \geq 3n\tau$ is not true.
-In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests that the algorithm works well as soon as $P \geq 1.5 \tau$.
+In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests that the algorithm finds a solution on average when $P \geq 1.5 n\tau$.
+Note that we also experimented with other greedy algorithms which do not use macro-slots, they work even better in practice but their theoretical upper bound is worse.
 
 	\subsubsection{Exhaustive search}
 % 	\begin{algorithm}[H]
@@ -649,7 +650,7 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
        We now explain how we can detect some partial solutions which are dominated so that we do not explore their subtrees.
        Consider a partial solution $S$ which we extend into $S'$ by setting the offset of the route $r$ to be the smallest possible. The offset of $r$ in the backward period is $S'(r)+ \lambda$ and we denote the end of the message before before by $a$. Hence all extensions of $S$ into $S''$ such that $S'(r)  < S''(r) < a + \tau - \lambda$ are dominated by $S'$. Therefore when computing the extension of $S$, we first build $S'$ and then $S''$ with $S''(r) =  a + \tau - \lambda$ , skipping all values in between.
        
-             \end{enumerate}
+       \end{enumerate}
       
       The third cut works well in conjunction with the first one since it makes the offsets grow quickly and 
       which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
@@ -689,15 +690,15 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
       
       
         
-        \begin{figure}
+      \begin{figure}
 
       \begin{center}
-      \includegraphics[scale=0.4]{periode_petite.pdf}
+	\includegraphics[scale=0.4]{periode_petite.pdf}
       \end{center}
-     \caption{Minimum period found by the algorithms averaged over $1000$ random instances for each number of routes.}
-\end{figure}
+      \caption{Minimum period averaged over $1000$ random instances}
+      \end{figure}
       
-      First, we remark that the period found by the exhaustive search is only very slightly above the lower bound 
+      First, we remark that the period found by the exhaustive search is only very slightly above the lower bound of 
       $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
       
       The period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route and could be easily determined theoretically. The algorithm was expected to be good since the routes are short, but it turns out it always finds the optimal solution in our experiments. Therefore, we should use it in practical application, in this regime, instead of the exhaustive search which is much more computationally expensive. 
@@ -708,31 +709,31 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
 
       \paragraph{Long routes}
       
-      We now want to understand the performance of these algorithms when the size of the routes are unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit to $10^9$.
+      We now want to understand the performance of these algorithms when the size of the routes are unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit by $10^9$.
       
       In this experiment we will fix the number of routes to $8$ and the values $\lambda(c_t,r_{t_i})$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
       We measure for each algorithm its percentage of success, for periods from $20000$ which is the minimum possible to $50000$.
       
-    On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
+      Since the exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. We represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining its successes and its failure because of lack of time. 
+      
 \begin{figure}
 
        \begin{center}
       \includegraphics[scale=0.4]{echec_longues.pdf}
       \end{center}
-      \caption{Success rate of the algorithms according to the period for long routes.}
+      \caption{Success rate for $8$ routes over $1000$ random instances}
      \end{figure}
       
+      In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route
+      which is large here. On the other hand, the greedy algorithm has a performance not very different from the case of short routes, which is expected since it does not depends on the size of the route.  \todo{Ajouter la moyenne pour la comparer aux routes courtes}
       
-      One the other hand, one can imagine that the greedy $3.n.\tau$ algorithm finds reasonable solutions, because the algorithm does not consider the size of the route, and thus, is not impacted by this parameter.
+      When the period is less than $40000$, the exhaustive search find much more solutions than the greedy algorithms which justifies its use. 
+      However for small period, less than $30000$ the computation time is really important and without improvement it would not be possible to tackle 
+      larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small period, we see that there are very few instances
+      with a solution for PAZL. It means that with long routes and high load, looking for an affectation without waiting may be to restrictive.
+      That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between 
+      $20000$ and $30000$ where, as we have shown here, there are often no easy to compute affectation without waiting time.
       
-      
-      As we can see, Shortest longest has a very low success rate, and is not efficient anymore with those parameters.
-      Whereas, the greedy algorithm gives us solutions with much lower period than Shortest Longest. The exhaustive search keeps finding good solutions in short periods but it fails a lot for periods that does not give a lot of flexibility in the backward period. This mean that, for a small period, a solution may exists, but the exhaustive search needs too much time to find it. In this situation, it could be better to use the greedy algorithm, that find a good solution in a polynomial time.
-
-          
-      So, those experiences shows us that, for C-RAN topologies, with small routes, shortest-longest finds some optimal affectations in a polynomial time, but, the longer the routes are, the better it is to use the greedy policy to find a solution without waiting times in a polynomial time.\\
-    
-      As we just saw, if the load increases, the needed period increases too, and it is not possible anymore to find a solution without waiting times with a small period. The next sections treats about the proposed solutions to find a $(P,\tau)$ periodic affectation when the period is small.
    \subsection{Allowing waiting times}
     
      \subsubsection{Intro}
