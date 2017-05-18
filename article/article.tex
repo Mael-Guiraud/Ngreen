@@ -672,9 +672,9 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
       \paragraph{Short routes}
       
       First we consider routes which are shorter than $\tau$, that is a message cannot be contained 
-      completely in a single edge. This is typical in our context and we will consider graphs in which the values $\lambda(c_t,r_{t_i})$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of size blah and links of bandwidth 10Gbps and length less than blah. 
+      completely in a single edge. This is typical in our context and we will consider graphs in which the values $\lambda(c_t,r_{t_i})$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately 1Mb, links of bandwidth 10Gbps and length less than 5km between the BBU and the RRH. 
       
-      \todo{à compléter}
+
       
       Our aim is to understand how well the algorithms are working when the network has a high load (when 
       the load is low, the greedy algorithm always returns a solution). To do that we try to evaluate the 
@@ -737,7 +737,7 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
     
      \subsubsection{Intro}
      
-	  In the previous section, we described some algorithm to solve an easier version of PALL, in which there is no waiting times. As we just conclude, this problem cannot be solved when the period is too small. The C-RAN context gives us a fixed period, thus, some topologies with a lot of routes might be impossible to schedule with the previous algorithms. We propose to allow some message to wait in the target vertices (BBU), with the aim of giving an higher degree of freedom for the scheduling. In this section, the waiting times $w_i$ are not necessarily null anymore. Thus, $MT({\cal M})$ might be superior to $T_{max}$ and it is necessary to minimize $MT({\cal M})$.
+	  In the previous section, we described some algorithm to solve an easier version of PALL, in which there is no waiting times. As we conclude, this problem cannot be solved when the period is too small. The C-RAN context gives us a fixed period, thus, some topologies with a lot of routes might be impossible to schedule with the previous algorithms. We propose to allow some message to wait in the target vertices (BBU), with the aim of giving an higher degree of freedom for the scheduling. In this section, the waiting times $w_i$ are not necessarily null anymore. Thus, $MT({\cal M})$ might be superior to $T_{max}$ and it is necessary to minimize $MT({\cal M})$.
 	   
 
 % 
@@ -745,68 +745,110 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
 
      \subsubsection{A first approach}
 	  
+      First, we imagined that prioritise the messages one the longest route could be a good idea. Thus, the following heuristic is suggested:
 
-      To find a solution with waiting times, the following heuristic is suggested:
+      On the forward period, for the first way, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
 
-      On the forward period, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
+      On $c_t$, the algorithm is the following one:
 
-      On $c_t$, the policy is the following one, after setting the clock to 0:
-      \begin{enumerate}
-      \item To be eligible, a message needs to be able to come back on $c_t$ at the current clock (if clock = 0, take the first message able to come back).
+
+  \begin{algorithm}[H]
+
+    \caption{Eligible route}
+    \label{algorithm:Eligible}
+    \begin{enumerate}
+      
+      \item To be eligible, a message needs to be able to come back on $c_t$ at the current clock (if clock = 0, or no messages are able to come back at this date, take the first message able to come back).
       \item Between the eligible messages, schedule first the one which has the lowest deadline.
-      \item Repeat until all the messages had been scheduled.
-      \end{enumerate}
+      \item For any route i, the deadline correspond to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$. This deadline corresponds to the latest date at which a message is able to quit the target switch without exceed $T_{max}$.
 
-      For any route i, the deadline correspond to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$. This deadline corresponds to the latest date at which a message is able to quit the target switch without exceed $T_{max}$.
-% 
-% \begin{algorithm}[H]
-% \caption{Longest Shortest Greedy (LSG)}
-% \begin{algorithmic}
-% \REQUIRE routage graph ${\cal R_{\cal C}}$, period $P$, packet size $\tau$
-% \ENSURE $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$
-% \STATE clock $\leftarrow$ 0
-% \FORALL{route i in $r_{s_i}$ from the longest to the shortest }
-% \STATE  $m_{s_i} \leftarrow$ clock
-% \STATE clock $\leftarrow$ clock + $\tau$
-% \ENDFOR
-% \STATE clock $\leftarrow$ 0
-% \STATE take i such that $r_{\cal C(s_i)}$ is the first route to come back in sources switch
-% \STATE $m_{\cal C(s_i)} \leftarrow $ clock;
-% \STATE clock $\leftarrow$ $t(c_t,r_{\cal C(s_i)})$ + $\tau$
-% \WHILE{there is a route which has not been scheduled}
-% \STATE take i such that $r_{\cal C(s_i)}$ is the eligible route.
-% \STATE $m_{\cal C(s_i)} \leftarrow $ clock - $t(c_t,r_{\cal C(s_i)})$;
-% \STATE clock $\leftarrow$ clock + $\tau$
-% 
-% \ENDWHILE
-% 
-% \end{algorithmic}
-% \end{algorithm}
-\todo{ecrire l'algo}
+      \end{enumerate}
+      
+  \end{algorithm}
+    
+
+     
+    \begin{algorithm}[H]
+    \caption{Longest Shortest Greedy (LSG)}
+    \begin{algorithmic}
+    \REQUIRE routage graph ${\cal R_{\cal C}}$, period $P$, packet size $\tau$
+    \ENSURE $(P-\tau)-$periodic affectation of ${\cal R_{\cal C}}$
+    \STATE $clock \leftarrow 0$
+    \FORALL{route i in $r_{s_i}$ sorted from the longest to the shortest }
+    \STATE  $m_{s_i} \leftarrow clock - t(c_s,r_{s_i}) \mod P$
+    \STATE $clock \leftarrow clock + \tau$
+    \ENDFOR
+
+    \STATE take i such that $r_{t_i}$ is the eligible route (Algorithm \ref{algorithm:Eligible})
+    \STATE $w_i \leftarrow 0$
+    \STATE $clock = \lambda(r_i) + t(c_t,r_{t_i}) + \tau$
+    \WHILE{there is a route which has not been scheduled}
+    \STATE take i such that $r_{t_i}$ is the eligible route (Algorithm \ref{algorithm:Eligible})
+    \IF{ the messages is able to come back before $clock$}
+    \STATE $w_i = clock - t(c_t,r_{t_i}) - (m_i + \lambda(r_i))$ 
+    \STATE $clock \leftarrow clock + \tau$
+    \ELSE
+    \STATE $w_i \leftarrow 0$
+    \STATE $clock = \lambda(r_i) + t(c_t,r_{t_i}) + \tau$
+   \ENDIF
+
+    \ENDWHILE
+
+    \end{algorithmic}
+    \end{algorithm}
+    
+    This policy is split in two steps. First, we choose arbitrary a sending order for the routes, and we set the offsets $m_i$ such that the messages are following each others in $c_s$. Then, the way back is determined considering the time at which the messages reach their target. This greedy policy determines the $w_i$, such that the messages does not collide on $c_t$. One can expect that this policy prioritise the longest route, and thus helps to minimise $PT(s_i)$. Indeed, the messages on the longest routes will be less buffered in their target than the messages using the shortest ones. The goal is to balance the process times such that if there is a very long route, the message on it will not be buffered at all, and if there is a very short route, the message can be buffered, but not enough to have a process time greater than twice the delay on the longest route. In other words, if $i$ is the very long route, and $j$ the very short one, we want $w_i =0$, and $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $.
+    This greedy policy does not ensure that, but this is the main idea of the algorithm.
+    Furthermore, this heuristic does not take into account the period at all, thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might need a too large period.
+
+     \subsubsection{Sending order}
+     
+	We tried to look at the behaviour of the greedy policy with different kind of sending order for the messages.
+	
+	We tried the five following sending policy, each ones determines an order in which the messages will be sent, but the messages are still following each others in $c_s$.
+	
+	The different sending policy that we tested are the following :
+	\begin{enumerate}
+	 \item Generate $X$ random permutations for the routes and tries the greedy heuristic on the way back until we get an available $(P,\tau)$ periodic affectation.
+	 \item Send the messages from the one using longest to the one using shortest route (this is the sending order used in the previous heuristic).
+	 \item Send the messages from the one using shortest to the one using longest route
+	 \item Send the messages from the one having the longest arc between $c_t$ an the target to the one having the shortest one.
+	 \item Send the messages from the one having the shortest arc between $c_t$ an the target to the one having the longest one.
+	\end{enumerate}
+	
+	The fifth order gives us the same policy than Shortest-Longest, the algorithm described in last section. This sending order gives us some $(P,\tau)$ periodic affectation in which all the $w_i = 0$, but needs a huge period if the difference between the longest and the shortest route is large (see proposition \ref{prop:SL}).
+
+	For the fourth order, in the case in which all the weight on the arcs between $c_s$ and the sources are the same, the algorithm gives optimal solutions.
+	Since we can simplify the weight on the arcs between $c_s$ and the sources, we consider only the delay between $c_t$ and the targets. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
+	The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
+	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is $PT(s_0) = 2.\lambda(r_{s_0}) $.
+	The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))  = 2.\lambda(r_{s_0})  = PT(s_0)$.
+	By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
+	Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes has the exact same process time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) $.
 
 	\paragraph{Particular case corresponding to C-RAN}
 		
 	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the, this algorithm gives an optimal solution. Indeed, all the same weight can be simplified by 0, thus the scheduling in the forward and backward period is the same, that is, all message following each others, so the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are set to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the longer delay of the routes, that is not alterable.
 
-	Another case of this topology is the case in which all the weight on the arcs between $c_s$ and the sources are the same.
-	In this case, the algorithm gives optimal solutions too:\\
-
-	We consider only the delay between $c_t$ and the targets, that are $\lambda(r_{s})$. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i,j \in n, i<j$, i.e. the route 1 is the longest one, and the route $n$ is the shortest.
-	The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
-
-	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is so $PT(s_0) = 2.\lambda(r_{s_0}) + \tau$.
-	The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1})) +\tau = 2.\lambda(r_{s_0}) + \tau = PT(s_0)$.
-	By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
-	Consequently, for this case, the heuristic is optimal, because the longest route has no waiting time all the other routes will take exactly the same time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) + \tau$, which is not alterable
-
 	
-	
-
-     \subsubsection{Sending order}
-     
      \subsubsection{A better Algorithm : periodicity}
      
-     \subsubsection{Another better Algorithm : $T_{MAX}$}
+     For the rest of the section, we look at the different algorithm suggested to improve the second part of the scheduling, after having set the sending order.
+     The previous algorithm is a greedy heuristic, which does not take the period into account. Thus, some solutions given by this algorithm might need a too large period an thus, not be available. 
+     We propose an improved version of the algorithm, still greedy, but which consider the period $P$.
+     
+     We first remember the date at which the first messages starts to come back through $c_t$. Let us note $bp$ this date.
+     The greedy policy is the same until the message are scheduled in the period between $bp$ and $bp +P$. When a message is scheduled, we update a list of free intervals in the backward period.
+     Once $clock > bp+P$, we consider that we are in the second period, and thus search a free interval after $clock$, large enough to put a message.
+     
+     This policy can significantly increase $w_i$, but ensures a periodic results. This policy is strictly better than the previous one.
+     
+     \subsubsection{Another better Algorithm than LSG: optimal on PT}
+     
+     The problem PALL is very similar to a scheduling problem, combined to the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We consider that the messages are the jobs, the release times are the date at which the messages are able to come back on $c_t$, and the deadlines are the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
+     
+     This algorithm uses the exact same greedy scheduling than LSG. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call \em{crisis message} this message), the algorithm call a subroutine that reschedule the previous message such that the crisis message will be scheduled earlier.
+     
      
      \subsubsection{Mix : Simons periodic}
      

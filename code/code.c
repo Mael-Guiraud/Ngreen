@@ -91,7 +91,7 @@ void graphe_etoile_opti(Graphe g,int taille_liens)
 	if(!(g.N%2)){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
 	int pivot = g.N/2;
 	int alea;
-	for(int i=pivot+1;i<g.N;i++)
+	for(int i=0;i<pivot;i++)
 	{
 		alea = rand()%taille_liens;
 		g.matrice[pivot][i] = alea;
@@ -1065,7 +1065,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 				for(int i = 0;i<nb_simuls;i++)
 				{
 					g = init_graphe(2*nb_routes+1);
-					graphe_etoile_opti(g,taille_route);
+					graphe_etoile_moitier(g,taille_route);
 					tmax = marge + longest_route(g);
 					//affiche_etoile(g);
 					//printf("TMAX = %d\n",tmax);
@@ -1195,6 +1195,7 @@ void echec_periode_gvsgp3D(int nb_routes, int taille_paquets,int taille_route, i
 	fclose(F);
 }
 
+
 int main()
 {
 	srand(time(NULL));
@@ -1220,8 +1221,8 @@ int main()
 
 	}*/
 	//echec_periode_gvsgp(8,2500,20000, 0, 10000,3);
-	for(int i=0;i<5;i++)
-		echec_periode_gvsgp3D(8,2500,700, 1000,i);
+	for(int i=3;i<5;i++)
+		echec_periode_gvsgp3D(8,2500,5000, 1000,i);
 	
 	/*Graphe g ;
 
