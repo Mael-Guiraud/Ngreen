@@ -707,16 +707,13 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
       
 
       \paragraph{Long routes}
-      We now want to look at the performance of those algorithm if we significantly increase the size of the route. By increasing the size of the routes, the cuts of the exhaustive search, are less efficient. Thus, we defined a counter that allow the exhaustive search to end if no solutions are found.
       
-      Since the exhaustive generation can fail, this is necessary to change the method to measure the minimum period for each algorithm, when the routes are long.      
-      The following figure shows us the average success rate of the algorithms, on $1000$ instances, according to the period, with 8 routes, in which $\lambda(c_t,r_{t_i})$, are drawn following an uniform distribution between $0$ and $30000$ slots, that correspond to have the size of the route and the period approximately in the same range.
+      We now want to understand the performance of these algorithms when the size of the routes are unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit to $10^9$.
       
-      The reason why the shortest longest were optimal in the previous experiences ,i.e. having a small difference between the longest and the shortest route, is no longer reviewed. In this situation, this difference can be considerable, and then the required period too.
+      In this experiment we will fix the number of routes to $8$ and the values $\lambda(c_t,r_{t_i})$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
+      We measure for each algorithm its percentage of success, for periods from $20000$ which is the minimum possible to $50000$.
       
-      One the other hand, one can imagine that the greedy $3.n.\tau$ algorithm finds reasonable solutions, because the algorithm does not consider the size of the route, and thus, is not impacted by this parameter.
-      
-      On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
+    On the following figure, the upper bound represents the cases in which the exhaustive search found a solution plus the number of {\em early} halts of the search. The real upper bound is probably between those two curves.
 \begin{figure}
 
        \begin{center}
@@ -724,6 +721,10 @@ In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests
       \end{center}
       \caption{Success rate of the algorithms according to the period for long routes.}
      \end{figure}
+      
+      
+      One the other hand, one can imagine that the greedy $3.n.\tau$ algorithm finds reasonable solutions, because the algorithm does not consider the size of the route, and thus, is not impacted by this parameter.
+      
       
       As we can see, Shortest longest has a very low success rate, and is not efficient anymore with those parameters.
       Whereas, the greedy algorithm gives us solutions with much lower period than Shortest Longest. The exhaustive search keeps finding good solutions in short periods but it fails a lot for periods that does not give a lot of flexibility in the backward period. This mean that, for a small period, a solution may exists, but the exhaustive search needs too much time to find it. In this situation, it could be better to use the greedy algorithm, that find a good solution in a polynomial time.
