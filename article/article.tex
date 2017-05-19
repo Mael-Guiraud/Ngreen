@@ -714,7 +714,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       In this experiment we will fix the number of routes to $8$ and the values $\lambda(c_t,r_{t_i})$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
       We measure for each algorithm its percentage of success, for periods from $20000$ which is the minimum possible to $50000$.
       
-      Since the exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. We represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining its successes and its failure because of lack of time. 
+      Since the exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. We represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining its successes and its failures because of lack of time. 
       
 \begin{figure}
 
@@ -727,10 +727,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
       In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route
       which is large here. On the other hand, the greedy algorithm has a performance not very different from the case of short routes, which is expected since it does not depends on the size of the route.  \todo{Ajouter la moyenne pour la comparer aux routes courtes}
       
-      When the period is less than $40000$, the exhaustive search find much more solutions than the greedy algorithms which justifies its use. 
+      When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. 
       However for small period, less than $30000$ the computation time is really important and without improvement it would not be possible to tackle 
-      larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small period, we see that there are very few instances
-      with a solution for PAZL. It means that with long routes and high load, looking for an affectation without waiting may be to restrictive.
+      larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small periods, we see that there are very few instances
+      with a solution for PAZL. It means that with long routes and high load, looking for an affectation without waiting may be too restrictive.
       That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between 
       $20000$ and $30000$ where, as we have shown here, there are often no easy to compute affectation without waiting time.
       
@@ -746,7 +746,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
      \subsubsection{A first approach}
 	  
-      First, we imagined that prioritise the messages one the longest route could be a good idea. Thus, the following heuristic is suggested:
+      First, we imagined that prioritize the messages one the longest route could be a good idea. Thus, the following heuristic is suggested:
 
       On the forward period, for the first way, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
 
@@ -850,7 +850,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      The problem PALL is very similar to a scheduling problem, combined to the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We consider that the messages are the jobs, the release times are the date at which the messages are able to come back on $c_t$, and the deadlines are the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
      
-     This algorithm uses the exact same greedy scheduling than LSG. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call \em{crisis message} this message), the algorithm call a subroutine which, following some criteria, removes some previous messages such that the crisis message can be scheduled earlier.
+     This algorithm uses the exact same greedy scheduling than LSG. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call {\em crisis message} this message), the algorithm call a subroutine which, following some criteria, removes some previous messages such that the crisis message can be scheduled earlier.
      
      If this algorithm gives us a $(P,\tau)$ periodic affectation, it satisfies the criteria $MT({\cal M}) < T_{max}$ Also, the algorithm minimizes $MT({\cal M})$, but does not ensure the periodicity.
      
@@ -901,6 +901,39 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
 	
    
+    \subsubsection{A fixed parameter tractable solution}
+      
+      In this part we try to give a fixed parameter tractable algorithm to solve the PALL problem with parameter $n$ the number of routes.
+      This is justified since $n$ is always very small (less than $20$) while $P$, or $\tau$ may be very large. 
+     
+      
+      \begin{theorem}
+       There is an algorithm which solves PALL on star topologies in $O( )$.
+      \end{theorem}
+      \begin{proof}
+       In this algorithm we will guess a certain number of values related to an affectation and then compute in polynomial time
+       an affectation which satisfies these properties if it exists. Then the FPT algorithm will be to try every possible set of values 
+       and use the polynomial time algorithm.
+       
+       We assume we are given the order at which the messages goes through the forward
+       period and the order at which the messages goes through the backward period. 
+       This is represented by the permutation $\sigma_f$ and $\sigma_b$. \todo{Des notations pour 
+       le début des routes dans la backward et la forward}.
+       
+       Supposition sans perte de généralité : il n'y a pas de temps d'attente  pour le premier paquet qui passe dans 
+       la backward windows.
+       Fait: les paquets passent dans la backward windows à un temps au plus 2P plus grand que le premier paquet (peut-être 3P avec
+       le temps d'attente). 
+       On devine si ils sont entre $O$ et $P$, entre $P$ et $2P$.
+       
+       On écrit un système linéaire très simple pour les contraintes de non collision et d'être dans la fenêtre
+       et ne pas dépasset $T_{max}$.
+       On montre qu'on peut toujours trouver une solution entière à ce système si on a une solution réelle (en tronquant).
+       
+       Alternative: donner un algo plus efficace pour trouver la solution qu'un système linéaire avec de la prog dyn.
+       
+      \end{proof}
+ 
 \section{Conclusion}
 
 
