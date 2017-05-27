@@ -1,5 +1,6 @@
 *.data
-a.out
+*.o
+prog
 article.pdf
 *.aux
 *.log
