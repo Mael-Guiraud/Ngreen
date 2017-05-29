@@ -7,6 +7,7 @@
 
 #include "struct.h"
 #include "tests.h"
+#include "operations.h"
 #define DEBUG 0
 
 /* Structs For PAZL ------
@@ -160,6 +161,21 @@ int algo_prime(Graphe g,int periode,int taille_message)
  /* Brute Force Rapide ----
  ------------------------*/
 
+
+void print_solution(int *id, int *start_slot, int *return_slot,  int size, stack *fw, stack *bw){
+	printf("Partial solution of size %d:\n", size);
+	printf("Forward windows  (forward margin : %d): ",fw[size].margin);
+	for(int i = 0; i <= size; i++){
+		printf("[%d :(%d,%d)] ",id[i], start_slot[i],fw[size].next[i]);
+	}
+	printf("\n");
+	printf("Backward windows  (backward margin : %d): ",bw[size].margin);
+	for(int i = 0; i <= size; i++){
+		printf("[%d :(%d,%d)] ",id[i], return_slot[i],bw[size].next[i]);
+	}
+	printf("\n");
+}
+
 int collision(int message_size, int period, int slot, int *messages, int level){ //slot is the number 
 	//of the slot in the period in which the message is not stacked against another one
 	if(slot > period - message_size) return 1; //special case of the first message
@@ -193,8 +209,8 @@ void update_solution(int *id, int* start_slot, int *return_slot,stack *fw, stack
 	return_slot[level] = slot;
 	//update the two stacks
 	for(int i = 0; i < level; i++){
-		fw[level].next[i] = (fw[level].next[i-1] <= added_route) ? added_route + 1 :  fw[level].next[i-1];
-		bw[level].next[i] = (bw[level].next[i-1] <= added_route) ? added_route + 1 :  bw[level].next[i-1];
+		fw[level].next[i] = (fw[level-1].next[i] <= added_route) ? added_route + 1 :  fw[level-1].next[i];
+		bw[level].next[i] = (bw[level-1].next[i] <= added_route) ? added_route + 1 :  bw[level-1].next[i];
 	}
 	//one cannot use previous route anymore
 	fw[level].next[previous_route] = route_number;
@@ -233,7 +249,7 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 				bw[level].margin = bw[level -1].margin + (max - slot)/message_size 
 				+ (slot - min)/message_size - (max - min)/message_size;
 				if(bw[level].margin < 0) continue;
-				bw[level].margin = bw[level-1].margin; // this margin does not change
+				fw[level].margin = fw[level-1].margin; // this margin does not change
 				update_solution(id, start_slot, return_slot,fw, bw, j, i, slot,route_number, period, message_size, min, max, level, previous_index); //update all informations in the stacks and solutions
 				unused_route[j] = 0;
 				if(recursive_search(id,start_slot,return_slot,fw,bw,unused_route,level+1,return_time,route_number, message_size,period)) return 1; // we have found a solution, exit
@@ -256,7 +272,7 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 				fw[level].margin = fw[level -1].margin + (max - slot)/message_size 
 				+ (slot - min)/message_size - (max - min)/message_size;
 				if(fw[level].margin < 0) continue;
-				fw[level].margin = fw[level-1].margin; // this margin does not change
+				bw[level].margin = bw[level-1].margin; // this margin does not change
 				update_solution(id, return_slot, start_slot,bw, fw, j, i, slot,route_number, period, message_size, min, max, level, previous_index); //update all informations in the stacks and solutions
 				unused_route[j] = 0;
 				if(recursive_search(id,start_slot,return_slot,fw,bw,unused_route,level+1,return_time,route_number, message_size,period)) return 1; // we have found a solution, exit
@@ -296,8 +312,8 @@ int search(Graphe g,int message_size, int period){
   	int *unused_route = malloc(route_number*sizeof(int));
 
   	for(int i = 0; i < route_number; i++){ 
-  		fw[i].next = malloc(sizeof(int)*route_number);
-  		bw[i].next = malloc(sizeof(int)*route_number);
+  		fw[i].next = malloc(sizeof(int)*(i+1));
+  		bw[i].next = malloc(sizeof(int)*(i+1));
   		unused_route[i] = 1;
   	}
   	/* Initialization, the first route is fixed */
@@ -310,13 +326,24 @@ int search(Graphe g,int message_size, int period){
   	start_slot[0] = 0;
   	return_slot[0] = 0;
   	
-
   	/* Call the recursive part with the proper algorithm */
-  	int return_value=recursive_search(id, start_slot, return_slot, fw, bw, unused_route, 1, return_time, route_number, message_size, period);
+  	int return_value = recursive_search(id, start_slot, return_slot, fw, bw, unused_route, 1, return_time, route_number, message_size, period);
   		//printf("Solution trouvée \n");
   		//print_solution(id, start_slot, return_slot,route_number-1, fw, bw);
-  	
   	/* Free the memory */
+
+  	int mi[route_number];
+  	int wi[route_number];
+  	if(return_value)
+  	{
+ 	if(DEBUG)print_solution(id, start_slot, return_slot, route_number-1, fw,bw);
+  		//printf("\n");
+  	//for (int i = 0; i < route_number; i++){printf("%d %d \n",id[i],start_slot[i]);}
+  	//	affiche_etoile(g);
+  	for (int i = 0; i < route_number; i++){wi[i]=0;mi[id[i]]=start_slot[i]-g.matrice[id[i]][route_number];}
+  	 if(!is_ok( g,  message_size, mi,  wi, period))exit(16);
+  }
+
   	free(id);
   	free(start_slot);
   	free(return_slot);
@@ -329,6 +356,9 @@ int search(Graphe g,int message_size, int period){
   	free(bw);
   	return return_value?1:-1;
 }
+
+
+
 
 
 /* Ancien BruteForce
@@ -497,7 +527,7 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
 
   for (int i = 0; i < nbr_route; i++)
     {
-      temps_retour_param[i] = 2 * g.matrice[nbr_route][i + nbr_route + 1];
+      temps_retour_param[i] = (2 * g.matrice[nbr_route][i + nbr_route + 1])%periode;
     }
 
 
@@ -536,11 +566,14 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
   for (int j = nbr_route - 1; j >= 0; j--)
     temps_retour[j] = (temps_retour[j] - temps_retour[0] + periode) % periode;
   //affiche les données sur lesquelles on lance le bruteforce
-/* printf("\n");
+if(DEBUG)
+{
+ printf("\n");
   for(int j = 0; j < nbr_route; j++){
     printf("%d(%d)",temps_retour[j],temps_retour_param[j]);
   }
-  printf("\n");*/
+  printf("\n");
+}
   /////////////////// Début de l'arbre de recherche ////////////////////////////
 
 
@@ -550,13 +583,20 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
       compteur++;
       if (solution_taille == nbr_route)
       {
-        //print_sol(solution_pos,solution_num,nbr_route,budget);
+       if(DEBUG) print_sol(solution_pos,solution_num,nbr_route,budget);
         //printf("PERIODE %d \n",periode);
 
-        free (solution_num);
+       
+        int mi[nbr_route];
+        int wi[nbr_route];
+          for (int i = 0; i < nbr_route; i++){wi[i]=0;mi[solution_num[i]]=solution_pos[i]-g.matrice[solution_num[i]][nbr_route];}
+  		 if(!is_ok( g,  taille_paquets, mi,  wi, periode))exit(17);
+
+  		 free (solution_num);
         free (solution_pos);
         free (route_restante);
         free (temps_retour);
+
         return periode;
       }     //sortir la solution et arrêt
       if (num_courant == nbr_route)

@@ -13,14 +13,14 @@ int main()
 	/*****
 	Effectue une recherche linéaire pour les algos PAZL afin de trouver la plus petite periode moyenne
 	*****/
-	simuls_periode_PAZL(8,2500,700,100);
+	//simuls_periode_PAZL(12,2500,20000,100);
 
 	/******************************************/	
 
 	/*****
 	Taux de reussite de chaque algo PAZL en fonction de la periode
 	*****/
-	//echec_PAZL(8,2500,30000,1000);
+	echec_PAZL(8,2500,30000,1000);
 
 
 	/******************************************/

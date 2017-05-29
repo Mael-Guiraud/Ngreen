@@ -48,13 +48,14 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 			//if(res_sl > total_sl)total_sl = res_sl;
 			if(res_search != -1){total_search+=res_search;}
 
-			if( ((res_brute == -1)&&(res_search != -1)) || ( (res_brute != -1) && (res_search == -1)) )
+			if( res_search != res_brute )
 			{
 				printf("(%d -%d) \n",res_brute,res_search);
 				affiche_etoile(g);
 				exit(15);
 				
 			}
+		
 
 
 			//if(res_sl < res_brute)affiche_matrice(g);
