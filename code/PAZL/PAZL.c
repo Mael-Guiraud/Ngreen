@@ -76,8 +76,8 @@ void update_solution(int *id, int* start_slot, int *return_slot,stack *fw, stack
 	return_slot[level] = slot;
 	//update the two stacks
 	for(int i = 0; i < level; i++){
-		fw[level].next[i] = (fw[level].next[i-1] <= added_route) ? added_route + 1 :  fw[level].next[i-1];
-		bw[level].next[i] = (bw[level].next[i-1] <= added_route) ? added_route + 1 :  bw[level].next[i-1];
+		fw[level].next[i] = (fw[level-1].next[i] <= added_route) ? added_route + 1 :  fw[level-1].next[i];
+		bw[level].next[i] = (bw[level-1].next[i] <= added_route) ? added_route + 1 :  bw[level-1].next[i];
 	}
 	//one cannot use previous route anymore
 	fw[level].next[previous_route] = route_number;
@@ -116,7 +116,7 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 				bw[level].margin = bw[level -1].margin + (max - slot)/message_size 
 				+ (slot - min)/message_size - (max - min)/message_size;
 				if(bw[level].margin < 0) continue;
-				bw[level].margin = bw[level-1].margin; // this margin does not change
+				fw[level].margin = fw[level-1].margin; // this margin does not change
 				update_solution(id, start_slot, return_slot,fw, bw, j, i, slot,route_number, period, message_size, min, max, level, previous_index); //update all informations in the stacks and solutions
 				unused_route[j] = 0;
 				if(recursive_search(id,start_slot,return_slot,fw,bw,unused_route,level+1,return_time,route_number, message_size,period)) return 1; // we have found a solution, exit
@@ -139,7 +139,7 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 				fw[level].margin = fw[level -1].margin + (max - slot)/message_size 
 				+ (slot - min)/message_size - (max - min)/message_size;
 				if(fw[level].margin < 0) continue;
-				fw[level].margin = fw[level-1].margin; // this margin does not change
+				bw[level].margin = bw[level-1].margin; // this margin does not change
 				update_solution(id, return_slot, start_slot,bw, fw, j, i, slot,route_number, period, message_size, min, max, level, previous_index); //update all informations in the stacks and solutions
 				unused_route[j] = 0;
 				if(recursive_search(id,start_slot,return_slot,fw,bw,unused_route,level+1,return_time,route_number, message_size,period)) return 1; // we have found a solution, exit
@@ -172,8 +172,8 @@ int search(int message_size, int period, int route_number, int* return_time){
   	int *unused_route = malloc(route_number*sizeof(int));
 
   	for(int i = 0; i < route_number; i++){ 
-  		fw[i].next = malloc(sizeof(int)*route_number);
-  		bw[i].next = malloc(sizeof(int)*route_number);
+  		fw[i].next = malloc(sizeof(int)*(i+1));
+  		bw[i].next = malloc(sizeof(int)*(i+1));
   		unused_route[i] = 1;
   	}
   	/* Initialization, the first route is fixed */
@@ -187,15 +187,9 @@ int search(int message_size, int period, int route_number, int* return_time){
   	return_slot[0] = 0;
   	
   	/* Call the recursive part with the proper algorithm */
-  	if(recursive_search(id, start_slot, return_slot, fw, bw, unused_route, 1, return_time, route_number, message_size, period)){
+  	int return_value = recursive_search(id, start_slot, return_slot, fw, bw, unused_route, 1, return_time, route_number, message_size, period);
   		//printf("Solution trouvée \n");
   		//print_solution(id, start_slot, return_slot,route_number-1, fw, bw);
-  		return 1;
-  	}
-  	else{
-  		//printf("Pas de solution\n");
-  		return 0;
-  	}
   	/* Free the memory */
   	free(id);
   	free(start_slot);
@@ -207,6 +201,7 @@ int search(int message_size, int period, int route_number, int* return_time){
   	}
   	free(fw);
   	free(bw);
+  	return(return_value);
 }
 
 
@@ -215,12 +210,12 @@ int search(int message_size, int period, int route_number, int* return_time){
 int main(){
   	srand(time(NULL));
   	int succes = 0;
-  	for(int i = 0; i < 100; i++){
+  	for(int i = 0; i < 10; i++){
   	int *return_time = genere_reseau(ROUTE_NUMBER,ROUTE_SIZE,PERIOD);
   	succes += search(MESSAGE_SIZE,PERIOD,ROUTE_NUMBER,return_time);
   	free(return_time);
   }
-  float res = succes / 100.0;
+  float res = succes / 10.0;
   printf(" Taux de réussite : %f \n",res);
-  	return 0;
+  return 0;
 }
