@@ -51,10 +51,11 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 			if( ((res_brute == -1)&&(res_search != -1)) || ( (res_brute != -1) && (res_search == -1)) )
 			{
 				printf("(%d -%d) \n",res_brute,res_search);
-				//affiche_etoile(g);
+				affiche_etoile(g);
+				exit(15);
 				
 			}
-			printf("(%d -%d) \n",res_brute,res_search);
+
 
 			//if(res_sl < res_brute)affiche_matrice(g);
 			fprintf(stdout,"\rStep%5d /%d",i+1,nb_simuls);fflush(stdout);

@@ -3,13 +3,10 @@
 #include <time.h>
 
 
-#define ROUTE_NUMBER 8
+#define ROUTE_NUMBER 7
 #define MESSAGE_SIZE 2500
-
 #define PERIOD 50000
-
 #define ROUTE_SIZE 1000
-
 
 
 typedef struct{
@@ -112,6 +109,7 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 				//test whether there is a collision
 				if(collision(message_size, period, slot, return_slot, level)) continue;
 				//compute the min and max
+				min = 0; max = period;
 				previous_index = research_interval(slot,return_slot,level,&min,&max);
 				//update the bw_margin and skip this partial solution if it is smaller than 0	
 				bw[level].margin = bw[level -1].margin + (max - slot)/message_size 
@@ -134,6 +132,7 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 				//test whether there is a collision
 				if(collision(message_size, period, slot, start_slot,level)) continue;
 				//compute the min and max
+				min = 0; max = period;
 				previous_index = research_interval(slot,start_slot,level,&min,&max);
 				//update the bw_margin and skip this partial solution if it is smaller than 0	
 				fw[level].margin = fw[level -1].margin + (max - slot)/message_size 

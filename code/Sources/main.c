@@ -2,11 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "struct.h"
+
 #include "simulations.h"
-#include "PAZL.h"
-#include "tests.h"
-#include "init.h"
+
 
 int main()
 {
