@@ -6,7 +6,7 @@
 
 #define ROUTE_NUMBER 8
 #define MESSAGE_SIZE 2500
-#define PERIOD 23000
+#define PERIOD 30000
 #define ROUTE_SIZE 20000
 
 
