@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 #define ROUTE_NUMBER 12
 #define MESSAGE_SIZE 2500
 #define PERIOD 34000
 #define ROUTE_SIZE 20000
-
 
 
 typedef struct{
@@ -36,12 +34,6 @@ void print_solution(int *id, int *start_slot, int *return_slot,  int size, stack
 	}
 	printf("\n");
 }
-
-//int collision(int message_size, int period, int return_time, message *solution)
-//int compute_interval(int return_time) compute the element before and after the inserted_element
-//int update_margin
-//int update_solution
-
 
 int collision(int message_size, int period, int slot, int *messages, int level){ //slot is the number 
 	//of the slot in the period in which the message is not stacked against another one

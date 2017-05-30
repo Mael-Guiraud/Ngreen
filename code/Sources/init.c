@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <time.h>
+
 
 #include "struct.h"
 
@@ -41,9 +43,11 @@ void graphe_etoile(Graphe g,int taille_liens)
 	if(!(g.N%2)){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
 	int pivot = g.N/2;
 	int alea;
+
 	for(int i=0;i<g.N;i++)
 	{
 		alea = rand()%taille_liens;
+
 		g.matrice[pivot][i] = alea;
 		g.matrice[i][pivot] = alea;
 	}
