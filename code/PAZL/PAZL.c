@@ -2,11 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-
-#define ROUTE_NUMBER 7
+#define ROUTE_NUMBER 12
 #define MESSAGE_SIZE 2500
-#define PERIOD 50000
-#define ROUTE_SIZE 1000
+#define PERIOD 34000
+#define ROUTE_SIZE 20000
 
 
 typedef struct{
@@ -35,12 +34,6 @@ void print_solution(int *id, int *start_slot, int *return_slot,  int size, stack
 	}
 	printf("\n");
 }
-
-//int collision(int message_size, int period, int return_time, message *solution)
-//int compute_interval(int return_time) compute the element before and after the inserted_element
-//int update_margin
-//int update_solution
-
 
 int collision(int message_size, int period, int slot, int *messages, int level){ //slot is the number 
 	//of the slot in the period in which the message is not stacked against another one
@@ -152,16 +145,16 @@ int recursive_search(int *id, int*start_slot, int *return_slot, stack *fw, stack
 
 
 int search(int message_size, int period, int route_number, int* return_time){
-	printf("Instance aléatoire :\n");//we assume that the value in return time are in [0,period[
-	for(int i = 0; i < route_number; i++) printf("%d  ",return_time[i]);
+	//printf("Instance aléatoire :\n");//we assume that the value in return time are in [0,period[
+	//for(int i = 0; i < route_number; i++) printf("%d  ",return_time[i]);
 	int shift = return_time[0];
-	printf("\nInstance aléatoire décalée :\n");
+	//printf("\nInstance aléatoire décalée :\n");
 	for (int i = 0; i < route_number; i++){//we shift the values so that the first route has return time 0
 		return_time[i] -= shift;
 		if (return_time[i] < 0) return_time[i] += period;
-		printf("%d  ",return_time[i]);
+		//printf("%d  ",return_time[i]);
 	}
-	printf("\n");
+	//printf("\n");
     /* Memory allocation */		
 	stack *fw = malloc(sizeof(stack)*route_number);
 	stack *bw = malloc(sizeof(stack)*route_number);
@@ -209,12 +202,12 @@ int search(int message_size, int period, int route_number, int* return_time){
 int main(){
   	srand(time(NULL));
   	int succes = 0;
-  	for(int i = 0; i < 10; i++){
+  	for(int i = 0; i < 100; i++){
   	int *return_time = genere_reseau(ROUTE_NUMBER,ROUTE_SIZE,PERIOD);
   	succes += search(MESSAGE_SIZE,PERIOD,ROUTE_NUMBER,return_time);
   	free(return_time);
   }
-  float res = succes / 10.0;
+  float res = succes / 100.0;
   printf(" Taux de réussite : %f \n",res);
   return 0;
 }
