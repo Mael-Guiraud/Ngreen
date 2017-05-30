@@ -442,7 +442,7 @@ int ajoute_element (intervalle_liste * liste, int debut, int taille,
       if (liste[pos].debut <= debut
     && liste[pos].fin - debut >= taille_paquets)
     {     //l'intervalle existe, on le découpe
-    //on calcule le nombre de slot après décooupage (en prenant en compte les paquets déjà placés)
+    //on calcule le nombre de slot après découpage (en prenant en compte les paquets déjà placés)
     *nombre_slot +=
       (debut - liste[pos].debut) / taille_paquets + (liste[pos].fin -
                  debut) /
