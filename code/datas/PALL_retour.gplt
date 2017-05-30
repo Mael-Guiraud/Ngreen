@@ -1,0 +1,25 @@
+################# Commandes d'affichage Gnuplot ###############
+
+ file = "compare_retour_30000.data"
+
+
+plot   file  using 1:2  smooth cspline with points title "Greedy Periodic"
+replot   file  using 1:3 smooth cspline with points title "MS"
+replot   file  using 1:4  smooth cspline with points title "MSP"
+
+
+
+######### Pour une sortie dans un fichier .ps ##################"
+
+set notitle
+set ylabel "Success Rate"
+set xlabel "Flexibility"
+set yrange [0:101]
+set border 3
+set term postscript color solid
+set output '| ps2pdf - retour_30000.pdf'
+
+set key outside right bot
+replot
+
+

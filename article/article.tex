@@ -931,14 +931,21 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \end{figure}
      
      First, we remark that, for any sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. Since this algorithm is not really time expensive, it could be interesting to increase the number of sending orders generated, to decrease the probability of a failure.
-     \todo{Insister sur l'importance de ce nombre d'instances générées, par rapport au nombre d'instances possibles}
     
+    Insister sur l'importance de ce nombre d'instances generess, par rapport au nombre d'instances possibles
+ 
+    \begin{figure}
+
+       \begin{center}
+      \includegraphics[scale=0.4]{retour_21000.pdf}
+      \end{center}
+      \caption{Success rate of the different algorithms for a $P = 21000$}
+     \end{figure}
+     
+     ici pas besoin de tester pour des periodes longues : gp est deja au max, MSP strictment meilleur que GP ?
     
-    
-   
-    \paragraph{Comparer les departs}
-    
-    \paragraph{Comparer les retours}
+
+ 
     
     \paragraph{Comparer optimal + depart random avec stochastique}
     
