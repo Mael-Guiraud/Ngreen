@@ -385,7 +385,7 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 		if(w_i[i]+2*routes[i] > Tmax)
 		{
 			/*affiche_matrice(g);
-			affiche_solution(g,taille_paquets,m_i, w_i);
+			
 
 			printf("Tmax depassé (%d = %d + %d + %d)\n\n",w_i[i]+2*routes[i]+taille_paquets,w_i[i],2*routes[i],taille_paquets);*/
 			return -1;
@@ -393,7 +393,9 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 		if(w_i[i]+2*routes[i] > max)
 			max= w_i[i]+2*routes[i];
 	}
-	
+	//printf("Tmax = %d \n",max);
+	//affiche_etoile(g);
+	// affiche_solution(g,taille_paquets,m_i, w_i);
 	return max;
 }
 

@@ -6,7 +6,7 @@
 
 
 #include "struct.h"
-
+#include "tests.h"
 
 //Déclare une matrice remplie de 0 de taille N*N
 int ** declare_matrice(int N)

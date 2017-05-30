@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "struct.h"
 #include "PAZL.h"
@@ -9,6 +10,7 @@
 #include "operations.h"
 #include "tests.h"
 
+#define PARALLEL 1
 
 //Effectue une recherche linéaire pour les algos PAZL afin de trouver la plus petite periode moyenne
 void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,int nb_simuls)
@@ -18,6 +20,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 	long long int total_3NT, total_brute,total_sl,total_search;
 	int res_sl,res_brute,res_3NT,res_search;
 
+	
 	for(int j = 1 ; j<=nb_routes;j++)
 	{
 		printf("Calculs pour %d routes: \n",j);
@@ -26,27 +29,40 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 		total_brute = 0;
 		total_sl =0;
 		total_search = 0;
+		#pragma omp parallel for private(res_sl,res_brute,res_3NT,res_search,g) if (PARALLEL) schedule (dynamic)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(j*2 + 1);
 			graphe_etoile(g,taille_routes);
 			res_3NT = linear_3NT(g,taille_message);
 			//if(res_3NT > total_3NT)total_3NT = res_3NT;
-			if(res_3NT != -1){total_3NT+=res_3NT;}
+			if(res_3NT != -1){
+				#pragma omp atomic
+				total_3NT+=res_3NT;
+			}
 			//else printf("error (3nt = -1)\n");
 
 			res_brute = linear_brute(g,taille_message);
 			//if(res_brute > total_brute)total_brute = res_brute;
-			if(res_brute != -1){total_brute+=res_brute;}
+			if(res_brute != -1){
+				#pragma omp atomic
+				total_brute+=res_brute;
+			}
 			//else printf("error (brute = -1)\n");
 
 			res_sl = algo_shortest_longest(g,3*taille_message*nb_routes,taille_message);
 			//if(res_sl > total_sl)total_sl = res_sl;
-			if(res_sl != -1){total_sl+=res_sl;}
+			if(res_sl != -1){
+				#pragma omp atomic
+				total_sl+=res_sl;
+			}
 			//else printf("error (Sl = -1)\n");
 			res_search = linear_search(g,taille_message);
 			//if(res_sl > total_sl)total_sl = res_sl;
-			if(res_search != -1){total_search+=res_search;}
+			if(res_search != -1){
+				#pragma omp atomic
+				total_search+=res_search;
+			}
 
 			if( res_search != res_brute )
 			{
@@ -55,7 +71,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 				exit(15);
 				
 			}
-		
+
 
 
 			//if(res_sl < res_brute)affiche_matrice(g);
@@ -122,7 +138,10 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 	int resa,resb,resc,resd,rese;
 	float a,b,c,d,e;
 	int tmax;
-	int nb_rand = 100;
+	int nb_rand = 1000;
+	float moyenne_etape;
+	
+		
 	for(int marge=0;marge<= marge_max;marge += 50)
 	{
 		a=0;
@@ -130,7 +149,8 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 		c=0;
 		d=0;
 		e=0;
-
+		moyenne_etape = 0;
+		#pragma omp parallel for private(resa,resb,resc,resd,rese,g,tmax) if (PARALLEL) schedule (dynamic)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
@@ -147,9 +167,19 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 					{	
 						if(resa != -1)
 						{
+							
+							#pragma omp atomic
+								a++;
 
-							a++;
-							//printf("On a trouvé pour a au %d ieme tick (%d) \n",compteur_rand,resa);
+								//printf("%f\n",moyenne_etape);
+							#pragma omp atomic
+								moyenne_etape+=(compteur_rand+1);
+								
+								
+							//printf("%f(%d)\n",a,omp_get_thread_num());
+
+							//printf("On a trouvé pour a au %d ieme tick (%d) \n",compteur_rand,resa);printf("%f\n",moyenne_etape);
+							//exit(19);
 							break;
 						}
 						
@@ -166,6 +196,7 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 			{
 				if(resb != -1)	
 				{
+					#pragma omp atomic
 					b++;
 				}
 			}
@@ -173,7 +204,7 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 			{
 				if(resc != -1)
 				{
-
+					#pragma omp atomic
 					c++;
 				}
 			}
@@ -181,7 +212,7 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 			{
 				if(resd != -1)
 				{
-
+					#pragma omp atomic
 					d++;
 				}
 			}
@@ -189,16 +220,19 @@ void sucess_PALL_fixed_period(int nb_routes, int taille_paquets,int taille_route
 			{
 				if(rese != -1)
 				{
-
+					#pragma omp atomic
 					e++;
 				}
 			}
 			//printf("-----------------------------------------\n");
 			libere_matrice(g);
 		}
+		
 	
    		     fprintf(F,"%d %f %f %f %f %f\n",marge,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
-		fprintf(stdout,"%d %f %f %f %f %f\n",marge,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100);
+		fprintf(stdout,"%d %f %f %f %f %f %f\n",marge,a/nb_simuls*100,b/nb_simuls*100,c/nb_simuls*100,d/nb_simuls*100,e/nb_simuls*100,moyenne_etape/nb_simuls);
+	
+
 	}
 	fclose(F);
 }

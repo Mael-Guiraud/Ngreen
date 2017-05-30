@@ -48,6 +48,7 @@
 \begin{document}
 
 \maketitle
+
 \begin{abstract}
 We study the sending of periodic messages in a graph following predefined paths, a problem arising from the communication between radio antenna and their computing unit located in distant data-centers.  We want to send the messages so that there are no congestion while minimizing the latency. We prove the problem is $\NP$-complete even when the graph is very simple. We then deal with the case of a star graph and for different regime of the parameters we propose several algorithms that are experimentally shown to work extremely well.
 \end{abstract}
@@ -847,7 +848,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 	
 	The different sending policy that we tried are the following :
 	\begin{enumerate}
-	 \item Random: Generate $X$ random permutations for the routes and tries the greedy heuristic on the way back until we get an available $(P,\tau)$ periodic affectation.
+	 \item Random: Generate $X$ random permutations for the routes and tries the greedy heuristic on the way back until we get an available $(P,\tau)$ periodic affectation. In the following experiments, we take $X = 100$.
 	 \item Longest-Shortest on Routes (LSR): Send the messages from the one using longest to the one using shortest route (this is the sending order used in the previous heuristic).
 	 \item Shortest-Longest on Routes (SLR): Send the messages from the one using shortest to the one using longest route
 	 \item Longest-Shortest on last Arc (LSA): Send the messages from the one having the longest arc between $c_t$ an the target to the one having the shortest one.
@@ -920,7 +921,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
    In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we draw the links between 0 and 20000 slots (long routes). We look at the success rate of each sending order with Greedy Periodic to schedule the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from 0 to 3000.
    
-   We look at two different regimes: one in which the period represents $1,05n\tau$, and one with a greater period $1,5n\tau$. The following results are computed over 10000 instances.
+   We look at two different regimes: first, we take a period equal to $1,05n\tau$, and then, we take a greater period, that is, $1,5n\tau$. The following results are computed over 10000 instances.
      
 \begin{figure}
 
@@ -939,6 +940,12 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \end{center}
       \caption{Success rate for a $P = 30000$}
      \end{figure}
+     
+     First, we remark that, for any sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. Since this algorithm is not really time expensive, it could be interesting to increase the number of sending orders generated, to decrease the probability of a failure.
+     \todo{Insister sur l'importance de ce nombre d'instances générées, par rapport au nombre d'instances possibles}
+    
+    
+    
    
     \paragraph{Comparer les departs}
     

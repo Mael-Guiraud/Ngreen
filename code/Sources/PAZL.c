@@ -160,6 +160,16 @@ int algo_prime(Graphe g,int periode,int taille_message)
 
  /* Brute Force Rapide ----
  ------------------------*/
+void graphe_to_temps_retour(Graphe g, int * tab,int periode)
+{
+	int nbr_route = g.N / 2;
+
+	for (int i = 0; i < nbr_route; i++)
+	  {
+	    tab[i] = (2 * g.matrice[nbr_route][i + nbr_route + 1])%periode;
+	  }
+
+}
 
 
 void print_solution(int *id, int *start_slot, int *return_slot,  int size, stack *fw, stack *bw){
@@ -291,8 +301,7 @@ int search(Graphe g,int message_size, int period){
 	int route_number = g.N/2;
 	int return_time[route_number];
 
-	for(int i = 0; i < route_number; i++)return_time[i]= (2 * g.matrice[route_number][i + route_number + 1]) %period;
-
+	graphe_to_temps_retour(g,return_time,period);
 	if(DEBUG)printf("Instance aléatoire :\n");//we assume that the value in return time are in [0,period[
 	if(DEBUG)for(int i = 0; i < route_number; i++) printf("%d  ",return_time[i]);
 	int shift = return_time[0];
@@ -523,13 +532,8 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
     }
 
   int nbr_route = g.N / 2;
-  int temps_retour_param[nbr_route];
 
-  for (int i = 0; i < nbr_route; i++)
-    {
-      temps_retour_param[i] = (2 * g.matrice[nbr_route][i + nbr_route + 1])%periode;
-    }
-
+ 
 
   int *solution_pos, *solution_num, *temps_retour, *route_restante;
   assert (solution_pos = malloc (sizeof (int) * nbr_route));
@@ -538,11 +542,12 @@ int bruteforceiter (Graphe g, int periode, int taille_paquets)
   assert (route_restante = malloc (sizeof (int) * nbr_route));
   //affiche les données sur lesquelles on lance le bruteforce
 
-  temps_retour[0] = temps_retour_param[0];
+    graphe_to_temps_retour(g,temps_retour,periode);
+
   for (int j = 1; j < nbr_route; j++)
     {
       route_restante[j] = 1;  //on pourrait juste virer la première route ?
-      temps_retour[j] = temps_retour_param[j];
+ 
 
     }
 
@@ -570,15 +575,14 @@ if(DEBUG)
 {
  printf("\n");
   for(int j = 0; j < nbr_route; j++){
-    printf("%d(%d)",temps_retour[j],temps_retour_param[j]);
+    printf("%d",temps_retour[j]);
   }
   printf("\n");
 }
   /////////////////// Début de l'arbre de recherche ////////////////////////////
 
 
-  //while (compteur < 500000000)
-    while (1)
+  while (compteur < 1000000000)
     {
       compteur++;
       if (solution_taille == nbr_route)
