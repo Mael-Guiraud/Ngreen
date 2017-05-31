@@ -455,5 +455,27 @@ int stochastic(Graphe g, int taille_paquets, int periode, int tmax)
 		arrivees[j] = INT_MAX;
 	}
 	
-	//faire tests retour
+
+
+	int taille_periode_aller = m_i_recales[greater(m_i_recales,nb_routes)]-m_i_recales[lower(m_i_recales,nb_routes)]+taille_paquets;
+	if(taille_periode_aller > periode)return -1;
+	int taille_periode_retour  = arrivees_recales[greater(arrivees_recales,nb_routes)]-arrivees_recales[lower(arrivees_recales,nb_routes)]+taille_paquets;
+	if(taille_periode_retour > periode)return -1;
+
+
+	int routes[nb_routes];
+	for(int i=0;i<nb_routes;i++)routes[i]=g.matrice[nb_routes][i]+g.matrice[nb_routes][i+nb_routes+1];
+
+
+	int max = attente_aller[0]+w_i[0]+2*routes[0];
+	for(int i=0;i<nb_routes;i++)
+	{
+		if( attente_aller[i]+w_i[i]+2*routes[i] > Tmax)
+			return -1;
+		if( attente_aller[i] +w_i[i]+2*routes[i] > max)
+			max=  attente_aller[i]+ w_i[i]+2*routes[i];
+	}
+	//affiche_solution(g,taille_paquets,m_i,w_i);
+	return max;
+
 }
