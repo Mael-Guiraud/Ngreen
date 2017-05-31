@@ -399,3 +399,61 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	return max;
 }
 
+
+int stochastic(Graphe g, int taille_paquets, int periode, int tmax)
+{
+	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
+	int nb_routes = g.N/2;
+	int offset=0;
+	int m_i[nb_routes];
+	int m_i_recales[nb_routes];
+	int attente_aller[nb_routes]
+	int w_i[nb_routes];
+	int arrivees_recales[nb_routes];
+
+
+	//Tirage au hasard de temps d'arrivées dans cs des messages
+	for(int i=0;i<nb_routes;i++)m_i_recales[i]=m_i[i]=rand()%(periode-taille_paquets);
+
+	int eligible;
+	for(int i=0;i<nb_routes;i++)//calcul des buffers et temps aller
+	{
+		eligible= lower(m_i,nb_routes);
+		
+		if(offset < m_i[eligible])//pas de buffer
+		{
+			attente_aller[i] = 0;
+			offset = m_i[eligible] + taille_paquet;
+		}
+		else//bufferistation
+		{
+			attente_aller[eligible] = offset - m_i[eligible];
+			m_i_recales[eligible] = offset;
+			offset += taille_paquet;
+		}
+		m_i[j] = INT_MAX;
+	}
+	
+	offset = 0;
+	for(int i=0;i<nb_routes;i++)arrivees_recales[i] = arrivees[i]=m_i_recales[i]+2*g.matrice[nb_routes][nb_routes+i+1];
+
+	for(int i=0;i<nb_routes;i++)//on rajoute les décalages 
+	{
+		eligible = lower(arrivees,nb_routes);
+		
+		if(offset < arrivees[eligible])//pas de buffer
+		{
+			offset = arrivees[eligible] + taille_paquet;
+			w_i[eligible] = 0;
+		}
+		else//bufferistation
+		{
+			w_i[eligible] = offset - arrivees[eligible];
+			arrivees_recales[eligible] = offset;
+			offset += taille_paquet;
+		}
+		arrivees[j] = INT_MAX;
+	}
+	
+	//faire tests retour
+}
