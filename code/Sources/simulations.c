@@ -110,9 +110,9 @@ void echec_PAZL(int nb_routes, int taille_message,int taille_routes, int nb_simu
 			g = init_graphe(nb_routes *2 +1);
 			graphe_etoile(g,taille_routes);
 			if(algo_3NT(g,j,taille_message) != -1) total_3NT++;
-			res_brute = bruteforceiter(g,j,taille_message);
-			if(res_brute == -2) total_theorique++;
-			else
+			res_brute = search(g,taille_message,j);
+			//if(res_brute == -2) total_theorique++;
+			//else
 				if(res_brute != -1 ){ total_brute++;total_theorique++;}
 			if(algo_shortest_longest(g,j,taille_message)!= -1) total_sl++;
 			libere_matrice(g);
@@ -138,7 +138,7 @@ void sucess_aller_PALL(int nb_routes, int taille_paquets,int taille_route,int ma
 	int resa,resb,resc,resd,rese;
 	float a,b,c,d,e;
 	int tmax;
-	int nb_rand = 100;
+	int nb_rand = 1000;
 	float moyenne_etape;
 	
 		
@@ -150,7 +150,7 @@ void sucess_aller_PALL(int nb_routes, int taille_paquets,int taille_route,int ma
 		d=0;
 		e=0;
 		moyenne_etape = 0;
-		#pragma omp parallel for private(resa,resb,resc,resd,rese,g,tmax) if (PARALLEL) schedule (dynamic)
+		#pragma omp parallel for private(resa,resb,resc,resd,rese,g,tmax) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
