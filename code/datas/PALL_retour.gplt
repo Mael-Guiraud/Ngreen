@@ -1,6 +1,6 @@
 ################# Commandes d'affichage Gnuplot ###############
 
- file = "compare_retour_30000.data"
+ file = "compare_retour_21000.data"
 
 
 plot   file  using 1:2  smooth cspline with points title "Greedy Periodic"
@@ -17,7 +17,7 @@ set xlabel "Flexibility"
 set yrange [0:101]
 set border 3
 set term postscript color solid
-set output '| ps2pdf - retour_30000.pdf'
+set output '| ps2pdf - retour_21000.pdf'
 
 set key outside right bot
 replot

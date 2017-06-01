@@ -1491,7 +1491,6 @@ int simons_per(Graphe g, int taille_paquet, int TMAX,int periode,int mode, int p
 				maximum= w_i[i]+2*Dl[i];
 		}
 
-	
 	return maximum;
 }
 
