@@ -10,7 +10,7 @@
 #include "operations.h"
 #include "tests.h"
 
-#define PARALLEL 1
+#define PARALLEL 0
 
 //Effectue une recherche linéaire pour les algos PAZL afin de trouver la plus petite periode moyenne
 void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,int nb_simuls)

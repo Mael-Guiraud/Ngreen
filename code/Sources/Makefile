@@ -1,4 +1,4 @@
-CC = gcc-7
+CC = gcc
 
 CFLAGS = -fopenmp -c -g -std=c99 -Wall -O3
 
