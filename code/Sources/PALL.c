@@ -399,7 +399,6 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	return max;
 }
 
-
 int stochastic(Graphe g, int taille_paquets, int periode, int tmax)
 {
 	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
@@ -479,3 +478,4 @@ int stochastic(Graphe g, int taille_paquets, int periode, int tmax)
 	return max;
 
 }
+

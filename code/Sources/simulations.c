@@ -138,7 +138,7 @@ void sucess_aller_PALL(int nb_routes, int taille_paquets,int taille_route,int ma
 	int resa,resb,resc,resd,rese;
 	float a,b,c,d,e;
 	int tmax;
-	int nb_rand = 1000;
+	int nb_rand = 100;
 	float moyenne_etape;
 	
 		
@@ -184,6 +184,7 @@ void sucess_aller_PALL(int nb_routes, int taille_paquets,int taille_route,int ma
 						}
 						
 					}
+
 				}
 
 			resb = longest_etoile_periodique(g,taille_paquets,periode,tmax,1);
@@ -330,6 +331,68 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 	
    			      fprintf(F,"%d %f %f %f \n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100);
    		     fprintf(stdout,"%d %f %f %f \n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100);
+		
+
+	}
+	fclose(F);
+}
+
+//Taux de reussite des différentes tailles PALL avec un aller random sur une periode donnée (on fait varier la marge)
+void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int nb_simuls, int periode)
+{
+
+	char nom[64];
+	sprintf(nom,"../datas/nombre_randoms.data");
+	FILE * F = fopen(nom,"w");
+	Graphe g ;
+	int res;
+	float a;
+	int tmax;
+	
+
+	for(int nb_rand=10;nb_rand<= 100000;nb_rand *= 10)
+	{
+		a=0;
+		#pragma omp parallel for private(res,g,tmax) if (PARALLEL) schedule (static)
+		for(int i = 0;i<nb_simuls;i++)
+		{
+			g = init_graphe(2*nb_routes+1);
+			graphe_etoile(g,taille_route);
+			tmax =  longest_route(g);
+			//affiche_etoile(g);
+			//printf("TMAX = %d\n",tmax);
+			//printf("tmax = %d(%d + %d) \n",tmax,longest_route(g),marge);
+			
+			for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+				{
+					res = simons_periodique(g,taille_paquets,tmax,periode,0);
+					if(res != -2)
+					{	
+						if(res != -1)
+						{
+							
+							#pragma omp atomic
+								a++;
+
+
+							break;
+						}
+						
+					}
+				}
+				
+						
+
+
+		
+			//printf("-----------------------------------------\n");
+			libere_matrice(g);
+		}
+		
+	
+   			      fprintf(F,"%d %f \n",nb_rand,a/nb_simuls*100);
+   			      fprintf(stdout,"%d %f \n",nb_rand,a/nb_simuls*100);
+ 
 		
 
 	}
@@ -495,3 +558,4 @@ void succes_PALL_3D(int nb_routes, int taille_paquets,int taille_route, int nb_s
 	}
 	fclose(F);
 }
+

@@ -43,14 +43,24 @@ int main()
 
 
 
+
+
 	/******************************************/
 
 
 	/*****
 	Taux de reussite des algos PALL avec un aller random sur une periode donnée (on fait varier la marge)
 	*****/
-	//sucess_retour_PALL(8,2500,20000,3000,10000,30000);
+	sucess_retour_PALL(8,2500,20000,3000,10000,20000);
 
+
+	/******************************************/
+
+	/*****
+	//Taux de reussite des différentes tailles PALL avec un aller random sur une periode donnée (on fait varier la marge)
+	*****/
+
+	//nombre_random_PALL(8,2500,20000,1000, 20000);
 
 
 
