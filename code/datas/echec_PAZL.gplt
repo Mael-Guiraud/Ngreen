@@ -12,7 +12,8 @@ set ylabel "Sucess(%) "
 set xlabel "Period"
 set yrange [0:100]
 set term postscript color solid
-set output "echec_longues.ps"
+
+set output '| ps2pdf - echec_longues.pdf'
 set key  center right
 set border 3
 set xtics nomirror

@@ -68,4 +68,32 @@ void graphe_etoile_opti(Graphe g,int taille_liens)
 	g.matrice[pivot][pivot] = 0;
 }
 
+//prends un graphe vide en argument et le transforme en etoile dure a resoudre
+void graphe_etoile_dur(Graphe g,int taille_liens,int diff)
+{
+	if(!(g.N%2)){printf("Impossible de générer une étoile avec un nombre pair de sommets\n");exit(5);}
+	int pivot = g.N/2;
+	int alea;
+
+	for(int i=0;i<pivot/2;i++)
+	{
+		alea = (taille_liens/2)-rand()%(diff);
+		g.matrice[pivot][i] = alea;
+		g.matrice[i][pivot] = alea;
+		alea = (taille_liens/2)-rand()%(diff);
+		g.matrice[pivot][1+pivot+i] = alea;
+		g.matrice[1+pivot+i][pivot] = alea;
+	}
+	for(int i=pivot/2;i<pivot;i++)
+	{
+		alea = taille_liens-rand()%(diff);
+		g.matrice[pivot][i] = alea;
+		g.matrice[i][pivot] = alea;
+		alea = taille_liens-rand()%(diff);
+		g.matrice[pivot][1+pivot+i] = alea;
+		g.matrice[1+pivot+i][pivot] = alea;
+	}
+	g.matrice[pivot][pivot] = 0;
+}
+
 

@@ -399,3 +399,15 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	return max;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
