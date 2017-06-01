@@ -49,18 +49,23 @@ int main()
 	/*****
 	Taux de reussite des algos PALL avec un aller random sur une periode donnée (on fait varier la marge)
 	*****/
-	sucess_retour_PALL(8,2500,20000,3000,10000,20000);
+
+	sucess_retour_PALL(8,2500,20000,3000,1000,21000);
 
 
 	/******************************************/
 
 	/*****
-	//Taux de reussite des différentes tailles PALL avec un aller random sur une periode donnée (on fait varier la marge)
+	//Taux de reussite des diferents nombres d'instances générées
 	*****/
 
 	//nombre_random_PALL(8,2500,20000,1000, 20000);
 
+	/*****
+	//Succes de sp contre stochastique en fonction de la marge
+	******/
 
+	//marge_PALL_stochastique(2500,700,100,20000,0);
 
 	return 0;
 }

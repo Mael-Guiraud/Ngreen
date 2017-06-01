@@ -4,3 +4,4 @@ void sucess_aller_PALL(int nb_routes, int taille_paquets,int taille_route,int ma
 void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int marge_max, int nb_simuls, int periode);
 void succes_PALL_3D(int nb_routes, int taille_paquets,int taille_route, int nb_simuls, int mode);
 void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int nb_simuls, int periode);
+void marge_PALL_stochastique(int taille_paquets,int taille_route, int nb_simuls, int periode, int marge);

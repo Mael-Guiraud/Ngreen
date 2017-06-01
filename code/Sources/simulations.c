@@ -246,10 +246,10 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 	sprintf(nom,"../datas/compare_retour_%d.data",periode);
 	FILE * F = fopen(nom,"w");
 	Graphe g ;
-	int resgp,ress,ressp;
-	float gp,s,sp;
+	int resgp,ress,ressp,resr;
+	float gp,s,sp,r;
 	int tmax;
-	int nb_rand = 100;
+	int nb_rand = 1000;
 
 	
 		
@@ -258,7 +258,8 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 		gp=0;
 		s=0;
 		sp =0;
-		#pragma omp parallel for private(resgp,ress,ressp,g,tmax) if (PARALLEL) schedule (dynamic)
+		r=0;
+		#pragma omp parallel for private(resgp,ress,ressp,resr,g,tmax) if (PARALLEL) schedule (dynamic)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
@@ -322,6 +323,13 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 						
 					}
 				}
+				resr=stochastic(g, taille_paquets,periode,tmax);
+			
+				if(resr != -1)
+				{
+					#pragma omp atomic
+					r++;
+				}
 
 		
 			//printf("-----------------------------------------\n");
@@ -329,15 +337,15 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 		}
 		
 	
-   			      fprintf(F,"%d %f %f %f \n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100);
-   		     fprintf(stdout,"%d %f %f %f \n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100);
+   			      fprintf(F,"%d %f %f %f %f\n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100,r/nb_simuls*100);
+   		     fprintf(stdout,"%d %f %f %f %f\n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100,r/nb_simuls*100);
 		
 
 	}
 	fclose(F);
 }
 
-//Taux de reussite des différentes tailles PALL avec un aller random sur une periode donnée (on fait varier la marge)
+//Taux de reussite des diferents nombres d'instances générées
 void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int nb_simuls, int periode)
 {
 
@@ -399,6 +407,75 @@ void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int 
 	fclose(F);
 }
 
+
+//Succes de sp contre stochastique en fonction de la marge
+void marge_PALL_stochastique(int taille_paquets,int taille_route, int nb_simuls, int periode, int marge)
+{
+
+	char nom[64];
+	sprintf(nom,"../datas/marge_PALL_stochastique.data");
+	FILE * F = fopen(nom,"w");
+	Graphe g ;
+	float total_sto,total_sp;
+	int ressto;
+	int ressp;
+	int nb_rand = 100;
+	int tmax;
+
+
+	for(int nb_routes=2;nb_routes<= 2;nb_routes++)
+	{
+		total_sto = 0;
+		total_sp = 0;
+	
+		#pragma omp parallel for private(ressp,ressto,g,tmax) if (PARALLEL) schedule (static)
+		for(int i = 0;i<nb_simuls;i++)
+		{
+			g = init_graphe(2*nb_routes+1);
+			graphe_etoile(g,taille_route);
+			tmax = longest_route(g);
+			
+
+		
+
+			for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
+				{
+					ressp = simons_periodique(g,taille_paquets,tmax,periode,0);
+					if(ressp != -2)
+					{	
+						if(ressp != -1)
+						{
+							
+							#pragma omp atomic
+								total_sp++;
+							break;
+						}
+						
+					}
+				}
+
+			ressto=stochastic(g, taille_paquets,periode,tmax);
+
+			if(ressto != -1)
+			{
+				#pragma omp atomic
+					total_sto++;
+			}
+			
+
+			libere_matrice(g);
+		}
+		
+	
+   			      fprintf(F,"%d %f %f \n",nb_routes,total_sto/nb_simuls*100,total_sp/nb_simuls*100);
+   			      fprintf(stdout,"%d %f %f \n",nb_routes,total_sto/nb_simuls*100,total_sp/nb_simuls*100);
+
+ 
+		
+
+	}
+	fclose(F);
+}
 
 //Fichiers en 3D pour PALL
 void succes_PALL_3D(int nb_routes, int taille_paquets,int taille_route, int nb_simuls, int mode)

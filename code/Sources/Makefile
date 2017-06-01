@@ -1,4 +1,11 @@
-CC = gcc-7
+
+OS := $(shell uname)
+ifeq ($(OS),Darwin)
+  CC = gcc-7
+else
+  CC = gcc
+endif
+
 
 CFLAGS = -fopenmp -c -g -std=c99 -Wall -O3
 

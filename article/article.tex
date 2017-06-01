@@ -857,6 +857,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      This policy can significantly increase $w_i$, but ensures a periodic results. This {\ Greedy Periodic} policy is strictly better than Greedy, because it finds some solutions that greedy would not find, by considering the periodicity in the scheduling.
      
+         We compared the two algorithms on 10000 graphs on which the weight of the links are drawn uniformly between 0 and 20000, with a period of 21000, and giving, for each instance $T_{max} = 2\lambda(r_{longest-route})$ . We then look at the success rate of each algorithms, with every sending order. Both algorithms reach the higher success rate with the Random sending order, but the success of Greedy is 5,65 \%, while the success rate of Greedy Periodic is to 30,02 \%.
+
+    
+     
      \subsubsection{Near from scheduling problems}
      
      The problem PALL is very similar to a scheduling problem, combined to the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We consider that the messages are the jobs, the release times are the date at which the messages are able to come back on $c_t$, and the deadlines are the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists. Thus, it tries to minimize the time between the first and the last message in the scheduling. Let us call {\ Minimized Scheduling (MS)} this algorithm.
@@ -905,10 +909,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
     \subsubsection{Results}
     
-    To compare the previous algorithms, we first need to determine which of the sending order is the best. We know that Greedy Periodic is strictly better than Greedy, because it finds at least all the solutions given by Greedy. We compared the two algorithms on 10000 graphs on which the weight of the links are drawn uniformly between 0 and 20000, with a period of 21000, and giving, for each instance $T_{max} = 2\lambda(r_{longest-route})$ . We then look at the success rate of each algorithms, with every sending order. Both algorithms reach the higher success rate with the Random sending order, but the success of Greedy is 5,65 \%, while the success rate of Greedy Periodic is to 30,02 \%.
-    Those results confirms that Greedy Periodic is better than Greedy, this is the reason why we will compare the different sending orders with Greedy Periodic.
-    
-   In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we draw the links between 0 and 20000 slots (long routes). We look at the success rate of each sending order with Greedy Periodic to schedule the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from 0 to 3000.
+    To compare the previous algorithms, we first need to determine which of the sending order is the best. We know that Greedy Periodic is strictly better than Greedy, thus, we will compare the different sending orders with Greedy Periodic.
+
+   In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we draw the links between 0 and 20000 slots. We look at the success rate of each sending order with Greedy Periodic to schedule the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from 0 to 3000.
    
    We look at two different regimes: first, we take a period equal to $1,05n\tau$, and then, we take a greater period, that is, $1,5n\tau$. The following results are computed over 10000 instances.
      
@@ -917,7 +920,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
        \begin{center}
       \includegraphics[scale=0.4]{departs_gp_21000.pdf}
       \end{center}
-      \caption{Success rate for $P = 21000$}
+      \caption{Success rate of the sending orders for $P = 21000$}
      \end{figure}
      
      
@@ -927,12 +930,33 @@ Note that we also experimented with other greedy algorithms which do not use mac
        \begin{center}
       \includegraphics[scale=0.4]{departs_gp_30000.pdf}
       \end{center}
-      \caption{Success rate for a $P = 30000$}
+      \caption{Success rate of the sending orders for a $P = 30000$}
      \end{figure}
      
-     First, we remark that, for any sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. Since this algorithm is not really time expensive, it could be interesting to increase the number of sending orders generated, to decrease the probability of a failure.
+     First, we remark that, for any sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. 
+     
+     To observe  the impact of the number of random sending orders drawn, we compared the success rate of the following number of drawing, on graphs in which the links are drawn  between $0$ and $20000$ slots, with a period $P=20000$, and a flexibility of $0$.
+       \begin{figure}
+
+       \begin{center}
+   \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    number of randoms & $10$ & $100$& $1 000$& $10 000$&$100 000$\\
+    \hline
+    Success rate $(\simeq)$ & $60,5$&$77,7$&$80,5$&$80,5$&$80,5$\\
+    \hline
+      \end{tabular}
+      \end{center}
+   \caption{Impact of the number of randoms sending orders drawn}
+     \end{figure}
+     
+     In our case of 8 routes, the number of different sending orders is $8! \simeq 40 000$. By drawing $1000$ random sending orders, we explore near to $2,5 \%$ of the cases, which seems enough to find as many solutions as if generate more random sending oredres.
+
+
+     
+     We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see Figure 5), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with 8 routes (links between $0$ and $20000$), and with a period of 21000. Since we just conclude that drawing 1000 sending order is a good number, with 8 routes. We now generate 1000 randoms sending orders for the first way.
     
-    Insister sur l'importance de ce nombre d'instances generess, par rapport au nombre d'instances possibles
+
  
     \begin{figure}
 
@@ -942,10 +966,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \caption{Success rate of the different algorithms for a $P = 21000$}
      \end{figure}
      
-     ici pas besoin de tester pour des periodes longues : gp est deja au max, MSP strictment meilleur que GP ?
-    
-
- 
+     
     
     \paragraph{Comparer optimal + depart random avec stochastique}
     
