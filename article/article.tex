@@ -436,7 +436,7 @@ In particular, this reduction shows that even with small maximal load, the minim
       First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
       There are two sets of vertices, $S=\{s_1,...,s_n\}$ and $T=\{t_1,...,t_n\}$ of cardinality $n$ and two special nodes
       the central source node {\bf $c_s$} and the central target node {\bf $c_t$}. There is an arc between {\bf $c_s$} and {\bf $c_t$} shared by all routes. For all $i$, there is an arc between $s_i$ and $c_s$ and between $t_i$ and $c_t$.
-      The routes are the directed paths $r_i = s_i,c_s,c_t,t_i$ and $\rho(r_i) = t_i,c_t,c_s,s_i$ and we have thus defined a 
+      The routes are the directed paths $r_i = s_i,c_s,c_t,t_i$ and $\rho(r_i) = t_i,c_t,c_s,s_i$ which defines a 
       symmetric routage graph. 
       
       
@@ -479,8 +479,9 @@ In particular, this reduction shows that even with small maximal load, the minim
 
   \end{center}
 	
-      Since the central arc appears in every route, its value does not matter when considering assignments.
-      We assume the weight of the central arc to be $0$ \\
+      Since the central arc appears in every route, its value do not matter when considering the process time of an assignment.
+      Moreover an assignment without collisions is also an assignment without collisions if the weight of the central arc 
+      is set to $0$, therefore we assume from now on it is indeed $0$.
       Collisions between messages can only appear at node $c_s$ on the way forward and at node $c_t$ on the way back.
       Thus, we only have to check if there is no collisions in a given period at those two vertices.
       We will refer to the period at $c_s$ as the {\bf forward period}, and the period at $c_t$ as the {\bf backward period}. A message issued on the route $r$ at time $m_r$ will reach $c_s$ at time $m_{r} + t(c_s,r) \mod P$ in the forward period. If the offset of $\rho(r)$ is $m_\rho(r)$, the answer will reach $c_t$ at time $m_{\rho(r)} + t(c_t,\rho(r))\mod P$ in the backward period.
@@ -495,55 +496,48 @@ In particular, this reduction shows that even with small maximal load, the minim
   We ask for a $(P,\tau)$-periodic assignment {\bf with all waiting times equal to $0$} and we call this restricted problem {\bf Periodic Assignment for Zero Latency} or PAZL. 
   In that case $MT({\cal M})$ is equal to twice the delay of the longest route, thus $T_{max}$ is not relevant anymore. 
   Since $w_i=0$, choosing $m_i$, the offset of the route from $s_i$ to $t_i$, also sets the offset of the route from $t_i$ to $s_i$ to $m_i + \lambda(r_i) \mod P$.
-  Remark that there is a bijection between the assignment of a star topology and the 
-  the assignment of the same star topology where all arcs from $s_i$ to $c_s$ have weight equal to $0$
-  by changing $m_i$ into $m_i - t(c_s,r_i) \mod P$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
+  Remark that there is a bijection between the assignments of a star topology and the 
+  assignments of the same star topology where all arcs from $s_i$ to $c_s$ have weight equal to $0$ by changing $m_i$ into $m_i - t(c_s,r_i) \mod P$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
   
-  \todo{Dire qu'on donne deux algos qui trouvent toujours une solution quand certains condtions sont remplies
-  et un dernier qui sait décider si il y a une solution oui ou non mais qui est exponentiel avec des optimisations pour le rendre pratique}
+  We propose two algorithms that always find a solution in polynomial time if the instance meets some criteria (short routes or great enough period) but which may fail in other cases and one exponential algorithm which always finds a solution if it exists.
   
-  We propose two algorithm that give solutions in polynomial time following some criteria (short routes or great enough period), and one exponential algorithm which determines if there is a solution, and find it if it exists.
-  
-    \subsubsection{Shortest-longest policy}
+    \subsubsection*{Shortest-longest policy}
     
 
-    
-    We present a simple policy, which works when the period is large with regards to the delay of the routes.
+    We first present a simple policy, which works when the period is large with regards to the delay of the routes.
     The message are sent in order from the shortest route to the longest route, without any gap between two messages in the forward period.
-    In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{s_i} = i\tau$.
-    We call this algorithm {\bf Shortest-Longest}.
+    In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{i}$ the offset of $r_i$ to $(i-1)\tau$. We call this algorithm {\bf Shortest-Longest}.
       
      By definition, there are no collision in the forward period and if the period is long enough, 
      it is easy to see that in the backward period the order of the messages are the same as in the forward period and that no collision can occur. 
       
       
-      \begin{proposition} When $n\tau + 2(\lambda(r_{s_{n-1}}) - \lambda(r_{s_0})) \leq P$,
-      the algorithm Shortest-Longest solves positively PAZL in time $O(n\log(n))$.\label{prop:SL}
+      \begin{proposition} When $n\tau + 2(\lambda(r_{n}) - \lambda(r_{1})) \leq P$,
+      there is always a solution to PAZL and Shortest-Longest finds it  in time $O(n\log(n))$.\label{prop:SL}
       \end{proposition}
       \begin{proof}
-       Since $m_{s_i} = i\tau$, $[t(c_s,r_{s_i})] = \{i\tau,\dots, (i+1)\tau -1\}$ and there are no collision on the forward period.
+       Since $m_{i} = (i-1)\tau$, $[t(c_s,r_{i})] = \{i\tau,\dots, (i+1)\tau -1\}$ and there are no collision on the forward period.
        
        
-       We assume may that $\lambda(r_{s_0}) = 0$, since removing $\lambda(r_{s_0})$ to every route does not change the order on the length of the routes and thus the result of this algorithm.
-      We have  $[t(c_s,r_{t_i})] = \{2 \lambda(r_{s_i}) + i\tau, \dots,  2 \lambda(r_{s_i}) + (i+1)\tau -1\}$ since $2 \lambda(r_{s_{n-1 }}) + n\tau \leq P$.
-       Since $ \lambda(r_{s_i}) \leq  \lambda(r_{s_{i+1}})$ by construction, we have  $2 \lambda(r_{s_i}) + (i+1)\tau -1 < 2 \lambda(r_{s_{i+1}}) + (i+1)\tau$ which proves that there are no collision on the backward period. 
+       We may assume that $\lambda(r_{1}) = 0$, since removing $\lambda(r_{1})$ from every arc $(c_t,t_i)$ does not change the order on the length of the routes nor the collisions between messages.
+       Since $\lambda(r_{1}) = 0$, by hypothesis we have $n\tau + 2\lambda(r_{n}) \leq P$ which implies that
+       $[t(c_s,r_{i})] = \{2 \lambda(r_{i}) + (i-1)\tau, \dots,  2 \lambda(r_{i}) + i\tau -1\}$.
+       Since $ \lambda(r_{i}) \leq  \lambda(r_{i+1})$ by construction, we have  $2 \lambda(r_{i}) + i\tau -1 < 2 \lambda(r_{i+1}) + i\tau$ which proves that there are no collision on the backward period. 
        
-       The complexity of the algorithm is dominated by the sorting of the routes. 
+       The complexity of the algorithm is dominated by the sorting of the routes in $O(n\log(n))$. 
       \end{proof}
 
-      
-      If the period is slightly smaller that the bound of Proposition~\ref{prop:SL}, a collision will occur on the route in the backward period, making 
-      this policy not useful even as a heuristic for longer routes. 
+      If the period is slightly smaller that the bound of Proposition~\ref{prop:SL}, a collision will occur on the first route in the backward period. Hence, this policy is not useful even as a heuristic for longer routes as confirmed by the experimental results of Subsection~\ref{sec:exp_PAZL}. 
 
    
-    \subsubsection{Greedy Algorithm}
+    \subsubsection*{Greedy Algorithm}
     
     We propose a greedy algorithm to build a $(P,\tau)$-periodic assignment, which provably works when
     the period is large enough with regards to the number of routes and size of messages. In other words, 
     we can always find a solution when the network is far from saturated. 
     
     \begin{proposition}
-    Let  $n$ be the number of routes and let $ 3n\tau \leq P$, then there is an algorithm which positively solves PAZL in time $O(n^2)$.
+    Let  $n$ be the number of routes and let $ 3n\tau \leq P$, then there is is always a solution to PAZL and there is an  algorithm which finds the assignment in time $O(n^2)$.
     \end{proposition}
     \begin{proof}
      We consider the forward period and cut it into consecutive interval of size $\tau$ that we call macro-slots. The algorithm works by choosing an offset for each route in the following way: try all offsets which put the message in a yet not used macro-slot in the forward
@@ -588,10 +582,10 @@ In particular, this reduction shows that even with small maximal load, the minim
 % 	\end{algorithm}
 	
 This algorithm, contrarily to the previous one, may work well, even when the condition $P \geq 3n\tau$ is not true.
-In fact, experimental data in Subsection~\ref{sec:experimental_results} suggests that the algorithm finds a solution on average when $P \geq 1.5 n\tau$.
+In fact, experimental data in Subsection~\ref{sec:exp_PAZL} suggests that the algorithm finds a solution on average when $P \geq 1.5 n\tau$.
 Note that we also experimented with other greedy algorithms which do not use macro-slots, they work even better in practice but their theoretical upper bound is worse.
 
-	\subsubsection{Exhaustive search}
+	\subsubsection*{Exhaustive search}
 % 	\begin{algorithm}[H]
 % 	\caption{Exhaustive Generation}  
 % 	\begin{algorithmic}
@@ -621,16 +615,15 @@ Note that we also experimented with other greedy algorithms which do not use mac
       
       We have $n$ routes denoted by $\{0,\dots,n-1\}$. A partial solution $S$ is 
       a partial function from $[n]$ to $\{0,1,\dots,P-\tau -1\}$ which sets a starting time for a subset of the routes $R(S) \subseteq [n]$, such that there are no collisions for these routes.  A partial solution $S'$ extends $S$, if $S'$ is defined over one more route than $S$ and this route has a larger starting offset than all routes of $S$: $R(S') = R(S) \cup \{r'\}$ and for all  $r \in R(S)$, $S(r) + \tau \leq S'{r'}$. We define a tree whose nodes are partial solutions and such that the root is the empty partial solution and 
-      the children of a partial solution are the partial solutions which extend it. The solutions to our problem will be the leaves of depth $n$ in the tree, therefore our algorithm is a depth-first search of the tree. 
+      the children of a partial solution are the partial solutions which extend it. The solutions to our problem will be the leaves of depth $n$ in the tree, and our exhaustive search algorithm is a depth-first search of this tree. 
       
-      Remark that a node $S$ with $|R(S)| = k$ can have as many as $(n-k)P$ children. Since the tree is of depth $n$, the tree may have as many as $n!P^n$ elements and while $n$ is small, $P$ may be large which makes its traversal intractable.  Therefore we have to find cuts in the tree to avoid to explore it entirely and henceforth make the algorithm practical. Cuts correspond to the detection of subtrees which contain no solutions and can thus be skipped.   
-      We now propose three cuts, the first two being particularly useful when the network is loaded ($n\tau$ is not far from $P$). 
+      Remark that a node $S$ with $|R(S)| = k$ can have as many as $(n-k)P$ children. Since the tree is of depth $n$, the tree may have as many as $n!P^n$ elements and while $n$ is small, $P$ may be large which makes its traversal intractable.  Therefore we have to find cuts in the tree to avoid to explore it entirely and henceforth make the algorithm practical. Cuts correspond to the detection of subtrees which contain no solutions or solutions which can be found elsewhere and can thus be skipped. We now propose three cuts, the first two being particularly useful when the network is loaded ($n\tau$ is not far from $P$). 
       
       \begin{enumerate}
-       \item We consider the number of slots which can be used by routes not yet fixed by a partial solution in the \emph{forward period}. When we extend a solution into $S$ by a route at offset $m$, then at most $(P - m) / \tau $ routes can still be set without collisions in the forward period. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks.
+       \item We consider the number of slots which can be used by routes not yet fixed by a partial solution in the \emph{forward period}. When we extend a solution into $S$ with a new route at offset $m$, then at most $(P - m) / \tau $ routes can still be used to extend $S$ without collisions in the forward period. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks.
        
        \item 
-       For the next two cuts, we need to define the notion of the useful slots of a partial solution $S$ in the \emph{backward period}: a slot is said to be useful, if it is not used by a message set by $S$ in the backward period and it belongs to an interval of at least $\tau$ such slots. Useful slots are positions which can be used when extending $S$. We will denote by $([a_i,b_i[)_{i\leq l}$ the ordered sequence of intervals of useful slots of $S$. Without loss of generality we can assume that all $a_i, b_i \leq l$. The number of messages of size $\tau$ which can be placed in the useful slots of $S$ is thus  $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks. Notice that the list of intervals of useful slots and the value $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $ can be maintained in constant time, since each time a route is added, we only need to split an interval of useful slots into at most two such intervals.
+       For the next two cuts, we need to define the notion of the useful slots of a partial solution $S$ in the \emph{backward period}: a slot is said to be useful, if it is not used by a message set by $S$ in the backward period and it belongs to an interval of at least $\tau$ such slots. Useful slots are positions of the backward period which can be used when extending $S$. We will denote by $([a_i,b_i[)_{i\leq l}$ the ordered sequence of intervals of useful slots of $S$. Without loss of generality we can assume that all $a_i, b_i \leq l$. The number of messages of size $\tau$ which can be placed in the useful slots of $S$ is thus  $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks. Notice that the list of intervals of useful slots and the value $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $ can be maintained in constant time, since each time a route is added, we only need to split an interval of useful slots into at most two such intervals.
        
        
        \item 
@@ -645,14 +638,12 @@ Note that we also experimented with other greedy algorithms which do not use mac
       which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
 
 
-    \subsubsection{Experimental Results}\label{sec:experimental_results}
+    \section{Experimental Evaluation}\label{sec:exp_PAZL}
       
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution. On the other hand, the exhaustive search will find an optimal solution, if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: the routes are either short with regards to $\tau$ and $P$ or unrestricted.
       We choose the parameter realistic with regard to our C-RAN context. The number of routes 
-      is at most $n = 20$, $\tau$ is equal to $2500$ and the period is at most $3n\tau$ (otherwise the greedy algorithm always returns a solution). 
-      
-      \todo{Dire où on peut trouver le code (pas la peine de donner des infos sur la machine/compilateur car one ne fait pas d'étude de performances.}
+      is at most $n = 20$, $\tau$ is equal to $2500$ and the period is at most $3n\tau$ (otherwise the greedy algorithm always returns a solution). The code in C is available online on the webpages of the authors ~\cite{webpage}.
 %             
 %             The graphs 
 %       To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 700 slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
@@ -662,15 +653,12 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \paragraph{Short routes}
       
       First we consider routes which are shorter than $\tau$, that is a message cannot be contained 
-      completely in a single edge. This is typical in our context and we will consider graphs in which the values $\lambda(c_t,r_{t_i})$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately 1Mb, links of bandwidth 10Gbps and length less than 5km between the BBU and the RRH. 
-      
-
+      completely in a single edge. This is very common in our context and we will consider graphs in which the values $\lambda(c_t,\rho(r_{i}))$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately 1Mb, links of bandwidth 10Gbps and length less than 5km between the BBU and the RRH. 
       
       Our aim is to understand how well the algorithms are working when the network has a high load (when 
       the load is low, the greedy algorithm always returns a solution). To do that we try to evaluate the 
       minimal period for which a $(P,\tau)$ periodic assignment can be found by each algorithm. 
       To that end we do a linear search on $P$, since a dichotomy would not work because of Lemma~\ref{lemma:monotonic}.
-      
       
       In our experiment, we generated $1000$ random instances of PAZL for $1$ to $12$ routes. 
       We measured the average minimal period, for each algorithm. We needed to stop our experiments at $12$ routes since the exhaustive search was taking more than a second to finish on many instances.
@@ -692,7 +680,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       
       The period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route and could be easily determined theoretically. The algorithm was expected to be good since the routes are short, but it turns out it always finds the optimal solution in our experiments. Therefore, we should use it in practical application, in this regime, instead of the exhaustive search which is much more computationally expensive. 
       
-      Finally we remark that the greedy algorithm have an average period much lower than the theoretical upper bound of $3n\tau$. We made a linear regression on this value and with a correlation coefficient greater than $0,999$ we find a slope of $1.53n\tau$.
+      Finally we remark that the greedy algorithm has an average period much lower than the theoretical upper bound of $3n\tau$. We made a linear regression on this value and with a correlation coefficient greater than $0,999$ we find a slope of $1.53n\tau$.
       
       
 
@@ -700,10 +688,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
       
       We now want to understand the performance of these algorithms when the size of the routes are unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit by $10^9$.
       
-      In this experiment we will fix the number of routes to $8$ and the values $\lambda(c_t,r_{t_i})$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
+      In this experiment we will fix the number of routes to $8$ and the values $\lambda(c_t,\rho(r_{i}))$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
       We measure for each algorithm its percentage of success, for periods from $20000$ which is the minimum possible to $50000$.
       
-      Since the exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. We represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining its successes and its failures because of lack of time. 
+      The exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. Hence we represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining its successes and its failures because of lack of time. 
       
 \begin{figure}
 
@@ -717,11 +705,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
       which is large here. On the other hand, the greedy algorithm has a performance not very different from the case of short routes, which is expected since it does not depends on the size of the route.  \todo{Ajouter la moyenne pour la comparer aux routes courtes}
       
       When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. 
-      However for small period, less than $30000$ the computation time is really important and without improvement it would not be possible to tackle 
-      larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small periods, we see that there are very few instances
-      with a solution for PAZL. It means that with long routes and high load, looking for an assignment without waiting may be too restrictive.
-      That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between 
-      $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting time.
+      However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle 
+      larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small periods less than $22000$, we see that there are very few instances with a solution for PAZL. It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive.
+      That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting time.
       
    \section{The star topology: minimizing latency}\label{sec:PALL}
     
