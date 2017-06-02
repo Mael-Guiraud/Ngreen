@@ -5,7 +5,9 @@
 
 #include "simulations.h"
 
-
+#include "struct.h"
+#include "init.h"
+#include "random.h"
 int main()
 {
 	srand(time(NULL));
@@ -39,7 +41,7 @@ int main()
 	/*****
 	Taux de reussite de départ PALL avec un retour GP sur une periode donnée (on fait varier la marge)
 	*****/
-	sucess_aller_PALL(8,2500,20000,3000,2000,21000);
+	//sucess_aller_PALL(8,2500,20000,3000,2000,21000);
 
 
 
@@ -52,7 +54,7 @@ int main()
 	Taux de reussite des algos PALL avec un aller random sur une periode donnée (on fait varier la marge)
 	*****/
 
-	sucess_retour_PALL(8,2500,20000,3000,1000,21000);
+	//sucess_retour_PALL(8,2500,20000,3000,1000,21000);
 
 
 	/******************************************/
@@ -64,10 +66,11 @@ int main()
 	//nombre_random_PALL(8,2500,20000,1000, 20000);
 
 	/*****
-	//Succes de sp contre stochastique en fonction de la marge
-	******/
+	Tmax moyen pour sto vs sp
+	*******/
 
-	//marge_PALL_stochastique(2500,700,100,20000,0);
+	marge_PALL_stochastique(8,2500,20000,1000,50000);
+
 
 	return 0;
 }

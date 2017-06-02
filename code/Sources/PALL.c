@@ -400,7 +400,7 @@ int longest_etoile_periodique(Graphe g,int taille_paquets,int periode, int Tmax,
 	// affiche_solution(g,taille_paquets,m_i, w_i);
 	return max;
 }
-
+/*
 int stochastic(Graphe g, int taille_paquets, int periode, int tmax)
 {
 	if(!(g.N%2)){printf("Nombre de sommets impair, G n'est peut être pas une étoile\n");exit(5);}
@@ -496,7 +496,7 @@ int stochastic(Graphe g, int taille_paquets, int periode, int tmax)
 	return max;	
 
 }
-
+*/
 
 
 
@@ -535,7 +535,7 @@ int linear_simons_per(Graphe g,int periode,int taille_message,int nb_rand)
 	}while( (result == -1) && (result != -2 ));
 	return marge;
 }
-
+/*
 int linear_stochastic(Graphe g,int periode,int taille_message)
 {
 	int result;
@@ -554,5 +554,5 @@ int linear_stochastic(Graphe g,int periode,int taille_message)
 
 	}while((result == -1 )||(result == -2));
 	return marge;
-}
+}*/
 

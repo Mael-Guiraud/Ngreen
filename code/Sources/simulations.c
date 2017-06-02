@@ -9,8 +9,9 @@
 #include "init.h"
 #include "operations.h"
 #include "tests.h"
+#include "random.h"
 
-#define PARALLEL 0
+#define PARALLEL 1
 
 //Effectue une recherche linéaire pour les algos PAZL afin de trouver la plus petite periode moyenne
 void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,int nb_simuls)
@@ -246,8 +247,8 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 	sprintf(nom,"../datas/compare_retour_%d.data",periode);
 	FILE * F = fopen(nom,"w");
 	Graphe g ;
-	int resgp,ress,ressp,resr;
-	float gp,s,sp,r;
+	int resgp,ress,ressp;
+	float gp,s,sp;
 	int tmax;
 	int nb_rand = 1000;
 
@@ -258,8 +259,8 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 		gp=0;
 		s=0;
 		sp =0;
-		r=0;
-		#pragma omp parallel for private(resgp,ress,ressp,resr,g,tmax) if (PARALLEL) schedule (dynamic)
+
+		#pragma omp parallel for private(resgp,ress,ressp,g,tmax) if (PARALLEL) schedule (dynamic)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
@@ -323,13 +324,7 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 						
 					}
 				}
-				resr=stochastic(g, taille_paquets,periode,tmax);
-			
-				if(resr != -1)
-				{
-					#pragma omp atomic
-					r++;
-				}
+
 
 		
 			//printf("-----------------------------------------\n");
@@ -337,8 +332,8 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 		}
 		
 	
-   			      fprintf(F,"%d %f %f %f %f\n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100,r/nb_simuls*100);
-   		     fprintf(stdout,"%d %f %f %f %f\n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100,r/nb_simuls*100);
+   			      fprintf(F,"%d %f %f %f \n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100);
+   		     fprintf(stdout,"%d %f %f %f \n",marge,gp/nb_simuls*100,s/nb_simuls*100,sp/nb_simuls*100);
 		
 
 	}
@@ -408,67 +403,49 @@ void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int 
 }
 
 
-//Succes de sp contre stochastique en fonction de la marge
-void marge_PALL_stochastique(int taille_paquets,int taille_route, int nb_simuls, int periode, int marge)
+//Tmax moyen pour sto vs sp
+void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, int nb_simuls, int periode_max)
 {
 
 	char nom[64];
 	sprintf(nom,"../datas/marge_PALL_stochastique.data");
 	FILE * F = fopen(nom,"w");
 	Graphe g ;
-	float total_sto,total_sp;
+	long long int total_sto,total_sp;
 	int ressto;
 	int ressp;
 	int nb_rand = 100;
-	int tmax;
 
 
-	for(int nb_routes=2;nb_routes<= 2;nb_routes++)
+	for(int periode=taille_paquets*nb_routes;periode<periode_max ;periode+=1000)
 	{
 		total_sto = 0;
 		total_sp = 0;
 	
-		#pragma omp parallel for private(ressp,ressto,g,tmax) if (PARALLEL) schedule (static)
+		#pragma omp parallel for private(ressp,ressto,g) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(2*nb_routes+1);
 			graphe_etoile(g,taille_route);
-			tmax = longest_route(g);
-			
+	
 
-		
+		 	ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
+		 	#pragma omp atomic
+				total_sp+= ressp;
 
-			for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
-				{
-					ressp = simons_periodique(g,taille_paquets,tmax,periode,0);
-					if(ressp != -2)
-					{	
-						if(ressp != -1)
-						{
-							
-							#pragma omp atomic
-								total_sp++;
-							break;
-						}
-						
-					}
-				}
-
-			ressto=stochastic(g, taille_paquets,periode,tmax);
-
-			if(ressto != -1)
-			{
+			ressto=stochastic(g,taille_paquets,periode,1000,1);
+			ressto -=  longest_route(g);
 				#pragma omp atomic
-					total_sto++;
-			}
+					total_sto+= ressto;
+			
 			
 
 			libere_matrice(g);
 		}
 		
 	
-   			      fprintf(F,"%d %f %f \n",nb_routes,total_sto/nb_simuls*100,total_sp/nb_simuls*100);
-   			      fprintf(stdout,"%d %f %f \n",nb_routes,total_sto/nb_simuls*100,total_sp/nb_simuls*100);
+   			      fprintf(F,"%d %lld %lld \n",periode,total_sto/nb_simuls,total_sp/nb_simuls);
+   			      fprintf(stdout,"%d %lld %lld \n",periode,total_sto/nb_simuls,total_sp/nb_simuls);
 
  
 		

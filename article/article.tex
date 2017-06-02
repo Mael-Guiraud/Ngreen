@@ -49,7 +49,7 @@
       \and
    Ma\"el  {\bf Guiraud}, {\em UVSQ}
       \and
-   Olivier  {\bf Marcr\'e}, {\em Nokia Bell Labs France}
+   Olivier  {\bf Marc\'e}, {\em Nokia Bell Labs France}
       \and
    Yann  {\bf Strozecki}, {\em UVSQ}
 } 
@@ -249,9 +249,9 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       
 
       This message is received by $\rho(s)$ at time $t(\rho(s),r)$. It is then sent back to $s$ on the route $\rho(r)$ in the same period at time $m_{\rho(s)}$ if $m_{\rho(s)} > t(\rho(s),r)$, otherwise at time $m_{\rho(s)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_s = m_{\rho(s)} - t(\rho(s),r)$ if $m_{\rho(s)} > t(\rho(s),r)$ and $w_s = m_{\rho(s)} + P - t(\rho(s),r)$ otherwise.
-      
+ 
        \begin{center}
-      \includegraphics[scale=0.3]{BBU2.png}
+      \includegraphics[scale=0.17]{BBU2.png}
       \end{center}
      
 
@@ -441,23 +441,23 @@ In particular, this reduction shows that even with small maximal load, the minim
       
       
        \begin{center}
-	 
+	 \scalebox{0.7}{
 \begin{tikzpicture}
 
 \tikzset{
   LabelStyle/.style = { rectangle, rounded corners, draw,
                        font = \bfseries },
-  EdgeStyle/.append style = {->} }
+  EdgeStyle/.append style = {<->} }
 
   \SetGraphUnit{5}
   
-  \node[draw,circle] (s3) at (0, 0) {$s_2$}; 
-  \node[draw,circle] (s2) at (0, 2) {$s_1$}; 
-  \node[draw,circle] (s1) at (0, 4) {$s_0$}; 
+  \node[draw,circle] (s3) at (0, 0) {$s_3$}; 
+  \node[draw,circle] (s2) at (0, 2) {$s_2$}; 
+  \node[draw,circle] (s1) at (0, 4) {$s_1$}; 
 
-  \node[draw,circle] (t3) at (8, 0) {$t_2$}; 
-  \node[draw,circle] (t2) at (8, 2) {$t_1$}; 
-  \node[draw,circle] (t1) at (8, 4) {$t_0$}; 
+  \node[draw,circle] (t3) at (8, 0) {$t_3$}; 
+  \node[draw,circle] (t2) at (8, 2) {$t_2$}; 
+  \node[draw,circle] (t1) at (8, 4) {$t_1$}; 
   
 
   \node[draw,circle] (cs) at (2, 2) {$c_s$}; 
@@ -476,6 +476,7 @@ In particular, this reduction shows that even with small maximal load, the minim
 
   
 \end{tikzpicture}
+}
 
   \end{center}
 	
@@ -931,7 +932,8 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
 
      
-     We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see Figure 5), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with 8 routes (links between $0$ and $20000$), and with a period of 21000. Since we just conclude that drawing 1000 sending order is a good number, with 8 routes. We now generate 1000 randoms sending orders for the first way.
+     We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see Figure 5), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with 8 routes (links between $0$ and $20000$), and with a period of 21000. Since we just conclude that drawing 1000 sending order is a good number, with 8 routes. We now generate 1000 randoms sending orders instead of 100.
+     
     
 
  
@@ -943,9 +945,23 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \caption{Success rate of the different algorithms for a $P = 21000$}
      \end{figure}
      
+     The algorithm MS, that does not consider the periodicity for the scheduling is far worst than the others, and, even if GP seems to converge too 100\% of success rate when the flexibility is large enough, MSP is always strictly better. We remark that when the flexibility is low ($<500$) there is near to 5\% of failure.
      
-    
-    \paragraph{Comparer optimal + depart random avec stochastique}
+ To evaluate the performance of our best algorithm to find solutions, that is, generating $1000$ randoms sending orders and using MSP on the way back, we compared it's performance, against the actual way to manage the messages in a network. Nowadays, the networks are managed through a stochastic model. The messages in the nodes are scheduled following a FIFO rule. Even if this policy works well, in practice, it does not ensure a minimum latency. Thus, some latency critical applications like C-RAN needs some deterministic algorithms. To model such a network, we generate some randoms offsets in the sources. Then we simulate the behavior of a stochastic network during a great number of periods. The following figure shows the average latency of a stochastic network, compared to the latency of our algorithm.
+We tested the algorithms on $1000$ instances with $8$ long routes (links between $0$ and $20000$). The flexibility of the stochastic curve is computed by taking the message which have the highest process time, at which we subtract the delay of the longest route. We made a linear search to find the minimum flexibility needed by our algorithm to find a solution.
+ We measure the average flexibility, for periods from $20000$ ( network fully loaded), to $50000$ (40 \% of load).
+     
+      
+    \begin{figure}
+
+       \begin{center}
+      \includegraphics[scale=0.4]{stochastic.pdf}
+      \end{center}
+      \caption{Average latency, depending on the load of the network.}
+     \end{figure}
+     
+    As expected, our algorithm gives some very satisfying results. There is a few cases when both the flexibility and the period are too restricted in which there is no solutions, but those case are impossible in practice. Furthermore, the stochastic policy can not ensure a minimal latency. In our context, this is crucial to use some deterministic algorithms to manage the messages in the network.
+
     
     \paragraph*{Future works}
    

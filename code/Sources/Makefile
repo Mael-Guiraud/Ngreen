@@ -17,8 +17,8 @@ all: create_folder run
 run : prog 
 	./prog
 
-prog: $(DIRbin)main.o $(DIRbin)PAZL.o $(DIRbin)PALL.o $(DIRbin)operations.o $(DIRbin)init.o $(DIRbin)tests.o $(DIRbin)simons.o $(DIRbin)simulations.o
-	$(CC) -fopenmp -o prog $(DIRbin)main.o $(DIRbin)PAZL.o $(DIRbin)PALL.o $(DIRbin)operations.o $(DIRbin)init.o $(DIRbin)tests.o $(DIRbin)simons.o $(DIRbin)simulations.o
+prog: $(DIRbin)main.o $(DIRbin)PAZL.o $(DIRbin)PALL.o $(DIRbin)operations.o $(DIRbin)init.o $(DIRbin)tests.o $(DIRbin)simons.o $(DIRbin)random.o $(DIRbin)simulations.o
+	$(CC) -fopenmp -o prog $(DIRbin)main.o $(DIRbin)PAZL.o $(DIRbin)PALL.o $(DIRbin)operations.o $(DIRbin)init.o $(DIRbin)tests.o $(DIRbin)simons.o $(DIRbin)simulations.o $(DIRbin)random.o
 
 $(DIRbin)main.o: main.c
 	$(CC) $(CFLAGS) main.c -o $(DIRbin)main.o 
@@ -43,6 +43,10 @@ $(DIRbin)simons.o: simons.c
 
 $(DIRbin)simulations.o: simulations.c
 	$(CC) $(CFLAGS) simulations.c -o $(DIRbin)simulations.o
+
+$(DIRbin)random.o: random.c
+	$(CC) $(CFLAGS) random.c -o $(DIRbin)random.o
+
 
 create_folder:
 	mkdir -p $(DIRbin)
