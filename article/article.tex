@@ -571,7 +571,7 @@ In particular, this reduction shows that even with small maximal load, the minim
 % 	\end{algorithm}
 	
 This algorithm, contrarily to the previous one, may work well, even when the condition $P \geq 3n\tau$ is not true.
-In fact, experimental data in Subsection~\ref{sec:exp_PAZL} suggests that the algorithm finds a solution on average when $P \geq 1.5 n\tau$.
+In fact, experimental data in Subsection~\ref{sec:exp_PAZL} suggests that the algorithm finds a solution on average when $P \geq 2 n\tau$.
 Note that we also experimented with other greedy algorithms which do not use macro-slots, they work even better in practice but their theoretical upper bound is worse.
 
 	\subsubsection*{Exhaustive search}
@@ -627,7 +627,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
 
 
-    \section{Experimental Evaluation}\label{sec:exp_PAZL}
+    \subsection{Experimental Evaluation}\label{sec:exp_PAZL}
       
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution. On the other hand, the exhaustive search will find an optimal solution, if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: the routes are either short with regards to $\tau$ and $P$ or unrestricted.
@@ -691,7 +691,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \end{figure}
       
       In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route
-      which is large here. On the other hand, the greedy algorithm has a performance not very different from the case of short routes, which is expected since it does not depends on the size of the route.  \todo{Ajouter la moyenne pour la comparer aux routes courtes}
+      which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. When repeating the experiments of the previous section on routes of arbitrary length, we find that on average the greedy algorithm finds a solution if $P > 1.89n\tau$.
       
       When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. 
       However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle 
@@ -706,7 +706,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 	   
 
 
-	\paragraph{Particular cases}
+	\subsection{Particular cases}
 		
 	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the same and so can be simplified by 0. In that case, the scheduling in the forward and backward period is the same. The trivial solution is to send all message following each others regardless the order. Thus, the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are equal to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the delay of the longest route, that is not alterable.
 
@@ -726,7 +726,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \end{proof}
 
 
-     \subsubsection{A first approach}
+     \subsection{A first approach}
 	
 	To solve PALL, we proposed some heuristics that prioritize the longest routes, and thus helps to minimize $PT(s_i)$. Indeed, one can imagine that, if the messages on the longest routes are be less buffered in their target than the messages using the shortest routes, the process times might be balanced.
 	In an optimal solution, if $i$ is the longest route, we want $w_i =0$, and $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
@@ -795,7 +795,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      However, this heuristic does not take the period into account . Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might need a too large period.
 
-     \subsubsection{Sending order}
+     \subsection{Sending order}
      
 	We tried to look at the behavior of the that policy with different kind of sending order for the messages.
 	
@@ -813,7 +813,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
      
      For the rest of the section, we look at the different algorithm suggested to improve the second part of the scheduling, after having set the sending order.
-      \subsubsection{About the periodicity}
+      \subsection{About the periodicity}
      The previous algorithm is a greedy heuristic, which does not take the period into account. 
      We propose an improved version of the algorithm, still greedy, but which tries to compute some solution that satisfies the period $P$: When we try to schedule some messages $P$ slots after the first message scheduled, the algorithm mind the already scheduled messages, and avoid collisions with them.
      
@@ -827,7 +827,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
     
      
-     \subsubsection{Near from scheduling problems}
+     \subsection{Using a scheduling algorithm}
      
      The problem PALL is very similar to a scheduling problem, combined to the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We consider that the messages are the jobs, the release times are the date at which the messages are able to come back on $c_t$, and the deadlines are the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists. Thus, it tries to minimize the time between the first and the last message in the scheduling. Let us call {\ Minimized Scheduling (MS)} this algorithm.
      
@@ -835,13 +835,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      If it exists a solution that satisfies the criteria $MT({\cal M}) < T_{max}$, this algorithm gives us a $(P,\tau)$ periodic assignment. Nevertheless, by setting the deadlines according to the size of the route only, the given $(P,\tau)$ periodic assignment might not respect the period $P$. 
      
-     \subsubsection{Final algorithm}
+     \subsection{Final algorithm}
      
      We adapted MS, presented in the previous paragraph, to consider the period, in the computation.
      
-     
-          
-   
      
     \begin{algorithm}[H]
     \caption{ Minimized Scheduling Periodic (MSP)}
@@ -873,7 +870,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
      The goal is to choose the best starting order, such that we have a good chance to have a $(P,\tau)$ periodic assignment, even with a small period, and T$_{max}$.
     
-    \subsubsection{Results}
+    \subsection{Results}
     
     To compare the previous algorithms, we first need to determine which of the sending order is the best. We know that Greedy Periodic is strictly better than Greedy, thus, we will compare the different sending orders with Greedy Periodic.
 
@@ -918,7 +915,6 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      In our case of 8 routes, the number of different sending orders is $8! \simeq 40 000$. By drawing $1000$ random sending orders, we explore near to $2,5 \%$ of the cases, which seems enough to find as many solutions as if generate more random sending oredres.
 
-
      
      We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see Figure 5), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with 8 routes (links between $0$ and $20000$), and with a period of 21000. Since we just conclude that drawing 1000 sending order is a good number, with 8 routes. We now generate 1000 randoms sending orders for the first way.
     
@@ -934,18 +930,16 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      
     
-    \paragraph{Comparer optimal + depart random avec stochastique}
+    \todo{Comparer optimal + depart random avec stochastique}
     
     \paragraph*{Future works}
    
-   \begin{itemize}
-    \item FPT algorithms for PAZL and PALL 
-    \item average latency instead of maximal latency
-    \item trees
-    \item cycles 
-    \item preemption (messages can be cut into pieces)
-    \item routes are not given and can be chosen
-   \end{itemize}
+   We plan to generalize our study of the PALL problem to more topology,
+   such as trees and cycles which are the most common ones in real networks. 
+   We would like to design FPT algorithms in the number of routes for PAZL and PALL on the star topology, eventually by relaxing the contraint on the maximal process time into an constraint on the average process time, which seems much more tractable. 
+   Moreoever we could allow preemption, that is the messages are allowed to be cut into pieces,
+   which could certainly change the complexity of the problem. 
+   Finally, the routes may not be fixed but chosen to optimize the latency, which would make the problem even more difficult ( maybe $\Pi_2$-complete instead of $\NP$-complete). 
 
    
 
