@@ -707,13 +707,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
       When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. 
       However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle 
       larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small periods less than $22000$, we see that there are very few instances with a solution for PAZL. It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive.
-      That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting time.
+      That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting times.
       
    \section{The star topology: minimizing latency}\label{sec:PALL}
     
-    
-	  We just found solution to solve a restricted version of PALL, in which no waiting times are allowed, 
-	  and the problem has no solution when the period is too short. We propose to allow some message to wait in the target vertices (BBU), with the aim of giving an higher degree of freedom for the scheduling. Thus, the process time of a message $PT$ might be superior to $T_{max}$. The goal is to find some solutions with waiting time such that any message will be buffered too much, i.e. $MT({\cal M}) \leq T_{max}$.
+    In this section, we allow the messages to wait in the target vertices (BBU), to give an higher degree of freedom to the scheduling. Thus, the process time of a message $PT$ might be superior to $T_{max}$. The goal is to find a solution with waiting time such that any message will be not be buffered too much, i.e. $MT({\cal M}) \leq T_{max}$.
 	   
 
 
@@ -723,7 +721,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
 	Another particular case is the following one:	
 	 \begin{theorem}
-      There is always an optimal solution when all the weight on the arcs between $c_s$ and the sources are the same.
+      There is always an optimal solution when all the weights on the arcs between $c_s$ and the sources are the same.
       \end{theorem}
       \begin{proof}
       
@@ -769,8 +767,8 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \begin{algorithm}[H]
     \caption{Longest Shortest Greedy (LSG)}
     \begin{algorithmic}
-    \REQUIRE routage graph ${\cal R_{\cal C}}$, period $P$, $ T_{max}$, packet size $\tau$
-    \ENSURE $(P-\tau)-$periodic assignment of ${\cal R_{\cal C}}$
+    \REQUIRE routage graph $(G,{\cal R})$, period $P$, $ T_{max}$, packet size $\tau$
+    \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$
     \STATE $clock \leftarrow 0$
     \FORALL{route i in $r_{s_i}$ sorted from the longest to the shortest }
     \STATE  $m_{s_i} \leftarrow clock - t(c_s,r_{s_i}) \mod P$
@@ -795,7 +793,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \end{algorithmic}
     \end{algorithm}
     
-    By using a binary heap to manage the eligible routes, this algorithm runs in $\mathcal{O}(n\log{}n)$.
+    By using a binary heap to manage the eligible routes, this algorithm runs in $O(n\log(n))$.
     
     This policy is split in two steps:
     \begin{enumerate}
@@ -804,11 +802,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \end{enumerate}
      This {\em Greedy} policy determines the $m_{c_{s_i}}$, such that the messages does not collide on $c_t$. It computes the deadlines for every messages, considering their offsets and the delay on their routes, and determine the time at which the messages must leave their target, prioritizing the messages with the lowest deadlines.
      
-     However, this heuristic does not take the period into account . Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might need a too large period.
+     However, this heuristic does not take the period into account. Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might need a too large period.
 
-     \subsection{Sending order}
+     \subsection{Choice of the Sending Order}
      
-	We tried to look at the behavior of the that policy with different kind of sending order for the messages.
+	We tried to look at the behavior of the that policy with different kinds of sending order for the messages.
 	
 	We tried the five following sending policy, each ones determines an order in which the messages will be sent, but the messages are still following each others in $c_s$.
 	
@@ -854,8 +852,8 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \begin{algorithm}[H]
     \caption{ Minimized Scheduling Periodic (MSP)}
     \begin{algorithmic}
-    \REQUIRE A routage graph ${\cal R_{\cal C}}$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
-    \ENSURE $(P-\tau)-$periodic assignment of ${\cal R_{\cal C}}$, if it exists
+    \REQUIRE A routage graph $(G,{\cal R})$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
+    \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$, if it exists
   
     \FORALL{route $r_{t_i}$}
     \STATE  $w_i \leftarrow 0$
@@ -879,7 +877,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
     This algorithm finds more solutions than MS, because it decrease the deadlines of the route considering the periodicity. Thus, a scheduling given by this algorithm fulfill both the periodicity and the $T_{max}$ criteria. 
     
-     The goal is to choose the best starting order, such that we have a good chance to have a $(P,\tau)$ periodic assignment, even with a small period, and T$_{max}$.
+     The goal is to choose the best starting order, such that we have a good chance to have a $(P,\tau)$ periodic assignment, even with a small period, and $T_{max}$.
     
     \subsection{Results}
     
@@ -924,19 +922,19 @@ Note that we also experimented with other greedy algorithms which do not use mac
    \caption{Impact of the number of randoms sending orders drawn}
      \end{figure}
      
-     In our case of 8 routes, the number of different sending orders is $8! \simeq 40 000$. By drawing $1000$ random sending orders, we explore near to $2,5 \%$ of the cases, which seems enough to find as many solutions as if generate more random sending oredres.
+     In our case of 8 routes, the number of different sending orders is $8! \simeq 40 000$. By drawing $1000$ random sending orders, we explore near to $2,5 \%$ of the cases, which seems enough to find as many solutions as if generate more random sending ordres.
 
      
-     We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see Figure 5), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with 8 routes (links between $0$ and $20000$), and with a period of 21000. Since we just conclude that drawing 1000 sending order is a good number, with 8 routes. We now generate 1000 randoms sending orders for the first way.
+     We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see  Fig~\ref{fig:success21000}), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with $8$ routes (links between $0$ and $20000$), and with a period of $21000$. Since we just conclude that drawing $1000$ sending order is a good number, with 8 routes. We now generate $1000$ randoms sending orders for the first way.
     
 
  
-    \begin{figure}
-
+    \begin{figure} 
        \begin{center}
       \includegraphics[scale=0.4]{retour_21000.pdf}
       \end{center}
       \caption{Success rate of the different algorithms for a $P = 21000$}
+     \label{fig:success21000}
      \end{figure}
      
      
@@ -945,12 +943,12 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
     \paragraph*{Future works}
    
-   We plan to generalize our study of the PALL problem to more topology,
-   such as trees and cycles which are the most common ones in real networks. 
-   We would like to design FPT algorithms in the number of routes for PAZL and PALL on the star topology, eventually by relaxing the contraint on the maximal process time into an constraint on the average process time, which seems much more tractable. 
+   We plan to generalize our study of the PALL problem to more topologies,
+   such as trees and cycles which are commonly found in real networks. 
+   We would like to design FPT algorithms in the number of routes for PAZL and PALL on the star topology, eventually by relaxing the constraint on the maximal process time into an constraint on the average process time, which seems much more tractable. 
    Moreoever we could allow preemption, that is the messages are allowed to be cut into pieces,
-   which could certainly change the complexity of the problem. 
-   Finally, the routes may not be fixed but chosen to optimize the latency, which would make the problem even more difficult ( maybe $\Pi_2$-complete instead of $\NP$-complete). 
+   which would certainly change the complexity of the problem. 
+   Finally, the routes may not be fixed but chosen to optimize the latency, which would make the problem even more difficult (maybe $\Pi_2$-complete instead of $\NP$-complete). 
 
    
 
