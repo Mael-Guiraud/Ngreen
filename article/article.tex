@@ -40,10 +40,19 @@
 
 %opening
 \title{How to Schedule Periodic Messages in a Network Without Congestion}
-\author{DB,CC,MG,OM,YS}
+%\author{Dominique Barth - UVSQ ,Christian Cadéré - UVSQ,Maël Guiraud - UVSQ,Olivier Marcé - Nokia Bell Labs France,Yann Strozecki - UVSQ}
 
-
-
+\author{
+   Dominique {\bf Barth}, {\em UVSQ}
+   \and
+   Christian  {\bf Cad\'er\'e}, {\em UVSQ}
+      \and
+   Ma\"el  {\bf Guiraud}, {\em UVSQ}
+      \and
+   Olivier  {\bf Marcr\'e}, {\em Nokia Bell Labs France}
+      \and
+   Yann  {\bf Strozecki}, {\em UVSQ}
+} 
 
 \begin{document}
 
@@ -116,8 +125,9 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
 %       A labeling $F$ of such a graph is an assignment of an integer to each vertex, such that for each vertex $u$, $f(u) \neq f(v)+w(u,v)\mod P$, where $v$ are the neighbors of $u$ in the conflict graph and $P$ our period.
   
       \begin{figure}[ht]
-      % \begin{center}
-      
+      \begin{center}
+          \scalebox{0.8}{
+          
 \begin{tikzpicture}
 
 
@@ -167,10 +177,11 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
   \Edge[label = 1](F)(t1)
 
 \end{tikzpicture}
-     % \end{center}
+
+}
+     \end{center}
        \caption{A routage graph with $(0,0,0)$ as a $(2,1)$-periodic assignment}
       \end{figure}
-
 
 
    \subsection{Problems}\label{nonmonotone}
