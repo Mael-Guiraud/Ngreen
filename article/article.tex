@@ -110,12 +110,12 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       of \emph{consecutive slots} necessary to transmit a message. Let us call $[t(v,r)]_{P,\tau}$ the set of time slots used by $r$ at a vertex $v$ in a period $P$, that is $[t(v,r)]_{P,\tau} = \{t(v,r) + k \mod P \mid 0 \leq k < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r)]_{P,\tau}$ by $[t(v,r)]$.
       
       
-      A {\bf $(P,\tau)$-periodic assignment} of a routage graph $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $O$ and $P-1$. A $(P,\tau)$-periodic assignment must have no {\bf collision} between two routes in $\cal R$, that is $\forall (r_{i}, r_{j}) \in {\cal R}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
+      A {\bf $(P,\tau)$-periodic assignment} of a routage graph $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. A $(P,\tau)$-periodic assignment must have no {\bf collision} between two routes in $\cal R$, that is $\forall (r_{i}, r_{j}) \in {\cal R}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
       we have $$[t(u,r_{i})] \cap [t(u,r_{j})] = \emptyset .$$
       
 
 %       Notice that the notion of $P$-periodic assignment \textbf{is not monotone} with regard to $P$. 
-      As an example of a $(2,1)$-periodic assignment, let consider a routage graph with routes $\{r_{i}\}_{i=1,\dots,n}$, such that all pairs of routes intersect at a different edge.
+      As an example of a $(2,1)$-periodic assignment, let us consider a routage graph with routes $\{r_{i}\}_{i=1,\dots,n}$, such that all pairs of routes intersect at a different edge.
       We set $\tau = 1$ and the delays are chosen so that if $r_{i}$ and $r_{j}$ have $v$ as first common vertex then we have $\lambda(v,r_{i}) - \lambda(v,r_{j})=1$.There is a $(2,1)$-periodic assignment by setting all $m_{i}$ to $0$.
 
 %       A {\bf conflict graph} represents the collision between the routes of $ {\cal R}_{\cal C}$. The vertices of a conflict graph $G = (V,E)$ are the routes of $ {\cal R}_{\cal C}$, and there is an edge between two vertices if and only if there is a common arc between the two routes in $ {\cal R}_{\cal C}$.
@@ -500,7 +500,7 @@ In particular, this reduction shows that even with small maximal load, the minim
   Remark that there is a bijection between the assignments of a star topology and the 
   assignments of the same star topology where all arcs from $s_i$ to $c_s$ have weight equal to $0$ by changing $m_i$ into $m_i - t(c_s,r_i) \mod P$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
   
-  We propose two algorithms that always find a solution in polynomial time if the instance meets some criteria (short routes or great enough period) but which may fail in other cases and one exponential algorithm which always finds a solution if it exists.
+  We propose two algorithms that always find a solution in polynomial time if the instances meets some criteria (short routes or great enough period) but which may fail in other cases and one exponential algorithm which always finds a solution if it exists.
   
     \subsubsection*{Shortest-longest policy}
     
