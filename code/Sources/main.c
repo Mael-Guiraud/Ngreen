@@ -63,13 +63,13 @@ int main()
 	//Taux de reussite des diferents nombres d'instances générées
 	*****/
 
-	//nombre_random_PALL(8,2500,20000,1000, 20000);
+	nombre_random_PALL(8,2500,20000,1000, 20000);
 
 	/*****
 	Tmax moyen pour sto vs sp
 	*******/
 
-	marge_PALL_stochastique(8,2500,20000,1000,50000);
+	//marge_PALL_stochastique(8,2500,20000,1000,50000);
 
 
 	return 0;

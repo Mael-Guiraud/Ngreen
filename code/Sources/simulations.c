@@ -353,7 +353,7 @@ void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int 
 	int tmax;
 	
 
-	for(int nb_rand=10;nb_rand<= 100000;nb_rand *= 10)
+	for(int nb_rand=1;nb_rand<= 1;nb_rand *= 10)
 	{
 		a=0;
 		#pragma omp parallel for private(res,g,tmax) if (PARALLEL) schedule (static)

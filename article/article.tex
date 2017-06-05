@@ -718,7 +718,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
 	\subsection{Particular cases}
 		
-	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the same and so can be simplified by 0. In that case, the scheduling in the forward and backward period is the same. The trivial solution is to send all message following each others regardless the order. Thus, the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are equal to 0 i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the delay of the longest route, that is not alterable.
+	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the same and so can be simplified by $0$. In that case, the scheduling in the forward and backward period is the same. The trivial solution is to send all message following each others regardless the order. Thus, the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are equal to $0$ i.e. $w_i = 0,\forall i \in n$, thus, $MT({\cal M})$ is equal to twice the delay of the longest route, that is not alterable.
 
 	Another particular case is the following one:	
 	 \begin{theorem}
@@ -727,27 +727,27 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \begin{proof}
       
 
-	Since we can simplify the weight on the arcs between $c_s$ and the sources, we consider only the delay between $c_t$ and the targets. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i<j$, i.e. the route 0 is the longest, and the route $n-1$ is the shortest one.
-	The messages are sent in the forward period from 0 to $n-1$, that is $m_{s_i} = \tau * n$.
+	Since we can simplify the weight on the arcs between $c_s$ and the sources by $0$, we consider only the delay between $c_t$ and the targets. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i<j$, i.e. the route $0$ is the longest, and the route $n-1$ is the shortest one.
+	The messages are sent in the forward period from $0$ to $n-1$, that is $m_{s_i} = \tau * i$.
 	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is $PT(s_0) = 2.\lambda(r_{s_0}) $.
 	The second message is eligible in the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_{s_1} = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))  = 2.\lambda(r_{s_0})  = PT(s_0)$.
 	By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
-	Consequently, for this case, sending the message, because the longest route has no waiting time all the other routes has the exact same process time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) $.
+	
+	Consequently, for this case, sending the message from the one using the longest route to to one using the shortest route is optimal, because the longest route has no waiting time all the other routes has the exact same process time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) $. Moreover, the period used is exactly $n \tau$, in both the forward and backward periods.
      \end{proof}
 
 
      \subsection{A first approach}
 	
-	To solve PALL, we proposed some heuristics that prioritize the longest routes, and thus helps to minimize $PT(s_i)$. Indeed, one can imagine that, if the messages on the longest routes are be less buffered in their target than the messages using the shortest routes, the process times might be balanced.
-	In an optimal solution, if $i$ is the longest route, we want $w_i =0$, and $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
+	To solve PALL, we propose some heuristics that prioritize the longest routes, and thus helps to minimize $PT(s_i)$. Indeed, one can imagine that, if the messages on the longest routes are less buffered in their target than the messages using the shortest routes, the process times might be balanced.
+	In an optimal solution, if $i$ is the longest route, we want $w_i =0$, such that $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
 
 
-     We first suggest the following heuristic, that prioritize the message on longest routes:
+     We first suggest the following heuristic:
 
-      On the forward period, for the first way, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_i$ are ordered from the longest to the shortest.
+      On the forward period, for the way forward, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_{s_i}$ are ordered from the longest to the shortest.
 
       On $c_t$, the algorithm is the following one:
-
 
   \begin{algorithm}[H]
 
@@ -755,9 +755,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \label{algorithm:Eligible}
     \begin{enumerate}
       
-      \item To be eligible, a message needs to be able to come back on $c_t$ at the current clock (if clock = 0, or no messages are able to come back at this date, take the first message able to come back).
+      \item To be eligible, a message needs to be able to come back on $c_t$ at the current clock (if clock = $0$, or no messages are able to come back at this date, take the first message able to come back).
       \item Between the eligible messages, schedule first the one which has the lowest deadline.
-      \item For any route i, the deadline correspond to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$. This deadline corresponds to the latest date at which a message is able to quit the target switch without exceed $T_{max}$.
+      \item For any route i, the deadline correspond to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$, that is,  the latest date at which a message is able to quit the target switch without exceed $T_{max}$.
 
       \end{enumerate}
       
@@ -771,14 +771,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \REQUIRE routage graph $(G,{\cal R})$, period $P$, $ T_{max}$, packet size $\tau$
     \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$
     \STATE $clock \leftarrow 0$
-    \FORALL{route i in $r_{s_i}$ sorted from the longest to the shortest }
+    \FORALL{route in $r_{s_i}$ sorted from the longest to the shortest }
     \STATE  $m_{s_i} \leftarrow clock - t(c_s,r_{s_i}) \mod P$
     \STATE $clock \leftarrow clock + \tau$
     \ENDFOR
 
-    \STATE take i such that $r_{t_i}$ is the eligible route (Algorithm \ref{algorithm:Eligible})
-    \STATE $w_i \leftarrow 0$
-    \STATE $clock = \lambda(r_i) + t(c_t,r_{t_i}) + \tau$
     \WHILE{there is a route which has not been scheduled}
     \STATE take i such that $r_{t_i}$ is the eligible route (Algorithm \ref{algorithm:Eligible})
     \IF{ the messages is able to come back before $clock$}
@@ -798,10 +795,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
     This policy is split in two steps:
     \begin{enumerate}
-    \item First, we choose arbitrary a sending order for the routes, and we set the offsets $m_i$ such that the messages are following each others in $c_s$.
+    \item First, we choose an arbitrary sending order for the routes, and we set the offsets $m_i$ such that the messages are following each others in $c_s$.
     \item  Then, the schedule order in the way back is determined, considering the time at which the messages reach their target. 
     \end{enumerate}
-     This {\em Greedy} policy determines the $m_{c_{s_i}}$, such that the messages does not collide on $c_t$. It computes the deadlines for every messages, considering their offsets and the delay on their routes, and determine the time at which the messages must leave their target, prioritizing the messages with the lowest deadlines.
+     This {\bf Greedy} policy determines the $m_{\rho_{s_i}}$, such that the messages does not collide on $c_t$. It computes the deadlines for every messages, considering their offsets and the delay on their routes, and determine the time at which the messages must leave their target, prioritizing the messages with the lowest deadlines.
      
      However, this heuristic does not take the period into account. Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might need a too large period.
 
@@ -809,11 +806,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
 	We tried to look at the behavior of the that policy with different kinds of sending order for the messages.
 	
-	We tried the five following sending policy, each ones determines an order in which the messages will be sent, but the messages are still following each others in $c_s$.
+	We tried the five following sending orders, each ones determines the order in which the messages will be sent from sources, and, in each case the messages are following each others in $c_s$.
 	
-	The different sending policy that we tried are the following :
+	The different sending orders that we tried are the following :
 	\begin{enumerate}
-	 \item Random: Generate $X$ random permutations for the routes and tries the greedy heuristic on the way back until we get an available $(P,\tau)$ periodic assignment. In the following experiments, we take $X = 100$.
+	 \item Random: Generate $X$ randoms permutations for the routes and try the greedy heuristic on the way back until we get an available $(P,\tau)$ periodic assignment. In the following experiments, we take $X = 100$.
 	 \item Longest-Shortest on Routes (LSR): Send the messages from the one using longest to the one using shortest route (this is the sending order used in the previous heuristic).
 	 \item Shortest-Longest on Routes (SLR): Send the messages from the one using shortest to the one using longest route
 	 \item Longest-Shortest on last Arc (LSA): Send the messages from the one having the longest arc between $c_t$ an the target to the one having the shortest one.
@@ -822,24 +819,24 @@ Note that we also experimented with other greedy algorithms which do not use mac
 	
     
      
-     For the rest of the section, we look at the different algorithm suggested to improve the second part of the scheduling, after having set the sending order.
+     In the rest of the section, we present the  different algorithms suggested to improve the second part of the scheduling.
       \subsection{About the periodicity}
      The previous algorithm is a greedy heuristic, which does not take the period into account. 
      We propose an improved version of the algorithm, still greedy, but which tries to compute some solution that satisfies the period $P$: When we try to schedule some messages $P$ slots after the first message scheduled, the algorithm mind the already scheduled messages, and avoid collisions with them.
      
      We first remember the date at which the first messages starts to come back through $c_t$. Let us note $bp$ this date.
      The greedy policy is the same until the message are scheduled in the period between $bp$ and $bp +P$. When a message is scheduled, we update a list of free intervals in the backward period.
-     Once $clock > bp+P$, we consider that we are in the second period, and thus search a free interval after $clock$, large enough to put a message.
+     Once we try to schedule a message after $bp+P$, we consider that we are in the second period, and thus search a free interval in the period, large enough to put a message.
      
-     This policy can significantly increase $w_i$, but ensures a periodic results. This {\ Greedy Periodic} policy is strictly better than Greedy, because it finds some solutions that greedy would not find, by considering the periodicity in the scheduling.
+     This policy can significantly increase $w_i$, but ensures a periodic results. This {\bf Greedy Periodic} policy is strictly better than Greedy, because it finds some solutions that greedy would not find, by considering the periodicity in the scheduling.
      
-         We compared the two algorithms on 10000 graphs on which the weight of the links are drawn uniformly between 0 and 20000, with a period of 21000, and giving, for each instance $T_{max} = 2\lambda(r_{longest-route})$ . We then look at the success rate of each algorithms, with every sending order. Both algorithms reach the higher success rate with the Random sending order, but the success of Greedy is 5,65 \%, while the success rate of Greedy Periodic is to 30,02 \%.
+         We compared the two algorithms on $10000$ graphs on which the weight of the links are drawn uniformly between $0$ and $20000$, with a period of $21000$, and giving, for each instance $T_{max} = 2\lambda(r_{longest-route})$ . We then look at the success rate of each algorithms, with every sending order. Both algorithms reach the higher success rate with the Random sending order, but the success of Greedy is $5,65 \%$, while the success rate of Greedy Periodic is to $30,02 \%$.
 
     
      
      \subsection{Using a scheduling algorithm}
      
-     The problem PALL is very similar to a scheduling problem, combined to the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We consider that the messages are the jobs, the release times are the date at which the messages are able to come back on $c_t$, and the deadlines are the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists. Thus, it tries to minimize the time between the first and the last message in the scheduling. Let us call {\ Minimized Scheduling (MS)} this algorithm.
+     The problem PALL is very similar to a scheduling problem, but many scheduling problem does not treat about the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We adapted this algorithm, considering the messages as the jobs, the release times as the date at which the messages are able to come back on $c_t$, and the deadlines as the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists. Thus, it tries to minimize the time between the first and the last message in the scheduling. Let us call {\bf Minimized Scheduling (MS)} this algorithm.
      
      This algorithm uses the exact same main scheduling than Greedy. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call {\em crisis message} this message), the algorithm call a subroutine which, following some criteria, removes some previous messages from the scheduling such that the crisis message can be scheduled earlier. Then, the main scheduling routines is applied again. Some stopping conditions are able to detect if there is no solution for the given routage graph.
      
@@ -874,9 +871,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \end{algorithmic}
     \end{algorithm}
     
-    This algorithm runs in $\mathcal{O}(n^3\log{}n)$. It tries for every routes of the routage graph, to fix the first route to comeback, and then determine the deadline of the other routes taking the minimum between the end of the period (determined by the first message that we fixed), and the deadline of the route itself(determined by $m_{s_i} + T_{max}-t(c_s,r_{s_i})$). 
+    This algorithm runs in $\mathcal{O}(n^3\log{}n)$. For every routes of the routage graph, the algorithm fixes the first route to comeback, and then determine the deadline of the other routes taking the minimum between the end of the period (determined by the first message that we fixed), and the deadline of the route itself(determined by $m_{s_i} + T_{max}-t(c_s,r_{s_i})$). 
     
-    This algorithm finds more solutions than MS, because it decrease the deadlines of the route considering the periodicity. Thus, a scheduling given by this algorithm fulfill both the periodicity and the $T_{max}$ criteria. 
+    This algorithm finds more solutions than MS, because it compute the deadlines of the route considering the periodicity. Thus, a scheduling given by this algorithm fulfill both the periodicity and the $T_{max}$ criteria. 
     
      The goal is to choose the best starting order, such that we have a good chance to have a $(P,\tau)$ periodic assignment, even with a small period, and $T_{max}$.
     
@@ -884,9 +881,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
     To compare the previous algorithms, we first need to determine which of the sending order is the best. We know that Greedy Periodic is strictly better than Greedy, thus, we will compare the different sending orders with Greedy Periodic.
 
-   In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we draw the links between 0 and 20000 slots. We look at the success rate of each sending order with Greedy Periodic to schedule the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from 0 to 3000.
+   In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we drew the links between $0$ and $20000$ slots. We look at the success rate of each sending order with Greedy Periodic to schedule the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from $0$ to $3000$.
    
-   We look at two different regimes: first, we take a period equal to $1,05n\tau$, and then, we take a greater period, that is, $1,5n\tau$. The following results are computed over 10000 instances.
+   We look at two different regimes: first, we take a period equal to $1,05n\tau$, and then, we take a greater period, that is, $1,5n\tau$. The following results are computed over $10000$ instances.
      
 \begin{figure}
 
@@ -894,6 +891,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \includegraphics[scale=0.4]{departs_gp_21000.pdf}
       \end{center}
       \caption{Success rate of the sending orders for $P = 21000$}
+      
      \end{figure}
      
      
@@ -904,30 +902,32 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \includegraphics[scale=0.4]{departs_gp_30000.pdf}
       \end{center}
       \caption{Success rate of the sending orders for a $P = 30000$}
+      \label{fig:success30000}
      \end{figure}
      
-     First, we remark that, for any sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. 
+     First, we remark that, for every sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. 
+     %On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. 
      
-     To observe  the impact of the number of random sending orders drawn, we compared the success rate of the following number of drawing, on graphs in which the links are drawn  between $0$ and $20000$ slots, with a period $P=20000$, and a flexibility of $0$.
+     To observe  the impact of the number of random sending orders drawn, we compared the success rate of the following number of drawing, on graphs in which the links are drawn  between $0$ and $20000$ slots, with a period $P=20000$, and a flexibility of $0$. The following table present the average success rate of each number of sending orders, on $1000$ instances.
        \begin{figure}
 
        \begin{center}
-   \begin{tabular}{|c|c|c|c|c|c|}
+   \begin{tabular}{|c|c|c|c|c|c|c|}
     \hline
-    number of randoms & $10$ & $100$& $1 000$& $10 000$&$100 000$\\
+    number of randoms & $1$ & $10$ & $100$& $1 000$& $10 000$&$100 000$\\
     \hline
-    Success rate $(\simeq)$ & $60,5$&$77,7$&$80,5$&$80,5$&$80,5$\\
+    Success rate $(\simeq)$ & $17,8$ &$60,5$&$77,7$&$80,5$&$80,5$&$80,5$\\
     \hline
       \end{tabular}
       \end{center}
    \caption{Impact of the number of randoms sending orders drawn}
      \end{figure}
      
-     In our case of 8 routes, the number of different sending orders is $8! \simeq 40 000$. By drawing $1000$ random sending orders, we explore near to $2,5 \%$ of the cases, which seems enough to find as many solutions as if generate more random sending ordres.
+     In our case of $8$ routes, the number of different possible sending orders is $8! \simeq 40 000$. By drawing $1000$ random sending orders, we explore near to $2,5 \%$ of the cases, which seems enough to find as many solutions as if generate more random sending orders.
 
      
 
-     We now want to compare the performances of the different algorithms.Since GP showed some excellent results on large periods (see Fig~\ref{fig:success21000}), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with 8 routes (links between $0$ and $20000$), and with a period of 21000. Since we just conclude that drawing 1000 sending order is a good number, with 8 routes. We now generate 1000 randoms sending orders instead of 100.
+     We now want to compare the performances of the different algorithms on the way back. Since GP showed some excellent results on large periods (see Fig~\ref{fig:success30000}), it is more interesting to focus on the behavior of the algorithms on short periods. The following experience is realized on graph with $8$ routes (links between $0$ and $20000$), and with a period of $21000$. Since we just conclude that drawing $1000$ sending order is enough, with $8$ routes, we now generate $1000$ randoms sending orders instead of $100$.
      
 
  
@@ -939,10 +939,12 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \label{fig:success21000}
      \end{figure}
      
-     The algorithm MS, that does not consider the periodicity for the scheduling is far worst than the others, and, even if GP seems to converge too 100\% of success rate when the flexibility is large enough, MSP is always strictly better. We remark that when the flexibility is low ($<500$) there is near to 5\% of failure.
+     The algorithm MS, that does not consider the periodicity for the scheduling is far worst than the others, and, even if GP seems to converge too 100\% of success rate when the flexibility is large enough, MSP is always strictly better. We remark that when the flexibility is low ($<500$) there is still near to 5\% of failure for MSP. 
+   
+   Thus, using the Random sending order combined with MSP for the way back seems to be a very good algorithm to solve PALL. Nevertheless, there is still a few number of instances in the worst area of parameters (very short period, and very low flexibility), that are impossible to solve with our algorithm.
      
 
- To evaluate the performance of our best algorithm to find solutions, that is, generating $1000$ randoms sending orders and using MSP on the way back, we compared it's performance, against the actual way to manage the messages in a network. Nowadays, the networks are managed through a stochastic model. The messages in the nodes are scheduled following a FIFO rule. Even if this policy works well, in practice, it does not ensure a minimum latency. Thus, some latency critical applications like C-RAN needs some deterministic algorithms. To model such a network, we generate some randoms offsets in the sources. Then we simulate the behavior of a stochastic network during a great number of periods. The following figure shows the average latency of a stochastic network, compared to the latency of our algorithm.
+ To evaluate the performance of our best algorithm to find solutions, that is, generating $1000$ randoms sending orders and using MSP on the way back, we compared it's performance against the actual way to manage the messages in a network. Nowadays, the networks are managed through a stochastic model. The messages in the nodes are scheduled following a FIFO rule. Even if this policy works well, in practice when the network is not too loaded, it does not ensure a minimum latency. Thus, some latency critical applications like C-RAN needs some deterministic algorithms. To model such a network, we generate some randoms offsets in the sources. Then we simulate the behavior of a stochastic network during a great number of periods. The following figure shows the average latency of a stochastic network, compared to the latency of our algorithm.
 We tested the algorithms on $1000$ instances with $8$ long routes (links between $0$ and $20000$). The flexibility of the stochastic curve is computed by taking the message which have the highest process time, at which we subtract the delay of the longest route. We made a linear search to find the minimum flexibility needed by our algorithm to find a solution.
  We measure the average flexibility, for periods from $20000$ ( network fully loaded), to $50000$ (40 \% of load).
      
