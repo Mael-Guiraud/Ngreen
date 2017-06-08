@@ -1,24 +1,19 @@
 ################# Commandes d'affichage Gnuplot ###############
 
- file = "marge_PALL_stochastique.data"
 
-
-plot   file  using 1:2:4   with yerrorbars title "Stochastic"
-
-
+plot   'traitement.data'  using 1:3:2:4 with yerrorbars notitle
 
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
 set notitle
-set ylabel "Average needed Flexibility"
+set ylabel "Needed Flexibility"
 set xlabel "Period"
 set yrange [0:9000]
 set border 3
-set term postscript color solid
-set output '| ps2pdf - stochastic.pdf'
+set terminal latex
+set output "stochastic.tex"
 
 set key outside right bot
 replot
-
 

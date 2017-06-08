@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
+#include <limits.h>
+#include <math.h>
 
 #include "struct.h"
 #include "PAZL.h"
@@ -409,10 +411,14 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 
 	char nom[64];
 	sprintf(nom,"../datas/marge_PALL_stochastique.data");
+
 	FILE * F = fopen(nom,"w");
+	FILE * F2 = fopen("../datas/donnes_random.data","w");
 	Graphe g ;
 	long long int total_sto,total_sp;
+	float ecart_type;
 	int ressto;
+	int min,max;
 	int ressp;
 	int nb_rand = 100;
 
@@ -421,6 +427,9 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	{
 		total_sto = 0;
 		total_sp = 0;
+		ecart_type =0;
+		min = INT_MAX;
+		max = 0;
 	
 		#pragma omp parallel for private(ressp,ressto,g) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
@@ -429,29 +438,52 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 			graphe_etoile(g,taille_route);
 	
 
-		 	ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
+		 	///ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
+		 	ressp = 0;
 		 	#pragma omp atomic
 				total_sp+= ressp;
 
 			ressto=stochastic(g,taille_paquets,periode,1000,1);
-			ressto -=  longest_route(g);
-				#pragma omp atomic
-					total_sto+= ressto;
-			
-			
+			//ressto -=  longest_route(g);
+
+			#pragma omp atomic
+				total_sto+= ressto;
+
+			#pragma omp atomic
+				ecart_type += (ressto * ressto);
+			#pragma omp critical
+			{
+				if(ressto < min)
+				{
+						min = ressto;
+				}
+			}
+			#pragma omp critical
+			{
+				if(ressto>max)
+				{
+						max = ressto;
+				}
+			}
+			fprintf(F2,"%d %d\n",periode,ressto);
 
 			libere_matrice(g);
 		}
-		
+		ecart_type /= (nb_simuls-1);
+		ecart_type -= ( (total_sto/nb_simuls)*(total_sto/nb_simuls) );
+
+		ecart_type = sqrt(ecart_type);
 	
-   			      fprintf(F,"%d %lld %lld \n",periode,total_sto/nb_simuls,total_sp/nb_simuls);
-   			      fprintf(stdout,"%d %lld %lld \n",periode,total_sto/nb_simuls,total_sp/nb_simuls);
+   			      fprintf(F,"%d %lld %lld %f %d %d\n",periode,total_sto/nb_simuls,total_sp/nb_simuls,ecart_type,min,max);
+   			      fprintf(stdout,"%d %lld %lld %f %d %d\n",periode,total_sto/nb_simuls,total_sp/nb_simuls,ecart_type,min,max);
+  
 
  
 		
 
 	}
 	fclose(F);
+	fclose(F2);
 }
 
 //Fichiers en 3D pour PALL
