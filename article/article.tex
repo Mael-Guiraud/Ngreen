@@ -42,13 +42,13 @@
 
 
 %opening
-\title{DRAFT : Scheduling Periodic Messages in a Network by a SDN approach}
+\title{DRAFT : Periodic Scheduling Messages in a Network by a SDN (deterministic) approach}
 %\author{Dominique Barth - UVSQ ,Christian Cadéré - UVSQ,Maël Guiraud - UVSQ,Olivier Marcé - Nokia Bell Labs France,Yann Strozecki - UVSQ}
 
-
+\author[1]{Ma\"el Guiraud}
 \author[1]{Dominique Barth}
 \author[1]{Christian Cad\'er\'e}
-\author[1]{Ma\"el Guiraud}
+\author[2]{Brice Leclerc}
 \author[2]{Olivier Marc\'e}
 \author[1]{Yann Strozecki}
 \affil[1]{David Laboratory, UVSQ}
@@ -59,7 +59,7 @@
 \maketitle
 
 \begin{abstract}
-We study the sending of periodic messages in a graph following predefined paths, a problem arising from the communication between radio antennas and their signal processing units located in distant data-centers. The messages must be sent deterministically to avoid collisions on the network and thus to minimize the latency. We prove that the problem is $\NP$-complete even for very restricted graphs. We then deal with the case of a star graph and for different regimes of the parameters we propose algorithms that are experimentally shown to work extremely well
+We study the sending of periodic messages in a graph following predefined paths, a problem arising from communication between radio antennas and their signal processing units located in distant data-centers. Messages must be sent deterministically to avoid collisions on the network and thus to minimize the latency. We prove that problems related to this context are $\NP$-complete even for very restricted graphs. We then deal with the case of a star graph and for different regimes of the parameters we propose algorithms that are experimentally shown to work extremely well
 compared to traditional statistical multiplexing.
 \end{abstract}
 
@@ -68,23 +68,23 @@ compared to traditional statistical multiplexing.
 
 Next generations of mobile network architectures evolve toward centralized radio network architectures or C-RAN, for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c}. The main challenge for this type of architecture is the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and the Baseband Units (BBUs) in the cloud. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. One specificity in the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRH and BBU.
 
- In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution is to use stochastic multiplexing with a traditional queue management in an optical network with a very large bandwidth to minimize latency. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}.
+ In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution is to use stochastic multiplexing \todo{ref} with a traditional queue management in an optical network with a very large bandwidth to minimize latency. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}.
 
  
- The network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). The time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network.
- The process must be periodic, that is if we look at the network at time $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design 
+Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network.
+ The process must be periodic, that is if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design 
  a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \textbf{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
  between the emission of a message and the complete return of its answer. It means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long.
  
-This problem may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just avoid deadlocks, moreover the periodicity is not considered in wormhole problems. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity and the associated problems are also $\NP$-complete. The only model which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
+This problem may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just avoid deadlocks, moreover the periodicity is not considered in wormhole problems. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are also $\NP$-complete. The only model which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
 
 
  In Sec.~\ref{sec:def} we propose a model of the network and the periodic sending of messages along its routes. 
  We then formalize our two problems of finding a periodic assignment for sending messages without collisions: PRA (sending of the message only) and PALL (sending of the message and answer).  
 In Sec.~\ref{sec:complexity}, we prove that the problem PRA and PALL are $\NP$-hard and cannot be approximated even for very
-restricted graphs. 
+restricted classes of graphs. 
 Therefore in the next two sections, we study a simple but very common topology, that we call the
-star topology, on which the messages can collide on only one arc.
+star topology, where messages can collide on only one arc.
 In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting times must all be zero. We provide several algorithms, some of their theoretical properties and give experimental evidences that they find periodic assignments when the network is no too loaded. Finally in Sec.\ref{sec:PALL}, we propose algorithms for the general PALL problem and exhibit one which works extremely well in our experiments even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional stochastic multiplexing with regards to latency. 
 
 
@@ -93,7 +93,7 @@ In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting
   \subsection{Network modeling}
   
 
-The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer $dl(u,v) \geq 1$ that we call the delay and which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} dl(a_j)$. We also define $\lambda(u_0,r)=0$. The latency of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
+The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer $\omega(u,v) \geq 1$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} dl(a_j)$. We also define $\lambda(u_0,r)=0$. The latency of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
 We denote by $\cal R$ a set of routes in $G$ such that no two routes have the same first vertices or the same last vertices.
 The pair $(G,\cal R)$ is called a {\bf routed network} and represents our network.
 The first vertex of a route models an antenna (RRH) and the last one a data-center (BBU) which processes the messages sent by the antenna. We denote by $\rho$ the bijection induced by ${\cal R}$, $\rho(s) = t$ if $s$ is the first vertex of a route $r$ and $t$ the last. 
@@ -110,7 +110,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       of \emph{consecutive slots} necessary to transmit a message. Let us call $[t(v,r)]_{P,\tau}$ the set of time slots used by $r$ at a vertex $v$ in a period $P$, that is $[t(v,r)]_{P,\tau} = \{t(v,r) + k \mod P \mid 0 \leq k < \tau \}$. Usually $P$ and $\tau$ will be clear from the context and we will denote $[t(v,r)]_{P,\tau}$ by $[t(v,r)]$.
       
       
-      A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. A $(P,\tau)$-periodic assignment must have no {\bf collision} between two routes in $\cal R$, that is $\forall (r_{i}, r_{j}) \in {\cal R}^2, i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
+      A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. A $(P,\tau)$-periodic assignment must have no {\bf collision} between two routes in $\cal R$, that is $\forall (r_{i}, r_{j}) \in {\cal R}^2, sharing and edge $(u,v)$ i \neq j$, % with $\tau$ the size (in number of consecutive slots) of each message that must be periodically sent on each route of ${\cal R}_{\cal C}$, 
       we have $$[t(u,r_{i})] \cap [t(u,r_{j})] = \emptyset .$$
       
 
@@ -483,11 +483,11 @@ In particular, this reduction shows that even with small maximal load, the minim
       Since the central arc appears in every route, its value do not matter when considering the process time of an assignment.
       Moreover an assignment without collisions is also an assignment without collisions if the weight of the central arc 
       is set to $0$, therefore we assume from now on it is indeed $0$.
-      Collisions between messages can only appear at node $c_s$ on the way forward and at node $c_t$ on the way back.
+      Collisions between messages can only appear in the arcs after node $c_s$ on the way forward and after node $c_t$ on the way back.
       Thus, we only have to check if there is no collisions in a given period at those two vertices.
-      We will refer to the period at $c_s$ as the {\bf forward period}, and the period at $c_t$ as the {\bf backward period}. A message issued on the route $r$ at time $m_s$ will reach $c_s$ at time $m_{s} + t(c_s,r) \mod P$ in the forward period. If the offset of $\rho(s)$ is $m_{\rho(s)}$, the answer will reach $c_t$ at time $m_{\rho(s)} + t(c_t,\rho(r))\mod P$ in the backward period.
+      We try to schedule the messages such that they can pass thought the common arcs in a time window of $P$ max. We define the {\bf forward period}, a time window of size P at the beginning of the arc after $c_s$, and the {\bf backward period} the one at the beginning of the arc after $c_t$. A message issued on the route $r$ at time $m_s$ will reach $c_s$ at time $m_{s} + t(c_s,r) \mod P$ in the forward period. If the offset of $\rho(s)$ is $m_{\rho(s)}$, the answer will reach $c_t$ at time $m_{\rho(s)} + t(c_t,\rho(r))\mod P$ in the backward period.
 
-      A $(P,\tau)$-periodic assignment is the choice for all $i < n$, of $m_{r_i}$ and $m_{\rho(r_i)}$ such that, for any couple $(i\neq j)$, we have $[t(c_s,r_{i})] \cap [t(c_s,r_{j})] = \emptyset$ and $[t(c_t,\rho(r_i))] \cap [t(c_t,\rho(r_j))] = \emptyset$.
+      A $(P,\tau)$-periodic assignment is then a choice for all $i < n$, of $m_{r_i}$ and $m_{\rho(r_i)}$ such that, for any couple $(i\neq j)$, we have $[t(c_s,r_{i})] \cap [t(c_s,r_{j})] = \emptyset$ and $[t(c_t,\rho(r_i))] \cap [t(c_t,\rho(r_j))] = \emptyset$.
 
       
 
@@ -500,13 +500,13 @@ In particular, this reduction shows that even with small maximal load, the minim
   Remark that there is a bijection between the assignments of a star topology and the 
   assignments of the same star topology where all arcs from $s_i$ to $c_s$ have weight equal to $0$ by changing $m_{s_i}$ into $m_{s_i} - t(c_s,r_i) \mod P$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
   
-  We propose two algorithms that always find a solution in polynomial time if the instances meets some criteria (short routes or great enough period) but which may fail in other cases and one exponential algorithm which always finds a solution if it exists.
+  We propose two algorithms that always find a solution in polynomial time if instances meets some criteria (short routes or great enough period) but which may fail in other cases and one exponential algorithm which always finds a solution if it exists.
   
     \subsubsection*{Shortest-longest policy}
     
 
     We first present a simple policy, which works when the period is large with regards to the delay of the routes.
-    The message are sent in order from the shortest route to the longest route, without any gap between two messages in the forward period.
+    The messages are sent in order from the shortest route to the longest route, without any gap between two messages in the forward period.
     In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{s_i}$ the offset of $r_i$ to $(i-1)\tau$. We call this algorithm {\bf Shortest-Longest}.
       
      By definition, there are no collision in the forward period and if the period is long enough, 
@@ -535,7 +535,7 @@ In particular, this reduction shows that even with small maximal load, the minim
     
     We propose a greedy algorithm to build a $(P,\tau)$-periodic assignment, which provably works when
     the period is large enough with regards to the number of routes and size of messages. In other words, 
-    we can always find a solution when the network is far from saturated. 
+    we can always find a solution when the network is far from saturated. This algorithm defines an upper bound for the period. As a reminder, the lower bound is $n\tau$, that is, the size taken by the messages to be emitted.
     
     \begin{proposition}
     Let  $n$ be the number of routes and let $ 3n\tau \leq P$, then there is is always a solution to PAZL and there is an  algorithm which finds the assignment in time $O(n^2)$.
@@ -642,8 +642,8 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \subsection{Experimental Evaluation}\label{sec:exp_PAZL}
       
       The following experimental results compare the three presented algorithms.
-      Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution. On the other hand, the exhaustive search will find an optimal solution, if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: the routes are either short with regards to $\tau$ and $P$ or unrestricted.
-      We choose the parameter realistic with regard to our C-RAN context. The number of routes 
+      Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution. On the other hand, the exhaustive search will find an optimal solution, if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: routes are either short with regards to $\tau$ and $P$, or unrestricted.
+      We choose the following realistic parameters with regard to our C-RAN context. The number of routes 
       is at most $n = 20$, $\tau$ is equal to $2500$ and the period is at most $3n\tau$ (otherwise the greedy algorithm always returns a solution). The code in C is available online on the webpages of the authors ~\cite{webpage}.
 %             
 %             The graphs 
@@ -659,7 +659,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       Our aim is to understand how well the algorithms are working when the network has a high load (when 
       the load is low, the greedy algorithm always returns a solution). To do that we try to evaluate the 
       minimal period for which a $(P,\tau)$ periodic assignment can be found by each algorithm. 
-      To that end we do a linear search on $P$, since a dichotomy would not work because of Lemma~\ref{lemma:monotonic}.
+      To that end we use linear search on $P$, since a dichotomy method would not work because of Lemma~\ref{lemma:monotonic}.
       
       In our experiment, we generated $1000$ random instances of PAZL for $1$ to $12$ routes. 
       We measured the average minimal period, for each algorithm. We needed to stop our experiments at $12$ routes since the exhaustive search was taking more than a second to finish on many instances.
@@ -712,7 +712,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       
    \section{The star topology: minimizing latency}\label{sec:PALL}
     
-    In this section, we allow the messages to wait in the target vertices (BBU), to give an higher degree of freedom to the scheduling. Thus, the process time of a message $PT$ might be superior to $T_{max}$. The goal is to find a solution with waiting time such that any message will be not be buffered too much, i.e. $MT({\cal M}) \leq T_{max}$.
+    In this section, we still work on the start topology, but, from now, we allow the messages to wait in the target vertices (BBU),in order to give an higher degree of freedom to the scheduling. Thus, the process time  $PT$ of a message might be superior to $T_{max}$. The goal is to find a solution with waiting time such that any message will be not be buffered too much, i.e. $MT({\cal M}) \leq T_{max}$.
 	   
 
 
@@ -722,7 +722,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
 	Another particular case is the following one:	
 	 \begin{theorem}
-      There is always an optimal solution when all the weights on the arcs between $c_s$ and the sources are the same.
+      Instances of PALL with $\omega(c_t,t_i) = 0, \forall i \leq n$ always got an optimal solution.
       \end{theorem}
       \begin{proof}
       
@@ -739,34 +739,20 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
      \subsection{A first approach}
 	
-	To solve PALL, we propose some heuristics that prioritize the longest routes, and thus helps to minimize $PT(s_i)$. Indeed, one can imagine that, if the messages on the longest routes are less buffered in their target than the messages using the shortest routes, the process times might be balanced.
-	In an optimal solution, if $i$ is the longest route, we want $w_i =0$, such that $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
+	To solve PALL, the goal is to not associate a too long waiting time $w_i$ to the longest routes . We propose some heuristics that prioritize the longest routes, and thus helps to minimize the process time $PT(s_i)$ of the routes in order to have no  $PT(s_i) > T_{max}$. Indeed, one can imagine that, if the messages on the longest routes are less buffered in their target than the messages using the shortest routes, the process times might be balanced.
+	In an optimal solution, if $r_i$ is the longest route, we want $w_i =0$, such that $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
 
 
-     We first suggest the following heuristic:
+     We first suggest the following heuristic, composed of two greedy parts. First, on the forward period, for the way forward, the messages are scheduled consecutively, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_{s_i}$ are ordered from the longest to the shortest.
+     
+     Thus, to schedule the messages on the backward period, we assign to each route it's deadline, equal to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$, that is,  the latest date at which a message is able to quit the target switch without exceed $T_{max}$. 
+     We then determine the eligible message. At a date $d$, if one or several messages are able to come back to $c_t$ before $d$, the eligible route is the one which have the lowest deadlines. Otherwise, if any messages are able to be back on $c_t$ before $d$, the eligible route is the one with the first message able to come back to $c_t$.
 
-      On the forward period, for the way forward, the messages are scheduled so that they are following each others, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_{s_i}$ are ordered from the longest to the shortest.
-
-      On $c_t$, the algorithm is the following one:
-
-  \begin{algorithm}[H]
-
-    \caption{Eligible route}
-    \label{algorithm:Eligible}
-    \begin{enumerate}
-      
-      \item To be eligible, a message needs to be able to come back on $c_t$ at the current clock (if clock = $0$, or no messages are able to come back at this date, take the first message able to come back).
-      \item Between the eligible messages, schedule first the one which has the lowest deadline.
-      \item For any route i, the deadline correspond to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$, that is,  the latest date at which a message is able to quit the target switch without exceed $T_{max}$.
-
-      \end{enumerate}
-      
-  \end{algorithm}
-    
+ 
 
      
     \begin{algorithm}[H]
-    \caption{Longest Shortest Greedy (LSG)}
+    \caption{Longest Shortest + Greedy }
     \begin{algorithmic}
     \REQUIRE routed network $(G,{\cal R})$, period $P$, $ T_{max}$, packet size $\tau$
     \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$
@@ -776,9 +762,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \STATE $clock \leftarrow clock + \tau$
     \ENDFOR
 
+\STATE compute the deadlines of each routes.
+
     \WHILE{there is a route which has not been scheduled}
-    \STATE take i such that $r_{t_i}$ is the eligible route (Algorithm \ref{algorithm:Eligible})
-    \IF{ the messages is able to come back before $clock$}
+    \STATE determine $r_{t_i}$ the eligible route
+    \IF{ $t(c_t,r{t_i}) < clock$}
     \STATE $w_i = clock - t(c_t,r_{t_i}) - (m_i + \lambda(r_i))$ 
     \STATE $clock \leftarrow clock + \tau$
     \ELSE
@@ -804,9 +792,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
      \subsection{Choice of the Sending Order}
      
-	We tried to look at the behavior of the that policy with different kinds of sending order for the messages.
+	We tried to look at the behavior of that policy with different kinds of sending order for the messages.
 	
-	We tried the five following sending orders, each ones determines the order in which the messages will be sent from sources, and, in each case the messages are following each others in $c_s$.
+	We tried the five following sending orders, each one determines the order in which messages will be sent from sources. In every case the messages are consecutive.
 	
 	The different sending orders that we tried are the following :
 	\begin{enumerate}
@@ -820,7 +808,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
      
      In the rest of the section, we present the  different algorithms suggested to improve the second part of the scheduling.
-      \subsection{About the periodicity}
+      \subsection{About periodicity}
      The previous algorithm is a greedy heuristic, which does not take the period into account. 
      We propose an improved version of the algorithm, still greedy, but which tries to compute some solution that satisfies the period $P$: When we try to schedule some messages $P$ slots after the first message scheduled, the algorithm mind the already scheduled messages, and avoid collisions with them.
      
@@ -836,9 +824,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      \subsection{Using a scheduling algorithm}
      
-     The problem PALL is very similar to a scheduling problem, but many scheduling problem does not treat about the periodic aspect. Thus, the article ``A fast algorithm for single processor scheduling'', by Barbara Simons \cite{simons1978fast} gave us an optimal algorithm to schedule some jobs which has a release time, a deadline and the same execution time. We adapted this algorithm, considering the messages as the jobs, the release times as the date at which the messages are able to come back on $c_t$, and the deadlines as the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists. Thus, it tries to minimize the time between the first and the last message in the scheduling. Let us call {\bf Minimized Scheduling (MS)} this algorithm.
+     Problem PALL is very similar to a scheduling problem, but many scheduling problems do not consider the periodic aspect. The article \cite{simons1978fast} from Simons, schedule jobs which all have the same execution time.
+     This algorithm takes as input some jobs defined by a triplet id-release-deadlines, and an execution time for all jobs. A job is not able to be computed before it's release time, and must be finished before it's deadline. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
+     We adapted this algorithm, considering the messages as the jobs, the release times as the date at which the messages are able to come back on $c_t$, and the deadlines as the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$.  Thus, it tries to minimize the time between the first and the last message in the scheduling. Let us call {\bf Minimized Scheduling (MS)} this algorithm.
      
-     This algorithm uses the exact same main scheduling than Greedy. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call {\em crisis message} this message), the algorithm call a subroutine which, following some criteria, removes some previous messages from the scheduling such that the crisis message can be scheduled earlier. Then, the main scheduling routines is applied again. Some stopping conditions are able to detect if there is no solution for the given routed network.
+    % MS uses the exact same main scheduling than Greedy. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call {\em crisis message} this message), the algorithm calls a subroutine which, following some criteria, removes some previous messages from the scheduling such that the crisis message can be scheduled earlier. Then, the main scheduling routines is applied again. Some stopping conditions are able to detect if there is no solution for the given routed network.
      
      If it exists a solution that satisfies the criteria $MT({\cal M}) < T_{max}$, this algorithm gives us a $(P,\tau)$ periodic assignment. Nevertheless, by setting the deadlines according to the size of the route only, the given $(P,\tau)$ periodic assignment might not respect the period $P$. 
      
@@ -855,10 +845,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
   
     \FORALL{route $r_{t_i}$}
     \STATE  $w_i \leftarrow 0$
-    \STATE $end-period \leftarrow m_{s_i} + \lambda(r_{s_i}) + t(c_t,r_{t_i}) + P$
+    \STATE period-end $\leftarrow m_{s_i} + \lambda(r_{s_i}) + t(c_t,r_{t_i}) + P$
     \FORALL{route $r_{t_j}$}
-    \STATE $deadline-route \leftarrow m_{s_j} + T_{max}-t(c_s,r_{s_j})$
-    \STATE $deadline \leftarrow (deadline-route,end-period)$
+    \STATE deadline-route$ \leftarrow m_{s_j} + T_{max}-t(c_s,r_{s_j})$
+    \STATE $deadline \leftarrow$ min(deadline-route,period-end)
     \ENDFOR
     
     \STATE Call (MS)
