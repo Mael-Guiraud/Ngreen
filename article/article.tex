@@ -84,7 +84,7 @@ In Sec.~\ref{sec:complexity}, we prove that the problem PRA and PALL are $\NP$-h
 restricted classes of graphs. 
 Therefore in the next two sections, we study a simple but very common topology, that we call the
 star topology, where all messages can collide on a single arc.
-In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting times must all be zero. We provide several algorithms, some of their theoretical properties and give experimental evidences that they find periodic assignments when the network is no too loaded. Finally in Sec.\ref{sec:PALL}, we propose algorithms for the general PALL problem and exhibit one which works extremely well in our experiments even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional stochastic multiplexing with regards to latency. 
+In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting times must all be zero. We provide several algorithms, some of their theoretical properties and give experimental evidences that they find periodic assignments when the network is no too loaded. Finally in Sec.\ref{sec:PALL}, we propose algorithms for the general PALL problem and exhibit one which works extremely well in our experiments even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional stochastic multiplexing with regard to latency. 
 
 
 \section{Model and Problems}\label{sec:def}
@@ -198,7 +198,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       Even approximating the smallest value of $P$ for which there is a $(P,\tau)$-periodic assignment is hard.
       
       An unusual property of assignment is that given a routed network, we may have a $(P,\tau)$-periodic assignment but no
-      $(P',\tau)$-periodic assignment with $P' > P$: the existence of an assignment is not monotone with regards to $P$.
+      $(P',\tau)$-periodic assignment with $P' > P$: the existence of an assignment is not monotone with regard to $P$.
 
 	\begin{lemma} \label{lemma:monotonic}
 	 For any odd $P$, there is a routed network such that there is $(2,1)$-periodic assignment but no $(P,1)$-periodic assignment.
@@ -495,12 +495,12 @@ In particular, this reduction shows that even with small maximal load, the minim
   
   
   One may consider a variant of PAZL where the central link is unidirectional, that is collisions can happen between messages going from $c_s$ to $c_t$ and messages  going from $c_t$ to $c_s$. This problem can be shown to be $\NP$-complete by a reduction from the subset sum problem as it is done for a similar problem of scheduling pair of tasks~\cite{orman1997complexity}. We conjecture that the problem PAZL is also $\NP$-complete,  but we have yet not been able to prove it.
-  On the other hand we show positive results:  when the period is large or when the routes are short there is always a solution to PAZL and it can be found in polynomial time. We then give an exponential time branch and cut algorithm which always finds a solution if there is one. 
+  On the other hand we show positive results:  when the period is large or when the routes are short there is always a solution to PAZL and it can be found in polynomial time. We then give an exponential time exhaustive search algorithm which always finds a solution if there is one. 
   
     \subsubsection*{Shortest-longest policy}
     
 
-    We first present a simple policy, which works when the period is large with regards to the weight of the routes.
+    We first present a simple policy, which works when the period is large with regard to the weight of the routes.
     The messages are sent in order from the shortest route to the longest route, without any gap between two messages in the forward period.
     In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{i}$ the offset of $r_i$ to $(i-1)\tau$. We call this algorithm {\bf Shortest-Longest}.
       
@@ -528,7 +528,7 @@ In particular, this reduction shows that even with small maximal load, the minim
     \subsubsection*{Greedy Algorithm}
     
     We propose a greedy algorithm to build a $(P,\tau)$-periodic assignment, which provably works when
-    the period is large enough with regards to the number of routes and size of messages. In other words, 
+    the period is large enough with regard to the number of routes and size of messages. In other words, 
     we can always find a solution when the network is far from saturated. This algorithm defines an upper bound for the period. As a reminder, the lower bound is $n\tau$, that is, the size taken by the messages to be emitted.
     
     \begin{proposition}
@@ -606,7 +606,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 %       \end{algorithm}
 
 % 	    
-      We now present a branch and cut algorithm, which tries to set the offsets in all possible ways until it has found a $(P,\tau)$-periodic assignment. Contrarily to the two previous algorithms, when it fails to find a solution, then it certifies there are no solution to PAZL.
+      We now present an exhaustive search algorithm, which tries to set the offsets in all possible ways until it has found a $(P,\tau)$-periodic assignment. Contrarily to the two previous algorithms, when it fails to find a solution, then it certifies there are no solution to PAZL.
       
       We have $n$ routes denoted by $\{0,\dots,n-1\}$. A partial solution $S$ is 
       a partial function from $[n]$ to $\{0,1,\dots,P-\tau -1\}$ which sets a starting time for a subset of the routes $R(S) \subseteq [n]$, such that there are no collisions for these routes.  A partial solution $S'$ extends $S$, if $S'$ is defined over one more route than $S$ and this route has a larger starting offset than all routes of $S$: $R(S') = R(S) \cup \{r'\}$ and for all  $r \in R(S)$, $S(r) + \tau \leq S'(r')$. We define a tree whose nodes are partial solutions and such that the root is the empty partial solution and the children of a partial solution are the partial solutions which extend it. The solutions to our problem will be the leaves of depth $n$ in the tree, and our exhaustive search algorithm is a depth-first search of this tree. 
@@ -634,29 +634,26 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \subsection{Experimental Evaluation}\label{sec:exp_PAZL}
       
       The following experimental results compare the three presented algorithms.
-      Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search will find an optimal solution if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: routes are either short with regards to $\tau$ and $P$, or unrestricted.
-      We choose the following realistic parameters with regard to our C-RAN context. The number of routes 
-      is at most $n = 20$, $\tau$ is equal to $2500$ and the period is at most $3n\tau$ (otherwise the greedy algorithm always returns a solution). The code in C is available online on the webpages of the authors ~\cite{webpage}.
+      Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search will find an optimal solution if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
+      From our C-RAN context we choose the following parameters: the number of routes 
+      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise 
+      no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution. 
+      The code in C is available online on the webpages of the authors ~\cite{webpage}.
       
-      \todo{remarque sur la charge du r�seau ntau / P -> dire diminuer P augmente la charge et donner les deux bornes pertinentes}
-%             The graphs 
-%       To correspond with the C-RAN applications, we made some simulations on graphs in which $\lambda(c_s,r_{s_i})$ and $\lambda(c_t,r_{t_i})$, are drawn following an uniform act between 0 and 700 slots, that is, at the most, 5 km between the RRH and its BBU. The messages size $\tau$ is to 2500 slots, that is, approximately 1.228 Gbps of data for each route. The size of a slot is given by the time taken to send 64 bytes on the network, in which the links has 10Gbps throughput.
-% 
-%       \todo{Mettre les données concrètes plus proprement et éventuellement ne pas les mettre si on envoie pas à un truc de télécom}
+      We can define the load of the network as $\frac{n\tau}{P}$ (here a value between one and three) and in experiments we will try to understand how our algorithms work with regards to the load. Often rather than changing the load, we will change the period which is equivalent. 
+      
 
       \paragraph{Short routes}
       
       First we consider routes which are shorter than $\tau$, that is a message cannot be contained 
-      completely in a single edge. This is very common in our context and we will consider graphs in which the values $\lambda(c_t,\rho(r_{i}))$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately 1Mb, links of bandwidth 10Gbps and length less than 5km between the BBU and the RRH. 
+      completely in a single edge. This is very common in our context and we will consider graphs in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately 1Mb, links of bandwidth 10Gbps and length less than 5km between the BBU and the RRH. 
       
-      Our aim is to understand how well the algorithms are working when the network has a high load (when 
-      the load is low, the greedy algorithm always returns a solution). To do that we try to evaluate the 
-      minimal period for which a $(P,\tau)$ periodic assignment can be found by each algorithm. 
-      To that end we use linear search on $P$, since a dichotomy method would not work because of Lemma~\ref{lemma:monotonic}.
+      Our aim is to understand how well the algorithms are working under high load. To do that we try to evaluate the 
+      minimal period (that is the highest possible load) for which a $(P,\tau)$ periodic assignment can be found by each algorithm. 
+      To that end we use a linear search on $P$, since a dichotomy method would not work because of Lemma~\ref{lemma:monotonic}.
       
-      In our experiment, we generated $1000$ random instances of PAZL for $1$ to $12$ routes. 
-      We measured the average minimal period, for each algorithm. We needed to stop our experiments at $12$ routes since the branch and cut algorithm was too slow. Remind that the branch and cut always finds the best possible period for a given instance. 
-      The functions $f(n) = n\tau$ and $g(n) = 3n\tau$ are also represented since they are respectively lower and upper bounds on the period.
+      In our experiment, we generate $1000$ random instances of PAZL for $1$ to $12$ routes. 
+      We measure the average minimal period, for each algorithm. The experiments are stopped at $12$ routes because the exhaustive search algorithm becomes too slow for larger $n$. Remind that the exhaustive search always finds the best possible period for a given instance. The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
       
       
         
@@ -671,7 +668,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       First, we remark that the period found by the exhaustive search is only very slightly above the lower bound of 
       $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
       
-      The period needed by Shortest-Longest to find an optimal solution is determined by the difference between the longest and the shortest route and could be easily determined theoretically. The algorithm was expected to be good since the routes are short, but it turns out it always finds the optimal solution in our experiments. Therefore, we should use it in practical application, in this regime, instead of the exhaustive search which is much more computationally expensive. 
+      The period needed by the Shortest-Longest algorithm to find an optimal solution is a function of the difference between the longest and the shortest route and its average could be easily determined theoretically. The algorithm was expected to find a period close to the optimal one since the routes are short. It turns out it always finds the optimal period in our experiments. Therefore, we should use it in practical applications with short routes, instead of the exhaustive search which is much more computationally expensive. 
       
       Finally we remark that the greedy algorithm has an average period much lower than the theoretical upper bound of $3n\tau$. We made a linear regression on this value and with a correlation coefficient greater than $0,999$ we find a slope of $1.53n\tau$.
       
@@ -679,12 +676,12 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
       \paragraph{Long routes}
       
-      We now want to understand the performance of these algorithms when the size of the routes are unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit by $10^9$.
+      We now want to understand the performance of these algorithms when the size of the routes is unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit by $10^9$.
       
-      In this experiment we will fix the number of routes to $8$ and the values $\lambda(c_t,\rho(r_{i}))$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
+      In this experiment we will fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
       We measure for each algorithm its percentage of success, for periods from $20000$ which is the minimum possible to $50000$.
       
-      The exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. Hence we represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining its successes and its failures because of lack of time. 
+      The exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. Hence we represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining the successes and the failures because of lack of time of the exhaustive search. 
       
 \begin{figure}
 
@@ -694,20 +691,21 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \caption{Success rate for $8$ routes over $1000$ random instances}
      \end{figure}
       
-      In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route
-      which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. When repeating the experiments of the previous section on routes of arbitrary length, we find that on average the greedy algorithm finds a solution if $P > 1.89n\tau$.
+      In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. When repeating the experiments of the previous section on routes of arbitrary length, we find that on average the greedy algorithm finds a solution if $P>1.89n\tau$.
       
-      When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. 
-      However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle 
-      larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for small periods less than $22000$, we see that there are very few instances with a solution for PAZL. It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive.
-      That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting times.
+      When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for periods less than $22000$, we see that there are very few instances with a solution for PAZL. It means that with long routes and high load (larger than $0.9$), looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting times.
       
    \section{The star topology: minimizing latency}\label{sec:PALL}
     
-    In this section, we still work on the start topology, but, from now, we allow the messages to wait in the target vertices (BBU),in order to find some solution that we cannot find with PALL. From now, the process times  $PT$ of the routes can be greater than twice the weight of the routes, but it might not be superior to $T_{max}$.
+    In this section, we still work on the star topology, but we consider again the  PALL problem. 
+    It means that the messages can wait in the target vertices (BBU), in order to find solution that we cannot find without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weight of the routes, but it should not be superior to $T_{max}$.
 
-	\subsection{Particular cases}
+	\subsection{Special cases}
 		
+		
+	Often in real networks, the length of the routes are not arbitrary. 
+	\todo{Reprendre les deux cas faciles, est-ce qu'il y en a d'autres ?}
+	
 	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the same and so can be simplified by $0$. In that case, the order of the messages in the forward and backward period is the same. The trivial solution is to send all message following each others regardless the order. Thus, the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are equal to $0$ i.e. $w_i = 0,\forall i $, thus, $MT({\cal M})$ is equal to twice the weight of the longest route, that is not alterable.
 
 	Another particular case is the following one:	
@@ -813,7 +811,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      Problem PALL is very similar to a scheduling problem, but many scheduling problems do not consider the periodic aspect. The article \cite{simons1978fast} from Simons, schedule jobs which all have the same execution time.
      This algorithm takes as input some jobs defined by a triplet id-release-deadlines, and an execution time for all jobs. A job is not able to be computed before it's release time, and must be finished before it's deadline. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
-     We adapted this algorithm, considering the messages as the jobs, the release times as the date at which the messages are able to come back on $c_t$, and the deadlines as the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$.  Thus, it tries to minimize the time between the first and the last message in the assignement. Let us call {\bf Minimized Scheduling (MS)} this algorithm.
+     We adapted this algorithm, considering the messages as the jobs, the release times as the date at which the messages are able to come back on $c_t$, and the deadlines as the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$.  Thus, it tries to minimize the time between the first and the last message in the assignment. Let us call {\bf Minimized Scheduling (MS)} this algorithm.
      
     % MS uses the exact same main scheduling than Greedy. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call {\em crisis message} this message), the algorithm calls a subroutine which, following some criteria, removes some previous messages from the scheduling such that the crisis message can be scheduled earlier. Then, the main scheduling routines is applied again. Some stopping conditions are able to detect if there is no solution for the given routed network.
      
