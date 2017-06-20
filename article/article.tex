@@ -220,7 +220,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
 
          
          We now give a new interpretation of a $(P,\tau)$-periodic assignment of a $(G,{\cal R})$ symmetric routed network, so that it represents the sending of a message and of its answer.
-	This assignment represents the following process: first a message is sent at $u$, through the route $r$, at time $m$.
+	This assignment represents the following process: first a message is sent at $u$, through the route $r$, at time $m_r$.
        
       
       
@@ -230,30 +230,26 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       
       
 
-      This message is received by $v$ the last vertex of $r$ at time $t(v,r)$. It is then sent back to $u$ on the route $\rho(r)$ in the same period at time $m_{\rho(s)}$ if $m_{\rho(s)} > t(\rho(s),r)$, otherwise at time $m_{\rho(s)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_s = m_{\rho(s)} - t(\rho(s),r)$ if $m_{\rho(s)} > t(\rho(s),r)$ and $w_s = m_{\rho(s)} + P - t(\rho(s),r)$ otherwise.
+      This message is received by $v$ the last vertex of $r$ at time $t(v,r)$. It is then sent back to $u$ on the route $\rho(r)$ in the same period at time $m_{\rho(r)}$ if $m_{\rho(r)} > t(v,r)$, otherwise at time $m_{\rho(r)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_r = m_{\rho(r)} - t(v,r)$ if $m_{\rho(r)} > t(v,r)$ and $w_r = m_{\rho(r)} + P - t(v,r)$ otherwise.
  
        \begin{center}
       \includegraphics[scale=0.17]{BBU2.png}
       \end{center}
      
-
-      When a BBU receives a message, it must compute the answer before sending it back to the RRH. This time can be encoded
-      in the last arc leading to the BBU and thus we need not to consider it explicitly in our model.
     
-      Thus, the whole process time for a message sent at vertex $s$ on the route $r$ is equal to
-      $$
-      PT(s)=\lambda(r)+ w_s+\lambda(r).
-      $$
-      
+      Thus, the whole process time for a message sent on the route $r$ is equal to
+      $PT(r)=\lambda(r)+ w_r+\lambda(r)$.      
       In the process time, we count the time between the first time at which a message is emitted and 
       the first time at which the message comes back. Alternatively we could consider the time between the emission of the first slot and the reception of the last slot of the message, which would add $\tau$ to the process time.
-      However, since all messages are of size $\tau$, it will not change the problem we solve in the rest of the article and that we now introduce.
+      However, since all messages are of size $\tau$, it will not change the problem we consider in the rest of the article.
+      Finally, we could add to the process time the computation time a BBU needs to deal with one message, but it can be encoded  in the weight of the last arc leading to the BBU and thus we need not to consider it explicitly in our model.
       
-    The {\bf maximum process time} of the $(P,\tau)$-periodic assignment ${\cal M} $ is defined by $MT({\cal M})=\max\limits_{s \in S} PT(s)$. We consider the following decision problem.
+      
+    The {\bf maximum process time} of the assignment ${\cal M}$ of $(G,{\cal R})$ is defined by $MT({\cal M})=\max\limits_{r \in {\cal R}} PT(r)$. We consider the following decision problem.
 
       \noindent {\bf Periodic Assignment for Low Latency (PALL)} 
 
-      \noindent {\bf Input:}  A symmetric routed network $(G,{\cal R})$, a period $P$, an integer $\tau$, an integer $T_{max}$.
+      \noindent {\bf Input:}  A symmetric routed network $(G,{\cal R})$, the integers $P$, $\tau$ and $T_{max}$.
 
       \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic assignment ${\cal M}$ of $(G,{\cal R})$ such that $MT({\cal M}) \leq T_{max}$?
 
@@ -267,8 +263,8 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
  In this section we always assume that the size of a message $\tau$ is equal to one. 
  We will prove the hardness of PRA and PALL for $\tau =1$ which implies the hardness of the general problems. 
 Consider an instance of the problem PRA, i.e., a routed network $(G,\cal{R})$ and a period $P$.
-The {\bf conflict depth} of a route is the number of other routes which share an edge with it. 
-The conflict depth of a routed network $(G,\cal{R})$ is the maximum of the conflict depth of the routes in $\cal{R}$.
+The {\bf conflict depth} of an edge is the number of routes to which the edge belongs. 
+The conflict depth of a routed network $(G,\cal{R})$ is the maximum of the conflict depth of its edges.
 The {\bf load} of a routed network is the maximal number of routes sharing the same arc.
 Remark that a $(P,1)$-periodic assignment must satisfy that $P$ is larger or equal to the load.
 
@@ -277,50 +273,57 @@ We give two alternate proofs that PRA is $\NP$-complete.
 The first proof works already for conflict depth two. Remark that for conflict depth one,
 the graph can be seen as a set of disjoint pair of routes, on which PRA and PALL can be solved in linear time. 
  The second proof reduces the problem to graph coloring and implies inapproximability when one tries to find the smallest possible $P$. \\
+ Finally, it is easy to see that PRA is easy on trees and it may be interesting to study its complexity on 
+ bounded treewidth networks, since it is a common property of real networks~\cite{} \todo{Trouver la ref qui dit ca}.
+ 
 
  \begin{proposition}
-Problem PRA is $\NP$-complete, when the routing is of conflict depth two.
+Problem PRA is $\NP$-complete on the class of routed networks with conflict depth two.
 \end{proposition}
  \begin{proof}
- The problem $PRA$ is in $\NP$ since given an offset for each route in an assignment, it is easy to check in linear time in the number of edges whether there are collisions.
+ Problem $PRA$ is in $\NP$ since given an offset for each route in an assignment, it is easy to check in linear time in the number of edges whether there are collisions.
  
-  Let $H=(V,E)$ be a graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is edge-colorable
-  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. We define from $H$ an instance of PRA as follows. 
-  For each $v$ in $V$, the graph $G$ has two vertices $v_1, v_2$, and for each $(u,v) \in E$,the graph G has two vertices $s_{u,v}, t_{u,v}$. Set an arbitrary orientation of the edge $(u,v)$, such that the following route is directed from $u$ to $v$.
-%   The set $A$ of arcs of $G$ is: 
-%   $$ \{(v_1,v_2) \mid v\in V\} \cup \{(u_2,v_1)\mid u \neq v \in V^2\} \cup \{(s_{u,v},u_1),(v_2,t_{u,v}) \mid (u,v) \in E \}. $$
-  For each edge $(u,v) \in E$, there is a route $s_{u,v},u_1,u_2,v_1,v_2,t_{u,v}$ in ${\cal R}$.  
-  All these arcs are of weight $0$. The set of arcs of G is the union between all the arcs of the previous routes.
+  Let $H=(V,E)$ be an undirected graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is edge-colorable
+  with $d$ or $d+1$ colors. The edge coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. To do that, we define from $H$ a routed network $(G,{\cal R})$ as follows.
+  The vertices of $G$ are $v_1, v_2$ for each $v$ in $V$ and $s_{u,v}, t_{u,v}$ for each $(u,v) \in E$.
+  For each edge $(u,v) \in E$, there is a route $s_{u,v},u_1,u_2,v_1,v_2,t_{u,v}$ in ${\cal R}$. 
+  
+   To define ${\cal R}$ an arbitrary orientation of each edge $(u,v)$ is chosen. 
+   Then for each arc $(u,v)$ there is a route $s_{u,v},u_1,u_2,v_1,v_2,t_{u,v}$ in ${\cal R}$.
+  All these arcs are of weight $0$. The set of arcs of G is the union between all the arcs of the previously defined routes.
    
     
   Observe that the existence of a $d$-coloring of $H$ is equivalent to the existence of a $(d,1)$-periodic assignment
   of $(G,{\cal R})$. Indeed, a $d$-coloring of $H$ can be seen as a labeling of its edges by the integers
   in $\{0,\dots,d-1\}$ and we have a bijection between $d$-colorings of $H$ and offsets of the routes of ${\cal R}$.
-  By construction, the constraint of having no collision between the routes is equivalent to the fact that no two adjacent edges have the same color. Therefore we have reduced edge coloring to PRA which concludes the proof. 
+  By construction, the constraint of having no collision between the routes is equivalent to the fact that no two adjacent edges have the same color. Therefore we have reduced edge coloring to PRA by a polynomial time transformation which concludes the proof. 
  \end{proof}
  
- Remark that we have used zero weight in the proof. If we ask the weights to be strictly positive, which makes sense in our model since
+ Remark that we have used zero weights in the proof. If we ask the weights to be strictly positive, which makes sense in our model since
 they represent the latency of physical links, it is easy to adapt the proof. We just have to set them so that in any route the weight at $u_1$ is equal to $d$ and thus equal to $0$ modulo $d$. We now lift this hardness result to the problem PALL.
 
 \begin{corollary}
-Problem PALL is $\NP$-complete for routing of conflict depth two.
+Problem PALL is $\NP$-complete on the class of routed networks of conflict depth two.
 \end{corollary}
 \begin{proof}
  We consider $((G,{\cal R}),P,\tau)$ an instance of $PRA$. We assume that no vertex is the first of some route and the last of another one. Remark that this condition is satisfied in the previous proof, which makes the problem $PRA$ restricted to this kind of instance $\NP$-complete. 
  Let us define $T_{max} = 2 \times \max_{r \in {\cal R}} \lambda(r) + P$. We define $(G',{\cal R}')$ a symmetric routed network from $(G,{\cal R})$ where for every route we add a symmetric route with new arcs of opposite orientation and the same weights.
- The instance $((G',{\cal R'}),P,\tau,T_{max})$ is in PALL if and only if $((G,{\cal R}),P,\tau)$ is in $PRA$. Indeed the waiting time of each route is by definition less than $P$ and thus the maximal process time is always less than $T_{max}$. Moreover a $(P,\tau)$-assignment of $(G,{\cal R})$ can be extended into a $(P,\tau)$-assignment of $(G',{\cal R'})$ in the following way. For each route $r \in \cal{R}$ starting at $s$, the time at which the message arrives is $t(\rho(s),r)$, then we choose as offset for $\rho(r) \in \cal{R}'$ $-t(\rho(s),r) \mod P$. The symmetry ensures that each new route $\rho(r)$ in ${\cal R'}$ uses the same times slot as $r$ one each of its node and thus avoid collisions.
+ We prove that the instance $((G',{\cal R'}),P,\tau,T_{max})$ is in PALL if and only if $((G,{\cal R}),P,\tau)$ is in $PRA$.
+ If $((G',{\cal R'}),P,\tau,T_{max})$ is in PALL, then a $(P,\tau)$-assignment of $(G',{\cal R'})$ restricted to $\R$ is a $(P,\tau)$-assignment of $((G,{\cal R})$ since they cannot be any collision between routes of ${\cal R}$.
+ 
+ Assume now that $((G,{\cal R}),P,\tau)$ is in $PRA$. First remark that the waiting time of each route is by definition less than $P$ and thus the maximal process time is always less than $T_{max}$, therefore the constraint on $T_{max}$ is satisfied. Moreover a $(P,\tau)$-assignment of $(G,{\cal R})$ can be extended into a $(P,\tau)$-assignment of $(G',{\cal R'})$ in the following way. For each route $r \in \cal{R}$ of last vertex $v$, the time at which the message arrives is $t(v,r)$, then we choose as offset for $\rho(r) \in \cal{R}'$ $-t(v,r) \mod P$. The symmetry ensures that each new route $\rho(r)$ in ${\cal R'}$ uses exactly the same times slot as $r$ one each of its node and thus avoid collisions.
 \end{proof}
 
 Let MIN-PRA be the problem, given a routed network and an assignment, to find the minimal period $P$ such that there is a $P$-periodic assignment. 
 
 \begin{theorem}\label{th:inapprox}
- The problem MIN-PRA cannot be approximated in polynomial time within a factor $n^{1-o(1)}$, with $n$ the number of routes, unless $\P = \NP$ even when the load is two.
+If $\P \neq \NP$, problem MIN-PRA on the classes of routed networks of load two cannot be approximated in polynomial time within a factor $n^{1-o(1)}$ where $n$ is the number of routes.
 \end{theorem}
 
 \begin{proof}
  We reduce graph coloring to PRA. Let $H$ be a graph instance of the $k$-coloring problem. 
  We define ${\cal R}$ in the following way: for each vertex $v$ in $H$, there is a route $r_v$ in ${\cal R}$.
- Two routes $r_v$ and $r_u$ share an arc if and only if $(u,v)$ is an edge in $H$; this arc is the only one shared by these two routes. All arcs are of weight $0$. 
+ Two routes $r_v$ and $r_u$ share an arc if and only if $(u,v)$ is an edge in $H$; this arc is the only one shared by these two routes. All arcs are of weight $0$. Note that it is easy to build a graph with such routes as in Fig.~\ref{fig:reduction}.
  
  Observe that the existence of a $k$-coloring of $H$ is equivalent to the existence of a $(k,1)$-periodic assignment in $G$, 
  by converting an offset of a route into a color of a vertex and reciprocally. Therefore if we can approximate the minimum value of $P$ within some factor, we could approximate the minimal number of colors needed to color a graph within the same factor. The proof follows from the hardness of approximability of finding a minimal coloring~\cite{zuckerman2006linear}.
@@ -405,7 +408,7 @@ In particular, this reduction shows that even with small maximal load, the minim
     \end{tikzpicture}
     }
     \caption{Reduction from k-coloring to MIN-PRA}
-
+    \label{fig:reduction}
     \end{figure}
     
 \section{The star topology: no waiting time} \label{sec:PAZL}
