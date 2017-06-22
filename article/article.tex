@@ -698,30 +698,42 @@ Note that we also experimented with other greedy algorithms which do not use mac
    \section{The star topology: minimizing latency}\label{sec:PALL}
     
     In this section, we still work on the star topology, but we consider again the  PALL problem. 
-    It means that the messages can wait in the target vertices (BBU), in order to find solution that we cannot find without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weight of the routes, but it should not be superior to $T_{max}$.
+    It means that the messages can wait in the target vertices (BBU), in order to find solution that we cannot find without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weight of the routes, but it should less than $T_{max}$.
 
 	\subsection{Special cases}
 		
 		
-	Often in real networks, the length of the routes are not arbitrary. 
-	\todo{Reprendre les deux cas faciles, est-ce qu'il y en a d'autres ?}
+	Often in real networks, the length of the routes are not arbitrary and we may exploit that to solve PALL easily. For instance if all the weights on the arcs $c_t,t_i$ are the same, we can replace them all by $0$ and substract this weight to $T_{max}$.
+	The assignment in that case is trivial, just send all messages so that they follow each other without gaps in the central arc $(c_s,c_t)$. Since the arcs $(c_t,t_i)$ are of weigth $0$, all messages will go through  $(c_t,c_s)$ on their way back in
+	the same order and thus will not collide. 
 	
-	One of the closest approach to real networks is the case in which all the weight on the arcs going from $c_t$ to targets are the same and so can be simplified by $0$. In that case, the order of the messages in the forward and backward period is the same. The trivial solution is to send all message following each others regardless the order. Thus, the period is minimal : $n.\tau$, where $n$ is the number of routes. Furthermore, all the waiting times are equal to $0$ i.e. $w_i = 0,\forall i $, thus, $MT({\cal M})$ is equal to twice the weight of the longest route, that is not alterable.
-
-	Another particular case is the following one:	
+	
+	A more realistic assumption would be that all weigths of the arcs $(s_i,c_s)$ are the same. It would correspond
+	to a situation where all the BBUs are in the same datacenter.
+	
 	 \begin{theorem}
-     There is always a solution with $MT({\cal M}) < T_{max}$ when  $ \forall (i,j), \omega(s_i,c_s) = \omega (s_j,c_s)$      \end{theorem}
+	 Let $(G,{\cal R})$ be a symmetric routed network with $n$ routes and let $P \geq n\tau$. If for all $i$ and $j$ less than $n$ $\omega(s_i,c_s) = \omega (s_j,c_s)$, then there is a $(P,\tau)$-peridoic assignment with process time $2\max_{r\in {\cal R}} \lambda(r)$ and it can be built in time $O(n\log(n))$.
+	 \end{theorem}
       \begin{proof}
       
-
-	Since we can simplify the weight on the arcs between $c_s$ and the sources by $0$, we consider only the weight between $c_t$ and the targets. Order the routes such that $\lambda(r_{s_i}) > \lambda(r_{s_j}), i<j$, i.e. the route $0$ is the longest, and the route $n-1$ is the shortest one.
-	The messages are sent in the forward period from the route $0$ to $n-1$, that is $m_{s_i} = \tau * i$.
-	The first message has totally reach the backward period at time $2.\lambda(r_{s_0})+\tau$. The process time of the first message is $PT(s_0) = 2.\lambda(r_{s_0}) $.
-	The second message is able to reach the backward period at time $\tau + 2.\lambda(r_{s_1})$. Thus, the waiting time of the second route is $w_1 = 2.\lambda(r_{s_0})+\tau - (\tau + 2.\lambda(r_{s_1})) = 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))$. Thus $PT(s_1) = 2.\lambda(r_{s_1}) + 2.(\lambda(r_{s_0}) - \lambda(r_{s_1}))  = 2.\lambda(r_{s_0})  = PT(s_0)$.
-	By induction, $PT(s_i) = PT(s_0), \forall i \in n$. 
+        We can simplify the weights on the arcs $(s_i,c_s)$ by setting them all to $0$. We order the routes
+        in decreasing order of their length, that is when $i<j$, $\lambda(r_{i}) > \lambda(r_{j})$.
+        The offset of the route $r_i$ is $i\tau$, which ensures that there are no collision on the way forward (on the arc 
+        $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period.        
+	We set the waiting time of the first message to $0$, thus it reaches the vertex $c_t$ for the second time before going through the arc $(c_t,c_s)$ at time $2\lambda(r_{0})+\tau$. The process time of the first message is $PT(r_0) = 2\lambda(r_{0})$.
+	The second message reaches $c_t$ for the second time at $\tau + 2\lambda(r_{1})$. 
+	Therefore to avoid collision, we set the waiting time  $w_1 =  2\lambda(r_{0})+\tau - (\tau + 2\lambda(r_{1})) = 2(\lambda(r_{0}) - \lambda(r_{1}))$. 
 	
-	Consequently, for this case, sending the message from the one using the longest route to to one using the shortest route is optimal, because the longest route has no waiting time, and all the other routes have the exact same process time, thus, $MT(M) = PT(s_0) = 2.\lambda(r_{s_0}) $. Moreover, the period used is exactly $n \tau$, in both the forward and backward periods.
+	We generalize this by setting $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$ for all $i< n$.
+	There are no collision on the way back since the message of the route $r_i$ arrives at $c_t$
+	at time $(i-1)\tau + 2\lambda(r)$. We must also evaluate the process time. 
+	By defintion $PT(r_i) = 2\lambda(r_i) + w_i = 2\lambda(r_i) + 2(\lambda(r_{0}) - \lambda(r_{i})) = 2\lambda(r_0)$.
+	Since all process times are the same, the maximum process time is also equal to $2\lambda(r_0)$.
+	
+	Finally, the time to build this assignment is dominated by the sorting of the routes from the longest to the shortest and is thus in $O(n\log(n)$.
      \end{proof}
+      
+\todo{Une remarque sur le fait que la complexité dépend sans doute du nombre de valeurs différentes sur les arcs et pas du nombre de routes.}
 
 
      \subsection{A first approach}
