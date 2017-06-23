@@ -722,9 +722,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
         $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period.        
 	We set the waiting time of the first message to $0$, thus it reaches the vertex $c_t$ for the second time before going through the arc $(c_t,c_s)$ at time $2\lambda(r_{0})+\tau$. The process time of the first message is $PT(r_0) = 2\lambda(r_{0})$.
 	The second message reaches $c_t$ for the second time at $\tau + 2\lambda(r_{1})$. 
-	Therefore to avoid collision, we set the waiting time  $w_1 =  2\lambda(r_{0})+\tau - (\tau + 2\lambda(r_{1})) = 2(\lambda(r_{0}) - \lambda(r_{1}))$. 
+	Therefore to avoid collision, we set the waiting time  $w_1 =  2\lambda(r_{0})+\tau - (\tau + 2\lambda(r_{1})) = 2(\lambda(r_{0}) - \lambda(r_{1}))$, which is positive since $\lambda(r_{0}) > \lambda(r_{1})$. 
 	
-	We generalize this by setting $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$ for all $i< n$.
+	We generalize this by setting $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$ which are positive for all $i< n$,
+	since by definition.
 	There are no collision on the way back since the message of the route $r_i$ arrives at $c_t$
 	at time $(i-1)\tau + 2\lambda(r)$. We must also evaluate the process time. 
 	By defintion $PT(r_i) = 2\lambda(r_i) + w_i = 2\lambda(r_i) + 2(\lambda(r_{0}) - \lambda(r_{i})) = 2\lambda(r_0)$.
