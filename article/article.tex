@@ -65,17 +65,18 @@ We study the sending of periodic messages in a graph following predefined paths,
 \footnote{This work is partialy supported by the french  ANR project N-GREEN.}
 \section{Introduction}
 
-Next generations of mobile network architectures evolve toward centralized radio network architectures or C-RAN, for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c}. The main challenge for this type of architecture is the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and the Baseband Units (BBUs) in the cloud. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
+Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost owenrship. The main challenge for this type of architecture is the latency in the transfer process that is an important factor for dimensioning the network. The latency is measured between the sending of a message by the Remote Radio Heads (RRHs) on the field and the receptions of the answers, computed by real-time virtualized network functions on Baseband Units (BBUs), in the cloud. For example, even if next radio protocols are less stringent, some standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
 
- In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution is to use stochastic multiplexing \todo{ref} with a traditional queue management in an optical network with a very large bandwidth to minimize latency. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}.
+ In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution ~\cite{pizzinat2015things,tayq2017real} is to use use dedicated circuits, since statistical multiplexing even with a very large bandwidth, does not comply with the latency requirements. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. The aim is to operate a C-RAN on a low-cost shared switched network.
+
 
  
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network.
- The process must be periodic, that is if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design 
+ The process must be  predictable (i.e. the date of arrival of packets is known beforehand). For the need of this study and to simplify we assume that it is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design 
  a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \textbf{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
  between the emission of a message and the complete return of its answer. It means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long.
  
- Thus in this article, we work on latency and periodicity constraints in fron- thaul. The best current solution is to rely on an almost full optical approach, where each end-points (RRH on one side, BBU on the other side) are connected through direct fiber or full optical switches [7]. This architecture is very ex- pensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. It is then needed to find a solution to offer low latency over commoditized packet based networks. Indeed, dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as it is considered in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific net- work architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to 1?s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler. 
+ Thus in this article, we work on latency and periodicity constraints in fronthaul. The best current solution is to rely on an almost full optical approach, where each end-points (RRH on one side, BBU on the other side) are connected through direct fiber or full optical switches [7]. This architecture is very ex- pensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. It is then needed to find a solution to offer low latency over commoditized packet based networks. Indeed, dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as it is considered in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific net- work architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to 1?s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler. 
  
 The problem we thus focus on here may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just avoid deadlocks, moreover the periodicity is not considered in wormhole problems. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are also $\NP$-complete. The only model which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
 
@@ -86,7 +87,7 @@ In Sec.~\ref{sec:complexity}, we prove that the problem PRA and PALL are $\NP$-h
 restricted classes of graphs. 
 Therefore in the next two sections, we study a simple but very common topology, that we call the
 star topology, where all messages can collide on a single arc.
-In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting times must all be zero. We provide several algorithms, some of their theoretical properties and give experimental evidences that they find periodic assignments when the network is no too loaded. Finally in Sec.\ref{sec:PALL}, we propose algorithms for the general PALL problem and exhibit one which works extremely well in our experiments even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional stochastic multiplexing with regard to latency. 
+In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting times must all be zero. We provide several algorithms, some of their theoretical properties and give experimental evidences that they find periodic assignments when the network is not too loaded. Finally in Sec.\ref{sec:PALL}, we propose algorithms for the general PALL problem and exhibit one which works extremely well in our experiments even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional stochastic multiplexing with regard to latency. 
 
 
 \section{Model and Problems}\label{sec:def}
@@ -94,7 +95,7 @@ In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting
   \subsection{Network modeling}
   
 
-The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} \omega(a_j)$. We also define $\lambda(u_0,r)=0$. The latency of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
+The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} \omega(a_j)$. We also define $\lambda(u_0,r)=0$. The length of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
 We denote by $\cal R$ a set of routes,  %in $G$ such that no two routes have the same first vertices or the same last vertices.
 the pair $(G,\cal R)$ is called a {\bf routed network} and represents our telecommunication network.
 The first vertex of a route models an antenna (RRH) and the last one a data-center (BBU) which processes the messages sent by the antenna.
@@ -181,32 +182,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
        \caption{A routed network with $(0,0,0)$ as a $(2,1)$-periodic assignment}
        \label{fig:example}
       \end{figure}
-      
-      The following table summarize the main notations used in the paper.
-      \begin{center}
-   \begin{tabular}{|c|c|}
-    \hline
-     $(G,\cal R)$ & A Routed network \\
-     \hline
-      $\omega(u,v)$ & Weight of the arc $(u,v) \in A$ \\
-      \hline
-      $\lambda (u_i,r)$ & The latency of the vertex $u_i$ through $r$\\
-         \hline
-         $\lambda (r)$ & The latency of a route $r$.\\
-         \hline
-         $P$ & Period\\
-         \hline
-         $\tau$ & Size of a message\\
-         \hline
-         $ [t(v,r)]$&The set of time slots used by route $r$ at vertex $v$ \\
-         & in a period $P$.\\
-         \hline 
-         ${\cal M}=(m_1, \ldots ,m_n)$&Offsets\\
-    \hline
-
-      \end{tabular}
-      \end{center}
-
+   
    \subsection{Problems}\label{nonmonotone}
 
     We want to find an assignment which allows to send periodic messages from sources to targets
@@ -281,7 +257,39 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       As a consequence of the $\NP$-hardness of PRA, we show in the next subsection that this problem is $\NP$-hard. 
       In Sec.~\ref{sec:PALL} we will study heuristics which try to solve the search version of PALL (computing an assignment), also denoted by PALL for simplicity.
 
-  
+     
+      The following table summarize the main notations used in the paper.
+      \begin{center}
+   \begin{tabular}{|c|c|}
+    \hline
+     $(G,\cal R)$ & A Routed network \\
+     \hline
+      $\omega(u,v)$ & Weight of the arc $(u,v) \in A$ \\
+      \hline
+      $\lambda (u_i,r)$ & The latency of the vertex $u_i$ through $r$\\
+         \hline
+         $\lambda (r)$ & The length of a route $r$\\
+         \hline
+         $P$ & Period\\
+         \hline
+         $\tau$ & Size of a message\\
+         \hline
+         $ [t(v,r)]$&The set of time slots used by route $r$ at vertex $v$ \\
+         & in a period $P$\\
+         \hline 
+         ${\cal M}=(m_1, \ldots ,m_n)$&Assignment(Offsets of each routes)\\
+              \hline 
+         $w_r$& Waiting time on route $r$\\
+            \hline 
+         $PT(r)$&Process time on the route $r$\\
+           \hline 
+         $MT({\cal M})$&Maximum process time of the assignment\\
+    \hline
+
+      \end{tabular}
+      \end{center}
+
+
 \section{Hardness of PRA}
   \label{sec:complexity}
 
@@ -325,7 +333,7 @@ Problem PRA is $\NP$-complete on the class of routed networks with conflict dept
  \end{proof}
  
  Remark that we have used zero weights in the proof. If we ask the weights to be strictly positive, which makes sense in our model since
-they represent the latency of physical links, it is easy to adapt the proof. We just have to set them so that in any route the weight at $u_1$ is equal to $d$ and thus equal to $0$ modulo $d$. We now lift this hardness result to the problem PALL.
+they represent the delay of physical links, it is easy to adapt the proof. We just have to set them so that in any route the weight at $u_1$ is equal to $d$ and thus equal to $0$ modulo $d$. We now lift this hardness result to the problem PALL.
 
 \begin{corollary}
 Problem PALL is $\NP$-complete on the class of routed networks of conflict depth two.
