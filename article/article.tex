@@ -36,7 +36,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
 
-
+\renewcommand{\thefootnote}{\*}
 
 \newcommand{\todo}[1]{{\color{red} TODO: {#1}}}
 
@@ -62,7 +62,7 @@
 We study the sending of periodic messages in a graph following predefined paths, a problem arising from communication between radio antennas and their signal processing units located in distant data-centers. Messages must be sent deterministically to avoid collisions on the network and to minimize the latency. We prove that problems arising from this context are $\NP$-complete even for very restricted graphs. We then deal with the case of a star graph and for different regimes of the parameters we propose algorithms that are experimentally shown to work extremely well compared to traditional statistical multiplexing.
 \end{abstract}
 
-
+\footnote{This work is partialy supported by the french  ANR project N-GREEN.}
 \section{Introduction}
 
 Next generations of mobile network architectures evolve toward centralized radio network architectures or C-RAN, for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c}. The main challenge for this type of architecture is the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and the Baseband Units (BBUs) in the cloud. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
@@ -75,7 +75,9 @@ Let us expose briefly our model: the network topology is modeled by a directed w
  a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \textbf{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
  between the emission of a message and the complete return of its answer. It means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long.
  
-This problem may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just avoid deadlocks, moreover the periodicity is not considered in wormhole problems. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are also $\NP$-complete. The only model which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
+ Thus in this article, we work on latency and periodicity constraints in fron- thaul. The best current solution is to rely on an almost full optical approach, where each end-points (RRH on one side, BBU on the other side) are connected through direct fiber or full optical switches [7]. This architecture is very ex- pensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. It is then needed to find a solution to offer low latency over commoditized packet based networks. Indeed, dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as it is considered in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific net- work architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to 1?s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler. 
+ 
+The problem we thus focus on here may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just avoid deadlocks, moreover the periodicity is not considered in wormhole problems. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are also $\NP$-complete. The only model which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
 
 
  In Sec.~\ref{sec:def} we propose a model of the network and the periodic sending of messages along its routes. 
@@ -179,7 +181,31 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
        \caption{A routed network with $(0,0,0)$ as a $(2,1)$-periodic assignment}
        \label{fig:example}
       \end{figure}
+      
+      The following table summarize the main notations used in the paper.
+      \begin{center}
+   \begin{tabular}{|c|c|}
+    \hline
+     $(G,\cal R)$ & A Routed network \\
+     \hline
+      $\omega(u,v)$ & Weight of the arc $(u,v) \in A$ \\
+      \hline
+      $\lambda (u_i,r)$ & The latency of the vertex $u_i$ through $r$\\
+         \hline
+         $\lambda (r)$ & The latency of a route $r$.\\
+         \hline
+         $P$ & Period\\
+         \hline
+         $\tau$ & Size of a message\\
+         \hline
+         $ [t(v,r)]$&The set of time slots used by route $r$ at vertex $v$ \\
+         & in a period $P$.\\
+         \hline 
+         ${\cal M}=(m_1, \ldots ,m_n)$&Offsets\\
+    \hline
 
+      \end{tabular}
+      \end{center}
 
    \subsection{Problems}\label{nonmonotone}
 
@@ -224,7 +250,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       
       
       \begin{center}
-      \includegraphics[scale=0.3]{rrh.png}
+      \includegraphics[width=\textwidth]{rrh.pdf}
       \end{center}
       
       
@@ -232,7 +258,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       This message is received by $v$ the last vertex of $r$ at time $t(v,r)$. It is then sent back to $u$ on the route $\rho(r)$ in the same period at time $m_{\rho(r)}$ if $m_{\rho(r)} > t(v,r)$, otherwise at time $m_{\rho(r)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_r = m_{\rho(r)} - t(v,r)$ if $m_{\rho(r)} > t(v,r)$ and $w_r = m_{\rho(r)} + P - t(v,r)$ otherwise.
  
        \begin{center}
-      \includegraphics[scale=0.17]{BBU2.png}
+      \includegraphics[width=\textwidth]{BBU.pdf}
       \end{center}
      
     
@@ -425,7 +451,7 @@ In particular, this reduction shows that even with small maximal load, the minim
       
       
        \begin{center}
-	 \scalebox{0.7}{
+	 \scalebox{0.8}{
 \begin{tikzpicture}
 
 \tikzset{
@@ -444,17 +470,17 @@ In particular, this reduction shows that even with small maximal load, the minim
   \node[draw,circle] (t1) at (8, 4) {$t_1$}; 
   
 
-  \node[draw,circle] (cs) at (2, 2) {$c_s$}; 
-  \node[draw,circle] (ct) at (6, 2) {$c_t$}; 
+  \node[draw,circle] (cs) at (3, 2) {$c_s$}; 
+  \node[draw,circle] (ct) at (5, 2) {$c_t$}; 
 
   
-  \Edge(s1)(cs)
-  \Edge(s2)(cs)
-  \Edge(s3)(cs)
+  \Edge[label = $\omega(s_1.c_s)$](s1)(cs)
+  \Edge[label = $\omega(...)$](s2)(cs)
+  \Edge[label = $\omega(...)$](s3)(cs)
   
-  \Edge(ct)(t1)
-  \Edge(ct)(t2)
-  \Edge(ct)(t3)
+  \Edge[label = $\omega(...)$](ct)(t1)
+  \Edge[label = $\omega(...)$](ct)(t2)
+  \Edge[label = $\omega(...)$](ct)(t3)
   
   \Edge(cs)(ct)
 
@@ -544,7 +570,7 @@ In particular, this reduction shows that even with small maximal load, the minim
      \end{proof}
      
       \begin{center}
-      \includegraphics[scale=0.3]{ex3nt.png}
+      \includegraphics[width=\textwidth]{ex3nt.png}
       \end{center}
 % 	\begin{algorithm}[H]
 % 	\caption{Greedy assignment}
@@ -733,9 +759,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 	
 	Finally, the time to build this assignment is dominated by the sorting of the routes from the longest to the shortest and is thus in $O(n\log(n)$.
      \end{proof}
-      
-\todo{Une remarque sur le fait que la complexité dépend sans doute du nombre de valeurs différentes sur les arcs et pas du nombre de routes.}
-
+\todo{Une remarque sur le fait que la complexite depend sans doute du nombre de valeurs differentes sur les arcs et pas du nombre de routes.}
 
      \subsection{A first approach}
 	
