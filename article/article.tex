@@ -18,7 +18,8 @@
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \usepackage{authblk}
-  
+% \usepackage{hyperref}
+
 \graphicspath{{figures/}}
 \makeatletter
 \def\input@path{{figures/}}
@@ -62,7 +63,7 @@
 We study the sending of periodic messages in a graph following predefined paths, a problem arising from communication between radio antennas and their signal processing units located in distant data-centers. Messages must be sent deterministically to avoid collisions on the network and to minimize the latency. We prove that problems arising from this context are $\NP$-complete even for very restricted graphs. We then deal with the case of a star graph and for different regimes of the parameters we propose algorithms that are experimentally shown to work extremely well compared to traditional statistical multiplexing.
 \end{abstract}
 
-\footnote{This work is partialy supported by the french  ANR project N-GREEN.}
+\footnote{This work is partially supported by the french ANR project N-GREEN.}
 \section{Introduction}
 
 Next generations of mobile network architectures evolve toward centralized radio network architectures or C-RAN, for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c}. The main challenge for this type of architecture is the latency in the transfer process between the Remote Radio Heads (RRHs) on the field and the Baseband Units (BBUs) in the cloud. The standard requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
@@ -207,7 +208,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       \end{tabular}
       \end{center}
 
-   \subsection{Problems}\label{nonmonotone}
+   \subsection{Periodic route assignment}\label{nonmonotone}
 
     We want to find an assignment which allows to send periodic messages from sources to targets
     without collisions. We introduce the following associated decision problem, useful for hardness proofs.
@@ -239,13 +240,13 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       
 \end{proof}
       
+      
+      \subsection{Periodic assignment for low latency}
       In the context of cloud-RAN applications, we need to send message from a RRH $u$ to a BBU $v$ and then 
-      we must send the answer from $v$ back to $u$. We say that a routed network $(G, {\cal R})$ is \textbf{symmetric}
-      if there is a bijection $\rho$ between routes such that for any route $r$ with first vertex $u$ and last vertex $v$, $\rho(r)$ has first vertex $v$ and last vertex $u$. In all practical cases the routes $r$ and $\rho(r)$ will be the same with the orientation of the arcs reversed, which corresponds to bidirectional links in the networks, but we need not to enforce this property.
-
+      we must send the answer from $v$ back to $u$. We say that a routed network $(G, {\cal R})$ is \textbf{symmetric} if the set of routes is partitionned into the sets $F$ of forward routes and $B$ of backward routes. Moreover there is a bijection $\rho$ between $F$ and $B$ such that for any forward route $r \in F$ with first vertex $u$ and last vertex $v$, the backward route $\rho(r) \in B$ has first vertex $v$ and last vertex $u$. In all practical cases the routes $r$ and $\rho(r)$ will be the same with the orientation of the arcs reversed, which corresponds to bidirectional links in the networks, but we need not to enforce this property.
          
          We now give a new interpretation of a $(P,\tau)$-periodic assignment of a $(G,{\cal R})$ symmetric routed network, so that it represents the sending of a message and of its answer.
-	This assignment represents the following process: first a message is sent at $u$, through the route $r$, at time $m_r$.
+	This assignment represents the following process: first a message is sent at $u$, through the route $r \in F$, at time $m_r$.
        
       
       
@@ -264,8 +265,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
     
       Thus, the whole process time for a message sent on the route $r$ is equal to
       $PT(r)=\lambda(r)+ w_r+\lambda(r)$.      
-      In the process time, we count the time between the first time at which a message is emitted and 
-      the first time at which the message comes back. Alternatively we could consider the time between the emission of the first slot and the reception of the last slot of the message, which would add $\tau$ to the process time.
+      In the process time, we count the time between the first time at which a message is emitted and the first time at which the message comes back. Alternatively we could consider the time between the emission of the first slot and the reception of the last slot of the message, which would add $\tau$ to the process time.
       However, since all messages are of size $\tau$, it will not change the problem we consider in the rest of the article.
       Finally, we could add to the process time the computation time a BBU needs to deal with one message, but it can be encoded  in the weight of the last arc leading to the BBU and thus we need not to consider it explicitly in our model.
       
@@ -436,7 +436,7 @@ In particular, this reduction shows that even with small maximal load, the minim
     \label{fig:reduction}
     \end{figure}
     
-\section{The star topology: no waiting time} \label{sec:PAZL}
+\section{The Star Topology: No Waiting Time} \label{sec:PAZL}
   
    
     
@@ -662,9 +662,8 @@ Note that we also experimented with other greedy algorithms which do not use mac
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search will find an optimal solution if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
       From our C-RAN context we choose the following parameters: the number of routes 
-      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise 
-      no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution. 
-      The code in C is available online on the webpages of the authors ~\cite{webpage}.
+      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution. 
+      The code in C is available online on the webpage of one of the authors~\cite{webpage}.
       
       We can define the load of the network as $\frac{n\tau}{P}$ (here a value between one and three) and in experiments we will try to understand how our algorithms work with regards to the load. Often rather than changing the load, we will change the period which is equivalent. 
       
@@ -672,7 +671,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \paragraph{Short routes}
       
       First we consider routes which are shorter than $\tau$, that is a message cannot be contained 
-      completely in a single edge. This is very common in our context and we will consider graphs in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately 1Mb, links of bandwidth 10Gbps and length less than 5km between the BBU and the RRH. 
+      completely in a single edge which is very common for our application. We generate star topologies in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately $1$ Mb, links of bandwidth $10$ Gbps and length less than $5$ km between the BBU and the RRH. 
       
       Our aim is to understand how well the algorithms are working under high load. To do that we try to evaluate the 
       minimal period (that is the highest possible load) for which a $(P,\tau)$ periodic assignment can be found by each algorithm. 
@@ -721,54 +720,77 @@ Note that we also experimented with other greedy algorithms which do not use mac
       
       When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for periods less than $22000$, we see that there are very few instances with a solution for PAZL. It means that with long routes and high load (larger than $0.9$), looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting times.
       
-   \section{The star topology: minimizing latency}\label{sec:PALL}
+   \section{The Star Topology: Minimizing Latency}\label{sec:PALL}
     
-    In this section, we still work on the star topology, but we consider again the  PALL problem. 
-    It means that the messages can wait in the target vertices (BBU), in order to find solution that we cannot find without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weight of the routes, but it should less than $T_{max}$.
+    In this section, we still work on the star topology, but we consider again the more general PALL problem. It means that the messages can wait in the target vertices (BBUs), in order to find solutions that we cannot find without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weight of the routes, but it should less than $T_{max}$.
 
 	\subsection{Special cases}
 		
 		
-	Often in real networks, the length of the routes are not arbitrary and we may exploit that to solve PALL easily. For instance if all the weights on the arcs $c_t,t_i$ are the same, we can replace them all by $0$ and substract this weight to $T_{max}$.
-	The assignment in that case is trivial, just send all messages so that they follow each other without gaps in the central arc $(c_s,c_t)$. Since the arcs $(c_t,t_i)$ are of weigth $0$, all messages will go through  $(c_t,c_s)$ on their way back in
+	Often in real networks, the length of the routes are not arbitrary and we may exploit that to solve PALL easily. For instance if all the weights on the arcs $(c_t,t_i)$ are the same, we can replace them all by $0$ and substract this weight to $T_{max}$.
+	The assignment in that case is trivial, just send all messages so that they follow each other without gaps in the central arc $(c_s,c_t)$. Since the arcs $(c_t,t_i)$ are of weigth $0$, all messages will go through $(c_t,c_s)$ on their way back in
 	the same order and thus will not collide. 
 	
 	
-	A more realistic assumption would be that all weigths of the arcs $(s_i,c_s)$ are the same. It would correspond
-	to a situation where all the BBUs are in the same datacenter.
+	A more realistic assumption would be that all weigths of the arcs $(s_i,c_s)$ are the same. It would correspond to a situation where all the BBUs are in the same datacenter.
 	
 	 \begin{theorem}
-	 Let $(G,{\cal R})$ be a symmetric routed network with $n$ routes and let $P \geq n\tau$. If for all $i$ and $j$ less than $n$ $\omega(s_i,c_s) = \omega (s_j,c_s)$, then there is a $(P,\tau)$-peridoic assignment with process time $2\max_{r\in {\cal R}} \lambda(r)$ and it can be built in time $O(n\log(n))$.
+	 Let $(G,{\cal R})$ be a symmetric routed network with $n$ routes and let $P \geq n\tau$. If for all $i$ and $j$ less than $n$ $\omega(s_i,c_s) = \omega (s_j,c_s)$, then there is a $(P,\tau)$-peridoic assignment with process time $2\displaystyle{\max_{r\in {\cal R}} \lambda(r)}$ and it can be built in time $O(n)$.
 	 \end{theorem}
       \begin{proof}
       
-        We can simplify the weights on the arcs $(s_i,c_s)$ by setting them all to $0$. We order the routes
-        in decreasing order of their length, that is when $i<j$, $\lambda(r_{i}) > \lambda(r_{j})$.
-        The offset of the route $r_i$ is $i\tau$, which ensures that there are no collision on the way forward (on the arc 
-        $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period.        
-	We set the waiting time of the first message to $0$, thus it reaches the vertex $c_t$ for the second time before going through the arc $(c_t,c_s)$ at time $2\lambda(r_{0})+\tau$. The process time of the first message is $PT(r_0) = 2\lambda(r_{0})$.
-	The second message reaches $c_t$ for the second time at $\tau + 2\lambda(r_{1})$. 
-	Therefore to avoid collision, we set the waiting time  $w_1 =  2\lambda(r_{0})+\tau - (\tau + 2\lambda(r_{1})) = 2(\lambda(r_{0}) - \lambda(r_{1}))$, which is positive since $\lambda(r_{0}) > \lambda(r_{1})$. 
-	
-	We generalize this by setting $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$ which are positive for all $i< n$,
-	since by definition.
-	There are no collision on the way back since the message of the route $r_i$ arrives at $c_t$
-	at time $(i-1)\tau + 2\lambda(r)$. We must also evaluate the process time. 
-	By defintion $PT(r_i) = 2\lambda(r_i) + w_i = 2\lambda(r_i) + 2(\lambda(r_{0}) - \lambda(r_{i})) = 2\lambda(r_0)$.
-	Since all process times are the same, the maximum process time is also equal to $2\lambda(r_0)$.
-	
-	Finally, the time to build this assignment is dominated by the sorting of the routes from the longest to the shortest and is thus in $O(n\log(n)$.
+        We can simplify the weights on the arcs $(s_i,c_s)$ by setting them all to $0$.
+        We find the route with maximal length, say that it is $\lambda(r_0)$. The idea is to 
+        set the waiting times of all routes so they behave exactly as the message in $r_0$.
+        
+        The offset of the route $r_i$ is set to $i\tau$, which ensures that there are no collision on the way forward (on the arc $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period. We fix the waiting time for the route $i$ to $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$. We can compute the time at which the message of the route $r_i$ arrives at the vertex $c_t$ on its way back: $t(r_i,(c_t,c_s)) = w_i + i\tau + 2\lambda(r_{i})$
+        by replacing $w_i$ by its value we obtain $t(r_i,(c_t,c_s)) =  i\tau + 2\lambda(r_{0})$
+        As a conclusion there are no collision on the edge $(c_t,c_s)$ as soon as the 
+        period is larger than $n\tau$ (there are no gaps between the messages).
+        
+        Now let us compute the process time of the route $r_i$ defined by $PT(r_i) = w_i + 2\lambda(r_{i}) $. We obtain $PT(r_i) = 2\lambda(r_{0})$ and thus the maximum process time of the assignment is also equal to $2\lambda(r_0)$.
+	Finally the complexity is $O(n)$ since we have to find a maximum between the size of $n$ routes and the computation of each $w_i$ is done by a constant number of artihmetic operations.
      \end{proof}
-\todo{Une remarque sur le fait que la complexite depend sans doute du nombre de valeurs differentes sur les arcs et pas du nombre de routes.}
-
-     \subsection{A first approach}
-	
-	To solve PALL, we propose some heuristics that prioritize the longest routes, and thus helps to minimize the process time $PT(s_i)$ of the routes in order to have no  $PT(s_i) > T_{max}$. Indeed, one can imagine that, if the messages on the longest routes are less buffered in their target than the messages using the shortest routes, the process times might be balanced.
-	In an optimal solution, if $r_i$ is the longest route, we want $w_i =0$, such that $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
-
-
-     We first suggest the following heuristic, composed of two greedy parts. First, on the forward period, the messages are ordered consecutively, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_{s_i}$ are ordered from the longest to the shortest.
      
+     Remark that this assignment always exists and has no collision when $P \geq n\tau$. 
+     If the difference of the weights of the arcs $\omega(s_i,c_s)$ is bounded 
+     by $d$ and the length of the longest route is $l$, then the maximum process time is bounded 
+     by  $2l + d$.
+
+     
+     \subsection{A two stage approach}
+     
+     We can decompose any algorithm solving the PALL problem in two parts: first set the offsets of the forward routes and then the offset of the backward routes or equivalently the waiting times.  
+     The offsets of the forward routes will be chosen so that all messages have no collision on the central arc and such that there are no free slots inbeetween the end of a message on the central arc and the beginning of the next one.     
+     We tried the five following orders. 
+	\begin{itemize}
+	 
+	 \item Longest-Shortest on Routes (LSR): Decreasing order on the length of the routes.
+	 \item Shortest-Longest on Routes (SLR): Increasing order on the length of the routes. 
+	 \item Longest-Shortest on last Arc (LSA): Decreasing order on the length of the arcs $(c_t,t_i)$.
+	 \item Shortest-Longest on last Arc (SLA): Increasing order on the length of the arcs $(c_t,t_i)$. This sending order yields a $(P,\tau)$ periodic assignment in which all the $w_i = 0$, if the period is large enough (see proposition \ref{prop:SL}).
+	 \item Random: A random order of the routes.
+	\end{itemize}
+
+   In the rest of the section we will study different methods to compute the offsets of the backward routes, once
+   the offsets of the forward routes are fixed by one of the previous orders.
+   
+   \subsection{Returning messages greedily}
+    
+    Definition of the deadline of the backward routes and an eligible route at time $t$.
+    Define the greedy algorithm as select the eligible route with smallest deadline, send the message
+    go to the next time. Deal with the periodicity.
+    
+    
+%     
+%      We made some simulations and determined that the Random order is the most efficient (see section \ref{sec:resultsPALL}). In the rest of the section, we focus on algorithms that computes the affectations for the way back of the process.
+% %      
+% 	To solve PALL, we propose some heuristics that prioritize the longest routes, and thus helps to minimize the process time $PT(s_i)$ of the routes in order to have no  $PT(s_i) > T_{max}$. Indeed, one can imagine that, if the messages on the longest routes are less buffered in their target than the messages using the shortest routes, the process times might be balanced.
+% 	In an optimal solution, if $r_i$ is the longest route, we want $w_i =0$, such that $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
+% 
+% 
+%      We first suggest the following heuristic, composed of two greedy parts. First, on the forward period, the messages are ordered consecutively, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_{s_i}$ are ordered from the longest to the shortest.
+%      
      Thus, to assign the messages on the backward period, we assign to each route it's deadline, equal to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$, that is,  the latest date at which a message is able to quit the target switch without exceed $T_{max}$. 
      We then determine the order of the messages by choosing, one by one the message on the route that we want to prioritize (eligible route): At a date $d$, if one or several messages are able to come back to $c_t$ before $d$, the eligible route is the one which have the lowest deadline. Otherwise, if any messages are able to be back on $c_t$ before $d$, the eligible route is the one with the first message able to come back to $c_t$.
 
@@ -812,26 +834,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
     \end{enumerate}
      This {\bf Greedy} policy determines the $m_{\rho_{s_i}}$ avoiding collisions on $c_t$. It computes the deadlines for every messages, considering their offsets and the weight on their routes, and determine the time at which the messages must leave their target, prioritizing the messages with the lowest deadlines.
      
-     However, this heuristic does not take the period into account. Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might have some collisions between the last messages of the period and the first ones of the following period.
-
-     \subsection{Choice of the Sending Order}
+%      However, this heuristic does not take the period into account. Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might have some collisions between the last messages of the period and the first ones of the following period.
+% 
+% 	
      
-	We tried to look at the behavior of our greedy policy with different kinds of sending orders for the messages.
-	
-	We tried the five following sending orders. Each one determines the order in which messages are sent from sources. In every case the messages are consecutive. This means that there is no time in the forward period between the end of a message and the beginning of the following one.
-	
-	The different sending orders that we tried are the following :
-	\begin{enumerate}
-	 \item Random: Generate $X$ randoms permutations for the routes and try the greedy heuristic on the way back until we get an available $(P,\tau)$ periodic assignment. In the following experiments, we take $X = 100$.
-	 \item Longest-Shortest on Routes (LSR): Send the messages from the one using longest to the one using shortest route (this is the sending order used in the previous heuristic).
-	 \item Shortest-Longest on Routes (SLR): Send the messages from the one using shortest to the one using longest route
-	 \item Longest-Shortest on last Arc (LSA): Send the messages from the one having the longest arc between $c_t$ an the target to the one having the shortest one.
-	 \item Shortest-Longest on last Arc (SLA): Send the messages from the one having the shortest arc between $c_t$ an the target to the one having the longest one. This sending order gives us some $(P,\tau)$ periodic assignment in which all the $w_i = 0$, but needs a huge period if the difference between the longest and the shortest route is large (see proposition \ref{prop:SL}).
-	\end{enumerate}
-	
-    
-     We made some simulations and determined that the Random order is the most efficient (see section \ref{sec:resultsPALL}). In the rest of the section, we focus on algorithms that computes the affectations for the way back of the process.
-      \subsection{About periodicity}
      We propose an improved version of the greedy algorithm, which tries to compute some solution that satisfies the period $P$:
      
      First, we remember the date at which the first messages starts to come back through $c_t$. Let us note $bp$ this date.
@@ -844,7 +850,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
     
      
-     \subsection{Using a scheduling algorithm}
+     \subsection{Returning messages through earliest deadline scheduling}
      
      Problem PALL is very similar to a scheduling problem, but many scheduling problems do not consider the periodic aspect. The article \cite{simons1978fast} from Simons, schedule jobs which all have the same execution time.
      This algorithm takes as input some jobs defined by a triplet id-release-deadlines, and an execution time for all jobs. A job is not able to be computed before it's release time, and must be finished before it's deadline. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
@@ -854,7 +860,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      If it exists a solution that satisfies $MT({\cal M}) < T_{max}$, this algorithm gives us a $(P,\tau)$ periodic assignment. Nevertheless, by setting the deadlines according to the size of the route only, the given $(P,\tau)$ periodic assignment might not respect the period $P$, because some messages at the end of the period could collide with the messages at the begining of the following period. 
      
-     \subsection{Final algorithm}
+     \subsection{Dealing with the periodicity}
      
      We adapted MS, presented in the previous paragraph, to consider the period, in the computation.
      
@@ -886,10 +892,11 @@ Note that we also experimented with other greedy algorithms which do not use mac
     
     This algorithm runs in $\mathcal{O}(n^3\log{}n)$. It finds more solutions than MS, because it compute the deadlines of the route considering the periodicity. Thus, an assignment given by this algorithm is a solution for PALL.
     
-    \subsection{Results}
+    \subsection{Experimental evaluation}
     \label{sec:resultsPALL}
     
-    To compare the previous algorithms, we first need to determine which of the sending order is the best. We know that Greedy Periodic is strictly better than Greedy, thus, we will compare the different sending orders with Greedy Periodic.
+    To compare the previous algorithms, we first need to determine which of the sending order is the best.
+   
 
    In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we drew the links between $0$ and $20000$ slots. We look at the success rate of each sending order with Greedy Periodic to assign the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from $0$ to $3000$.
    
@@ -975,12 +982,14 @@ We simulated a stochastic network on $1000$ instances with $8$ long routes (link
     
     \paragraph*{Future works}
    
-   We plan to generalize our study of the PALL problem to more topologies,
-   such as trees and cycles which are commonly found in real networks. 
+   We plan to generalize our study of the PALL problem to more real topologies,
+   such as trees, cycles or bounded treewidth graphs. 
    We would like to design FPT algorithms in the number of routes for PAZL and PALL on the star topology, eventually by relaxing the constraint on the maximal process time into an constraint on the average process time, which seems much more tractable. 
-   Moreoever we could allow preemption, that is the messages are allowed to be cut into pieces,
-   which would certainly change the complexity of the problem. 
-   Finally, the routes may not be fixed but chosen to optimize the latency, which would make the problem even more difficult (maybe $\Pi_2$-complete instead of $\NP$-complete). 
+   
+   We could also study variation of our problem. Instead of minimizing the maximum process time, we could try to minimize
+   the sum of the waiting time, a linear objective which could make linear programming useful.
+   Moreoever we could allow preemption, that is the messages are allowed to be cut into pieces, which would certainly change the complexity of the problem. 
+   Finally, the routes may not be fixed but chosen in the graph to minimize the maximum process time, which would make the problem even more difficult (maybe $\Pi_2$-complete instead of $\NP$-complete). 
 
    
 
