@@ -741,7 +741,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 	A more realistic assumption would be that all weigths of the arcs $(s_i,c_s)$ are the same. It would correspond to a situation where all the BBUs are in the same datacenter.
 	
 	 \begin{theorem}
-	 Let $(G,{\cal R})$ be a symmetric routed network with $n$ routes and let $P \geq n\tau$. If for all $i$ and $j$ less than $n$ $\omega(s_i,c_s) = \omega (s_j,c_s)$, then there is a $(P,\tau)$-peridoic assignment with process time $2\displaystyle{\max_{r\in {\cal R}} \lambda(r)}$ and it can be built in time $O(n)$.
+	 Let $(G,{\cal R})$ be a symmetric routed network with $n$ routes and let $P \geq n\tau$. If for all $i$ and $j$ less than $n$ $\omega(s_i,c_s) = \omega (s_j,c_s)$, then there is a $(P,\tau)$-peridoic assignment with process time $2 \times \displaystyle{\max_{r\in {\cal R}} \lambda(r)}$ and it can be built in time $O(n)$.
 	 \end{theorem}
       \begin{proof}
       
@@ -765,8 +765,9 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      \subsection{A two stage approach}
      
-     We can decompose any algorithm solving the PALL problem in two parts: first set the offsets of the forward routes and then the offset of the backward routes or equivalently the waiting times.  
-     The offsets of the forward routes will be chosen so that all messages have no collision on the central arc and such that there are no free slots inbeetween the end of a message on the central arc and the beginning of the next one.     
+     We can decompose any algorithm solving the PALL problem in two parts: first set the offsets of the forward routes and then knowing this information set the offset of the backward routes or equivalently the waiting times.  
+     The offsets of the forward routes will be chosen so that all messages have no collision on the central arc and such that there are no free slots inbeetween the end of a message on the central arc and the beginning of the next one. 
+     It is done to minimize the period needed to send the messages of the forward route.
      We tried the five following orders. 
 	\begin{itemize}
 	 
@@ -780,82 +781,42 @@ Note that we also experimented with other greedy algorithms which do not use mac
    In the rest of the section we will study different methods to compute the offsets of the backward routes, once
    the offsets of the forward routes are fixed by one of the previous orders.
    
-   \subsection{Returning messages greedily}
+   \subsection{Greedy scheduling of backward routes}
     
-    Definition of the deadline of the backward routes and an eligible route at time $t$.
-    Define the greedy algorithm as select the eligible route with smallest deadline, send the message
-    go to the next time. Deal with the periodicity.
+    Assume that the offsets of the forward routes are fixed by some order. 
+    Consider a forward route $r_i$ and the corresponding backward route $r_{\rho(i)}$.
+    We define the {\bf deadline} of $r_{\rho(i)}$ as $m_{i} + T_{max} - \omega(s_i,c_s)$, that is the latest time at which the message can go out of $c_t$ such that $PT(r_i) \leq T_{max}$.
+    We say that a backward route $r_{\rho(i)}$ is {\bf eligible} at time $t$ if $m_{i} +  \lambda(r_i) + \omega(c_t,t_i) \leq t$, that is the message of the route $r_{\rho(i)}$ arrives at $c_t$ before the time $t$ when $w_i = 0$.
     
+    The first algorithm we propose is a greedy algorithm which sets the offset of the 
+    backward routes. It prioritizes the routes with the earliest deadline to best satisfy the
+    constraint on the process time.
+    Set $t=0$ and repeat the following: find $s \geq t$ the first time for which there is an eligible route with its offset not fixed. Then amongst all eligible routes at time $s$ choose the one with the smallest deadline, fix its offset to $s$ and set $t = s + \tau$.
+    
+    This algorithm does not take into account the periodicity. Say that $t_0$ is the smallest offset that the algorithm has fixed
+    for a backward route. Then for all routes with an offset smaller than $t_0 + P - \tau$,
+    by construction, there are no collisions on the central arc.
+    However, for routes with larger offsets, since we  should consider everything modulo $P$, 
+    they may collide with any other route. Therefore we must adapt the greedy algorithm of the previous paragraph by finding $s \geq t$ the first time for which there is an eligible route with its offset not fixed and \emph{such that there is no collision if a message go
+    through the central arc at time $s$}. 
+    
+    
+    The greedy algorithm can be made to work in time $O(n\log(n))$. 
+    To do that the set of eligible routes must be maintained in a binary heap
+    to be able to find the one with smallest deadline in time $O(\log(n))$. 
+    To deal with the possible collisions, one can maintain a list of the intervals
+    of time at which a message can be send on the arc $(c_t,c_s)$. Each time the offset of a 
+    route is fixed an interval is split into at most two intervals in constant time. 
+    Since the algorithm goes over the elements of the list at most twice when doing an insertion
+    or looking for the next free interval, the time needed to maintain it is $O(n)$. 
     
 %     
-%      We made some simulations and determined that the Random order is the most efficient (see section \ref{sec:resultsPALL}). In the rest of the section, we focus on algorithms that computes the affectations for the way back of the process.
-% %      
-% 	To solve PALL, we propose some heuristics that prioritize the longest routes, and thus helps to minimize the process time $PT(s_i)$ of the routes in order to have no  $PT(s_i) > T_{max}$. Indeed, one can imagine that, if the messages on the longest routes are less buffered in their target than the messages using the shortest routes, the process times might be balanced.
-% 	In an optimal solution, if $r_i$ is the longest route, we want $w_i =0$, such that $PT(s_i) = 2.\lambda(r_{s_i}) \geq  2.\lambda(r_{s_j}) + w_j = PT(s_j) $, where $j$ is any route $\neq i$.
-% 
-% 
-%      We first suggest the following heuristic, composed of two greedy parts. First, on the forward period, the messages are ordered consecutively, from the one using the longest route, to the one using the shortest route. Thus, we set the $m_{s_i}$ of the routes such that  $t(c_s,r_{s_i}) = \tau.i$, if the routes $r_{s_i}$ are ordered from the longest to the shortest.
-%      
-     Thus, to assign the messages on the backward period, we assign to each route it's deadline, equal to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$, that is,  the latest date at which a message is able to quit the target switch without exceed $T_{max}$. 
-     We then determine the order of the messages by choosing, one by one the message on the route that we want to prioritize (eligible route): At a date $d$, if one or several messages are able to come back to $c_t$ before $d$, the eligible route is the one which have the lowest deadline. Otherwise, if any messages are able to be back on $c_t$ before $d$, the eligible route is the one with the first message able to come back to $c_t$.
-
- 
-
-     
-    \begin{algorithm}[H]
-    \caption{Longest Shortest + Greedy }
-    \begin{algorithmic}
-    \REQUIRE routed network $(G,{\cal R})$, period $P$, $ T_{max}$, packet size $\tau$
-    \ENSURE $(P,\tau)-$periodic assignment of $(G,{\cal R})$
-    \STATE $clock \leftarrow 0$
-    \FORALL{route in $r_{s_i}$ sorted from the longest to the shortest }
-    \STATE  $m_{s_i} \leftarrow clock - t(c_s,r_{s_i}) \mod P$
-    \STATE $clock \leftarrow clock + \tau$
-    \ENDFOR
-
-\STATE compute the deadlines of each routes.
-
-    \WHILE{there is a route which has not been assigned}
-    \STATE determine $r_{t_i}$ the eligible route
-    \IF{ $t(c_t,r{t_i}) < clock$}
-    \STATE $w_i = clock - t(c_t,r_{t_i}) - (m_i + \lambda(r_i)) \mod P$ 
-    \STATE $clock \leftarrow clock + \tau$
-    \ELSE
-    \STATE $w_i \leftarrow 0$
-    \STATE $clock = \lambda(r_i) + t(c_t,r_{t_i}) + \tau$
-   \ENDIF
-
-    \ENDWHILE
-
-    \end{algorithmic}
-    \end{algorithm}
+%          We compared the two algorithms on $10000$ graphs on which the weight of the links are drawn uniformly between $0$ and $20000$, with a period of $21000$, and giving, for each instance $T_{max} = 2\lambda(r_{longest-route})$ . We then look at the success rate of each algorithms, with every sending order. Both algorithms reach the higher success rate with the Random sending order, but the success of Greedy is $5,65 \%$, while the success rate of Greedy Periodic is to $30,02 \%$.
     
-    By using a binary heap to manage the eligible routes, this algorithm runs in $O(n\log(n))$.
-    
-    This policy is split in two steps:
-    \begin{enumerate}
-    \item First, we choose an arbitrary sending order for the routes, and we set the offsets $m_i$.
-    \item  Then, we use a greedy policy to determine $m_{\rho_i}$. 
-    \end{enumerate}
-     This {\bf Greedy} policy determines the $m_{\rho_{s_i}}$ avoiding collisions on $c_t$. It computes the deadlines for every messages, considering their offsets and the weight on their routes, and determine the time at which the messages must leave their target, prioritizing the messages with the lowest deadlines.
-     
-%      However, this heuristic does not take the period into account. Thus, a solution given by this algorithm can satisfy the constraint $MT({\cal M}) \leq T_{max}$, but this solution might have some collisions between the last messages of the period and the first ones of the following period.
-% 
-% 	
-     
-     We propose an improved version of the greedy algorithm, which tries to compute some solution that satisfies the period $P$:
-     
-     First, we remember the date at which the first messages starts to come back through $c_t$. Let us note $bp$ this date.
-     The greedy policy is the same until the message are assigned in the period between $bp$ and $bp +P$. When a message is assigned, we update a list of free intervals in the backward period.
-     Once we try to assign a message after $bp+P$, we consider that we are in the second period, and thus search a free interval in the period, large enough to put a message.
-     
-     This policy can significantly increase $w_i$, but ensures a periodic results. This {\bf Greedy Periodic} policy is strictly better than Greedy, because it finds some solutions that greedy would not find, by considering the periodicity in the assignement.
-     
-         We compared the two algorithms on $10000$ graphs on which the weight of the links are drawn uniformly between $0$ and $20000$, with a period of $21000$, and giving, for each instance $T_{max} = 2\lambda(r_{longest-route})$ . We then look at the success rate of each algorithms, with every sending order. Both algorithms reach the higher success rate with the Random sending order, but the success of Greedy is $5,65 \%$, while the success rate of Greedy Periodic is to $30,02 \%$.
 
     
      
-     \subsection{Returning messages through earliest deadline scheduling}
+     \subsection{Earliest deadline scheduling}
      
      Problem PALL is very similar to a scheduling problem, but many scheduling problems do not consider the periodic aspect. The article \cite{simons1978fast} from Simons, schedule jobs which all have the same execution time.
      This algorithm takes as input some jobs defined by a triplet id-release-deadlines, and an execution time for all jobs. A job is not able to be computed before it's release time, and must be finished before it's deadline. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
