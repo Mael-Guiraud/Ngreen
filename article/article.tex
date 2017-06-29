@@ -557,7 +557,7 @@ In particular, this reduction shows that even with small maximal load, the minim
       If the period is slightly smaller that the bound of Proposition~\ref{prop:SL}, a collision will occur on the first route in the backward period. Hence, this policy is not useful even as a heuristic for longer routes as confirmed by the experimental results of Subsection~\ref{sec:exp_PAZL}. 
 
    
-    \subsubsection*{Greedy Algorithm}
+    \subsubsection*{Greedy algorithm}
     
     We propose a greedy algorithm to build a $(P,\tau)$-periodic assignment, which provably works when
     the period is large enough with regard to the number of routes and size of messages. In other words, 
@@ -612,7 +612,7 @@ This algorithm, contrarily to the previous one, may work well, even when the con
 In fact, experimental data in Subsection~\ref{sec:exp_PAZL} suggests that the algorithm finds a solution on average when $P \geq 2 n\tau$.
 Note that we also experimented with other greedy algorithms which do not use macro-slots, they work even better in practice but their theoretical upper bound is worse.
 
-	\subsubsection*{Branch and cut}
+	\subsubsection*{Exhaustive search}
 % 	\begin{algorithm}[H]
 % 	\caption{Exhaustive Generation}  
 % 	\begin{algorithmic}
@@ -663,7 +663,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
       which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
 
 
-    \subsection{Experimental Evaluation}\label{sec:exp_PAZL}
+    \subsection{Experimental evaluation}\label{sec:exp_PAZL}
       
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search will find an optimal solution if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
@@ -818,77 +818,83 @@ Note that we also experimented with other greedy algorithms which do not use mac
      
      \subsection{Earliest deadline scheduling}
      
-     Problem PALL is very similar to a scheduling problem, but many scheduling problems do not consider the periodic aspect. The article \cite{simons1978fast} from Simons, schedule jobs which all have the same execution time.
-     This algorithm takes as input some jobs defined by a triplet id-release-deadlines, and an execution time for all jobs. A job is not able to be computed before it's release time, and must be finished before it's deadline. This algorithm gives in $\mathcal{O}(n^2\log{}n)$ a solution with the earliest  possible completion time, if it exists.
-     We adapted this algorithm, considering the messages as the jobs, the release times as the date at which the messages are able to come back on $c_t$, and the deadlines as the latest date at which a message have to leave $c_t$ to comeback before $m_i + T_{max}$.  Thus, it tries to minimize the time between the first and the last message in the assignment. Let us call {\bf Minimized Scheduling (MS)} this algorithm.
      
-    % MS uses the exact same main scheduling than Greedy. Nevertheless, when it tries to schedule a message that is not able to totally pass $c_t$ before it's deadline (let us call {\em crisis message} this message), the algorithm calls a subroutine which, following some criteria, removes some previous messages from the scheduling such that the crisis message can be scheduled earlier. Then, the main scheduling routines is applied again. Some stopping conditions are able to detect if there is no solution for the given routed network.
+     The second stage of our approach is very similar to the following scheduling problem: 
+     we are given a set of jobss and each job has a \emph{release time} and a \emph{deadline}. 
+     The problem is to schedule all jobs on a single processor so that no two jobs are scheduled at the same time, a job is always shedulded after its release time and job is finished before its deadline. Let us call $n$ the number of jobs, the problem can be solved in time $O(n^2\log(n))$~\cite{simons1978fast} when all jobs have the same running time and it gives a solution with the earliest possible deadline. On the other hand if the running times are different the problem is $\NP$-complete~\cite{lenstra1977complexity}. 
+     The  polynomial time algorithm  which solves this scheduling problem is similar to the Greedy algorithm presented in the previous section. However, when it fails because a job will finish after its deadline, it changes the schedule of the last messages to solve find a possible schedule for the problematic job. It does it in a way that it will not fail on the same job a second time except if there is no solution, hence the polynomiality of the algorithm.
      
-     If it exists a solution that satisfies $MT({\cal M}) < T_{max}$, this algorithm gives us a $(P,\tau)$ periodic assignment. Nevertheless, by setting the deadlines according to the size of the route only, the given $(P,\tau)$ periodic assignment might not respect the period $P$, because some messages at the end of the period could collide with the messages at the begining of the following period. 
+     We reduce our problem of setting the offsets of the backwards routes once the order of the forward routes is fixed to this
+     scheduling problem. The backward routes are the jobs, the size of a message is the running time of a job,
+     the deadline of a route is the deadline of the corresponding job and the smallest time at which it is eligible is the release time. Let us call {\bf Minimal Latency Scheduling (MLS)} this algorithm.
+     Remark that we do not deal with the periodicity. A solution ${\cal M}$ the algorithm finds always respect $MT({\cal M}) < T_{max}$. On the other hand, it is guaranteed to be a $(P,\tau)$ periodic assignment only if $m_n - m_1 \leq P -\tau$ where $m_n$ is the largest offset and $m_1$ the smallest one. The algorithm we use minimize $m_n - m_1 $, so it may work quite well in practice (as show in Section.\ref{sec:resultsPALL}).
      
-     \subsection{Dealing with the periodicity}
+     We now present a variant of the previous algorithm that we call {\bf Periodic Minimal Latency Scheduling (PMLS)}
+     which take into account the periodicity. We fix arbitrarily a backward route so that its message is the first to go through the central arc at time $t$. Then we modify the deadline of each forward route to be the minimum of their previous deadline and $t + P$.  We execute this algorithm for every possible first backward route while no solution is found. Since we run the previous algorithm at most $n$ times, the complexity is in $O(n^3\log(n))$. Remark that it will always find more solution than MLS,
+     because if MLS find a solution with first route $r$ and such that $m_n - m_1 \leq P -\tau$, then this solution will be found by PMLS when it will fix $r$ as the first route. Moreover when PMLS finds a solution, it is always a $(P,\tau)$ periodic assignment
+     since we guarantee that all messages are scheduled in the same period of time of size $P$ and it satisfies $MT({\cal M}) < T_{max}$ by construction of the deadlines. Remark that it is possible that there is a solution and PMLS do not find it  
+     since we do not allow to chose an offset for a route after $t+P- \tau$ which modulo $P$ does not collide with another route.
      
-     We adapted MS, presented in the previous paragraph, to consider the period, in the computation.
-     
-      For every routes of the routed network, the algorithm fixes the first route to comeback in the backward period, and then determine the deadline of the other routes taking the minimum between the end of the period (determined by the first message that we fixed), and the deadline of the route itself(equal to $m_{s_i} + T_{max}-t(c_s,r_{s_i})$). 
-
-    \begin{algorithm}[H]
-    \caption{ Minimized Scheduling Periodic (MSP)}
-    \begin{algorithmic}
-    \REQUIRE A routed network $(G,{\cal R})$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
-    \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$, if it exists
-  
-    \FORALL{route $r_{t_i}$}
-    \STATE  $w_i \leftarrow 0$
-    \STATE period-end $\leftarrow m_{s_i} + \lambda(r_{s_i}) + t(c_t,r_{t_i}) + P$
-    \FORALL{route $r_{t_j}$}
-    \STATE deadline-route$ \leftarrow m_{s_j} + T_{max}-t(c_s,r_{s_j})$
-    \STATE $deadline \leftarrow$ min(deadline-route,period-end)
-    \ENDFOR
-    
-    \STATE Call (MS)
-
-    
-    \ENDFOR
-
-    \STATE return the best $(P,\tau)$-periodic assignment, or FAILURE
-
-    \end{algorithmic}
-    \end{algorithm}
-    
-    This algorithm runs in $\mathcal{O}(n^3\log{}n)$. It finds more solutions than MS, because it compute the deadlines of the route considering the periodicity. Thus, an assignment given by this algorithm is a solution for PALL.
+%     \begin{algorithm}[H]
+%     \caption{ Minimized Scheduling Periodic (MSP)}
+%     \begin{algorithmic}
+%     \REQUIRE A routed network $(G,{\cal R})$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
+%     \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$, if it exists
+%   
+%     \FORALL{route $r_{t_i}$}
+%     \STATE  $w_i \leftarrow 0$
+%     \STATE period-end $\leftarrow m_{s_i} + \lambda(r_{s_i}) + t(c_t,r_{t_i}) + P$
+%     \FORALL{route $r_{t_j}$}
+%     \STATE deadline-route$ \leftarrow m_{s_j} + T_{max}-t(c_s,r_{s_j})$
+%     \STATE $deadline \leftarrow$ min(deadline-route,period-end)
+%     \ENDFOR
+%     
+%     \STATE Call (MS)
+% 
+%     
+%     \ENDFOR
+% 
+%     \STATE return the best $(P,\tau)$-periodic assignment, or FAILURE
+% 
+%     \end{algorithmic}
+%     \end{algorithm}
     
     \subsection{Experimental evaluation}
     \label{sec:resultsPALL}
     
-    To compare the previous algorithms, we first need to determine which of the sending order is the best.
+    
+    First we try to understand what is the best choice of order for the first phase of the algorithm.
+    We fix the number of routes to $8$, and we  draw uniformly the weigths of the arcs between $0$ and $20000$ slots.
+    For a given topology, we define the {\em margin} as the difference between $T_{max}$ and twice the longest route. 
+    Hence, for a given topology giving the margin or $T_{max}$ is the same, but since we will consider many topologies 
+    wich may have different longest route's size, it will be more meaningful to set the margin rather than $T_{max}$.
+    In fact the margin represents the latency imposed by the communication process without taking into account the physical length 
+    of the network which cannot be changed. In our experiments the margin range from  $0$ to $3000$ slots.
+   We look at two different regimes: first, we take a period equal to $1,05n\tau$ to represent a very loaded network
+   and then we chose $1,5n\tau$ for a mildly loaded network. Chosing a larger one is not relevant since then we know how to solve the problem without waiting times as shown in Section~\ref{sec:exp_PAZL}. We represent the success rate with regards to the margin, 
+   for the five kind of orders using the Greedy algorithm for the second stage, computed over $10000$ random star topologies. Note that for the random order, we compute $100$ random orders and count it as a success as soon as there is a solution for one order. 
    
-
-   In this experiment, we fix the number of routes to 8. We want to compare the sending orders with the worst parameters, so we drew the links between $0$ and $20000$ slots. We look at the success rate of each sending order with Greedy Periodic to assign the messages in the way back. We give to  $T_{max}$ some {\em flexibility}. This flexibility represents $T_{max} - 2\lambda(r_{longest-route})$. We let this flexibility vary from $0$ to $3000$.
-   
-   We look at two different regimes: first, we take a period equal to $1,05n\tau$, and then, we take a greater period, that is, $1,5n\tau$. The following results are computed over $10000$ instances.
-     
 \begin{figure}[H] 
 
        \begin{center}
       \includegraphics[scale=0.4]{departs_gp_21000.pdf}
       \end{center}
-      \caption{Success rate of the sending orders for $P = 21000$}
+      \caption{Success rate of different orders with $P = 21000$}
       
-     \end{figure}
-     
-     
-       
+     \end{figure}       
 \begin{figure}[H] 
 
        \begin{center}
       \includegraphics[scale=0.4]{departs_gp_30000.pdf}
       \end{center}
-      \caption{Success rate of the sending orders for a $P = 30000$}
+      \caption{Success rate of differents orders with $P = 30000$}
       \label{fig:success30000}
      \end{figure}
      
-     First, we remark that, for every sending order, the success rate is strictly better for large periods. This is due to the fact that the size of the period is a factor for failure. According to our results, the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. 
+     As expected, the  success rate is much better for large periods. According to our results, sending the messages from the sortest to the longest route or arc does not work well. It corresponds to the policy of Proposition~\ref{prop:SL} which does not work well when the routes are long as it is the case. Sending from the longest to the shortest route or arc works better and it seems that sorting the routes according to the length of $(c_t,t_i)$ is better at least in loaded network.
+     FInally the random order is much better than the other orders, when the load is not high ($P = 30000$) there is always a solution with margin $0$.
+    
+    the two SL sending orders are not good, in any cases. However, the LS orders seem to increase when the flexibility is large enough, but in the two regimes, they appear to be stagnating to a lower success rate than Random. As we can see the random finds near to 100\% of the solutions when the period is large enough, even when we give no flexibility. 
      %On average, it is necessary to draw 6 randoms sending order to find a solution, when the period is large, but in some particularly hard instances, it can be impossible to find a solution, even with 100 randoms sending orders. 
      
      To observe  the impact of the number of random sending orders drawn, we compared the success rate of the following number of drawing, on graphs in which the links are drawn  between $0$ and $20000$ slots, with a period $P=20000$, and a flexibility of $0$. The following table present the average success rate of each number of sending orders, on $1000$ instances.
