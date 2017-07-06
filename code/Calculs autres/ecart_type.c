@@ -153,11 +153,12 @@ void quartiles()
 {
 	FILE * f = fopen("traitement.data","w");
 	lire_fichier();
-	for(int i = 0;i<nb_periodes;i++)
+	for(int i = nb_periodes-1;i>=0;i--)
 	{
 		tri_bulles(donnes[i],taille);
-		fprintf(f,"%d %d %d %d\n",20000+i*1000,donnes[i][taille/4+1],donnes[i][taille/2+1],donnes[i][3*taille/4+1]);
-		fprintf(stdout,"%d %d %d %d\n",20000+i*1000,donnes[i][taille/4+1],donnes[i][taille/2+1],donnes[i][3*taille/4+1]);
+		fprintf(f,"%d %d %d %d 0\n",(int)(20000/(20000+i*1000.0)*100),donnes[i][taille/4+1]/20 ,donnes[i][taille/2+1]/20,donnes[i][3*taille/4+1]/20);
+		fprintf(stdout,"%d %d %d %d 0\n",(int)(20000/(20000+i*1000.0)*100),donnes[i][taille/4+1]/20 ,donnes[i][taille/2+1]/20,donnes[i][3*taille/4+1]/20);
+
 	}
 	fclose(f);
 }
@@ -201,8 +202,8 @@ int main()
 	/*for(int i=20000;i<49000;i+=5000)
 	trace_distribs(i);
 	//*/
-	//quartiles();
-	transfo();
-	genere_plot();
+	quartiles();
+	//transfo();
+	//genere_plot();
 
 }

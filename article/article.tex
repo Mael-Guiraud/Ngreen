@@ -800,7 +800,50 @@ Note that we also experimented with other greedy algorithms which do not use mac
     they may collide with any other route. Therefore we must adapt the greedy algorithm of the previous paragraph by finding $s \geq t$ the first time for which there is an eligible route with its offset not fixed and \emph{such that there is no collision if a message go
     through the central arc at time $s$}. 
     
+     \begin{algorithm}[H]
+    \caption{ Greedy }
+    \begin{algorithmic}
+    \REQUIRE A routed network $(G,{\cal R})$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
+    \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$, of failure
+   \STATE  ${\cal H} \leftarrow$ empty binary min heap
+       \STATE  free\_ intervals $\leftarrow$ [0,$P$]
+  
+    \FORALL{route $r_{i}$}
+    \STATE  deadline[$r_i$]  $\leftarrow$ add $m_{i} + T_{max} - \omega(s_i,c_s)$
+    \STATE  eligible\_time[$r_i$] $\leftarrow$ add $m_{i} +  \lambda(r_i) + \omega(c_t,t_i)$
+      \ENDFOR
+      
+      \WHILE{There is some non-assigned routes}
+      \IF{${\cal H}$ is empty}
+      \STATE t $\leftarrow $ min\_non\_assigned(eligible\_time)
+      \STATE take $r_i$ the route with eligible\_time[$r_i$] = t
+      \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$).
+      \ENDIF
+      
+      \STATE extract the route $r_i$ with the lowest deadline from ${\cal H}$
+      \STATE t $\leftarrow$ beginning of the first free interval of size $\tau$ after t
+      \STATE $w_i \leftarrow$ t - eligible\_time[$r_i$]
+      \STATE update(free\_ intervals)
+      \STATE t $\leftarrow$ t + $\tau$
+      \FORALL{routes $r_i$ with  eligible\_time[$r_i$] = t}
+      \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$).
+      \ENDFOR
+      \ENDWHILE
+%    \STATE  $w_i \leftarrow 0$
+%    \FORALL{route $r_{t_i}$}
+%    \STATE  $w_i \leftarrow 0$
+%    \STATE period-end $\leftarrow m_{s_i} + \lambda(r_{s_i}) + t(c_t,r_{t_i}) + P$
+%    \FORALL{route $r_{t_j}$}
+%    \STATE deadline-route$ \leftarrow m_{s_j} + T_{max}-t(c_s,r_{s_j})$
+%    \STATE $deadline \leftarrow$ min(deadline-route,period-end)
+%    \ENDFOR
     
+
+    \end{algorithmic}
+    \end{algorithm}
+    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(free\_ intervals) cuts the interval used in a first part of size $\tau$, which correspond to the message, and a second part with the rest of the size, which is still free.
+
+
     The greedy algorithm can be made to work in time $O(n\log(n))$. 
     To do that the set of eligible routes must be maintained in a binary heap
     to be able to find the one with smallest deadline in time $O(\log(n))$. 

@@ -438,7 +438,7 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 			graphe_etoile(g,taille_route);
 	
 
-		 	///ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
+		 	ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
 		 	ressp = 0;
 		 	#pragma omp atomic
 				total_sp+= ressp;
