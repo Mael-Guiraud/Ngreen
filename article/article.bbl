@@ -95,4 +95,8 @@ B.~Simons, ``A fast algorithm for single processor scheduling,'' in {\em
   Foundations of Computer Science, 1978., 19th Annual Symposium on},
   pp.~246--252, IEEE, 1978.
 
+\bibitem{lenstra1977complexity}
+J.~K. Lenstra, A.~R. Kan, and P.~Brucker, ``Complexity of machine scheduling
+  problems,'' {\em Annals of discrete mathematics}, vol.~1, pp.~343--362, 1977.
+
 \end{thebibliography}
