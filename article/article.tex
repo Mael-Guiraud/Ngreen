@@ -801,7 +801,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
     through the central arc at time $s$}. 
     
      \begin{algorithm}[H]
-    \caption{ Greedy }
+    \caption{ Greedy deadline ({\bf GD}) }
     \begin{algorithmic}
     \REQUIRE A routed network $(G,{\cal R})$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
     \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$, of failure
@@ -809,23 +809,23 @@ Note that we also experimented with other greedy algorithms which do not use mac
        \STATE  free\_ intervals $\leftarrow$ [0,$P$]
   
     \FORALL{route $r_{i}$}
-    \STATE  deadline[$r_i$]  $\leftarrow$ add $m_{i} + T_{max} - \omega(s_i,c_s)$
-    \STATE  eligible\_time[$r_i$] $\leftarrow$ add $m_{i} +  \lambda(r_i) + \omega(c_t,t_i)$
+    \STATE  deadline[$r_i$]  $\leftarrow$  $m_{i} + T_{max} - \omega(s_i,c_s)$
+    \STATE  eligible\_time[$r_i$] $\leftarrow$ $m_{i} +  \lambda(r_i) + \omega(c_t,t_i)$
       \ENDFOR
       
       \WHILE{There is some non-assigned routes}
       \IF{${\cal H}$ is empty}
       \STATE t $\leftarrow $ min\_non\_assigned(eligible\_time)
       \STATE take $r_i$ the route with eligible\_time[$r_i$] = t
-      \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$).
+      \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$)).
       \ENDIF
       
-      \STATE extract the route $r_i$ with the lowest deadline from ${\cal H}$
+      \STATE Extract the route $r_i$ with the lowest deadline from ${\cal H}$
       \STATE t $\leftarrow$ beginning of the first free interval of size $\tau$ after t
       \STATE $w_i \leftarrow$ t - eligible\_time[$r_i$]
       \STATE update(free\_ intervals)
       \STATE t $\leftarrow$ t + $\tau$
-      \FORALL{routes $r_i$ with  eligible\_time[$r_i$] = t}
+      \FORALL{routes $r_i$ with  eligible\_time[$r_i$] $\leq$ t}
       \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$).
       \ENDFOR
       \ENDWHILE
@@ -841,7 +841,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
     \end{algorithmic}
     \end{algorithm}
-    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(free\_ intervals) cuts the interval used in a first part of size $\tau$, which correspond to the message, and a second part with the rest of the size, which is still free.
+    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(free\_ intervals) removes an interval of size $\tau$, which correspond to the message,  from free\_ intervals.
 
 
     The greedy algorithm can be made to work in time $O(n\log(n))$. 
@@ -916,57 +916,76 @@ Note that we also experimented with other greedy algorithms which do not use mac
    We look at two different regimes: we take a period equal to $1,05n\tau$ to represent a very loaded network
    and $1,5n\tau$ for a mildly loaded network. Choosing a larger period is not relevant since then we know how to solve the problem even without waiting times as shown in Section~\ref{sec:exp_PAZL}. We represent the success rate with regards to the margin, for the five kind of orders using the Greedy algorithm for the second stage, computed over $10000$ random star topologies. Note that for the random order, we compute $1000$ random orders and count it as a success as soon as there is a solution for one order. 
    
-\begin{figure}[H] 
+   
 
-       \begin{center}
-      \includegraphics[scale=0.4]{departs_gp_21000.pdf}
-      \end{center}
+ 
+\begin{figure}[H] 
+    \begin{minipage}[c]{6cm}
+  \centering
+      \includegraphics[width=6cm]{departs_gp_21000.pdf}
+
       \caption{Success rate of different orders with $P = 21000$}
-      
-     \end{figure}       
-\begin{figure}[H] 
-
-       \begin{center}
-      \includegraphics[scale=0.4]{departs_gp_30000.pdf}
-      \end{center}
+      \end{minipage} \hfill
+        \begin{minipage}[c]{6cm}
+          \includegraphics[width=6cm]{departs_gp_30000.pdf}
       \caption{Success rate of different orders with $P = 30000$}
-      \label{fig:success30000}
+
+            \end{minipage} \hfill
+                  \label{fig:success30000}
      \end{figure}
      
      As expected, the  success rate is much better for large periods. According to our experiments, sending the messages from the shortest to the longest route or arc does not work well. It corresponds to the policy of Proposition~\ref{prop:SL} which does not work well when the routes are long as it is the case in these experiments. Sending from the longest to the shortest route or arc works better and it seems that sorting the routes according to the length of the last arc rather than the route is better, at least in a loaded network. 
      
      The random order is is the best by far. When the load is not too high ($P = 30000$) there is always a solution with margin $0$.
-     Note that, when disallowing waiting times, there were instance without solutions for these parameters (see Section~\ref{sec:exp_PAZL}), which justifies the interest of studying the PALL problem. Remark that the random order corresponds to the best of $1000$ orders drawn uniformly which means that a computation can be up to $1000$ time slower than for a fixed order. The choice of the number of random orders drawn yields a trade-off between the computation time and the success rate. Therefore we investigate the success rate of our algorithm with regards to the number of random orders drawn, a period of $21000$ and a margin $0$. The following table presents the average success rate for each number of sending orders, on $1000$ instances.
-       \begin{figure}[H] 
+     Note that, when disallowing waiting times, there were instance without solutions for these parameters (see Section~\ref{sec:exp_PAZL}), which justifies the interest of studying the PALL problem. 
+     We now want to compare the performances of the three different algorithms used in the second stage. Since GD showed excellent results on mild loads, it is more interesting to focus on the behavior of the algorithms on high load. The following experience is realized on graph with $8$ routes, weights of the arcs drawn between $0$ and $20000$ and with a period of $21000$.  We represent the success rate with regards to the margin, for the three algorithms, using the randoms sending orders for the first stage, computed over $10000$ random star topologies. We choose arbitrarily to try $1000$ random orders.
+     
+
+ 
+    \begin{figure} [H] 
+       \begin{center}
+      \includegraphics[scale=0.45]{retour_21000.pdf}
+      \end{center}
+      \caption{Success rate of the different algorithms for a $P = 21000$}
+     \label{fig:success21000}
+     \end{figure}
+     
+     The algorithm MLS performs poorly, worst than GD and PMLS, which shows that taking into account the periodicity is fundamental.
+     The GD algorithms is close to $100\%$ success rate for margins larger than $1500$ while the PMLS finds a solution in more than $95\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $500$, which corresponds to about $0.025$ms of additional delay with the chosen parameters, we always find a solution. 
+     
+    Remark that the random order corresponds to the best of $1000$ orders drawn uniformly which means that a computation can be up to $1000$ time slower than for a fixed order. The choice of the number of random orders drawn yields a trade-off between the computation time and the success rate. Up to now, we chose $1000$ random orders arbitrarily. We investigate the success rate of our algorithm with regards to the number of random orders drawn, a period of $21000$ and a margin $0$. The following tables presents the average success rate for each number of sending orders, on $1000$ instances, for GD and PMLS.
+
+         \begin{figure}[H] 
+       \begin{center}
+   \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    number of randoms & $1$ & $10$ & $100$& $1 000$& $10 000$&$100 000$\\
+    \hline
+    Success rate $(\simeq)$ & $0.6$ &$7.1$&$33.4$&$76.4$&$90.0$&$90.0$\\
+    \hline
+      \end{tabular}
+      \end{center}
+   \caption{Impact of the number of randoms sending orders drawn with GD}
+     \end{figure}
+     
+            \begin{figure}[H] 
 
        \begin{center}
    \begin{tabular}{|c|c|c|c|c|c|c|}
     \hline
     number of randoms & $1$ & $10$ & $100$& $1 000$& $10 000$&$100 000$\\
     \hline
-    Success rate $(\simeq)$ & $17,8$ &$60,5$&$77,7$&$80,5$&$80,5$&$80,5$\\
+    Success rate $(\simeq)$ & $41,1$ &$82,5$&$94,5$&$96,2$&$97,2$&$97,2$\\
     \hline
       \end{tabular}
       \end{center}
-   \caption{Impact of the number of randoms sending orders drawn}
+   \caption{Impact of the number of randoms sending orders drawn with PMLS}
      \end{figure}
-     
-    The number of different orders is $7!$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore when doing $1000$ random draws, we explore less than $20\%$ of the possible orders but it is already enough to get the best results on average. 
 
-     We now want to compare the performances of the three different algorithms used in the second stage. Since GD showed excellent results on mild loads, it is more interesting to focus on the behavior of the algorithms on high load. The following experience is realized on graph with $8$ routes, weights of the arcs drawn between $0$ and $20000$ and with a period of $21000$. We choose the best possible first stage found in the previous experiments, that is trying $1000$ random orders. 
-     
+The number of different orders is $7!$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore when doing $1000$ random draws, we explore less than $20\%$ of the possible orders but it is already enough to get the best results on average. 
+\todo{Dire ici qu'on a du coup tout explore en 10000, et que pour PMLS ca suffit de faire 1000}
 
- 
-    \begin{figure} [H] 
-       \begin{center}
-      \includegraphics[scale=0.4]{retour_21000.pdf}
-      \end{center}
-      \caption{Success rate of the different algorithms for a $P = 21000$}
-     \label{fig:success21000}
-     \end{figure}
      
-     The algorithm MLS performs poorly, worst than GP and PMLS, which shows that taking into account the periodicity is fundamental.
-     The GP algorithms is close to $100\%$ success rate for margins larger than $1500$ while the PMLS finds a solution in more than $95\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $500$, which corresponds to about $0.025$ms of additional delay with the chosen parameters, we always find a solution. 
      
      
      Now that we have found the best amongst the algorithms solving PALL, we need to compare its performances against the actual way to manage the messages in a network. The classical way to manage messages in the network is statistical multiplexing, 

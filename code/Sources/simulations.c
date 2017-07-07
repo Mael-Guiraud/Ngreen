@@ -141,11 +141,11 @@ void sucess_aller_PALL(int nb_routes, int taille_paquets,int taille_route,int ma
 	int resa,resb,resc,resd,rese;
 	float a,b,c,d,e;
 	int tmax;
-	int nb_rand = 100;
+	int nb_rand = 1000;
 	float moyenne_etape;
 	
 		
-	for(int marge=0;marge<= marge_max;marge += 50)
+	for(int marge=0;marge<= marge_max;marge += 100)
 	{
 		a=0;
 		b=0;
@@ -256,7 +256,7 @@ void sucess_retour_PALL(int nb_routes, int taille_paquets,int taille_route,int m
 
 	
 		
-	for(int marge=0;marge<= marge_max;marge += 50)
+	for(int marge=0;marge<= marge_max;marge += 150)
 	{
 		gp=0;
 		s=0;
@@ -355,7 +355,7 @@ void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int 
 	int tmax;
 	
 
-	for(int nb_rand=1;nb_rand<= 1;nb_rand *= 10)
+	for(int nb_rand=1;nb_rand<= 100000;nb_rand *= 10)
 	{
 		a=0;
 		#pragma omp parallel for private(res,g,tmax) if (PARALLEL) schedule (static)
@@ -370,6 +370,7 @@ void nombre_random_PALL(int nb_routes, int taille_paquets,int taille_route, int 
 			
 			for(int compteur_rand = 0;compteur_rand<nb_rand;compteur_rand++)
 				{
+					//res = longest_etoile_periodique(g,taille_paquets,periode,tmax,0);
 					res = simons_periodique(g,taille_paquets,tmax,periode,0);
 					if(res != -2)
 					{	
@@ -416,20 +417,18 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	FILE * F2 = fopen("../datas/donnes_random.data","w");
 	Graphe g ;
 	long long int total_sto,total_sp;
-	float ecart_type;
+
 	int ressto;
-	int min,max;
+
 	int ressp;
-	int nb_rand = 100;
+	int nb_rand = 1000;
 
 
 	for(int periode=taille_paquets*nb_routes;periode<periode_max ;periode+=1000)
 	{
 		total_sto = 0;
 		total_sp = 0;
-		ecart_type =0;
-		min = INT_MAX;
-		max = 0;
+
 	
 		#pragma omp parallel for private(ressp,ressto,g) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
@@ -439,7 +438,7 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	
 
 		 	ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
-		 	ressp = 0;
+		 	
 		 	#pragma omp atomic
 				total_sp+= ressp;
 
@@ -449,34 +448,15 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 			#pragma omp atomic
 				total_sto+= ressto;
 
-			#pragma omp atomic
-				ecart_type += (ressto * ressto);
-			#pragma omp critical
-			{
-				if(ressto < min)
-				{
-						min = ressto;
-				}
-			}
-			#pragma omp critical
-			{
-				if(ressto>max)
-				{
-						max = ressto;
-				}
-			}
-			fprintf(F2,"%d %d\n",periode,ressto);
-
+			fprintf(F2,"%d %d %d\n",periode,ressto,ressp);
+			fprintf(stdout,"\r Period %d : step %4d",periode,i);fflush(stdout);
 			libere_matrice(g);
 		}
-		ecart_type /= (nb_simuls-1);
-		ecart_type -= ( (total_sto/nb_simuls)*(total_sto/nb_simuls) );
 
-		ecart_type = sqrt(ecart_type);
 	
-   			      fprintf(F,"%d %lld %lld %f %d %d\n",periode,total_sto/nb_simuls,total_sp/nb_simuls,ecart_type,min,max);
-   			      fprintf(stdout,"%d %lld %lld %f %d %d\n",periode,total_sto/nb_simuls,total_sp/nb_simuls,ecart_type,min,max);
-  
+   			      fprintf(F,"%d %f %f \n",periode,total_sto/(float)nb_simuls,total_sp/(float)nb_simuls);
+   			      fprintf(stdout,"%d %f %f \n",periode,total_sto/(float)nb_simuls,total_sp/(float)nb_simuls);
+   		
 
  
 		
