@@ -946,7 +946,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \end{figure}
      
      The MLS algorithm performs poorly, worst than GD and PMLS, which shows that taking into account the periodicity is fundamental.
-     The GD algorithms is close to $100\%$ success rate for margins larger than $1500$ while the PMLS algorithm finds a solution in more than $95\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $500$, which corresponds to about $0.025$ms of additional delay with the chosen parameters, we always find a solution. 
+     The GD algorithms is close to $100\%$ success rate for margins larger than $1500$ while the PMLS algorithm finds a solution in more than $95\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $1000$, which corresponds to about $0.05$ms of additional delay with the chosen parameters, we always find a solution. 
      
     Remark that the random order corresponds to the best of $1000$ orders drawn uniformly which means that a computation can be up to $1000$ time slower than for a fixed order. The choice of the number of random orders drawn yields a trade-off between the computation time and the success rate. Up to now, we chose $1000$ random orders arbitrarily. We investigate the success rate of our algorithm with regards to the number of random orders drawn, a period of $21000$ and a margin $0$. The following tables presents the average success rate for each number of sending orders, on $1000$ instances, for GD and PMLS.
 
@@ -966,17 +966,15 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \end{figure}
      
 First remark that we can improve our previous results by taking $10000$ random orders, which 
-yields the best results for the two algorithms. The number of different orders is $7!= 5040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10000$ random draws we could test every possible order in less time. However this method would not be practical already for $n = 12$. 
-On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means that we 
-can decrease the computing time without affecting the success rate tom much. 
+yields the best results for the two algorithms. The number of different orders is $7!= 5040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10000$ random draws we could test every possible order in less time. However this method would not be practical with regard to the computation time for $n = 15$. On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means it will work even better than the other methods when $n$ is larger and that the number of random orders drawn is critical.
      
      
      
      Now that we have found the best amongst the algorithms solving PALL, we need to compare its performances against the actual way to manage the messages in a network. The classical way to manage messages in the network is statistical multiplexing, where there is a FIFO buffer in each node of the network to deal with the collisions. The time at which the messages are sent in the network is not computed as in our approach, thus we fix the offsets of each route to some random value.
-     Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1000$ periods and we have observed that it usually stabilizes after $10$ periods. The margin is also defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
+     Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
 	    
      
-     We draw $1000$ instances of a star topology with $8$ routes, with weights on the arcs drawn between $0$ and $20000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50000$ ($40 \%$ of load), the median, the first, and the third quartiles of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
+     We draw $1000$ instances of a star topology with $8$ routes, with weights on the arcs drawn between $0$ and $20000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
      
       
     \begin{figure}[H] 
@@ -988,13 +986,15 @@ can decrease the computing time without affecting the success rate tom much.
       \caption{Needed margin with respect to the period for a stochastic policy}
       \label{fig:sto}
      \end{figure}
-
      
+     We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Figure~\ref{fig:sto} since even the third quartile was always at $0$ for a period of $20000$.
+     There is around $20\%$ of the instances for which the margin is larger than $0$ for $P=20000$ and $7\%$
+     for $P = 21000$. For the instances with a margin larger than $0$, the margin is on average $400$.
      
-     We also computed the minimum margin needed by PMLS to find a solution. With a period of $20000$, our it needs in average $\simeq 80$ slots of flexibility to find a solution. Otherwise, the algorithm finds a solution with a margin $0$ for every period larger than $20000$. On the other hand, the simulations show clearly that the stochastic policy does not ensure a minimal latency. As we can see in Fig~\ref{fig:sto}), the more the network is loaded, the higher the latency is. When the network is highly loaded,
+     The simulations show clearly that the stochastic policy does not ensure a minimal latency. As we can see in Fig~\ref{fig:sto}), the more the network is loaded, the higher the latency is. When the network is highly loaded,
      we have instances with a margin of about $10000$ which corresponds to half the period, that is $0.5$ms. 
-     Even when the network is lightly loaded,  a quarter of the instances have a margin of more than $2000$
-     which is $x$ times more than PMLS for a network fully loaded ! 
+     Even when the network is lightly loaded, a quarter of the instances have a margin of more than $2000$
+     which is more than what PMLS finds for the worst instance and a network fully loaded ! 
      We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.
      
     
