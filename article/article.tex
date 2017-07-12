@@ -68,9 +68,9 @@ We study the sending of periodic messages in a graph following predefined paths,
 
 Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost ownership. The main challenge for this type of architecture is the latency in the transfer process that is an important factor for dimensioning the network. The latency is measured between the sending of a message by the Remote Radio Heads (RRHs) on the field and the receptions of the answers, computed by real-time virtualized network functions on Baseband Units (BBUs), in the cloud. For example, even if next radio protocols are less stringent, some standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
 
- In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution ~\cite{pizzinat2015things,tayq2017real} is to use use dedicated circuits, since statistical multiplexing even with a very large bandwidth, does not comply with the latency requirements. 
- 
- \todo{mettre la suite de l'état de l'art}
+ In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution ~\cite{pizzinat2015things} is to use use dedicated circuits, since statistical multiplexing even with a very large bandwidth, does not comply with the latency requirements. 
+ \todo{mettre la suite de l'Etat de l'art}
+ Thus in this article, we work on latency and periodicity constraints in fronthaul. The best current solution is to rely on an almost full optical approach, where each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches ~\cite{tayq2017real}. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. 
  
  
  Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. The aim is to operate a C-RAN on a low-cost shared switched network.
@@ -78,8 +78,7 @@ Next generations of mobile network architectures evolve toward centralized radio
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). For simplicity, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \textbf{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
  between the emission of a message and the complete return of its answer. It means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long.
  
- \todo{à revoir, citation ?}
- Thus in this article, we work on latency and periodicity constraints in fronthaul. The best current solution is to rely on an almost full optical approach, where each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches [7]. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. 
+
  
 %  Hence a solution is needed to offer low latency over commoditized packet based networks. Indeed, dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific network architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to 1?s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler. 
 %  
@@ -120,9 +119,9 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       Let $r_1$ and $r_2$ be two routes, on which messages are sent at time $m_1$ and $m_2$ in their first vertex.
       We say that the two routes have a {\bf collision} if they share an arc of first vertex $v$ and $[t(v,r_{1})] \cap [t(v,r_{2})] \neq \emptyset$.
       
-      \todo{commencer les routes à 0 ou pas ?}
+      \todo{commencer les routes  0 ou pas ?}
       
-      A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. Moreover, \emph{no pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
+      A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_0, \ldots ,m_{n-1})$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. Moreover, \emph{no pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
       
 
 %       Notice that the notion of $P$-periodic assignment \textbf{is not monotone} with regard to $P$. 
@@ -142,13 +141,13 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
                        font = \bfseries },
   EdgeStyle/.append style = {->} }
   \SetGraphUnit{5}
-  \node[draw,circle] (s3) at (4, 2) {$s_3$}; 
-  \node[draw,circle] (s2) at (0, 4) {$s_2$}; 
-  \node[draw,circle] (s1) at (0, 6) {$s_1$}; 
+  \node[draw,circle] (s3) at (4, 2) {$s_2$}; 
+  \node[draw,circle] (s2) at (0, 4) {$s_1$}; 
+  \node[draw,circle] (s1) at (0, 6) {$s_0$}; 
 
-  \node[draw,circle] (t3) at (14, 7) {$t_3$}; 
-  \node[draw,circle] (t2) at (14, 4) {$t_2$}; 
-  \node[draw,circle] (t1) at (10, 2) {$t_1$}; 
+  \node[draw,circle] (t3) at (14, 7) {$t_2$}; 
+  \node[draw,circle] (t2) at (14, 4) {$t_1$}; 
+  \node[draw,circle] (t1) at (10, 2) {$t_0$}; 
 
   
   \SetVertexNoLabel
@@ -456,7 +455,7 @@ In particular, this reduction shows that even with small maximal load, the minim
     
       From now on, we will only consider graphs with a very simple topology that we call the {\bf star topology}. 
       First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
-      There are two sets of vertices, $S=\{s_1,...,s_n\}$ and $T=\{t_1,...,t_n\}$ of cardinality $n$ and two special nodes:
+      There are two sets of vertices, $S=\{s_0,...,s_{n-1}\}$ and $T=\{t_0,...,t_{n-1}\}$ of cardinality $n$ and two special nodes:
       the central source node {\bf $c_s$} and the central target node {\bf $c_t$}. There is an arc between {\bf $c_s$} and {\bf $c_t$} shared by all routes. For all $i$, there is an arc between $s_i$ and $c_s$ and between $t_i$ and $c_t$.
       The routes are the directed paths $r_i = s_i,c_s,c_t,t_i$ and $\rho(r_i) = t_i,c_t,c_s,s_i$ which defines a 
       symmetric routed network. 
@@ -466,27 +465,23 @@ In particular, this reduction shows that even with small maximal load, the minim
 	 \scalebox{0.8}{
 \begin{tikzpicture}
 
-\tikzset{
-  LabelStyle/.style = { rectangle, rounded corners, draw,
-                       font = \bfseries },
-  EdgeStyle/.append style = {<->} }
-
+\tikzset{EdgeStyle/.style={<->,font=\scriptsize,above,sloped,midway}}
   \SetGraphUnit{5}
   
-  \node[draw,circle] (s3) at (0, 0) {$s_3$}; 
-  \node[draw,circle] (s2) at (0, 2) {$s_2$}; 
-  \node[draw,circle] (s1) at (0, 4) {$s_1$}; 
+  \node[draw,circle] (s3) at (0, 0) {$s_2$}; 
+  \node[draw,circle] (s2) at (0, 2) {$s_1$}; 
+  \node[draw,circle] (s1) at (0, 4) {$s_0$}; 
 
-  \node[draw,circle] (t3) at (8, 0) {$t_3$}; 
-  \node[draw,circle] (t2) at (8, 2) {$t_2$}; 
-  \node[draw,circle] (t1) at (8, 4) {$t_1$}; 
+  \node[draw,circle] (t3) at (8, 0) {$t_2$}; 
+  \node[draw,circle] (t2) at (8, 2) {$t_1$}; 
+  \node[draw,circle] (t1) at (8, 4) {$t_0$}; 
   
 
   \node[draw,circle] (cs) at (3, 2) {$c_s$}; 
   \node[draw,circle] (ct) at (5, 2) {$c_t$}; 
 
   
-  \Edge[label = $\omega(s_1.c_s)$](s1)(cs)
+  \Edge[label = $\omega(s_1\,c_s)$](s1)(cs)
   \Edge[label = $\omega(...)$](s2)(cs)
   \Edge[label = $\omega(...)$](s3)(cs)
   
@@ -527,8 +522,8 @@ In particular, this reduction shows that even with small maximal load, the minim
   than for PALL. Moreover, as we show in our experimentations of Sec.\ref{sec:exp_PAZL}, this problem can often be solved positively (albeit less often than the general problem). Finally, a solution to PAZL is simpler to implement in real telecommunication networks, since we do not need to implement any buffering at all.    
   
   When the waiting times are zero, $MT({\cal M})$ is equal to twice the weight of the longest route, thus $T_{max}$ is not relevant anymore. For a route $r$, choosing the offset $m_r$ also sets the offset of the route $\rho(r)$ $m_{\rho(r)} + \lambda(r) \mod P$.
-  Consider an assignment $\{m_1,\dots,m_n\}$ of a star topology and let $m_i'= m_{i} - t(c_s,r_i) \mod P$.
-  Then $\{m_1',\dots,m_n'\}$ is an assignment of the same star topology where the weights of the arcs from $s_i$ to $c_s$ are $0$
+  Consider an assignment $\{m_0,\dots,m_{n-1}\}$ of a star topology and let $m_i'= m_{i} - t(c_s,r_i) \mod P$.
+  Then $\{m_0',\dots,m_{n-1}'\}$ is an assignment of the same star topology where the weights of the arcs from $s_i$ to $c_s$ are $0$
   for all $i$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
   
   
@@ -540,22 +535,22 @@ In particular, this reduction shows that even with small maximal load, the minim
 
     We first present a simple policy, which works when the period is large with regard to the weight of the routes.
     The messages are sent in order from the shortest route to the longest route, without any gap between two messages in the forward period.
-    In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{i}$ the offset of $r_i$ to $(i-1)\tau$. We call this algorithm {\bf Shortest-Longest}.
+    In other words, we assume that the route $r_i$ are sorted by increasing $\lambda(r_i)$ and we set $m_{i}$ the offset of $r_i$ to $i\tau$. We call this algorithm {\bf Shortest-Longest}.
       
      By definition, there are no collision in the forward period and if the period is long enough, 
      it is easy to see that in the backward period the order of the messages are the same as in the forward period and that no collision can occur. 
       
       
-      \begin{proposition} Let $(G, {\cal R})$ be a symmetric routed network, and let $n\tau + 2(\lambda(r_{n}) - \lambda(r_{1})) \leq P$, then there is $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ which is given by Shortest-Longest in time $O(n\log(n))$.\label{prop:SL}
+      \begin{proposition} Let $(G, {\cal R})$ be a symmetric routed network, and let $n\tau + 2(\lambda(r_{n}) - \lambda(r_{0})) \leq P$, then there is $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ which is given by Shortest-Longest in time $O(n\log(n))$.\label{prop:SL}
       \end{proposition}
       \begin{proof}
-       Since $m_{s_i} = (i-1)\tau$, $[t(c_s,r_{i})] = \{i\tau,\dots, (i+1)\tau -1\}$ and there are no collision on the forward period.
+       Since $m_{s_i} = i\tau$, $[t(c_s,r_{i})] = \{i\tau,\dots, (i+1)\tau -1\}$ and there are no collision on the forward period.
        
        
-       We may assume that $\lambda(r_{1}) = 0$, since removing $\lambda(r_{1})$ from every arc $(c_t,t_i)$ does not change the order on the length of the routes nor the collisions between messages.
-       Since $\lambda(r_{1}) = 0$, by hypothesis we have $n\tau + 2\lambda(r_{n}) \leq P$ which implies that
-       $[t(c_s,r_{i})] = \{2 \lambda(r_{i}) + (i-1)\tau, \dots,  2 \lambda(r_{i}) + i\tau -1\}$.
-       Since $ \lambda(r_{i}) \leq  \lambda(r_{i+1})$ by construction, we have  $2 \lambda(r_{i}) + i\tau -1 < 2 \lambda(r_{i+1}) + i\tau$ which proves that there are no collision on the backward period. 
+       We may assume that $\lambda(r_{0}) = 0$, since removing $\lambda(r_{0})$ from every arc $(c_t,t_i)$ does not change the order on the length of the routes nor the collisions between messages.
+       Since $\lambda(r_{0}) = 0$, by hypothesis we have $n\tau + 2\lambda(r_{n}) \leq P$ which implies that
+       $[t(c_t,r_{i})] = \{2 \lambda(r_{i}) + i\tau, \dots,  2 \lambda(r_{i}) + (i+1)\tau -1\}$.
+       Since $ \lambda(r_{i}) \leq  \lambda(r_{i+1})$ by construction, we have  $2 \lambda(r_{i}) + i\tau -1 < 2 \lambda(r_{i+1}) + (i+1)\tau$ which proves that there are no collision on the backward period. 
        
        The complexity of the algorithm is dominated by the sorting of the routes in $O(n\log(n))$. 
       \end{proof}
@@ -809,10 +804,10 @@ Note that we also experimented with other greedy algorithms which do not use mac
      \begin{algorithm}[H]
     \caption{ Greedy deadline ({\bf GD}) }
     \begin{algorithmic}
-    \REQUIRE A routed network $(G,{\cal R})$,a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
-    \ENSURE $(P-\tau)-$periodic assignment of $(G,{\cal R})$, of failure
-   \STATE  ${\cal H} \leftarrow$ empty binary min heap
-       \STATE  free\_ intervals $\leftarrow$ [0,$P$]
+    \REQUIRE A routed network $(G,{\cal R})$, a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
+    \ENSURE $(P,\tau)$-periodic assignment of $(G,{\cal R})$, or failure
+   \STATE  ${\cal H} \leftarrow$ empty set //{\em set of eligible routes}
+       \STATE  free\_ intervals $\leftarrow$ [0,$P$] //{\em list of intervals of free slots}
   
     \FORALL{route $r_{i}$}
     \STATE  deadline[$r_i$]  $\leftarrow$  $m_{i} + T_{max} - \omega(s_i,c_s)$
@@ -823,16 +818,16 @@ Note that we also experimented with other greedy algorithms which do not use mac
       \IF{${\cal H}$ is empty}
       \STATE t $\leftarrow $ min\_non\_assigned(eligible\_time)
       \STATE take $r_i$ the route with eligible\_time[$r_i$] = t
-      \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$)).
+      \STATE 
       \ENDIF
       
-      \STATE Extract the route $r_i$ with the lowest deadline from ${\cal H}$
-      \STATE t $\leftarrow$ beginning of the first free interval of size $\tau$ after t
+      \STATE $r \leftarrow $ extract\_min(${\cal H}$)
+      \STATE t $\leftarrow$ next\_free\_interval(free\_intervals, t) //{\em if there is no more free intervals of size $\tau$, the algorithm fails}
       \STATE $w_i \leftarrow$ t - eligible\_time[$r_i$]
-      \STATE update(free\_ intervals)
+      \STATE update(t,free\_ intervals)
       \STATE t $\leftarrow$ t + $\tau$
       \FORALL{routes $r_i$ with  eligible\_time[$r_i$] $\leq$ t}
-      \STATE ${\cal H}$ $\leftarrow$ insert ($r_i$, deadlines($r_i$).
+      \STATE insert ( ${\cal H}$,$r_i$).
       \ENDFOR
       \ENDWHILE
 %    \STATE  $w_i \leftarrow 0$
@@ -847,7 +842,7 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
     \end{algorithmic}
     \end{algorithm}
-    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(free\_ intervals) removes an interval of size $\tau$, which correspond to the message,  from free\_ intervals.
+    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
 
 
     The greedy algorithm can be made to work in time $O(n\log(n))$. 
