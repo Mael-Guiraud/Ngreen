@@ -64,27 +64,21 @@ We study the sending of periodic messages in a graph following predefined paths,
 \end{abstract}
 
 \footnote{This work is partially supported by the french ANR project N-GREEN.}
+
 \section{Introduction}
 
 Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost ownership. The main challenge for this type of architecture is the latency in the transfer process that is an important factor for dimensioning the network. The latency is measured between the sending of a message by the Remote Radio Heads (RRHs) on the field and the receptions of the answers, computed by real-time virtualized network functions on Baseband Units (BBUs), in the cloud. For example, even if next radio protocols are less stringent, some standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
 
- In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network.  The current solution ~\cite{pizzinat2015things,tayq2017real} is to use use dedicated circuits, since statistical multiplexing even with a very large bandwidth, does not comply with the latency requirements. 
- 
- \todo{mettre la suite de l'état de l'art}
- 
- 
+\todo{citation [7] pour les reseaux points a points ?}
+ In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network. 
+ Statistical multiplexing even with a large bandwidth does not comply with the latency requirements. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits. Each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. 
+ %Hence a solution is needed to offer low latency over cheap packet based networks. 
  Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. The aim is to operate a C-RAN on a low-cost shared switched network.
  
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). For simplicity, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \textbf{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
  between the emission of a message and the complete return of its answer. It means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long.
- 
- \todo{à revoir, citation ?}
- Thus in this article, we work on latency and periodicity constraints in fronthaul. The best current solution is to rely on an almost full optical approach, where each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches [7]. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. 
- 
-%  Hence a solution is needed to offer low latency over commoditized packet based networks. Indeed, dynamical optical bypass and dynamical management of the emission should be considered to guarantee latency constraints, as in the french ANR project N-GREEN. This project proposes a new type of switching/routing node and a specific network architecture exploiting WDM packets thanks to a new generation of optical add/drop multiplexers (WSADM: WDM slotted add/drop multiplexer). These packets having a fixed duration close to 1?s are transported in a transparent way, to better exploit the switching matrix of the node; their headers will be transported over one dedicated wavelength at a lower bit rate, to reduce the physical constraints of the electronic processing and scheduler. 
-%  
-The problem we focus on here may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just to avoid deadlocks, moreover the periodicity is not considered in wormhole problems. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are already $\NP$-complete. The only model which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
-
+   
+The problem we focus on here may look like wormhole problems~\cite{cole1996benefit}, but here we want to minimize the time lost in buffers and not just to avoid deadlocks, and we also need to deal with the periodicity. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are already $\NP$-complete. The only coloring which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple, zhu2001circular,zhu2006recent} but is not expressive enough to capture our problem.
 
  In Sec.~\ref{sec:def} we propose a model of the network and the periodic sending of messages along its routes. 
  We then formalize our two problems of finding a periodic assignment for sending messages without collisions: PRA (sending of the message only) and PALL (sending of the message and of the answer).  
@@ -100,14 +94,9 @@ In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting
   \subsection{Network modeling}
   
 
-The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} \omega(a_j)$. We also define $\lambda(u_0,r)=0$. The length of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
-We denote by $\cal R$ a set of routes,  %in $G$ such that no two routes have the same first vertices or the same last vertices.
-the pair $(G,\cal R)$ is called a {\bf routed network} and represents our telecommunication network.
+The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is a sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} \omega(a_j)$. We also define $\lambda(u_0,r)=0$. The length of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
+We denote by $\cal R$ a set of routes, the pair $(G,\cal R)$ is called a {\bf routed network} and represents our telecommunication network.
 The first vertex of a route models an antenna (RRH) and the last one a data-center (BBU) which processes the messages sent by the antenna.
-
-%We denote by $\rho$ the bijection induced by ${\cal R}$, $\rho(s) = t$ if $s$ is the first vertex of a route $r$ and $t$ the last. 
-
-
 
    \subsection{Messages dynamic}
       
@@ -120,12 +109,8 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       Let $r_1$ and $r_2$ be two routes, on which messages are sent at time $m_1$ and $m_2$ in their first vertex.
       We say that the two routes have a {\bf collision} if they share an arc of first vertex $v$ and $[t(v,r_{1})] \cap [t(v,r_{2})] \neq \emptyset$.
       
-      \todo{commencer les routes à 0 ou pas ?}
-      
       A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. Moreover, \emph{no pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
       
-
-%       Notice that the notion of $P$-periodic assignment \textbf{is not monotone} with regard to $P$. 
       As an example of a $(2,1)$-periodic assignment, let us consider a routed network 
       where all pairs of routes intersect at a different edge. It is easy to design such a network and an example is given in Fig.~\ref{fig:example}. We set $\tau = 1$ and the weights are chosen so that if $r_{i}$ and $r_{j}$ have $v$ as first common vertex then we have $\lambda(v,r_{i}) - \lambda(v,r_{j})=1$. There is a $(2,1)$-periodic assignment by setting all $m_{i}$ to $0$.
 
@@ -216,7 +201,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
 
       Consider the routed network $(G,{\cal R})$ given in the previous subsection. 
       We change the weights so that for $v$, the first vertex which belongs to $r_i$ and $r_j$,
-      we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $n$, the number of routes in ${\cal R_{\cal C}}$. In such a graph, there is no $(P,\tau)$-periodic assignment, since the problem reduces to finding a $P$-coloring in a complete graph with $n > P$ vertices, the colors beings the offsets of the routes.\\
+      we have $\lambda(v,r_i) - \lambda(v,r_j)= P$, where $P$ is an odd number smaller than $n$, the number of routes in ${\cal R_{\cal C}}$. In such a graph, there is no $(P,\tau)$-periodic assignment, since the problem reduces to finding a $P$-coloring in a complete graph with $n > P$ vertices, the colors being the offsets of the routes.\\
       If we consider a period of $2$, for all $i \neq j$, $\lambda(v,r_i) - \lambda(v,r_j) \mod 2 = 1$ . Therefore $(0,\dots,0)$ is a $(2,1)$-periodic assignment of ${\cal R}$.      
 \end{proof}
       
@@ -448,11 +433,11 @@ In particular, this reduction shows that even with small maximal load, the minim
     \label{fig:reduction}
     \end{figure}
     
-\section{The Star Topology: No Waiting Time} \label{sec:PAZL}
+\section{The Star Routed Network: No Waiting Time} \label{sec:PAZL}
   
    
     
-    \subsection{The star topology}
+    \subsection{The star routed network}
     
       From now on, we will only consider graphs with a very simple topology that we call the {\bf star topology}. 
       First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
@@ -618,55 +603,84 @@ This algorithm, contrarily to the previous one, may work well, even when the con
 In fact, experimental data in Subsection~\ref{sec:exp_PAZL} suggests that the algorithm finds a solution on average when $P \geq 2 n\tau$.
 Note that we also experimented with other greedy algorithms which do not use macro-slots, they work even better in practice but their theoretical upper bound is worse.
 
-	\subsubsection*{Exhaustive search}
-% 	\begin{algorithm}[H]
-% 	\caption{Exhaustive Generation}  
-% 	\begin{algorithmic}
-% 	\REQUIRE A routage graph ${\cal R}_{\cal C}$, period $P$, packet size $\tau$
-% 	\ENSURE $(P,\tau)$-periodic assignment of ${\cal R}_{\cal C}$
-% 	\STATE Forward-budget $\leftarrow$ $P$ - n * $\tau$
-% 	\STATE Backward-budget $\leftarrow$ $P$ - n * $\tau$
-% 	\STATE Free-Intervals $\leftarrow$ list of free intervals in the backward period, init to $[0;P[$
-% 	\FORALL{source $s_i$ in S}
-% 	\FORALL{j in Free-Intervals }
-% 	\IF{Message of the route $r_{s_i}$ does not collides with scheduled routes}
-% 	\STATE $m_{s_i} \leftarrow $ the first slot of Free-Intervals[j]
-% 	\STATE Split the Free-Intervals considering the new packet
-% 	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
-% 	\STATE Backward-budget $\leftarrow$ Backward-budget - {\em lost size}
-% 	\STATE call Exhaustive Generation on remaining routes
-% 	\ENDIF
-% 	\ENDFOR
-% 	\ENDFOR
-% 
-% 
-%       \end{algorithmic}
-%       \end{algorithm}
+\subsection*{An FTP algorithm}
 
-% 	    
-      We now present an exhaustive search algorithm, which tries to set the offsets in all possible ways until it has found a $(P,\tau)$-periodic assignment. Contrarily to the two previous algorithms, when it fails to find a solution, then it certifies there are no solution to PAZL.
-      
-      We have $n$ routes denoted by $\{0,\dots,n-1\}$. A partial solution $S$ is 
-      a partial function from $[n]$ to $\{0,1,\dots,P-\tau -1\}$ which sets a starting time for a subset of the routes $R(S) \subseteq [n]$, such that there are no collisions for these routes.  A partial solution $S'$ extends $S$, if $S'$ is defined over one more route than $S$ and this route has a larger starting offset than all routes of $S$: $R(S') = R(S) \cup \{r'\}$ and for all  $r \in R(S)$, $S(r) + \tau \leq S'(r')$. We define a tree whose nodes are partial solutions and such that the root is the empty partial solution and the children of a partial solution are the partial solutions which extend it. The solutions to our problem will be the leaves of depth $n$ in the tree, and our exhaustive search algorithm is a depth-first search of this tree. 
-      
-      Remark that a node $S$ with $|R(S)| = k$ can have as many as $(n-k)P$ children. Since the tree is of depth $n$, the tree may have as many as $n!P^n$ elements and while $n$ is small, $P$ may be large which makes its traversal intractable.  Therefore we have to find cuts in the tree to avoid to explore it entirely and henceforth make the algorithm practical. Cuts correspond to the detection of subtrees which contain no solutions or solutions which can be found elsewhere and can thus be skipped. We now propose three cuts, the first two being particularly useful when the network is loaded ($n\tau$ is not far from $P$). 
-      
-      \begin{enumerate}
-       \item We consider the number of slots which can be used by routes not yet fixed by a partial solution in the \emph{forward period}. When we extend a solution into $S$ with a new route at offset $m$, then at most $(P - m) / \tau $ routes can still be used to extend $S$ without collisions in the forward period. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks.
-       
-       \item 
-       For the next two cuts, we need to define the notion of the useful slots of a partial solution $S$ in the \emph{backward period}: a slot is said to be useful, if it is not used by a message set by $S$ in the backward period and it belongs to an interval of at least $\tau$ such slots. Useful slots are positions of the backward period which can be used when extending $S$. We will denote by $([a_i,b_i[)_{i\leq l}$ the ordered sequence of intervals of useful slots of $S$. Without loss of generality we can assume that all $a_i, b_i \leq l$. The number of messages of size $\tau$ which can be placed in the useful slots of $S$ is thus  $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks. Notice that the list of intervals of useful slots and the value $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $ can be maintained in constant time, since each time a route is added, we only need to split an interval of useful slots into at most two such intervals.
-       
-       \item 
-       Let $S_1$ and $S_2$ be two partial solutions with $R(S_1) = R(S_2)$. Let $US_1$ (respectively $US_2$) be the set of useful slots of $S_1$ (resp. $S_2$). We say that \emph{$S_1$ dominates $S_2$} if there are more useful slots both in the forward and backward periods for $S_1$ than for $S_2$. Formally, the largest offset fixed in $S_1$ is smaller than the one in $S_2$ and $US_2 \subseteq US_1$. Remark that any valid sequence of extensions of $S_2$ (choosing offsets of routes in the complementary of $R(S_2)$) is also a valid sequence of extensions of $S_1$. Therefore if the tree rooted at $S_2$ contain a solution, then $S_1$ contains one too. Hence, in our exhaustive search of the tree of partial solutions, we can skip the tree rooted at $S_2$.
-       
-       We now explain how we can detect some partial solutions which are dominated so that we do not explore their subtrees.
-       Consider a partial solution $S$ which we extend into $S'$ by setting the offset of the route $r$ to be the smallest possible. The offset of $r$ in the backward period is $S'(r)+ \lambda$ and we denote the end of the message before before by $a$. Hence all extensions of $S$ into $S''$ such that $S'(r)  < S''(r) < a + \tau - \lambda$ are dominated by $S'$. Therefore when computing the extension of $S$, we first build $S'$ and then $S''$ with $S''(r) =  a + \tau - \lambda$ , skipping all values in between.
-       
-       \end{enumerate}
-      
-      The third cut works well in conjunction with the first one since it makes the offsets grow quickly and 
-      which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
+In this section we show how every assignments without waiting time can be put in a special form.
+We use that to provide an algorithm which always finds an assignment if there is some, in fixed parameter 
+tractable time with parameters $n$ the number of routes. This is justified since $n$ is small in practice, 
+at most $20$ and $P$ is large, $20000$ in our context.
+
+
+We say that an assignment $\mathcal{M}$ is \textbf{compact} if for all forward routes $r$ but one,
+there is another forward route $r'$ such that $r$ and  $r'$ ``have no gap'' or $\rho(r)$ and  $\rho(r)'$ ``have no gap''.
+
+\begin{proposition}
+Let $(G, {\cal R})$ be a star routed network. If there is a $(P,\tau)$-periodic assignment to blah,
+then there is a compact $(P,\tau)$-periodic assignment.
+\end{proposition}
+\begin{proof}
+ On fait tourner les paquets jusqu'a contact on et on repete jusqu'a epuisement. 
+\end{proof}
+
+\begin{theorem}
+     Let $(G, {\cal R})$ be a star routed network with $n$ routes. There is an algorithm which finds a $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ if there is one in time $O(2^nq(|G|))$ with $q$ a polynomial.
+\end{theorem}
+
+\begin{proof}
+ Brute force on the compact assignments. 
+\end{proof}
+
+
+% 
+% 	\subsubsection*{Exhaustive search}
+% % 	\begin{algorithm}[H]
+% % 	\caption{Exhaustive Generation}  
+% % 	\begin{algorithmic}
+% % 	\REQUIRE A routage graph ${\cal R}_{\cal C}$, period $P$, packet size $\tau$
+% % 	\ENSURE $(P,\tau)$-periodic assignment of ${\cal R}_{\cal C}$
+% % 	\STATE Forward-budget $\leftarrow$ $P$ - n * $\tau$
+% % 	\STATE Backward-budget $\leftarrow$ $P$ - n * $\tau$
+% % 	\STATE Free-Intervals $\leftarrow$ list of free intervals in the backward period, init to $[0;P[$
+% % 	\FORALL{source $s_i$ in S}
+% % 	\FORALL{j in Free-Intervals }
+% % 	\IF{Message of the route $r_{s_i}$ does not collides with scheduled routes}
+% % 	\STATE $m_{s_i} \leftarrow $ the first slot of Free-Intervals[j]
+% % 	\STATE Split the Free-Intervals considering the new packet
+% % 	\STATE Forward-budget $\leftarrow$ Forward-budget - {\em lost size}
+% % 	\STATE Backward-budget $\leftarrow$ Backward-budget - {\em lost size}
+% % 	\STATE call Exhaustive Generation on remaining routes
+% % 	\ENDIF
+% % 	\ENDFOR
+% % 	\ENDFOR
+% % 
+% % 
+% %       \end{algorithmic}
+% %       \end{algorithm}
+% 
+% % 	    
+%       We now present an exhaustive search algorithm, which tries to set the offsets in all possible ways until it has found a $(P,\tau)$-periodic assignment. Contrarily to the two previous algorithms, when it fails to find a solution, then it certifies there are no solution to PAZL.
+%       
+%       We have $n$ routes denoted by $\{0,\dots,n-1\}$. A partial solution $S$ is 
+%       a partial function from $[n]$ to $\{0,1,\dots,P-\tau -1\}$ which sets a starting time for a subset of the routes $R(S) \subseteq [n]$, such that there are no collisions for these routes.  A partial solution $S'$ extends $S$, if $S'$ is defined over one more route than $S$ and this route has a larger starting offset than all routes of $S$: $R(S') = R(S) \cup \{r'\}$ and for all  $r \in R(S)$, $S(r) + \tau \leq S'(r')$. We define a tree whose nodes are partial solutions and such that the root is the empty partial solution and the children of a partial solution are the partial solutions which extend it. The solutions to our problem will be the leaves of depth $n$ in the tree, and our exhaustive search algorithm is a depth-first search of this tree. 
+%       
+%       Remark that a node $S$ with $|R(S)| = k$ can have as many as $(n-k)P$ children. Since the tree is of depth $n$, the tree may have as many as $n!P^n$ elements and while $n$ is small, $P$ may be large which makes its traversal intractable.  Therefore we have to find cuts in the tree to avoid to explore it entirely and henceforth make the algorithm practical. Cuts correspond to the detection of subtrees which contain no solutions or solutions which can be found elsewhere and can thus be skipped. We now propose three cuts, the first two being particularly useful when the network is loaded ($n\tau$ is not far from $P$). 
+%       
+%       \begin{enumerate}
+%        \item We consider the number of slots which can be used by routes not yet fixed by a partial solution in the \emph{forward period}. When we extend a solution into $S$ with a new route at offset $m$, then at most $(P - m) / \tau $ routes can still be used to extend $S$ without collisions in the forward period. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks.
+%        
+%        \item 
+%        For the next two cuts, we need to define the notion of the useful slots of a partial solution $S$ in the \emph{backward period}: a slot is said to be useful, if it is not used by a message set by $S$ in the backward period and it belongs to an interval of at least $\tau$ such slots. Useful slots are positions of the backward period which can be used when extending $S$. We will denote by $([a_i,b_i[)_{i\leq l}$ the ordered sequence of intervals of useful slots of $S$. Without loss of generality we can assume that all $a_i, b_i \leq l$. The number of messages of size $\tau$ which can be placed in the useful slots of $S$ is thus  $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $. If that value is less than the number of routes which are not in $R(S)$, it is a failure and the algorithm backtracks. Notice that the list of intervals of useful slots and the value $\displaystyle{ \sum_{i=0}^{l} (b_{i} -a_i)/\tau } $ can be maintained in constant time, since each time a route is added, we only need to split an interval of useful slots into at most two such intervals.
+%        
+%        \item 
+%        Let $S_1$ and $S_2$ be two partial solutions with $R(S_1) = R(S_2)$. Let $US_1$ (respectively $US_2$) be the set of useful slots of $S_1$ (resp. $S_2$). We say that \emph{$S_1$ dominates $S_2$} if there are more useful slots both in the forward and backward periods for $S_1$ than for $S_2$. Formally, the largest offset fixed in $S_1$ is smaller than the one in $S_2$ and $US_2 \subseteq US_1$. Remark that any valid sequence of extensions of $S_2$ (choosing offsets of routes in the complementary of $R(S_2)$) is also a valid sequence of extensions of $S_1$. Therefore if the tree rooted at $S_2$ contain a solution, then $S_1$ contains one too. Hence, in our exhaustive search of the tree of partial solutions, we can skip the tree rooted at $S_2$.
+%        
+%        We now explain how we can detect some partial solutions which are dominated so that we do not explore their subtrees.
+%        Consider a partial solution $S$ which we extend into $S'$ by setting the offset of the route $r$ to be the smallest possible. The offset of $r$ in the backward period is $S'(r)+ \lambda$ and we denote the end of the message before before by $a$. Hence all extensions of $S$ into $S''$ such that $S'(r)  < S''(r) < a + \tau - \lambda$ are dominated by $S'$. Therefore when computing the extension of $S$, we first build $S'$ and then $S''$ with $S''(r) =  a + \tau - \lambda$ , skipping all values in between.
+%        
+%        \end{enumerate}
+%       
+%       The third cut works well in conjunction with the first one since it makes the offsets grow quickly and 
+%       which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
 
 
     \subsection{Experimental evaluation}\label{sec:exp_PAZL}
