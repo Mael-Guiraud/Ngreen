@@ -421,7 +421,7 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	int ressto;
 
 	int ressp;
-	int nb_rand = 1000;
+	int nb_rand = 10000;
 
 
 	for(int periode=taille_paquets*nb_routes;periode<periode_max ;periode+=1000)
@@ -443,7 +443,7 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 				total_sp+= ressp;
 
 			ressto=stochastic(g,taille_paquets,periode,1000,1);
-			//ressto -=  longest_route(g);
+			ressto -=  longest_route(g);
 
 			#pragma omp atomic
 				total_sto+= ressto;

@@ -3,7 +3,7 @@
 #include <math.h>
 
 #define taille 1000
-#define nb_periodes 30
+#define nb_periodes 20
 
 int donnes[nb_periodes][taille];
 float moyennes[nb_periodes];
@@ -41,13 +41,15 @@ void tri_bulles(int* tab,int t)
 
 void lire_fichier()
 {
-	FILE * f = fopen("donnes_random_marge.data","r");
+	FILE * f = fopen("../datas/donnes_random10000.data","r");
+	if(!f){perror("Error opening file");exit(5);}
 	int trash;
 	for(int i=0;i<nb_periodes;i++)
 	{
 		for(int j=0;j<taille;j++)
 		{
-			fscanf(f,"%d %d",&trash,&donnes[i][j]);
+			fscanf(f,"%d %d %d",&trash,&trash,&donnes[i][j]);
+			//fscanf(f,"%d %d %d",&trash,&donnes[i][j],&trash);
 
 		}
 	}
@@ -194,6 +196,47 @@ void genere_plot()
 	fprintf(f,"set output '| ps2pdf - box.pdf'\n");
 	fclose(f);
 }
+int nb_non_null(int numero_periode)
+{
+	int nb = 0;
+	for(int i=0;i<taille;i++)
+	{
+		if(donnes[numero_periode][i])
+			nb ++;
+	}
+	return nb;
+}
+float moy_non_null(int numero_periode)
+{
+	float m = 0.0;
+	int nb=0;
+
+	for(int i=0;i<taille;i++)
+	{
+		if(donnes[numero_periode][i])
+		{
+			m+= donnes[numero_periode][i];
+			nb++ ;
+			printf("%d - ",donnes[numero_periode][i] );
+		}
+	
+	}
+	printf("\n");
+	return m/nb;
+}
+void worst()
+{
+	FILE * f = fopen("traitement.data","w");
+	lire_fichier();
+	for(int i = nb_periodes-1;i>=0;i--)
+	{
+		printf("%d : %d %d %f\n", i, max(i), nb_non_null(i),moy_non_null(i));
+		//fprintf(f,"%d %d %d %d 0\n",(int)(20000/(20000+i*1000.0)*100),donnes[i][taille/4+1]/20 ,donnes[i][taille/2+1]/20,donnes[i][3*taille/4+1]/20);
+		//fprintf(stdout,"%d %d %d %d 0\n",(int)(20000/(20000+i*1000.0)*100),donnes[i][taille/4+1]/20 ,donnes[i][taille/2+1]/20,donnes[i][3*taille/4+1]/20);
+
+	}
+	fclose(f);
+}
 int main()
 {
 	/*
@@ -202,7 +245,8 @@ int main()
 	/*for(int i=20000;i<49000;i+=5000)
 	trace_distribs(i);
 	//*/
-	quartiles();
+	//quartiles();
+	worst();
 	//transfo();
 	//genere_plot();
 

@@ -12,6 +12,10 @@ replot   file  using 1:6   with points title "SLA"
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
+set tics font ", 25"
+set xlabel font ", 25"
+set ylabel font ", 25"
+set key font ", 25"
 set notitle
 set ylabel "Success Rate"
 set xlabel "Margin"
@@ -20,7 +24,7 @@ set border 3
 set term postscript color solid
 set output '| ps2pdf - departs_gp_30000.pdf'
 
-set key outside right bot
+set key outside right
 replot
 
 
