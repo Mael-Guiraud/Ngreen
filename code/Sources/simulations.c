@@ -3,6 +3,7 @@
 #include <omp.h>
 #include <limits.h>
 #include <math.h>
+#include <sys/time.h>
 
 #include "struct.h"
 #include "PAZL.h"
@@ -123,7 +124,8 @@ void echec_PAZL(int nb_routes, int taille_message,int taille_routes, int nb_simu
 		}
 
 	
-		fprintf(F, "%d %lld %lld %lld %lld\n",j,total_sl/(nb_simuls/100),total_3NT/(nb_simuls/100),total_brute/(nb_simuls/100),total_theorique/(nb_simuls/100));
+		//fprintf(F, "%d %lld %lld %lld %lld\n",j,total_sl/(nb_simuls/100),total_3NT/(nb_simuls/100),total_brute/(nb_simuls/100),total_theorique/(nb_simuls/100));
+		fprintf(F, "%f %lld %lld %lld %lld\n",((float)taille_message*nb_routes)/j*100,total_sl/(nb_simuls/100),total_3NT/(nb_simuls/100),total_brute/(nb_simuls/100),total_theorique/(nb_simuls/100));
 
 	}
 	fclose(F);
@@ -464,6 +466,34 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	}
 	fclose(F);
 	fclose(F2);
+}
+double time_diff(struct timeval tv1, struct timeval tv2)
+{
+    return (((double)tv2.tv_sec*(double)1000 +(double)tv2.tv_usec/(double)1000) - ((double)tv1.tv_sec*(double)1000 + (double)tv1.tv_usec/(double)1000));
+}
+
+//Nombre de routes pouvant être calculées en moins de "max" ms
+int number_max_search(int taille_message,int taille_routes, int max)
+{
+	
+	Graphe g;
+	struct timeval tv1, tv2;
+	double timer=0.0;
+	int nb_routes =1;
+
+	while(timer < max)
+	{
+		g = init_graphe(nb_routes *2 +1);
+		graphe_etoile(g,taille_routes);
+		gettimeofday (&tv1, NULL);
+		search(g,taille_message,taille_routes*nb_routes);
+		gettimeofday (&tv2, NULL);
+		timer = time_diff(tv1,tv2);
+		printf("We need %fms to compute %d routes\n",timer,nb_routes);
+		nb_routes++;
+	}
+	return 1;
+
 }
 
 //Fichiers en 3D pour PALL
