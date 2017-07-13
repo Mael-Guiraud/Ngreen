@@ -24,7 +24,7 @@ Z.~Tayq, L.~A. Neto, B.~Le~Guyader, A.~De~Lannoy, M.~Chouaref,
 \bibitem{finn-detnet-architecture-08}
 N.~Finn and P.~Thubert, ``{Deterministic Networking Architecture},''
   Internet-Draft draft-finn-detnet-architecture-08, Internet Engineering Task
-  Force, Sept. 2016.
+  Force, 2016.
 \newblock Work in Progress.
 
 \bibitem{ieee802}
@@ -72,6 +72,11 @@ X.~Zhu, ``Circular chromatic number: a survey,'' {\em Discrete mathematics},
 \bibitem{zhu2006recent}
 X.~Zhu, ``Recent developments in circular colouring of graphs,'' in {\em Topics
   in discrete mathematics}, pp.~497--550, Springer, 2006.
+
+\bibitem{de2011treewidth}
+F.~De~Montgolfier, M.~Soto, and L.~Viennot, ``Treewidth and hyperbolicity of
+  the internet,'' in {\em Network Computing and Applications (NCA), 2011 10th
+  IEEE International Symposium on}, pp.~25--32, IEEE, 2011.
 
 \bibitem{holyer1981np}
 I.~Holyer, ``The np-completeness of edge-coloring,'' {\em SIAM Journal on
