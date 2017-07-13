@@ -423,7 +423,7 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	int ressto;
 
 	int ressp;
-	int nb_rand = 10000;
+	int nb_rand = 1000;
 
 
 	for(int periode=taille_paquets*nb_routes;periode<periode_max ;periode+=1000)

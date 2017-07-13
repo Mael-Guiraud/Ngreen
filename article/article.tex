@@ -60,7 +60,7 @@
 \maketitle
 
 \begin{abstract}
-We study the sending of periodic messages in a graph following predefined paths, a problem arising from communication between radio antennas and their signal processing units located in distant data-centers. Messages must be sent deterministically to avoid collisions on the network and to minimize the latency. We prove that problems arising from this context are $\NP$-complete even for very restricted graphs. We then deal with the case of a star graph and for different regimes of the parameters we propose algorithms that are experimentally shown to work extremely well compared to traditional statistical multiplexing.
+We study the sending of periodic messages in a graph following predefined paths, a problem arising from communication between radio antennas and their signal processing units located in distant data-centers. Messages must be sent deterministically to avoid collisions on the network and to minimize the latency. We prove that problems arising from this context are $\NP$-complete even for very restricted graphs. We then deal with the case of a star graph and for different regimes of parameters we propose algorithms that are experimentally shown to work extremely well compared to traditional statistical multiplexing.
 \end{abstract}
 
 \footnote{This work is partially supported by the french ANR project N-GREEN.}
@@ -70,7 +70,7 @@ We study the sending of periodic messages in a graph following predefined paths,
 Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost ownership. The main challenge for this type of architecture is the latency in the transfer process that is an important factor for dimensioning the network. The latency is measured between the sending of a message by the Remote Radio Heads (RRHs) on the field and the receptions of the answers, computed by real-time virtualized network functions on Baseband Units (BBUs), in the cloud. For example, even if next radio protocols are less stringent, some standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in 1 to 10ms depending on targeted services~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
 
 \todo{citation [7] pour les reseaux points a points ?}
- In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network. 
+ In this article, we study mechanisms to deal with the latency and periodicity constraints in the fronthaul network. \todo{The fronthaul network is the network located between the BUUs and the RRHs.
  Statistical multiplexing even with a large bandwidth does not comply with the latency requirements. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits. Each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of about 10,000 base stations. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. The aim is to operate a C-RAN on a low-cost shared switched network.
  
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). For simplicity, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \textbf{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
@@ -107,7 +107,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       Let $r_1$ and $r_2$ be two routes, on which messages are sent at time $m_1$ and $m_2$ in their first vertex.
       We say that the two routes have a {\bf collision} if they share an arc of first vertex $v$ and $[t(v,r_{1})] \cap [t(v,r_{2})] \neq \emptyset$.
       
-      A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_1, \ldots ,m_n)$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. Moreover, \emph{no pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
+      A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a sequence  ${\cal M}=(m_0, \ldots ,m_{n-1})$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ represents the time at which a message is emitted at the first vertex of the route $r_{i}$. We will always consider that the $m_{i}$ are between $0$ and $P-1$. Moreover, \emph{no pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
 
       As an example of a $(2,1)$-periodic assignment, let us consider a routed network 
       where all pairs of routes intersect at a different edge. It is easy to design such a network and an example is given in Fig.~\ref{fig:example}. We set $\tau = 1$ and the weights are chosen so that if $r_{i}$ and $r_{j}$ have $v$ as first common vertex then we have $\lambda(v,r_{i}) - \lambda(v,r_{j})=1$. There is a $(2,1)$-periodic assignment by setting all $m_{i}$ to $0$.
@@ -264,7 +264,7 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
          $ [t(v,r)]$& Set of time slots used by route $r$ at vertex $v$ \\
          & in a period $P$\\
          \hline 
-         ${\cal M}=(m_1, \ldots ,m_n)$& Assignment: an offset for each route)\\
+         ${\cal M}=(m_0, \ldots ,m_{n-1})$& Assignment: an offset for each route)\\
               \hline 
          $w_r$& Waiting time of the route $r$\\
             \hline 
@@ -505,7 +505,7 @@ In particular, this reduction shows that even with small maximal load, the minim
   We ask for a $(P,\tau)$-periodic assignment {\bf with all waiting times equal to $0$} and we call this restricted problem {\bf Periodic Assignment for Zero Latency} or PAZL. We consider PAZL since it is simpler to get theoretical results and good algorithms 
   than for PALL. Moreover, as we show in our experimentations of Sec.\ref{sec:exp_PAZL}, this problem can often be solved positively (albeit less often than the general problem). Finally, a solution to PAZL is simpler to implement in real telecommunication networks, since we do not need to implement any buffering at all.    
   
-  When the waiting times are zero, $MT({\cal M})$ is equal to twice the weight of the longest route, thus $T_{max}$ is not relevant anymore. For a route $r$, choosing the offset $m_r$ also sets the offset of the route $\rho(r)$ $m_{\rho(r)} + \lambda(r) \mod P$.
+  When the waiting times are zero, $MT({\cal M})$ is equal to twice the lenght of the longest route, thus $T_{max}$ is not relevant anymore. For a route $r$, choosing the offset $m_r$ also sets the offset of the route $\rho(r)$ to $m_{r} + \lambda(r) \mod P$.
   Consider an assignment $\{m_0,\dots,m_{n-1}\}$ of a star topology and let $m_i'= m_{i} - t(c_s,r_i) \mod P$.
   Then $\{m_0',\dots,m_{n-1}'\}$ is an assignment of the same star topology where the weights of the arcs from $s_i$ to $c_s$ are $0$
   for all $i$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
@@ -525,7 +525,7 @@ In particular, this reduction shows that even with small maximal load, the minim
      it is easy to see that in the backward period the order of the messages are the same as in the forward period and that no collision can occur. 
       
       
-      \begin{proposition} Let $(G, {\cal R})$ be a symmetric routed network, and let $n\tau + 2(\lambda(r_{n}) - \lambda(r_{0})) \leq P$, then there is $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ which is given by Shortest-Longest in time $O(n\log(n))$.\label{prop:SL}
+      \begin{proposition} Let $(G, {\cal R})$ be a symmetric routed network, and let $n\tau + 2(\lambda(r_{n-1}) - \lambda(r_{0})) \leq P$, then there is $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ which is given by Shortest-Longest in time $O(n\log(n))$.\label{prop:SL}
       \end{proposition}
       \begin{proof}
        Since $m_{s_i} = i\tau$, $[t(c_s,r_{i})] = \{i\tau,\dots, (i+1)\tau -1\}$ and there are no collision on the forward period.
@@ -763,8 +763,8 @@ then there is a compact $(P,\tau)$-periodic assignment.
         We find the route with maximal length, say that it is $\lambda(r_0)$. The idea is to 
         set the waiting times of all routes so they behave exactly as the message in $r_0$.
         
-        The offset of the route $r_i$ is set to $i\tau$, which ensures that there are no collision on the way forward (on the arc $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period. We set the waiting time for the route $i$ to $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$. We can compute the time at which the message of the route $r_i$ arrives at the vertex $c_t$ on its way back: $t(r_i,(c_t,c_s)) = w_i + i\tau + 2\lambda(r_{i})$
-        by replacing $w_i$ by its value we obtain $t(r_i,(c_t,c_s)) =  i\tau + 2\lambda(r_{0})$
+        The offset of the route $r_i$ is set to $i\tau$, which ensures that there are no collision on the way forward (on the arc $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period. We set the waiting time for the route $i$ to $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$. We can compute the time at which the message of the route $r_i$ arrives at the vertex $c_t$ on its way back: $t((c_t,c_s),r_i) = w_i + i\tau + 2\lambda(r_{i})$
+        by replacing $w_i$ by its value we obtain $t((c_t,c_s),r_i) =  i\tau + 2\lambda(r_{0})$
         As a conclusion there are no collision on the edge $(c_t,c_s)$ as soon as the 
         period is larger than $n\tau$ (there are no gaps between the messages).
         
@@ -855,7 +855,7 @@ then there is a compact $(P,\tau)$-periodic assignment.
 
     \end{algorithmic}
     \end{algorithm}
-    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
+    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(t,free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
 
 
     The greedy algorithm can be made to work in time $O(n\log(n))$. 
@@ -884,7 +884,7 @@ then there is a compact $(P,\tau)$-periodic assignment.
      We reduce our problem of setting the offsets of the backwards routes once the order of the forward routes is fixed to this
      scheduling problem. The backward routes are the jobs, the size of a message is the running time of a job,
      the deadline of a route is the deadline of the corresponding job and the smallest time at which it is eligible is the release time. Let us call {\bf Minimal Latency Scheduling (MLS)} this algorithm.
-     Remark that we do not deal with the periodicity. When MLS finds a solution ${\cal M}$ its always satisfies $MT({\cal M}) < T_{max}$. On the other hand, it is a $(P,\tau)$ periodic assignment only if $m_n - m_1 \leq P -\tau$ where $m_n$ is the largest offset and $m_1$ the smallest one. The algorithm we use minimize $m_n - m_1 $, so it may work quite well in practice (as shown in Section~\ref{sec:resultsPALL}).
+     Remark that we do not deal with the periodicity. When MLS finds a solution ${\cal M}$ its always satisfies $MT({\cal M}) < T_{max}$. On the other hand, it is a $(P,\tau)$ periodic assignment only if $m_{n-1} - m_0 \leq P -\tau$ where $m_{n-1}$ is the largest offset and $m_0$ the smallest one. The algorithm we use minimize $m_{n-1} - m_0 $, so it may work quite well in practice (as shown in Section~\ref{sec:resultsPALL}).
      
      We now present a variant of the previous algorithm that we call {\bf Periodic Minimal Latency Scheduling (PMLS)}
      which takes into account the periodicity. We fix arbitrarily a backward route so that its message is the first to go through the central arc at time $t$. Then we modify the deadline of each forward route to be the minimum of their previous deadline and $t + P$.  We execute this algorithm for every possible first backward route while no solution is found. Since we run the previous algorithm at most $n$ times, the complexity is in $O(n^3\log(n))$. Remark that it will always find more solution than MLS,
@@ -1002,7 +1002,7 @@ yields the best results for the two algorithms. The number of different orders i
      \end{figure}
      
      We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Figure~\ref{fig:sto} since even the third quartile was always at $0$ for a period of $20000$.
-     There is around $20\%$ of the instances for which the margin is larger than $0$ for $P=20000$ and $7\%$
+     There is around $20\%$ of the instances for which the margin is larger than $0$ for $P=20000$ and $2\%$
      for $P = 21000$. For the instances with a margin larger than $0$, the margin is on average $400$.
      
      The simulations show clearly that the stochastic policy does not ensure a minimal latency. As we can see in Fig~\ref{fig:sto}), the more the network is loaded, the higher the latency is. When the network is highly loaded,

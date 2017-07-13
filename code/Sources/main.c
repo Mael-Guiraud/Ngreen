@@ -71,14 +71,14 @@ int main()
 	Tmax moyen pour sto vs sp
 	*******/
 
-	//marge_PALL_stochastique(8,2500,20000,1000,50000);
+	marge_PALL_stochastique(8,2500,20000,1000,50000);
 
 
 
 	/****Nombre de routes pouvant être calculées en moins de "max" ms
 	****/
 
-	 number_max_search(2500,20000, 1000);
+	 //number_max_search(2500,20000, 1000);
 
 
 	/******
