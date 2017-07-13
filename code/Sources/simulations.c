@@ -472,28 +472,38 @@ double time_diff(struct timeval tv1, struct timeval tv2)
     return (((double)tv2.tv_sec*(double)1000 +(double)tv2.tv_usec/(double)1000) - ((double)tv1.tv_sec*(double)1000 + (double)tv1.tv_usec/(double)1000));
 }
 
-//Nombre de routes pouvant être calculées en moins de "max" ms
-int number_max_search(int taille_message,int taille_routes, int max)
+
+double time_search(int nb_routes, int taille_message,int taille_routes)
 {
 	
 	Graphe g;
 	struct timeval tv1, tv2;
 	double timer=0.0;
-	int nb_routes =1;
+	
+	g = init_graphe(nb_routes *2 +1);
+	graphe_etoile(g,taille_routes);
+	gettimeofday (&tv1, NULL);
+	search(g,taille_message,taille_routes*nb_routes);
+	gettimeofday (&tv2, NULL);
+	timer = time_diff(tv1,tv2);
+		
+	printf("%f\n",timer);
+		return timer;
 
-	while(timer < max)
+}
+void search_efficiency(int taille_message,int taille_routes, int nb_simuls)
+{
+	double average=0;
+	for(int nb_routes = 50;nb_routes<100;nb_routes+=5)
 	{
-		g = init_graphe(nb_routes *2 +1);
-		graphe_etoile(g,taille_routes);
-		gettimeofday (&tv1, NULL);
-		search(g,taille_message,taille_routes*nb_routes);
-		gettimeofday (&tv2, NULL);
-		timer = time_diff(tv1,tv2);
-		printf("We need %fms to compute %d routes\n",timer,nb_routes);
-		nb_routes++;
-	}
-	return 1;
+		for(int i=0;i<nb_simuls;i++)
+		{
+			average += time_search(nb_routes,2500,20000);
 
+		}
+		printf("%d routes : Average = %f ms \n",nb_routes,average / nb_simuls);
+	}
+	
 }
 
 //Fichiers en 3D pour PALL

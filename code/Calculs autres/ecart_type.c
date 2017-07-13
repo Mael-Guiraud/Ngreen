@@ -41,7 +41,7 @@ void tri_bulles(int* tab,int t)
 
 void lire_fichier()
 {
-	FILE * f = fopen("../datas/donnes_random1000.data","r");
+	FILE * f = fopen("../datas/donnes_random.data","r");
 	if(!f){perror("Error opening file");exit(5);}
 	int trash;
 	for(int i=0;i<nb_periodes;i++)
