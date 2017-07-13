@@ -294,7 +294,7 @@ The first proof works already for conflict depth two. Remark that for conflict d
 the graph can be seen as a set of disjoint pair of routes, on which PRA and PALL can be solved in linear time. 
  The second proof reduces the problem to graph coloring and implies inapproximability when one tries to find the smallest possible $P$. \\
  Finally, it is easy to see that PRA is easy on trees and it may be interesting to study its complexity on 
- bounded treewidth networks, since it is a common property of real networks~\cite{} \todo{Trouver la ref qui dit ca}.
+ bounded treewidth networks, since it is a common property of real networks~\cite{de2011treewidth}.
  
 
  \begin{proposition}
@@ -488,7 +488,7 @@ In particular, this reduction shows that even with small maximal load, the minim
       
       Collisions between messages can only appear in the arc $(c_s,c_t)$ on the way forward and in the arc $(c_t,c_s)$
       on the way back. The flow of messages in a star topology is completely described by their repartition in two 
-      time window of size $P$ that we call the {\bf forward period} (at $(c_s,c_t)$), and the {\bf backward period} (at $(c_t,c_s)$).
+      time windows of size $P$ that we call the {\bf forward period} (at $(c_s,c_t)$), and the {\bf backward period} (at $(c_t,c_s)$).
       
 %       
 %       on the way forward and after node $c_t$ on the way back.
@@ -597,34 +597,55 @@ This algorithm, contrarily to the previous one, may work well, even when the con
 In fact, experimental data in Subsection~\ref{sec:exp_PAZL} suggests that the algorithm finds a solution on average when $P \geq 2 n\tau$.
 Note that we also experimented with other greedy algorithms which do not use macro-slots, they work even better in practice but their theoretical upper bound is worse.
 
-\subsection*{An FTP algorithm}
+\subsection*{An FPT algorithm}
 
-In this section we show how every assignments without waiting time can be put in a special form.
+In this section we show how every assignment without waiting time can be put in a special form.
 We use that to provide an algorithm which always finds an assignment if there is some, in fixed parameter 
-tractable time with parameters $n$ the number of routes. This is justified since $n$ is small in practice, 
-at most $20$ and $P$ is large, $20000$ in our context.
+tractable time with parameters $n$ the number of routes. This is justified since $n$ is small in practice and $P$ is large.
 
-
-We say that an assignment $\mathcal{M}$ is \textbf{compact} if for all forward routes $r$ but one,
-there is another forward route $r'$ such that $r$ and  $r'$ ``have no gap'' or $\rho(r)$ and  $\rho(r)'$ ``have no gap''.
+Let $(G, {\cal R})$ be a star routed network and $r_1,r_2 \in {\cal R}$ two forward routes (resp. two backward routes) and 
+$\mathcal{M}$ a $(P,\tau)$-periodic assignment. We say that there is no gap between $r_1$ and $r_2$ in $\mathcal{M}$ if $\lambda(r_1,c_s) + \tau = \lambda(r_2,c_s)$ (resp. $\lambda(r_1,c_t) + \tau = \lambda(r_2,c_t)$). It means that the message of $r_2$ goes through the central arc just after the message of $r_1$ withtout wasting time. We say that a set of routes ${\cal R}$ is \textbf{compact} for the assignment $\mathcal{M}$ if for all forward routes $r \in {\cal R}$ but one, there is another forward route $r'$ such that there is no gap between $r'$ and $r$ or between $\rho(r')$ and  $\rho(r)$. If the set of all routes is compact for an assignment, we say that the assignment is compact.
 
 \begin{proposition}
-Let $(G, {\cal R})$ be a star routed network. If there is a $(P,\tau)$-periodic assignment to blah,
-then there is a compact $(P,\tau)$-periodic assignment.
+Let $(G, {\cal R})$ be a star routed network. If there is a $(P,\tau)$-periodic assignment of $(G, {\cal R})$,
+then there is a compact $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
 \end{proposition}
 \begin{proof}
- On fait tourner les paquets jusqu'a contact on et on repete jusqu'a epuisement. 
+Consider $\mathcal{M}$ a $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
+Let $r_0$ be an arbitrary route of ${\cal R}$,  and let $COMPACT = \{r_0\}$. Now we apply the following algorithm to $\mathcal{M}$ and $COMPACT$ while $COMPACT$ is not equal to ${\cal R}$.
+While there is no collision, remove $1$ (modulo $P$) from all offsets of routes in ${\cal R} \setminus COMPACT$. Then choose a route $r$ in ${\cal R} \setminus COMPACT$ which would have a collision with a route $r'$ of $COMPACT$ if one is subtracted from its offset.
+It implies that there is no gap between $r'$ and $r$. If $r'$ is a forward route, let $COMPACT = COMPACT \cup \{r, \rho(r)\}$ otherwise  $COMPACT = COMPACT \cup \{r, \rho^{-1}(r)\}$. It is clear that the set $COMPACT$ is compact for $\mathcal{M}$ at every step of the algorithm since at the beginning $|COMPACT| = 1$ and at each step we add two routes with the desired property. 
+Finally, there was no collisions between routes at the beginning and since we modify $\mathcal{M}$ only if it creates no collision,
+the assignment we obtain at then end has no collisions between routes.
 \end{proof}
 
+We now present an algorithm to find a $(P,\tau)$-periodic assignment 
+by trying all compact assignments.
+
 \begin{theorem}
-     Let $(G, {\cal R})$ be a star routed network with $n$ routes. There is an algorithm which finds a $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ if there is one in time $O(2^nq(|G|))$ with $q$ a polynomial.
+PALL is in $\FPT$ when parametrized by the number of routes.
+%      Let $(G, {\cal R})$ be a star routed network with $n$ routes. There is an algorithm which finds a $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ if there is one in time $O(2^nq(|G|))$ with $q$ a polynomial.
 \end{theorem}
 
 \begin{proof}
- Brute force on the compact assignments. 
+Let $(G, {\cal R})$ be a star routed network and let $\mathcal{M}$ be a $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
+There is at most one route, say $r$, which does not satifies the property to have 
+
+
+Let
+
+Consider an assignment and a route $r$ with offset $m$, by removing $m$ to all ofsets,
+we can always assume that its offset is zero. Therefore we need to consider all compact assignments 
+with an offset $0$ for the route $r$. Then in a compact assignment there 
+
+There is at most $n!$
+We build
+Fix arbitrarily a route $r \in \mathcal{R}$ and assume its offset is zero.
+
+
 \end{proof}
 
-
+Cuts in the search tree to make the algorithm more practical. 
 % 
 % 	\subsubsection*{Exhaustive search}
 % % 	\begin{algorithm}[H]
