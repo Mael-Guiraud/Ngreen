@@ -91,6 +91,10 @@ D.~Zuckerman, ``Linear degree extractors and the inapproximability of max
 A.~J. Orman and C.~N. Potts, ``On the complexity of coupled-task scheduling,''
   {\em Discrete Applied Mathematics}, vol.~72, no.~1-2, pp.~141--154, 1997.
 
+\bibitem{downey2012parameterized}
+R.~G. Downey and M.~R. Fellows, {\em Parameterized complexity}.
+\newblock Springer Science \& Business Media, 2012.
+
 \bibitem{webpage}
 ``Yann strozecki's website.''
   \url{http://www.prism.uvsq.fr/~ystr/textesmaths.html}.

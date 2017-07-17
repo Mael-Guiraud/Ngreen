@@ -84,7 +84,7 @@ The problem we focus on here may look like wormhole problems~\cite{cole1996benef
 In Sec.~\ref{sec:complexity}, we prove that the problem PRA and PALL are $\NP$-hard and cannot be approximated even for very
 restricted classes of graphs. 
 Therefore in the next two sections, we study a simple but very common topology, that we call the
-star topology, where all messages can collide on a single arc.
+star routed network, where all messages can collide on a single arc.
 In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting times must all be zero. We provide several algorithms, some of their theoretical properties and give experimental evidences that they find periodic assignments when the network is not too loaded. Finally in Sec.\ref{sec:PALL}, we propose algorithms for the general PALL problem and exhibit one which works extremely well in our experiments even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional stochastic multiplexing with regard to latency. 
 
 
@@ -438,13 +438,13 @@ In particular, this reduction shows that even with small maximal load, the minim
     
     \subsection{The star routed network}
     
-      From now on, we will only consider graphs with a very simple topology that we call the {\bf star topology}. 
-      First, for each arc $(u,v)$, there is also an arc $(v,u)$ with the same weight.
-      There are two sets of vertices, $S=\{s_0,...,s_{n-1}\}$ and $T=\{t_0,...,t_{n-1}\}$ of cardinality $n$ and two special nodes:
-      the central source node {\bf $c_s$} and the central target node {\bf $c_t$}. There is an arc between {\bf $c_s$} and {\bf $c_t$} shared by all routes. For all $i$, there is an arc between $s_i$ and $c_s$ and between $t_i$ and $c_t$.
-      The routes are the directed paths $r_i = s_i,c_s,c_t,t_i$ and $\rho(r_i) = t_i,c_t,c_s,s_i$ which defines a 
-      symmetric routed network. 
-      
+      Let us define a family of simple symmetric routed networks. 
+      The graph $G$ has two sets of vertices, $S=\{s_0,...,s_{n-1}\}$ and $T=\{t_0,...,t_{n-1}\}$ of cardinality $n$ and two special nodes:
+      the central source node {\bf $c_s$} and the central target node {\bf $c_t$}.
+      There is an arc between {\bf $c_s$} and {\bf $c_t$} and for all $i$, there is an arc between $s_i$ and $c_s$ and between $t_i$ and $c_t$.
+      All the symmetric arcs are also in the graph with the same weights.
+      The forward routes are the directed paths $r_i = (s_i,c_s,c_t,t_i)$ and $\rho(r_i) = (t_i,c_t,c_s,s_i)$ which defines a symmetric routed network. 
+      The symmetric routed networks $(G, \{r_i,\rho(r_i)\}_{i<n})$ is called a \textbf{star routed network}.
       
        \begin{center}
 	 \scalebox{0.8}{
@@ -482,21 +482,12 @@ In particular, this reduction shows that even with small maximal load, the minim
 
   \end{center}
 	
-      Since the central arc appears in every route, its value do not matter when considering the process time of an assignment.
+      Since the central arc appears in every route, its value does not matter when considering the process time of an assignment.
       Moreover an assignment without collisions is also an assignment without collisions if the weight of the central arc 
       is set to $0$, therefore we assume from now on it is indeed $0$.
       
       
-      Collisions between messages can only appear in the arc $(c_s,c_t)$ on the way forward and in the arc $(c_t,c_s)$
-      on the way back. The flow of messages in a star topology is completely described by their repartition in two 
-      time windows of size $P$ that we call the {\bf forward period} (at $(c_s,c_t)$), and the {\bf backward period} (at $(c_t,c_s)$).
-      
-%       
-%       on the way forward and after node $c_t$ on the way back.
-%       Thus, we only have to check if there is no collisions in a given period at those two vertices.
-%       We try to order the messages such that they can pass thought the common arcs in a time window of $P$ max. We define the {\bf forward period}, a time window of size P at the beginning of the arc after $c_s$, and the {\bf backward period} the one at the beginning of the arc after $c_t$. A message issued on the route $r$ at time $m_s$ will reach $c_s$ at time $m_{s} + t(c_s,r) \mod P$ in the forward period. If the offset of $\rho(s)$ is $m_{\rho(s)}$, the answer will reach $c_t$ at time $m_{\rho(s)} + t(c_t,\rho(r))\mod P$ in the backward period.
-% 
-%       A $(P,\tau)$-periodic assignment is then a choice for all $i < n$, of $m_{r_i}$ and $m_{\rho(r_i)}$ such that, for any couple $(i\neq j)$, we have $[t(c_s,r_{i})] \cap [t(c_s,r_{j})] = \emptyset$ and $[t(c_t,\rho(r_i))] \cap [t(c_t,\rho(r_j))] = \emptyset$.
+      Collisions between messages can only appear in the arc $(c_s,c_t)$ on the way forward and in the arc $(c_t,c_s)$ on the way back. The flow of messages in a star routed network is completely described by their repartition in two time windows of size $P$ that we call the {\bf forward period} (at $(c_s,c_t)$), and the {\bf backward period} (at $(c_t,c_s)$).
 
       
 
@@ -507,8 +498,8 @@ In particular, this reduction shows that even with small maximal load, the minim
   than for PALL. Moreover, as we show in our experimentations of Sec.\ref{sec:exp_PAZL}, this problem can often be solved positively (albeit less often than the general problem). Finally, a solution to PAZL is simpler to implement in real telecommunication networks, since we do not need to implement any buffering at all.    
   
   When the waiting times are zero, $MT({\cal M})$ is equal to twice the lenght of the longest route, thus $T_{max}$ is not relevant anymore. For a route $r$, choosing the offset $m_r$ also sets the offset of the route $\rho(r)$ to $m_{r} + \lambda(r) \mod P$.
-  Consider an assignment $\{m_0,\dots,m_{n-1}\}$ of a star topology and let $m_i'= m_{i} - t(c_s,r_i) \mod P$.
-  Then $\{m_0',\dots,m_{n-1}'\}$ is an assignment of the same star topology where the weights of the arcs from $s_i$ to $c_s$ are $0$
+  Consider an assignment $\{m_0,\dots,m_{n-1}\}$ of a star routed network and let $m_i'= m_{i} - t(c_s,r_i) \mod P$.
+  Then $\{m_0',\dots,m_{n-1}'\}$ is an assignment of the same star routed network where the weights of the arcs from $s_i$ to $c_s$ are $0$
   for all $i$. Therefore we assume from now on that the \emph{weight of the arcs from $s_i$ to $c_s$ are all equal to $0$}.
   
   
@@ -600,53 +591,62 @@ Note that we also experimented with other greedy algorithms which do not use mac
 
 \subsection*{An FPT algorithm}
 
-In this section we show how every assignment without waiting time can be put in a special form.
-We use that to provide an algorithm which always finds an assignment if there is some, in fixed parameter 
-tractable time with parameters $n$ the number of routes. This is justified since $n$ is small in practice and $P$ is large.
+In this section we show how every assignment without waiting time can be put in a canonical form.
+We use that to provide an algorithm which always finds an assignment if there is some, in fixed parameter tractable (FPT) time with parameter $n$ the number of routes (for more on parametrized complexity see~\cite{downey2012parameterized}). This is justified since $n$ is small in practice and the period $P$ is large.
 
-Let $(G, {\cal R})$ be a star routed network and $r_1,r_2 \in {\cal R}$ two forward routes (resp. two backward routes) and 
-$\mathcal{M}$ a $(P,\tau)$-periodic assignment. We say that there is no gap between $r_1$ and $r_2$ in $\mathcal{M}$ if $\lambda(r_1,c_s) + \tau = \lambda(r_2,c_s)$ (resp. $\lambda(r_1,c_t) + \tau = \lambda(r_2,c_t)$). It means that the message of $r_2$ goes through the central arc just after the message of $r_1$ withtout wasting time. We say that a set of routes ${\cal R}$ is \textbf{compact} for the assignment $\mathcal{M}$ if for all forward routes $r \in {\cal R}$ but one, there is another forward route $r'$ such that there is no gap between $r'$ and $r$ or between $\rho(r')$ and  $\rho(r)$. If the set of all routes is compact for an assignment, we say that the assignment is compact.
+Let $(G, {\cal R})$ be a star routed network and $\mathcal{M}$ a $(P,\tau)$-periodic assignment.
+A set of routes $S$ is \textbf{coherent} if for all $r \in {\cal R}$, $r \in S$ if and only if $\rho(r) \in S$. We say that a coherent set $S \subseteq {\cal R}$ is \textbf{compact} for the assignment $\mathcal{M}$ if there is a route $r_0 \in S$ such that the following holds:  
+for all coherent subsets $S'\subset S$ with $r_0 \notin S'$, if we remove $1$ from all offsets of routes in $S'$ then there is a collision with a route of $S \setminus S'$. We say that $\mathcal{M}$ is compact if ${\cal R}$ is compact for $\mathcal{M}$. 
+% 
+% 
+% $r_1,r_2 \in {\cal R}$ two forward routes (resp. two backward routes) and 
+%  We say that there is no gap between $r_1$ and $r_2$ in $\mathcal{M}$ if $\lambda(r_1,c_s) + \tau = \lambda(r_2,c_s)$ (resp. $\lambda(r_1,c_t) + \tau = \lambda(r_2,c_t)$). It means that the message of $r_2$ goes through the central arc just after the message of $r_1$ withtout wasting time. We say that a set of routes ${\cal R}$ is \textbf{compact} for the assignment $\mathcal{M}$ if for all forward routes $r \in {\cal R}$ but one, there is another forward route $r'$ such that there is no gap between $r'$ and $r$ or between $\rho(r')$ and  $\rho(r)$. If the set of all routes is compact for an assignment, we say that the assignment is compact.
 
 \begin{proposition}
-Let $(G, {\cal R})$ be a star routed network. If there is a $(P,\tau)$-periodic assignment of $(G, {\cal R})$,
-then there is a compact $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
+Let $(G, {\cal R})$ be a star routed network. If there is a $(P,\tau)$-periodic assignment of $(G, {\cal R})$, then there is a compact $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
 \end{proposition}
 \begin{proof}
 Consider $\mathcal{M}$ a $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
 Let $r_0$ be an arbitrary route of ${\cal R}$,  and let $COMPACT = \{r_0\}$. Now we apply the following algorithm to $\mathcal{M}$ and $COMPACT$ while $COMPACT$ is not equal to ${\cal R}$.
-While there is no collision, remove $1$ (modulo $P$) from all offsets of routes in ${\cal R} \setminus COMPACT$. Then choose a route $r$ in ${\cal R} \setminus COMPACT$ which would have a collision with a route $r'$ of $COMPACT$ if one is subtracted from its offset.
-It implies that there is no gap between $r'$ and $r$. If $r'$ is a forward route, let $COMPACT = COMPACT \cup \{r, \rho(r)\}$ otherwise  $COMPACT = COMPACT \cup \{r, \rho^{-1}(r)\}$. It is clear that the set $COMPACT$ is compact for $\mathcal{M}$ at every step of the algorithm since at the beginning $|COMPACT| = 1$ and at each step we add two routes with the desired property. 
-Finally, there was no collisions between routes at the beginning and since we modify $\mathcal{M}$ only if it creates no collision,
-the assignment we obtain at then end has no collisions between routes.
+While there is no collision, remove $1$ (modulo $P$) from all offsets of routes in ${\cal R} \setminus COMPACT$. Then choose a route $r$ in ${\cal R} \setminus COMPACT$ which would have a collision with a route $r'$ of $COMPACT$ if one is subtracted from its offset. If $r'$ is a forward route, let $COMPACT = COMPACT \cup \{r, \rho(r)\}$ otherwise  $COMPACT = COMPACT \cup \{r, \rho^{-1}(r)\}$. 
+
+We prove by induction that $COMPACT$ is compact for $\mathcal{M}$ at every step of the algorithm.
+At the beginning $|COMPACT| = 1$ and the property is trivially satisfied. Then we assume that 
+$COMPACT$ is compact and that we add to it $\{r, \rho(r)\}$ at some step of the algorithm. W.l.o.g we assume that it is the offset of $r$ which cannot be decremented without collision. Consider $S \subseteq   COMPACT$, if $S$ contains an element different from $r$ and $\rho(r)$ by induction hypothesis we cannot decrement the offsets of $S$ without collision. If $S =\{r, \rho(r)\}$
+by construction, we cannot decrement the offset of $r$. 
+
+Finally, there was no collisions between routes at the beginning and since we modify $\mathcal{M}$ only if it creates no collision, the assignment we obtain at the end has no collisions between routes.
 \end{proof}
 
 We now present an algorithm to find a $(P,\tau)$-periodic assignment 
 by trying all compact assignments.
 
-\begin{theorem}
-PALL is in $\FPT$ when parametrized by the number of routes.
-%      Let $(G, {\cal R})$ be a star routed network with $n$ routes. There is an algorithm which finds a $(P,\tau)$-periodic assignment of $(G, {\cal R})$ with all waiting times $0$ if there is one in time $O(2^nq(|G|))$ with $q$ a polynomial.
+\begin{theorem}\label{th:FPT}
+$PALL \in \FPT$ when parametrized by the number of routes.
 \end{theorem}
-
 \begin{proof}
-Let $(G, {\cal R})$ be a star routed network and let $\mathcal{M}$ be a $(P,\tau)$-periodic assignment of $(G, {\cal R})$.
-There is at most one route, say $r$, which does not satifies the property to have 
+Let $(G, {\cal R})$ be a star routed network and let $\mathcal{M}$ be a $(P,\tau)$-periodic assignment of $(G, {\cal R})$. First remark that for a given assignment and a route $r_0$ with offset $m$, by removing $m$ to all offsets, we can always assume that its offset is zero. Therefore we need only to consider all \emph{compact assignments} with an \emph{offset $0$} for the route $r_0$. 
+We now evaluate the number of compact assignments and prove that it only depends
+on $n$ the number of routes which proves the theorem. 
+We give a way to build a compact assignment $\mathcal{M}$ by determining its offsets one after the other. We fix an arbitrary total order on ${\cal R})$.
+First a route $r_0$ is chosen arbitrarily and its offset set to $0$. 
+Then at each step, if the offsets of $S \subseteq  {\cal R}$ have been chosen,
+we select the smallest route $r$ in $S$ for the order. 
+Then we select a route in $r' \in {\cal R} \setminus S$ and set its offset such that 
+if we remove $1$ then $r'$ collides with $r$. Note that if $r$ is a forward route (resp. a backward route) then $r'$ is also a forward route (resp. a backward route). We can also decide to 
+not use route $r$. At a given step of the algorithm, if $|S| = 2i$, we have $n-i$ choices 
+of routes to select and the value of the offset is determined by the values of the offsets of routes in $S$. Therefore there at most $n!$ different compact assignments with offset $r_0$
+fixed to $0$. 
 
-
-Let
-
-Consider an assignment and a route $r$ with offset $m$, by removing $m$ to all ofsets,
-we can always assume that its offset is zero. Therefore we need to consider all compact assignments 
-with an offset $0$ for the route $r$. Then in a compact assignment there 
-
-There is at most $n!$
-We build
-Fix arbitrarily a route $r \in \mathcal{R}$ and assume its offset is zero.
-
-
+An algorithm to solve PALL build every possible compact assignment as described here, and
+test at each step whether there is a collision which can be done in time linear in the size of 
+$(G, {\cal R})$. Therefore $PALL \in \FPT$.
 \end{proof}
 
-Cuts in the search tree to make the algorithm more practical. 
+We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Search of Compact Assignments (ESCA)}. To make it more efficient in practice, we make cuts in the search tree 
+used to explore all compact assignments. Consider a set of $k$ forward routes whose offsets has been fixed at some point in the search tree. We consider the times at which the messages of these routes cross the central arc. It divides the period into $[(a_0,b_0), \dots, (a_{k-1},b_{k-1})]$ such that the central arc is free only during the intervals $(a_i,b_i)$. 
+Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor} $ forward routes can still use the central arc. If this value is more than $n - k$, it is not possible to create a compact assignment by extending the one on $S$ and we backtrack in the search tree. We do the same cut for the backward routes.
+
 % 
 % 	\subsubsection*{Exhaustive search}
 % % 	\begin{algorithm}[H]
@@ -702,25 +702,23 @@ Cuts in the search tree to make the algorithm more practical.
     \subsection{Experimental evaluation}\label{sec:exp_PAZL}
       
       The following experimental results compare the three presented algorithms.
-      Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search will find an optimal solution if it exists, but works in exponential time. We will compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
+      Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search finds an optimal solution if it exists, but works in exponential time. We compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
       From our C-RAN context we choose the following parameters: the number of routes 
-      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution. 
-      The code in C is available online on the webpage of one of the authors~\cite{webpage}.
+      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution. The code in C is available on the webpage of one of the authors~\cite{webpage} under a copyleft license.
       
-      We can define the load of the network as $\frac{n\tau}{P}$ (here a value between one and three) and in experiments we will try to understand how our algorithms work with regards to the load. Often rather than changing the load, we will change the period which is equivalent. 
+      We define the load of the network as $\frac{n\tau}{P}$ (here a value between one and three),
+      it is the proportion of time slots used by messages on the central arc. In our experiments we will try to understand how our algorithms work with regards to the load. To change the load, we fix the parameters $\tau$ and $n$ and modify the period $P$, which allows for a smoother control of the load and does not change the run time of our algorithms.
       
 
       \paragraph{Short routes}
       
-      First we consider routes which are shorter than $\tau$, that is a message cannot be contained 
-      completely in a single edge which is very common for our application. We generate star topologies in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately $1$ Mb, links of bandwidth $10$ Gbps and length less than $5$ km between the BBU and the RRH. 
+      First we consider routes which are shorter than $\tau$, that is a message cannot be contained completely in a single arc which is very common for our application. We generate star routed networks in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$ slots. It corresponds to messages of approximately $1$Mb, links of bandwidth $10$Gbps and length less than $5$km between the BBU and the RRH. 
       
-      Our aim is to understand how well the algorithms are working under high load. To do that we try to evaluate the 
-      minimal period (that is the highest possible load) for which a $(P,\tau)$ periodic assignment can be found by each algorithm. 
+      Our aim is to understand how well the algorithms are working under high load. To do that we try to evaluate the minimal period (that is the highest possible load) for which a $(P,\tau)$-periodic assignment can be found by each algorithm. 
       To that end we use a linear search on $P$, since a dichotomy method would not work because of Lemma~\ref{lemma:monotonic}.
       
-      In our experiment, we generate $1000$ random instances of PAZL for $1$ to $12$ routes. 
-      We measure the average minimal period, for each algorithm. The experiments are stopped at $12$ routes because the exhaustive search algorithm becomes too slow for larger $n$. Remind that the exhaustive search always finds the best possible period for a given instance. The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
+      In our experiment, we generate $1000$ random instances of PAZL for $1$ to $20$ routes. 
+      We measure the average minimal period, for each algorithm. Remind that the exhaustive search always finds the best possible period for a given instance. The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
       
       
         
@@ -732,8 +730,7 @@ Cuts in the search tree to make the algorithm more practical.
       \caption{Minimum period averaged over $1000$ random instances}
       \end{figure}
       
-      First, we remark that the period found by the exhaustive search is only very slightly above the lower bound of 
-      $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
+      First, we remark that the period found by the exhaustive search is only very slightly above the lower bound of $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
       
       The period needed by the Shortest-Longest algorithm to find an optimal solution is a function of the difference between the longest and the shortest route and its average could be easily determined theoretically. The algorithm was expected to find a period close to the optimal one since the routes are short. It turns out it always finds the optimal period in our experiments. Therefore, we should use it in practical applications with short routes, instead of the exhaustive search which is much more computationally expensive. 
       
@@ -743,12 +740,7 @@ Cuts in the search tree to make the algorithm more practical.
 
       \paragraph{Long routes}
       
-      We now want to understand the performance of these algorithms when the size of the routes is unbounded. When the routes are long, the cuts in the exhaustive search are less efficient and thus even for a small number of routes the algorithm may be impractical. To make the experimentations short enough, we have bounded the number of nodes of the tree of partial solutions the exhaustive search can visit by $10^9$.
-      
-      In this experiment we will fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period).
-      We measure for each algorithm its percentage of success, for periods from $20000$ which is the minimum possible to $50000$.
-      
-      The exhaustive search can fail because there are no solutions or because it does not have enough time to finish its calculation. Hence we represent both the success rate of the algorithm, and an upper bound on the success rate of any algorithm solving PAZL by combining the successes and the failures because of lack of time of the exhaustive search. 
+      We now want to understand the performance of these algorithms when the size of the routes is unbounded. In this experiment we fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period). We measure for each algorithm its percentage of success, for periods from $20000$ to $50000$ which corresponds to a load of $100\%$ down to $40\%$.
       
 \begin{figure}
 
@@ -760,11 +752,14 @@ Cuts in the search tree to make the algorithm more practical.
       
       In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. When repeating the experiments of the previous section on routes of arbitrary length, we find that on average the greedy algorithm finds a solution if $P>1.89n\tau$.
       
-      When the period is less than $40000$, the exhaustive search find many more solutions than the greedy algorithms which justifies its use. However for small period, less than $30000$ the computation time is really important and without improvements it would not be possible to tackle larger problems with $10$ to $20$ routes. Moreover, examining the upper bound curve for periods less than $22000$, we see that there are very few instances with a solution for PAZL. It means that with long routes and high load (larger than $0.9$), looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a period between $20000$ and $30000$ where, as we have shown here, there are often no easy to compute assignment without waiting times.
+      When the load is larger than $50\%$ (period less than $40000$), the exhaustive search finds  more solutions than the greedy algorithms which justifies its use. However, for load larger than $80\%$ (period less than $25000$) there are many instances for which there are no solutions to PAZL.
+      It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a load between $100\%$ and $80\%$ for which, as shown here, there are often no assignment without waiting times.
       
-   \section{The Star Topology: Minimizing Latency}\label{sec:PALL}
+      \todo{Scalability, is the exhaustive search practical for more routes: conclusion yes for our settings, no if more routes}
+      
+   \section{The Star Routed Network: Minimizing Latency}\label{sec:PALL}
     
-    In this section, we still work on the star topology, but we consider again the more general PALL problem. It means that the messages can wait in the target vertices (BBUs) in order to find solutions when there are none without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
+    In this section, we still work on star routed networks, but we consider again the more general PALL problem. It means that the messages can wait in the target vertices (BBUs) in order to find solutions when there are none without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
 
 	\subsection{Special cases}
 		
@@ -1010,7 +1005,7 @@ yields the best results for the two algorithms. The number of different orders i
      Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
 	    
      
-     We draw $1000$ instances of a star topology with $8$ routes, with weights on the arcs drawn between $0$ and $20000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
+     We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
      
       
     \begin{figure}[H] 
@@ -1038,10 +1033,9 @@ yields the best results for the two algorithms. The number of different orders i
    
    We plan to generalize our study of the PALL problem to other topologies,
    such as trees, cycles or bounded treewidth graphs. 
-   We would like to design FPT algorithms in the number of routes for PAZL and PALL on the star topology, eventually by relaxing the constraint on the maximal process time into an constraint on the average process time, which seems much more tractable. 
-   
-   We could also study variation of our problem. Instead of minimizing the maximum process time, we could try to minimize
-   the sum of the waiting time, a linear objective which could make linear programming useful.
+   We would like to design FPT algorithms in the number of routes for PALL on the star routed network, by generalizing the compact assignment idea used for PAZL. 
+
+   We could also study variations of our problem. Instead of minimizing the maximum process time, we could try to minimize the average process time, a linear objective which could make linear programming useful.
    Moreover we could allow preemption, that is the messages are allowed to be cut into pieces, which would certainly change the complexity of the problem. 
    Finally, the routes may not be fixed but chosen in the graph to minimize the maximum process time, which would make the problem even more difficult (maybe $\Pi_2$-complete instead of $\NP$-complete). 
 
