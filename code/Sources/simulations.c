@@ -483,27 +483,35 @@ double time_search(int nb_routes, int taille_message,int taille_routes)
 	g = init_graphe(nb_routes *2 +1);
 	graphe_etoile(g,taille_routes);
 	gettimeofday (&tv1, NULL);
-	search(g,taille_message,taille_routes*nb_routes);
+	search(g,taille_message,taille_message*nb_routes+1000);
 	gettimeofday (&tv2, NULL);
 	timer = time_diff(tv1,tv2);
 		
-	printf("%f\n",timer);
+	//printf("%f\n",timer);
 		return timer;
 
 }
 void search_efficiency(int taille_message,int taille_routes, int nb_simuls)
 {
+	FILE * f = fopen("../datas/search_efficiency.data","w");
 	double average=0;
-	for(int nb_routes = 50;nb_routes<100;nb_routes+=5)
+	double max = 0.0;
+	double result;
+	for(int nb_routes = 1;nb_routes<22;nb_routes+=1)
 	{
+		max = 0.0;
 		for(int i=0;i<nb_simuls;i++)
 		{
-			average += time_search(nb_routes,2500,20000);
-
+			result = time_search(nb_routes,2500,20000);
+			average += result;
+			if(result>max)
+				max=result;
+			fprintf(stdout,"\r %d routes : %d%%",nb_routes,i+1);fflush(stdout);
 		}
-		printf("%d routes : Average = %f ms \n",nb_routes,average / nb_simuls);
+		fprintf(f,"%d %f %f\n",nb_routes,average / nb_simuls,max);
+		fprintf(stdout,"\n%d routes : Average = %f ms , max = %f ms\n",nb_routes,average / nb_simuls,max);
 	}
-	
+	fclose(f);
 }
 
 //Fichiers en 3D pour PALL
