@@ -715,7 +715,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       Our aim is to understand how well the algorithms are working under high load. To do that we try to evaluate the minimal period (that is the highest possible load) for which a $(P,\tau)$-periodic assignment can be found by each algorithm. 
       To that end we use a linear search on $P$, since a dichotomy method would not work because of Lemma~\ref{lemma:monotonic}.
       
-      In our experiment, we generate $1000$ random instances of PAZL for $1$ to $20$ routes. 
+      In our experiment, we generate $1000$ random instances of PAZL for $1$ to $12$ routes. 
       We measure the average minimal period, for each algorithm. Remind that the exhaustive search always finds the best possible period for a given instance. The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
       
       
@@ -753,8 +753,20 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       When the load is larger than $50\%$ (period less than $40000$), the exhaustive search finds  more solutions than the greedy algorithms which justifies its use. However, for load larger than $80\%$ (period less than $25000$) there are many instances for which there are no solutions to PAZL.
       It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a load between $100\%$ and $80\%$ for which, as shown here, there are often no assignment without waiting times.
       
-      \todo{Scalability, is the exhaustive search practical for more routes: conclusion yes for our settings, no if more routes}
+      Since the exhaustive search solve PAZL in an FPT time, with parameter $n$ the number of routes, we study the scalability of the time needed by this algorithm, according to $n$. We made an experiment on $100$ random star routed networks, in which the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots. We fixed the period to $n\tau+1000$, that corresponds to loads of $\simeq 70\%$ (for $1$ route) to $\simeq 98\%$ (for 21 routes).
+         \begin{center}
+         \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    Number of routes & $1$ & $6$ & $11$& $16$& $21$\\
+    \hline
+    Average time before answer (ms) & $0.004$ &$0.027$&$0.599$&$59.711$&$14866.1$\\
+    \hline
+      \end{tabular}
+      \end{center}
       
+      With our practical parameters ($n<20$ routes), the algorithm can solve PAZL quickly. As soon as we want to compute more routes, the time required to answer PAZL with the exhaustive search increase exponentially.
+
+     
    \section{The Star Routed Network: Minimizing Latency}\label{sec:PALL}
     
     In this section, we still work on star routed networks, but we consider again the more general PALL problem. It means that the messages can wait in the target vertices (BBUs) in order to find solutions when there are none without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
@@ -949,11 +961,11 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
   \centering
       \includegraphics[width=6cm]{departs_gp_21000.pdf}
 
-      \caption{Success rate of different orders with $P = 21000$}
+      \caption{Success rate of different orders, $95\%$ load.}
       \end{minipage} \hfill
         \begin{minipage}[c]{6cm}
-          \includegraphics[width=6cm]{departs_gp_30000.pdf}
-      \caption{Success rate of different orders with $P = 30000$}
+          \includegraphics[width=6cm]{departs_gp_25000.pdf}
+      \caption{Success rate of different orders, $80\%$ load.}
 
             \end{minipage} \hfill
                   \label{fig:success30000}

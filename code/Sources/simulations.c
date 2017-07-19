@@ -502,7 +502,7 @@ void search_efficiency(int taille_message,int taille_routes, int nb_simuls)
 		max = 0.0;
 		for(int i=0;i<nb_simuls;i++)
 		{
-			result = time_search(nb_routes,2500,20000);
+			result = time_search(nb_routes,2500,taille_routes);
 			average += result;
 			if(result>max)
 				max=result;
