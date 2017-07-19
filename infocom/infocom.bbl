@@ -73,20 +73,6 @@ X.~Zhu, ``Circular chromatic number: a survey,'' {\em Discrete mathematics},
 X.~Zhu, ``Recent developments in circular colouring of graphs,'' in {\em Topics
   in discrete mathematics}, pp.~497--550, Springer, 2006.
 
-\bibitem{de2011treewidth}
-F.~De~Montgolfier, M.~Soto, and L.~Viennot, ``Treewidth and hyperbolicity of
-  the internet,'' in {\em Network Computing and Applications (NCA), 2011 10th
-  IEEE International Symposium on}, pp.~25--32, IEEE, 2011.
-
-\bibitem{holyer1981np}
-I.~Holyer, ``The np-completeness of edge-coloring,'' {\em SIAM Journal on
-  computing}, vol.~10, no.~4, pp.~718--720, 1981.
-
-\bibitem{zuckerman2006linear}
-D.~Zuckerman, ``Linear degree extractors and the inapproximability of max
-  clique and chromatic number,'' in {\em Proceedings of the thirty-eighth
-  annual ACM symposium on Theory of computing}, pp.~681--690, ACM, 2006.
-
 \bibitem{orman1997complexity}
 A.~J. Orman and C.~N. Potts, ``On the complexity of coupled-task scheduling,''
   {\em Discrete Applied Mathematics}, vol.~72, no.~1-2, pp.~141--154, 1997.
@@ -94,10 +80,6 @@ A.~J. Orman and C.~N. Potts, ``On the complexity of coupled-task scheduling,''
 \bibitem{downey2012parameterized}
 R.~G. Downey and M.~R. Fellows, {\em Parameterized complexity}.
 \newblock Springer Science \& Business Media, 2012.
-
-\bibitem{webpage}
-``Yann strozecki's website.''
-  \url{http://www.prism.uvsq.fr/~ystr/textesmaths.html}.
 
 \bibitem{simons1978fast}
 B.~Simons, ``A fast algorithm for single processor scheduling,'' in {\em
