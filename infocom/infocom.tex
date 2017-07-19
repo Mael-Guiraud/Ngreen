@@ -47,7 +47,7 @@
 %opening
 \title{Deterministic Scheduling of Periodic Messages in a Network}% by a SDN (deterministic) approach}
 
-
+\author{}
 %\author[1]{Ma\"el Guiraud}
 %\author[1]{Dominique Barth}
 % \author[1]{Christian Cad\'er\'e}
@@ -93,7 +93,7 @@ In Sec.\ref{sec:PAZL}, we study a variant of PALL called PAZL  where the waiting
   \subsection{Network modeling}
   
 
-The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is a sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} \omega(a_j)$. We also define $\lambda(u_0,r)=0$. The length of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
+The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time slots taken by a signal to go from $u$ to $v$ using this arc. A {\bf route} $r$ in $G$ is a path, that is, a sequence of consecutive arcs $a_0, \ldots , a_{k-1}$, with $a_i=(u_i,u_{i+1}) \in A$.  The {\bf latency} of a vertex $u_i$ in a path $r$, with $i \geq 1$, is defined by $\lambda(u_i,r)= \sum\limits_{0 \leq j <i} \omega(a_j)$. We also define $\lambda(u_0,r)=0$. The length of the route $r$ is defined by $\lambda (r)= \lambda (u_k,r)$.
 We denote by $\cal R$ a set of routes, the pair $(G,\cal R)$ is called a {\bf routed network} and represents our telecommunication network.
 The first vertex of a route models an antenna (RRH) and the last one a data-center (BBU) which processes the messages sent by the antenna.
 
@@ -113,7 +113,10 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
     
     \subsection{The star routed network}
     
-      Let us define a family of simple symmetric routed networks. 
+          In the context of cloud-RAN applications, we need to send message from a RRH $u$ to a BBU $v$ and then 
+      we must send the answer from $v$ back to $u$. We say that a routed network $(G, {\cal R})$ is \textbf{symmetric} if the set of routes is partitioned into the sets $F$ of forward routes and $B$ of backward routes. Moreover there is a bijection $\rho$ between $F$ and $B$ such that for any forward route $r \in F$ with first vertex $u$ and last vertex $v$, the backward route $\rho(r) \in B$ has first vertex $v$ and last vertex $u$. In all practical cases the routes $r$ and $\rho(r)$ will be the same with the orientation of the arcs reversed, which corresponds to bidirectional links in the networks, but we need not to enforce this property.
+      
+      Let us define a family of simple symmetric routed networks on which we focus in this paper. 
       The graph $G$ has two sets of vertices, $S=\{s_0,...,s_{n-1}\}$ and $T=\{t_0,...,t_{n-1}\}$ of cardinality $n$ and two special nodes:
       the central source node {\bf $c_s$} and the central target node {\bf $c_t$}.
       There is an arc between {\bf $c_s$} and {\bf $c_t$} and for all $i$, there is an arc between $s_i$ and $c_s$ and between $t_i$ and $c_t$.
@@ -263,10 +266,9 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       
       
       \subsection{Periodic assignment for low latency}
-      In the context of cloud-RAN applications, we need to send message from a RRH $u$ to a BBU $v$ and then 
-      we must send the answer from $v$ back to $u$. We say that a routed network $(G, {\cal R})$ is \textbf{symmetric} if the set of routes is partitioned into the sets $F$ of forward routes and $B$ of backward routes. Moreover there is a bijection $\rho$ between $F$ and $B$ such that for any forward route $r \in F$ with first vertex $u$ and last vertex $v$, the backward route $\rho(r) \in B$ has first vertex $v$ and last vertex $u$. In all practical cases the routes $r$ and $\rho(r)$ will be the same with the orientation of the arcs reversed, which corresponds to bidirectional links in the networks, but we need not to enforce this property.
+
          
-         A {\bf $(P,\tau)$-periodic assignment} of a routed network $(G,\cal R)$ is a set of two sequence  ${\cal M}=\{(m_0, \ldots ,m_{n-1}),(m_{\rho_0}, \ldots ,m_{\rho_{n-1}})\}$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ (respectively $m_{\rho_i}$) represents the time at which a message is emitted at the first vertex of the route $r_{i}$ (respectively $r_{\rho_i}$).A $(P,\tau)$-periodic assignment of a $(G,{\cal R})$ symmetric routed network represents
+         A {\bf $(P,\tau)$-periodic assignment} of a star routed network $(G,\cal R)$ is a set of two sequence  ${\cal M}=\{(m_0, \ldots ,m_{n-1}),(m_{\rho_0}, \ldots ,m_{\rho_{n-1}})\}$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ (respectively $m_{\rho_i}$) represents the time at which a message is emitted at the first vertex of the route $r_{i}$ (respectively $r_{\rho_i}$).A $(P,\tau)$-periodic assignment of a $(G,{\cal R})$ symmetric routed network represents
  the sending of a message and of its answer. \emph{No pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
    This assignment represents the following process: first a message is sent at $u$, through the route $r \in F$, at time $m_r$.
        
@@ -706,7 +708,8 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search finds an optimal solution if it exists, but works in exponential time. We compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
       From our C-RAN context we choose the following parameters: the number of routes 
-      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution. The code in C is available on the webpage of one of the authors~\cite{webpage} under a copyleft license.
+      is at most $n = 20$, $\tau$ is equal to $2500$. Moreover the period is always larger than $n\tau$ otherwise no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution.
+      % The code in C is available on the webpage of one of the authors~\cite{webpage} under a copyleft license.
       
       We define the load of the network as $\frac{n\tau}{P}$ (here a value between one and three),
       it is the proportion of time slots used by messages on the central arc. In our experiments we will try to understand how our algorithms work with regards to the load. To change the load, we fix the parameters $\tau$ and $n$ and modify the period $P$, which allows for a smoother control of the load and does not change the run time of our algorithms.
@@ -811,18 +814,18 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
      
      \subsection{A two stage approach}
      
-     We can decompose any algorithm solving the PALL problem in two parts: first set the offsets of the forward routes and then knowing this information set the offset of the backward routes or equivalently the waiting times.  
+     We can decompose any algorithm solving the PALL problem in two parts: first set the offsets of the forward routes and then, knowing this information set the offset of the backward routes or equivalently the waiting times.  
      The offsets of the forward routes will be chosen so that all messages have no collision on the central arc and such that there are no free slots inbeetween the end of a message on the central arc and the beginning of the next one. 
      It is done to minimize the period needed to send the messages of the forward route.
-     We tried the five following orders. 
-	\begin{itemize}
-	 
-	 \item Longest-Shortest on Routes (LSR): Decreasing order on the length of the routes.
-	 \item Shortest-Longest on Routes (SLR): Increasing order on the length of the routes. 
-	 \item Longest-Shortest on last Arc (LSA): Decreasing order on the length of the arcs $(c_t,t_i)$.
-	 \item Shortest-Longest on last Arc (SLA): Increasing order on the length of the arcs $(c_t,t_i)$. This sending order yields a $(P,\tau)$ periodic assignment in which all the $w_i = 0$, if the period is large enough (see proposition \ref{prop:SL}).
-	 \item Random: A random order of the routes.
-	\end{itemize}
+%     We tried the five following orders. 
+%	\begin{itemize}
+%	 
+%	 \item Longest-Shortest on Routes (LSR): Decreasing order on the length of the routes.
+%	 \item Shortest-Longest on Routes (SLR): Increasing order on the length of the routes. 
+%	 \item Longest-Shortest on last Arc (LSA): Decreasing order on the length of the arcs $(c_t,t_i)$.
+%	 \item Shortest-Longest on last Arc (SLA): Increasing order on the length of the arcs $(c_t,t_i)$. This sending order yields a $(P,\tau)$ periodic assignment in which all the $w_i = 0$, if the period is large enough (see proposition \ref{prop:SL}).
+%	 \item Random: A random order of the routes.
+%	\end{itemize}
 
    In the rest of the section we will study different methods to compute the offsets of the backward routes, once
    the offsets of the forward routes are fixed by one of the previous orders.

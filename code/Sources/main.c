@@ -17,7 +17,7 @@ int main()
 	/*****
 	Effectue une recherche linéaire pour les algos PAZL afin de trouver la plus petite periode moyenne
 	*****/
-	//simuls_periode_PAZL(20,2500,700,100);
+	simuls_periode_PAZL(15,2500,700,100);
 
 	/******************************************/	
 
@@ -78,7 +78,7 @@ int main()
 	/****Nombre de routes pouvant être calculées en moins de "max" ms
 	****/
 
-	search_efficiency(2500,30000,100);
+	//search_efficiency(2500,30000,100);
 
 
 	/******
