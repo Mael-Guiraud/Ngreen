@@ -125,7 +125,7 @@ We denote by $\cal R$ a set of routes, the pair $(G,\cal R)$ is called a {\bf ro
       
       
       In the process we study, a message is sent on each route at each period, denoted by $P$.
-      Let $r$ be a route, if a message is sent at time $m$ from $s$ the first vertex of $r$ then it will arrive at vertex $v$ in $r$ at time $m + \lambda(v,r)$. Since the process is periodic, if we look at the messages going through an arc between time $0$ and $P-1$, then we would observe the same messages in the same order and position between time $kP$ and $(k+1)P -1$ for all $k$. 
+      Let $r$ be a route, if a message is sent at time $m$ from $s$ the first vertex of $r$ then it will arrive at vertex $v$ in $r$ at time $m + \lambda(v,r)$. Since the process is periodic, if we look at the messages going through an arc between time $0$ and $P-1$, then we see the same messages in the same order and position between time $kP$ and $(k+1)P -1$ for all $k$. 
       Therefore, the first time slot at which a message sent at time $m$ on $r$ reaches a vertex $v$ in $r$ is $t(v,r) = m + \lambda(v,r) \mod P$. 
       
       A message usually cannot be transported in a single time slot. We denote by $\tau$ the number 
@@ -648,7 +648,7 @@ At the beginning $|COMP| = 1$ and the property is trivially satisfied. Then we a
 $COMP$ is compact and that we add to it $\{r, \rho(r)\}$ at some step of the algorithm. W.l.o.g we assume that it is the offset of $r$ which cannot be decremented without collision. Consider $S \subseteq   COMP$, if $S$ contains an element different from $r$ and $\rho(r)$ by induction hypothesis we cannot decrement the offsets of $S$ without collision. If $S =\{r, \rho(r)\}$
 by construction, we cannot decrement the offset of $r$. 
 
-Finally, there was no collisions between routes at the beginning and since we modify $\mathcal{M}$ only if it creates no collision, the assignment we obtain at the end has no collisions between routes.
+Finally, there is no collisions between routes at the beginning and since we modify $\mathcal{M}$ only if it creates no collision, the assignment we obtain at the end has no collisions between routes.
 \end{proof}
 
 We now present an algorithm to find a $(P,\tau)$-periodic assignment 
@@ -661,24 +661,21 @@ $PALL \in \FPT$ when parametrized by the number of routes.
 Let $(G, {\cal R})$ be a star routed network and let $\mathcal{M}$ be a $(P,\tau)$-periodic assignment of $(G, {\cal R})$. First remark that for a given assignment and a route $r_0$ with offset $m$, by removing $m$ to all offsets, we can always assume that its offset is zero. Therefore we need only to consider all \emph{compact assignments} with an \emph{offset $0$} for the route $r_0$. 
 We now evaluate the number of compact assignments and prove that it only depends
 on $n$ the number of routes which proves the theorem. 
-We give a way to build a compact assignment $\mathcal{M}$ by determining its offsets one after the other. We fix an arbitrary total order on ${\cal R})$.
+We give a way to build a compact assignment $\mathcal{M}$ by determining its offsets one after the other. We fix an arbitrary total order on ${\cal R}$.
 First a route $r_0$ is chosen arbitrarily and its offset set to $0$. 
 Then at each step, if the offsets of $S \subseteq  {\cal R}$ have been chosen,
 we select the smallest route $r$ in $S$ for the order. 
 Then we select a route in $r' \in {\cal R} \setminus S$ and set its offset such that 
 if we remove $1$ then $r'$ collides with $r$. Note that if $r$ is a forward route (resp. a backward route) then $r'$ is also a forward route (resp. a backward route). We can also decide to 
 not use route $r$. At a given step of the algorithm, if $|S| = 2i$, we have $n-i$ choices 
-of routes to select and the value of the offset is determined by the values of the offsets of routes in $S$. Therefore there at most $n!$ different compact assignments with offset $r_0$
-fixed to $0$. 
+of routes to select. The value of the offset of the selected route is entirely determined by the values of the offsets of routes in $S$. Therefore there are at most $n!$ different compact assignments with offset $r_0$ fixed to $0$. 
 
-An algorithm to solve PALL build every possible compact assignment as described here, and
-test at each step whether there is a collision which can be done in time linear in the size of 
+The algorithm to solve PALL builds every possible compact assignment as described here, and
+tests at each step whether there is a collision which can be done in time linear in the size of 
 $(G, {\cal R})$. Therefore $PALL \in \FPT$.
 \end{proof}
 
-We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Search of Compact Assignments (ESCA)}. To make it more efficient in practice, we make cuts in the search tree 
-used to explore all compact assignments. Consider a set of $k$ forward routes whose offsets has been fixed at some point in the search tree. We consider the times at which the messages of these routes cross the central arc. It divides the period into $[(a_0,b_0), \dots, (a_{k-1},b_{k-1})]$ such that the central arc is free only during the intervals $(a_i,b_i)$. 
-Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor} $ forward routes can still use the central arc. If this value is more than $n - k$, it is not possible to create a compact assignment by extending the one on $S$ and we backtrack in the search tree. We do the same cut for the backward routes.
+We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Search of Compact Assignments}. To make it more efficient in practice, we make cuts in the search tree used to explore all compact assignments. Consider a set of $k$ forward routes whose offsets has been fixed at some point in the search tree. We consider the times at which the messages of these routes cross the central arc. It divides the period into $[(a_0,b_0), \dots, (a_{k-1},b_{k-1})]$ such that the central arc is free only during the intervals $(a_i,b_i)$. Therefore at most $\displaystyle{ \sum_{i=0}^{k-1} \lfloor(b_{i} -a_i)/\tau\rfloor} $ forward routes can still use the central arc. If this value is more than $n - k$, it is not possible to create a compact assignment by extending the one on $S$ and we backtrack in the search tree. We do the same cut for the backward routes.
 
 % 
 % 	\subsubsection*{Exhaustive search}
@@ -758,7 +755,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       In our experiment, we generate $1000$ random instances of PAZL for $1$ to $12$ routes. 
       We measure the average minimal period, for each algorithm. Remind that the exhaustive search always finds the best possible period for a given instance. The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
       
-      
+      \todo{présenter ça comme une average load ?}
         
       \begin{figure}
 
