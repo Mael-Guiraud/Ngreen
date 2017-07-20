@@ -483,7 +483,9 @@ double time_search(int nb_routes, int taille_message,int taille_routes)
 	g = init_graphe(nb_routes *2 +1);
 	graphe_etoile(g,taille_routes);
 	gettimeofday (&tv1, NULL);
-	search(g,taille_message,taille_message*nb_routes*1.05);
+	int period = taille_message*nb_routes*1.05;
+	//printf("%d \n",period);
+	search(g,taille_message,period);
 	gettimeofday (&tv2, NULL);
 	timer = time_diff(tv1,tv2);
 		
