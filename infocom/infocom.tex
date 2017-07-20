@@ -765,6 +765,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       \begin{center}
 	 \hspace{-0.5cm}\includegraphics[width=0.53\textwidth]{periode_petite.pdf}
       \end{center}
+            \vspace{-1cm}
       \caption{Minimum period averaged over $1000$ random instances}
       \end{figure}
       
@@ -785,6 +786,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
        \begin{center}
       \hspace{-0.5cm}\includegraphics[width=0.5\textwidth]{echec_longues.pdf}
       \end{center}
+            \vspace{-1cm}
       \caption{Success rate for $8$ routes over $1000$ random instances}
      \end{figure}
       
@@ -805,6 +807,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
     \hline
       \end{tabularx}
       \end{center}
+      
          \section{Solving PALL on Star Routed Networks}\label{sec:PALL}
     
     In this section, we still work on star routed networks, but we consider again the more general PALL problem. It means that the messages can wait in the target vertices (BBUs) in order to find solutions when there are none without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
@@ -1000,7 +1003,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
           \vspace{-1cm}
 \begin{figure}[H] 
           \includegraphics[width=0.5\textwidth]{departs_gp_25000.pdf}
-          \vspace{-1cm}
+          \vspace{-1.5cm}
       \caption{Success rate of different orders, $80\%$ load.}
            \label{fig:success30000}
      \end{figure}
@@ -1016,6 +1019,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
        \begin{center}
       \includegraphics[width=0.5\textwidth]{retour_21000.pdf}
       \end{center}
+            \vspace{-1cm}
       \caption{Success rate of GD, MLS and PMLS for $P = 21000$}
      \label{fig:success21000}
      \end{figure}
@@ -1052,15 +1056,16 @@ yields the best results for the two algorithms. The number of different orders i
      We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
      
       
-    \begin{figure}[H] 
+    \begin{figure}
 
        \begin{center}
-      \includegraphics[width = 0.5\textwidth]{stochastic.pdf}
+     \hspace{-0.5cm} \includegraphics[width = 0.5\textwidth]{stochastic.pdf}
        %\input{figures/stochastic}
       \end{center}
+      \vspace{-1cm}
       \caption{Needed margin with respect to the period for a stochastic policy}
       \label{fig:sto}
-     \end{figure}
+     \end{figure}    
      
      We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Figure~\ref{fig:sto} since even the third quartile was always at $0$ for a period of $20000$.
      There is around $20\%$ of the instances for which the margin is larger than $0$ for $P=20000$ and $2\%$
