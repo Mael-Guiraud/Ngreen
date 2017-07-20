@@ -801,7 +801,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
     \hline
    $n$ & $8$ & $10$& $12$& $16$\\
     \hline
-   Time (s) & $6.10^{-5}$&$8.10^{-4}$&$2.10^{-2}$& $15$\\
+   Time (s) & $6.10^{-5}$&$8.10^{-4}$&$2.10^{-2}$& $11$\\
     \hline
       \end{tabularx}
       \end{center}
@@ -876,7 +876,8 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
     However, for routes with larger $t(c_t,r_{\rho_i}$, since we  should consider everything modulo $P$, 
     they may collide with any other route. Therefore we must adapt the greedy algorithm of the previous paragraph by finding $s \geq t$ the first time for which there is an eligible route with its offset not fixed and \emph{such that there is no collision if a message go through the central arc at time $s$}. 
     
-     \begin{algorithm}[H]
+    
+     \begin{algorithm}
     \caption{ Greedy deadline ({\bf GD}) }
     \begin{algorithmic}
     \REQUIRE A routed network $(G,{\cal R})$, a period $P$, packet size $\tau$, $ T_{max}$, the offsets $m_i$
