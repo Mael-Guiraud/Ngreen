@@ -180,13 +180,13 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
   \node[draw,circle] (ct) at (5, 2) {$c_t$}; 
 
   
-  \Edge[label = $\omega(s_1\,c_s)$](s1)(cs)
-  \Edge[label = $\omega(...)$](s2)(cs)
-  \Edge[label = $\omega(...)$](s3)(cs)
+  \Edge[label = $\omega({s_0,c_s})$](s1)(cs)
+  \Edge[label = $\omega({s_1,c_s})$](s2)(cs)
+  \Edge[label = $\omega({s_2,c_s})$](s3)(cs)
   
-  \Edge[label = $\omega(...)$](ct)(t1)
-  \Edge[label = $\omega(...)$](ct)(t2)
-  \Edge[label = $\omega(...)$](ct)(t3)
+  \Edge[label = $\omega({c_t,t_0})$](ct)(t1)
+  \Edge[label = $\omega({c_t,t_1})$](ct)(t2)
+  \Edge[label = $\omega({c_t,t_2})$](ct)(t3)
   
   \Edge(cs)(ct)
 
@@ -789,22 +789,19 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       When the load is larger than $50\%$ (period less than $40000$), the exhaustive search finds  more solutions than the greedy algorithms which justifies its use. However, for load larger than $80\%$ (period less than $25000$) there are many instances for which there are no solutions to PAZL.
       It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general PALL problem in our next section. We will test them on $8$ long routes and a load between $100\%$ and $80\%$ for which, as shown here, there are often no assignment without waiting times.
       
-      The computation time of the exhaustive search is in $O(n!)$, hence we need to study its scalability when $n$ grows. In the following experiment, the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots. We fixed a period of $n\tau+1000$.
+      The computation time of the exhaustive search is in $O(n!)$, hence we need to study its scalability when $n$ grows. In the following experiment, the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots. We fixed a period of $1.05n\tau$, which corresponds to $95\%$ of load.
 %       , that corresponds to loads of $\simeq 70\%$ (for $1$ route) to $\simeq 98\%$ (for 21 routes).
-      The following table shows the time before the exhaustive search ends, for $6$ to $21$ routes, averaged on $100$ random star routed networks. This shows that for less than $20$ routes, which corresponds to all current topologies, the algorithm is efficient enough, but on more routes we should improve it further.
+      The following table shows the time before the exhaustive search ends, for $8$ to $16$ routes, averaged on $100$ random star routed networks. This shows that for less than $15$ routes, which corresponds to all current topologies, the algorithm is efficient enough, but on more routes we should improve it further.
          \begin{center}
          \begin{tabularx}{0.5\textwidth}{|l|X|X|X|X|}
     \hline
-   $n$ & $6$ & $11$& $16$& $21$\\
+   $n$ & $8$ & $10$& $12$& $16$\\
     \hline
-   Time (s) & $3.10^{-5}$&$6.10^{-4}$&$6.10^{-2}$& $15$\\
+   Time (s) & $6.10^{-5}$&$8.10^{-4}$&$2.10^{-2}$& $15$\\
     \hline
       \end{tabularx}
       \end{center}
-      
-
-     
-   \section{Solving PALL on Star Routed Networks}\label{sec:PALL}
+         \section{Solving PALL on Star Routed Networks}\label{sec:PALL}
     
     In this section, we still work on star routed networks, but we consider again the more general PALL problem. It means that the messages can wait in the target vertices (BBUs) in order to find solutions when there are none without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
 

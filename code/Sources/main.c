@@ -78,7 +78,7 @@ int main()
 	/****Nombre de routes pouvant être calculées en moins de "max" ms
 	****/
 
-	search_efficiency(2500,20000,10);
+	search_efficiency(2500,20000,100);
 
 
 	/******
