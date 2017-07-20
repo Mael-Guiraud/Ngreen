@@ -108,6 +108,10 @@ The network is modeled as a directed graph $G=(V,A)$. Each arc  $(u,v)$ in $A$ i
 We denote by $\cal R$ a set of routes, the pair $(G,\cal R)$ is called a {\bf routed network} and represents our telecommunication network.
 The first vertex of a route models an antenna (RRH) and the last one a data-center (BBU) which processes the messages sent by the antenna.
 
+   In the context of cloud-RAN applications, we need to send message from a RRH $u$ to a BBU $v$ and then 
+      we must send the answer from $v$ back to $u$. We say that a routed network $(G, {\cal R})$ is \textbf{symmetric} if the set of routes is partitioned into the sets $F$ of forward routes and $B$ of backward routes. Moreover there is a bijection $\rho$ between $F$ and $B$ such that for any forward route $r \in F$ with first vertex $u$ and last vertex $v$, the backward route $\rho(r) \in B$ has first vertex $v$ and last vertex $u$. In all practical cases the routes $r$ and $\rho(r)$ will be the same with the orientation of the arcs reversed, which corresponds to bidirectional links in the networks, but we need not to enforce this property.
+      
+
 
    \subsection{Messages dynamic}
       
@@ -121,13 +125,35 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       We say that the two routes have a {\bf collision} if they share an arc of first vertex $v$ and $[t(v,r_{1})] \cap [t(v,r_{2})] \neq \emptyset$.
       
       
+         
+         A {\bf $(P,\tau)$-periodic assignment} of a star routed network $(G,\cal R)$ is a set of two sequence  ${\cal M}=\{(m_0, \ldots ,m_{n-1}),(m_{\rho_0}, \ldots ,m_{\rho_{n-1}})\}$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ (respectively $m_{\rho_i}$) represents the time at which a message is emitted at the first vertex of the route $r_{i}$ (respectively $r_{\rho_i}$).A $(P,\tau)$-periodic assignment of a $(G,{\cal R})$ symmetric routed network represents
+ the sending of a message and of its answer. \emph{No pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
+   This assignment represents the following process: first a message is sent at $u$, through the route $r \in F$, at time $m_r$.
+       
+      
+      \begin{center}
+     \hspace{-0.5cm} \includegraphics[width=0.48\textwidth]{rrh.pdf}
+      \end{center}
+      
+      
+
+      This message is received by $v$ the last vertex of $r$ at time $t(v,r)$. It is then sent back to $u$ on the route $\rho(r)$ in the same period at time $m_{\rho(r)}$ if $m_{\rho(r)} > t(v,r)$, otherwise at time $m_{\rho(r)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_r = m_{\rho(r)} - t(v,r)$ if $m_{\rho(r)} > t(v,r)$ and $w_r = m_{\rho(r)} + P - t(v,r)$ otherwise.
+ 
+       \begin{center}
+     \hspace{-0.5cm} \includegraphics[width=0.48\textwidth]{BBU.pdf}
+      \end{center}
+     
+    
+      Thus, the whole process time for a message sent on the route $r$ is equal to
+      $PT(r)=\lambda(r)+ w_r+\lambda(r)$.      
+      In the process time, we count the time between the first time at which a message is emitted and the first time at which the message comes back. Alternatively we could consider the time between the emission of the first slot and the reception of the last slot of the message, which would add $\tau$ to the process time.
+      However, since all messages are of size $\tau$, it will not change the problems we consider in the rest of the article.
+      Finally, we could add to the process time the computation time a BBU needs to deal with one message, but it can be encoded  in the weight of the last arc leading to the BBU and thus we need not to consider it explicitly in our model.
+
     
     \subsection{The star routed network}
     
-          In the context of cloud-RAN applications, we need to send message from a RRH $u$ to a BBU $v$ and then 
-      we must send the answer from $v$ back to $u$. We say that a routed network $(G, {\cal R})$ is \textbf{symmetric} if the set of routes is partitioned into the sets $F$ of forward routes and $B$ of backward routes. Moreover there is a bijection $\rho$ between $F$ and $B$ such that for any forward route $r \in F$ with first vertex $u$ and last vertex $v$, the backward route $\rho(r) \in B$ has first vertex $v$ and last vertex $u$. In all practical cases the routes $r$ and $\rho(r)$ will be the same with the orientation of the arcs reversed, which corresponds to bidirectional links in the networks, but we need not to enforce this property.
-      
-      Let us define a family of simple symmetric routed networks on which we focus in this paper. 
+             Let us define a family of simple symmetric routed networks on which we focus in this paper. 
       The graph $G$ has two sets of vertices, $S=\{s_0,...,s_{n-1}\}$ and $T=\{t_0,...,t_{n-1}\}$ of cardinality $n$ and two special nodes:
       the central source node {\bf $c_s$} and the central target node {\bf $c_t$}.
       There is an arc between {\bf $c_s$} and {\bf $c_t$} and for all $i$, there is an arc between $s_i$ and $c_s$ and between $t_i$ and $c_t$.
@@ -277,32 +303,6 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
       
       
       \subsection{Periodic assignment for low latency}
-
-         
-         A {\bf $(P,\tau)$-periodic assignment} of a star routed network $(G,\cal R)$ is a set of two sequence  ${\cal M}=\{(m_0, \ldots ,m_{n-1}),(m_{\rho_0}, \ldots ,m_{\rho_{n-1}})\}$ of $n$ integers that we call {\bf offsets}, with $n$ the number of routes in $\cal R$. The number $m_{i}$ (respectively $m_{\rho_i}$) represents the time at which a message is emitted at the first vertex of the route $r_{i}$ (respectively $r_{\rho_i}$).A $(P,\tau)$-periodic assignment of a $(G,{\cal R})$ symmetric routed network represents
- the sending of a message and of its answer. \emph{No pair of routes must have a collision} in a $(P,\tau)$-periodic assignment.
-   This assignment represents the following process: first a message is sent at $u$, through the route $r \in F$, at time $m_r$.
-       
-      \todo{mettre le lemme sur la monotonie sans preuve?}
-      
-      \begin{center}
-     \hspace{-0.5cm} \includegraphics[width=0.48\textwidth]{rrh.pdf}
-      \end{center}
-      
-      
-
-      This message is received by $v$ the last vertex of $r$ at time $t(v,r)$. It is then sent back to $u$ on the route $\rho(r)$ in the same period at time $m_{\rho(r)}$ if $m_{\rho(r)} > t(v,r)$, otherwise at time $m_{\rho(r)}$ in the next period. The time between the arrival of the message and the time it is sent back is called the \textbf{waiting time} and is defined by $w_r = m_{\rho(r)} - t(v,r)$ if $m_{\rho(r)} > t(v,r)$ and $w_r = m_{\rho(r)} + P - t(v,r)$ otherwise.
- 
-       \begin{center}
-     \hspace{-0.5cm} \includegraphics[width=0.48\textwidth]{BBU.pdf}
-      \end{center}
-     
-    
-      Thus, the whole process time for a message sent on the route $r$ is equal to
-      $PT(r)=\lambda(r)+ w_r+\lambda(r)$.      
-      In the process time, we count the time between the first time at which a message is emitted and the first time at which the message comes back. Alternatively we could consider the time between the emission of the first slot and the reception of the last slot of the message, which would add $\tau$ to the process time.
-      However, since all messages are of size $\tau$, it will not change the problems we consider in the rest of the article.
-      Finally, we could add to the process time the computation time a BBU needs to deal with one message, but it can be encoded  in the weight of the last arc leading to the BBU and thus we need not to consider it explicitly in our model.
       
       
     The {\bf maximum process time} of the assignment ${\cal M}$ of $(G,{\cal R})$ is defined by $MT({\cal M})=\max\limits_{r \in {\cal R}} PT(r)$. We consider the following decision problem.
@@ -313,8 +313,22 @@ The first vertex of a route models an antenna (RRH) and the last one a data-cent
 
       \noindent {\bf Question:} does there exist a $(P,\tau)$-periodic assignment ${\cal M}$ of $(G,{\cal R})$ such that $MT({\cal M}) \leq T_{max}$?
 
-     We show in the long version of this article that this problem is $\NP$-hard. 
+ \begin{theorem}
+Problem PALL is $\NP$-complete on some class of routed networks with specific parameters.
+\end{theorem}
+ \begin{proof}
+ Problem $PRA$ is in $\NP$ since given an offset for each route in an assignment, it is easy to check in linear time in the number of arcs whether there are collisions.
+ 
+  Let $H=(V,E)$ be an undirected graph and let $d$ be its maximal degree. We consider the problem to determine whether $H$ is arc-colorable
+  with $d$ or $d+1$ colors. The arc coloring problem is $\NP$-hard~\cite{holyer1981np} and we reduce it to PRA to prove its $\NP$-hardness. To do that, we define from $H$ a routed network $(G,{\cal R})$.  
+ The constraint of having no collision between the routes is equivalent to the fact that no two adjacent arcs have the same color. Therefore we have reduced arc coloring to PRA by a polynomial time transformation which concludes the proof. 
+ \end{proof}
+
+
+     The long version of this article contains the entire proof about the $\NP$-hardness of PALL. 
       In Sec.~\ref{sec:PALL} we will study heuristics which try to solve the search version of PALL (computing an assignment), also denoted by PALL for simplicity.
+
+
 
 One can consider a simpler version of PALL.
        We ask for a $(P,\tau)$-periodic assignment {\bf with all waiting times equal to $0$} and we call this restricted problem {\bf Periodic Assignment for Zero Latency} or PAZL. We consider PAZL since it is simpler to get theoretical results and good algorithms 
@@ -322,6 +336,7 @@ One can consider a simpler version of PALL.
     
     One may consider a variant of PAZL where the central link is unidirectional, that is collisions can happen between messages going from $c_s$ to $c_t$ and messages  going from $c_t$ to $c_s$. This problem can be shown to be $\NP$-complete by a reduction from the subset sum problem as it is done for a similar problem of scheduling pair of tasks~\cite{orman1997complexity}. We conjecture that the problem PAZL is also $\NP$-complete,  but we have yet not been able to prove it.
   On the other hand we show positive results:  when the period is large or when the routes are short there is always a solution to PAZL and it can be found in polynomial time. We then give an exponential time exhaustive search algorithm which always finds a solution if there is one. 
+  
   
   
 %      The following table summarize the main notations used in the paper.
@@ -745,7 +760,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       \begin{figure}
 
       \begin{center}
-	\includegraphics[width=0.5\textwidth]{periode_petite.pdf}
+	 \hspace{-0.5cm}\includegraphics[width=0.53\textwidth]{periode_petite.pdf}
       \end{center}
       \caption{Minimum period averaged over $1000$ random instances}
       \end{figure}
@@ -879,11 +894,9 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
       
       \WHILE{There is some non-assigned routes}
       \IF{${\cal H}$ is empty}
-      \STATE t $\leftarrow $ min\_non\_assigned(eligible\_time)
-      \STATE take $r_i$ the route with eligible\_time[$r_i$] = t
-      \STATE 
+      \STATE $r_i$ $\leftarrow $ min\_non\_assigned(eligible\_time)
       \ENDIF
-      
+     
       \STATE $r \leftarrow $ extract\_min(${\cal H}$)
       \STATE t $\leftarrow$ next\_free\_interval(free\_intervals, t) //{\em if there is no more free intervals of size $\tau$, the algorithm fails}
       \STATE $w_i \leftarrow$ t - eligible\_time[$r_i$]
@@ -905,7 +918,7 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
 
     \end{algorithmic}
     \end{algorithm}
-    The function  min\_non\_assigned(eligible\_time) returns the lowest time in eligible\_time, for which the corresponding route is not assigned yet. The function update(t,free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
+    The function  min\_non\_assigned(eligible\_time) returns the route with lowest time in eligible\_time, which is not assigned yet. The function update(t,free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
 
 
     The greedy algorithm can be made to work in time $O(n\log(n))$. 
@@ -983,11 +996,13 @@ Therefore at most $\displaystyle{ \sum_{i=0}^{k} \lfloor(b_{i} -a_i)/\tau\rfloor
   
   \centering
      \hspace{-1.5cm} \includegraphics[width=0.4\textwidth]{departs_gp_21000.pdf}
-
+\vspace{-0.75cm}
       \caption{Success rate of different orders, $95\%$ load.}
           \end{figure}
+          \vspace{-1cm}
 \begin{figure}[H] 
           \includegraphics[width=0.5\textwidth]{departs_gp_25000.pdf}
+          \vspace{-1cm}
       \caption{Success rate of different orders, $80\%$ load.}
            \label{fig:success30000}
      \end{figure}

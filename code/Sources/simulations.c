@@ -483,7 +483,7 @@ double time_search(int nb_routes, int taille_message,int taille_routes)
 	g = init_graphe(nb_routes *2 +1);
 	graphe_etoile(g,taille_routes);
 	gettimeofday (&tv1, NULL);
-	search(g,taille_message,taille_message*nb_routes+1000);
+	search(g,taille_message,taille_message*nb_routes*1.05);
 	gettimeofday (&tv2, NULL);
 	timer = time_diff(tv1,tv2);
 		
@@ -497,7 +497,7 @@ void search_efficiency(int taille_message,int taille_routes, int nb_simuls)
 	double average=0;
 	double max = 0.0;
 	double result;
-	for(int nb_routes = 1;nb_routes<22;nb_routes+=1)
+	for(int nb_routes = 1;nb_routes<25;nb_routes+=1)
 	{
 		max = 0.0;
 		for(int i=0;i<nb_simuls;i++)
