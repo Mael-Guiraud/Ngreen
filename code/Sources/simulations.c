@@ -25,7 +25,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 	int res_sl,res_brute,res_3NT,res_search;
 
 	
-	for(int j = 1 ; j<=nb_routes;j++)
+	for(int j = 2 ; j<=nb_routes;j++)
 	{
 		printf("Calculs pour %d routes: \n",j);
 		
@@ -84,8 +84,9 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 		}
 		printf("\n");
 		
-		fprintf(F, "%d %lld %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_search/nb_simuls,total_sl/nb_simuls,j*taille_message,3*j*taille_message);
-		fprintf(stdout, "%d %lld %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_search/nb_simuls,total_sl/nb_simuls,j*taille_message,3*j*taille_message);
+		fprintf(F, "%d %lld %lld %lld %lld %d %d\n",j,(taille_message*j)/(total_3NT/nb_simuls),(taille_message*j)/(total_brute/nb_simuls),(taille_message*j)/(total_search/nb_simuls),(taille_message*j)/(total_sl/nb_simuls),j*taille_message,3*j*taille_message);
+		fprintf(stdout, "%d %lld %lld %lld %lld %d %d\n",j,(taille_message*j)/(total_3NT/nb_simuls),(taille_message*j)/(total_brute/nb_simuls),(taille_message*j)/(total_search/nb_simuls),(taille_message*j)/(total_sl/nb_simuls),j*taille_message,3*j*taille_message);
+		//fprintf(stdout, "%d %lld %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_search/nb_simuls,total_sl/nb_simuls,j*taille_message,3*j*taille_message);
 		//fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT,total_brute,total_sl,j*taille_message,3*j*taille_message);
 		printf("\n");
 	}
