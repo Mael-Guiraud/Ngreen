@@ -534,22 +534,20 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithms but are not always able to find a solution, depending on the load or the size of the routes. On the other hand, the exhaustive search finds an optimal solution if it exists, but works in exponential time. We compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
       From our C-RAN context we choose the following parameters: the number of routes is at most $n = 20$, $\tau$ is equal to $2500$.
-%       Moreover the period is always larger than $n\tau$ otherwise no assignment is possible and smaller than $3n\tau$ otherwise the greedy algorithm always returns a solution.
+      It corresponds to messages of approximately $1$Mb for links of bandwidth $10$Gbps.
 
       % The code in C is available on the webpage of one of the authors~\cite{webpage} under a copyleft license.
-
-%       The code in C is available on the webpage of one of the authors~\cite{webpage} under a copyleft license.
 
        In our experiments we try to understand how our algorithms work with regards to the load. To change the load, we fix the parameters $\tau$ and $n$ and modify the period $P$, which allows for a smoother control of the load and does not change the run time of our algorithms.
       
 
       \paragraph{Short routes}
       
-      First we consider routes which are shorter than $\tau$: a message cannot be contained completely in a single arc which is very common in our applications. We generate star routed networks in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$. It corresponds to messages of approximately $1$Mb, links of bandwidth $10$Gbps and length of routes less than $5$km between the BBU and the RRH. 
+      First we consider routes which are shorter than $\tau$: a message cannot be contained completely in a single arc which is very common in our applications. We generate star routed networks in which the weights of the arcs $(c_t,t_i)$ are drawn uniformly between $0$ and $700$ which corresponds to links of less than $5$km between the BBU and the RRH. 
       
       Our aim is to understand how well the algorithms are working under high load. To do that we evaluate the highest load 
       under which a $(P,\tau)$-periodic assignment can be found by each algorithm when we change the number of routes. 
-      In our experiment, we generate $1000$ random instances of \pazl for $1$ to $14$ routes. We measure the average maximal possible load, for which each algorithm finds a solution. Remind that the exhaustive search always finds the highest load for a given instance. 
+      In our experiment, we generate $1000$ random instances of \pazl for $1$ to $14$ routes. We represent in Fig.~\ref{fig:short} the average maximal possible load, for which each algorithm finds a solution. Remind that the exhaustive search always finds the highest load for a given instance. 
 %       The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
       
         
@@ -559,7 +557,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 	 \hspace{-0.5cm}\includegraphics[width=0.5\textwidth]{periode_petite.pdf}
       \end{center}
             \vspace{-0.75cm}
-      \caption{Minimum period averaged over $1000$ random instances}
+      \caption{Minimum period averaged over $1000$ random instances}\label{fig:short}
       \end{figure}
       First, we remark that the period found by the exhaustive search is only very slightly above the lower bound of $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
       
@@ -569,7 +567,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       
         \paragraph{Long routes}
       
-      We now want to understand the performance of these algorithms when the size of the routes is unbounded. In this experiment we fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period). We measure for each algorithm its percentage of success, for load of $100\%$ down to $40\%$.
+      We now want to understand the performance of these algorithms when the size of the routes is unbounded. In this experiment we fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period). We represent in Fig.~\ref{fig:long} the percentage of success of each algorithm, for load from $100\%$ down to $40\%$.
       
 \begin{figure}[h]
 
@@ -577,7 +575,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \hspace{-0.5cm}\includegraphics[width=0.5\textwidth]{echec_longues.pdf}
       \end{center}
             \vspace{-1cm}
-      \caption{Success rate for $8$ routes over $1000$ random instances}
+      \caption{Success rate for $8$ routes over $1000$ random instances}\label{fig:long}
      \end{figure}
       
       In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. In fact, if we do the previous experiment 
@@ -601,19 +599,19 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       
          \section{Solving \pall on Star Routed Networks}\label{sec:PALL}
     
-    In this section, we still work on star routed networks, but we consider again the more general \pall problem. It means that the messages can wait in the target vertices (BBUs) in order to find solutions when there are none without waiting time. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
+    In this section, we consider the more general \pall problem on star routed networks. It means that the messages can wait in the target vertices (BBUs) in order to find assignments which is not possible for \pazl. We allow the process times $PT$ of the routes to be greater than twice the weights of the routes, but it should less than $T_{max}$.
 
 	\subsection{Special cases}
 		
 		
-	Often in real networks, the length of the routes are not arbitrary and we may exploit that to solve \pall easily. For instance if all the weights on the arcs $(c_t,t_i)$ are the same, we can replace them all by $0$ and substract this weight to $T_{max}$. It corresponds to a situation where all the BBUs are in the same datacenter.
-	The assignment in that case is trivial, just send all messages so that they follow each other without gaps in the central arc $(c_s,c_t)$. Since the arcs $(c_t,t_i)$ are of weight $0$, all messages will go through $(c_t,c_s)$ on their way back in
+	Often in real networks, the length of the routes are not arbitrary and we may exploit that to solve \pall easily. For instance if all the weights on the arcs $(c_t,t_i)$ are the same, we can replace them all by $0$ and substract this weight to $T_{max}$. It corresponds to a situation where all the BBUs are in the same datacenter and have the same processing power.
+	The assignment in that case is trivial, just send all messages so that they follow each other without gaps in the central arc. Since the arcs $(c_t,t_i)$ are of weight $0$, all messages will go through $(c_t,c_s)$ on their way back in
 	the same order and thus will not collide. 
 	
  %A more realistic assumption would be that all weigths of the arcs $(s_i,c_s)$ are the same. It would correspond to a situation where all the BBUs are in the same datacenter.
-	Another assumption would be that all weights of the arcs $(s_i,c_s)$ are the same.
+	Another possible assumption would be that all weights of the arcs $(s_i,c_s)$ are the same.
 	
-	 \begin{theorem}
+	 \begin{theorem}\label{th:asym}
 	 Let $(G,{\cal R})$ be a star routed network with $n$ routes and let $P \geq n\tau$. If there is a constant $c$ such that $\forall i < n, \,\omega(s_i,c_s) = c$, then there is a $(P,\tau)$-periodic assignment with process time $2 \times \displaystyle{\max_{r\in {\cal R}} \lambda(r)}$ and it can be built in time $O(n)$.
 	 \end{theorem}
       \begin{proof}
@@ -622,7 +620,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
         We find the route with maximal length, say that it is $\lambda(r_0)$. The idea is to 
         set the waiting times of all routes so they behave exactly as the message in $r_0$.
         
-        The offset of the route $r_i$ is set to $i\tau$, which ensures that there are no collision on the way forward (on the arc $(c_s,c_t)$) as soon as $P \geq n\tau$ which is the minimal possible period. We set the waiting time for the route $i$ to $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$. We can compute the time at which the message of the route $r_i$ arrives at the vertex $c_t$ on its way back: $t(c_t,\rho_{r_i}) = w_i + i\tau + 2\lambda(r_{i})$
+        The offset of the forward route $r_i$ is set to $i\tau$, which ensures that there are no collision on the arc $(c_s,c_t)$ as soon as $P \geq n\tau$ which is the minimal possible period. We set the waiting time for the route $i$ to $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$. We can compute the time at which the message of the route $r_i$ arrives at the vertex $c_t$ on its way back: $t(c_t,\rho_{r_i}) = w_i + i\tau + 2\lambda(r_{i})$
         by replacing $w_i$ by its value we obtain $t(c_t,\rho_{r_i}) =  i\tau + 2\lambda(r_{0})$
         As a conclusion there are no collision on the arc $(c_t,c_s)$ as soon as the 
         period is larger than $n\tau$ (there are no gaps between the messages).
@@ -631,9 +629,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 	Finally the complexity is $O(n)$ since we have to find a maximum between the size of $n$ routes and the computation of each $w_i$ is done by a constant number of arithmetic operations.
      \end{proof}
      
-     Remark that this assignment always exists and has no collision when $P \geq n\tau$. 
-     If for any pair of indices $(i,j)$ the difference between the weights of the arcs $(s_i,c_s)$ and $(s_j,c_s)$ is bounded 
-     by $d$ and the length of the longest route is $l$, then the maximum process time is bounded by  $2l + d$
+     Assume that for any pair of indices $(i,j)$ the difference between the weights of the arcs $(s_i,c_s)$ and $(s_j,c_s)$ is bounded by $d$ and the length of the longest route is $l$. Using the same idea as in Th.~\ref{th:asym}, there is an assignment with maximum process time bounded by  $2l + d$
      
      
 %     We tried the five following orders. 
@@ -651,24 +647,22 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 %    
    \subsection{Greedy scheduling of backward routes}
     
-    We can decompose any algorithm solving the \pall problem in two parts: first set the offsets of the forward routes and then, knowing this information set the offset of the backward routes or equivalently the waiting times.  
-    The offsets of the forward routes are chosen so that messages have no collision on the central arc and such that there are no free slots in between the end of a message on the central arc and the beginning of the next one. 
+    We can decompose any algorithm solving the \pall problem in two stages: first set the offsets of the forward routes and then, knowing this information set the offset of the backward routes or equivalently the waiting times.  
+    The offsets of the forward routes are chosen so that they have no collisions and such that there are no free slots in between the end of a message on the central arc and the beginning of the next one. 
     It is done to minimize the period needed to send the messages of the forward route. For this section and the next, we assume that the offsets of the forward routes are fixed by some order. 
     
-    Consider a forward route $r_i$ and the corresponding backward route $r_{\rho(i)}$.
-    We define the {\bf deadline} of $r_{\rho(i)}$ as $m_{i} + T_{max} - \omega(s_i,c_s)$, that is the latest time at which the message can go out of $c_t$ such that $PT(r_i) \leq T_{max}$.
-    We say that a backward route $r_{\rho(i)}$ is {\bf eligible} at time $t$ if $m_{i} +  \lambda(r_i) + \omega(c_t,t_i) \leq t$, that is the message of the route $r_{\rho(i)}$ arrives at $c_t$ before time $t$ when $w_i = 0$.
+    Consider a forward route $r_i$ and the corresponding backward route $\rho(r_i)$.
+    We define the {\bf deadline} of $\rho(r_i)$ as $m_{r_i} + T_{max} - \omega(s_i,c_s)$, that is the latest time at which the message can go out of $c_t$ such that $PT(r_i) \leq T_{max}$.
+    We say that a backward route $\rho(r_i)$ is {\bf eligible} at time $t$ if $m_{i} +  \lambda(r_i) + \omega(c_t,t_i) \leq t$, that is the message of the route $\rho(r_i)$ arrives at $c_t$ before time $t$ when $w_i = 0$.
     
-    The first algorithm we propose is a greedy algorithm which sets the offset $m_{\rho(i)}$ of the 
+    The first algorithm we propose is a greedy algorithm which sets the offset $m_{\rho(r_i)}$ of the 
     backward routes. It prioritizes the routes with the earliest deadline to best satisfy the
-    constraint on the process time.
-    Set $t=0$ and repeat the following: find $s \geq t$ the first time for which there is an eligible route with its offset not fixed. Then amongst all eligible routes at time $s$ choose the one with the smallest deadline, fix its offset to $s - \omega(c_t,t_i) $ and set $t = s + \tau$.
+    constraint on the process time. Set $t=0$ and repeat the following: find $s \geq t$ the first time for which there is an eligible route with its offset not fixed. Then amongst all eligible routes at time $s$ choose the one with the smallest deadline, fix its offset to $s - \omega(c_t,t_i) $ and set $t = s + \tau$.
     
-    This algorithm does not take into account the periodicity. Say that $t_0 = t(c_t,r_{\rho_i} = m_{\rho_i} + t(c_t,r(\rho_i)$, where $m_{\rho_i}$ is the smallest offset that the algorithm has fixed
-    for a backward route. Then for all routes with $t(c_t,r_{\rho_i}$ smaller than $t_0 + P - \tau$,
+    This algorithm does not take into account the periodicity. Say that $t_0 = t(c_t,r)$ such that $r$ is the first backward route selected by the algorithm. Then if all backward routes $r$ are such that $t(c_t,r)$ is smaller than $t_0 + P - \tau$,
     by construction, there are no collisions on the central arc.
-    However, for routes with larger $t(c_t,r_{\rho_i}$, since we  should consider everything modulo $P$, 
-    they may collide with any other route. Therefore we must adapt the greedy algorithm of the previous paragraph by finding $s \geq t$ the first time for which there is an eligible route with its offset not fixed and \emph{such that there is no collision if a message go through the central arc at time $s$}. 
+    However, if a route $r$ has a larger $t(c_t,r)$, since we should consider everything modulo $P$, 
+    it may collide with another backward route. Therefore we must adapt the greedy algorithm of the previous paragraph by finding $s \geq t$ the first time for which there is an eligible route with its offset not fixed and \emph{such that there is no collision if a message go through the central arc at time $s$}. 
     
 %     
 %      \begin{algorithm}
@@ -710,7 +704,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 % 
 %     \end{algorithmic}
 %     \end{algorithm}
-    The function  min\_non\_assigned(eligible\_time) returns the route with lowest time in eligible\_time, which is not assigned yet. The function update(t,free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
+%     The function  min\_non\_assigned(eligible\_time) returns the route with lowest time in eligible\_time, which is not assigned yet. The function update(t,free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
 
 
     The greedy algorithm can be made to work in time $O(n\log(n))$. 
@@ -734,17 +728,15 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
      The problem to solve in the second stage of our approach is very similar to the following scheduling problem: 
      we are given a set of jobs and each job has a \emph{release time} and a \emph{deadline}. 
      The problem is to schedule all jobs on a single processor, that is choosing the time at which they are computed, so that no two jobs are scheduled at the same time. A job is always scheduled after its release time and it must be finished before its deadline. Let us call $n$ the number of jobs, the problem can be solved in time $O(n^2\log(n))$~\cite{simons1978fast} when all jobs have the same running time and it gives a solution with the earliest possible deadline. On the other hand if the running times are different the problem is $\NP$-complete~\cite{lenstra1977complexity}. 
-     The  polynomial time algorithm  which solves this scheduling problem is similar to the Greedy algorithm presented in the previous section. However, when it fails because a job finishes after its deadline, it changes the schedule of the last messages to find a possible schedule for the problematic job. The change in the scheduling is so that the algorithm cannot fail on the same job a second time except if there is no solution, hence the polynomiality of the algorithm.
+     The  polynomial time algorithm  which solves this scheduling problem is similar to the Greedy algorithm presented in the previous section. However, when it fails because a job finishes after its deadline, it changes the schedule of the last messages to find a possible schedule for the problematic job. The change in the scheduling is so that the algorithm cannot fail on the same job a second time except if there is no solution, which proves that the algorithm is in polynomial time.
      
      We reduce our problem of setting the offsets of the backwards routes once the order of the forward routes is fixed to this
      scheduling problem. The backward routes are the jobs, the size of a message is the running time of a job,
      the deadline of a route is the deadline of the corresponding job and the smallest time at which it is eligible is the release time. Let us call {\bf Minimal Latency Scheduling (MLS)} this algorithm.
-     Remark that we do not deal with the periodicity. When MLS finds a solution ${\cal M}$ its always satisfies $MT({\cal M}) < T_{max}$. On the other hand, it is a $(P,\tau)$ periodic assignment only if $m_{n-1} - m_0 \leq P -\tau$ where $m_{n-1}$ is the largest offset and $m_0$ the smallest one. The algorithm we use minimize $m_{n-1} - m_0 $, so it may work quite well in practice (as shown in Section~\ref{sec:resultsPALL}).
+     Remark that we do not deal with the periodicity. When MLS finds an assignment $m$ its always satisfies $MT(m) < T_{max}$. On the other hand, it is a $(P,\tau)$ periodic assignment only if $m_{max} - m_{min} \leq P -\tau$ where $m_{max}$ is the largest offset and $m_{min}$ the smallest one. The algorithm we use minimize this quantity, so it may work in practice (as shown in Section~\ref{sec:resultsPALL}).
      
      We now present a variant of the previous algorithm that we call {\bf Periodic Minimal Latency Scheduling (PMLS)}
-     which takes into account the periodicity. We fix arbitrarily a backward route so that its message is the first to go through the central arc at time $t$. Then we modify the deadline of each forward route to be the minimum of their previous deadline and $t + P$.  We execute this algorithm for every possible first backward route and we return the solution that minimize $MT({\cal M})$. Since we run the previous algorithm at most $n$ times, the complexity is in $O(n^3\log(n))$. Remark that it will always find more solution than MLS,
-     because if MLS finds a solution with first route $r$ and such that $m_{n-1} - m_0 \leq P -\tau$, then this solution will be found by PMLS when it selects $r$ as the first route. Moreover when PMLS finds a solution, it is always a $(P,\tau)$ periodic assignment
-     since we guarantee that all messages are scheduled in a period of time of size $P$ and it satisfies $MT({\cal M}) < T_{max}$ by construction of the deadlines. The scheduling algorithm we use always finds a solution to the  original problem it solves. However, in our periodic context, we do not allow to choose an offset for a route after $t+P- \tau$ which modulo $P$ may not collide with another route. Therefore PMLS may fail while there is a solution.
+     which takes into account the periodicity. We fix arbitrarily a backward route so that its message is the first to go through the central arc at time $t$. Then we modify the deadline of each backward route to be the minimum of their previous deadline and $t + P$.  We execute this algorithm for every possible first backward route and we return the solution that minimizes $MT({\cal M})$. Since we run the previous algorithm at most $n$ times, the complexity is in $O(n^3\log(n))$. Remark that it will always find more solution than MLS, because if MLS finds a solution with first route $r$ and such that $m_{max} - m_{min} \leq P -\tau$, then this solution will be found by PMLS when it selects $r$ as the first route. Moreover when PMLS finds a solution, it is always a $(P,\tau)$ periodic assignment since we guarantee that all messages are scheduled in a period of time of size $P$ and it satisfies $MT({\cal M}) < T_{max}$ by construction of the deadlines. Remark that PMLS may fail while there is an assignment. Indeed, in the algorithm we restrict the assignments we look for by not allowing to choose an offset for a route after $t+P- \tau$.
      
 %     \begin{algorithm}[H]
 %     \caption{ Minimized Scheduling Periodic (MSP)}
@@ -771,16 +763,24 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 %     \end{algorithm}
     \subsection{Experimental evaluation}
     \label{sec:resultsPALL}
-    In this section, we first try to understand what is the best choice of order for the first stage of the algorithm.
+    
     We fix the number of routes to $8$ to make comparisons with the results of Section~\ref{sec:exp_PAZL} easier. 
     We draw uniformly the weights of the arcs between $0$ and $20000$ slots.
     For a given routed network, we define the {\em margin} as the difference between $T_{max}$ and twice the longest route. 
     Hence, for a routed network choosing the margin or $T_{max}$ is the same, but since we will consider many networks 
     whith different longest route's size, it will be more meaningful to set the margin rather than $T_{max}$.
     In fact the margin represents the latency imposed by the communication process without taking into account the physical length of the network which cannot be changed. In our experiments the margin range from  $0$ to $3000$ slots.
-   We look at two different regimes: we take a period equal to $1,05n\tau$ to represent a very loaded network
-   and $1,5n\tau$ for a mildly loaded network. Choosing a larger period is not relevant since then we know how to solve the problem even without waiting times as shown in Section~\ref{sec:exp_PAZL}. We represent the success rate with regards to the margin, for the five kind of orders using the Greedy algorithm for the second stage, computed over $10000$ random star routed networks. Note that for the random order, we compute $1000$ random orders and count it as a success as soon as there is a solution for one order. 
+   We look at two different regimes, a medium load of $80\%$ and a high load of $95\%$.
+   Considering smaller load is not relevant since then we know how to solve the problem even without waiting times as shown in Section~\ref{sec:exp_PAZL}. 
    
+   We first try to understand what is the best choice of order for the first stage of the algorithm which are 
+   followed by the GD algorithm for this experiment.
+   We try the following ones: decreasing order on the length of the routes (LSR), decreasing order on the weigths of the arcs 
+   $(c_t,t_i)$ (LSA), increasing order on the length of the routes (SLR), decreasing order on the weigths of the arcs 
+   $(c_t,t_i)$ (SLA) as in Prop.~\ref{prop:SL}. We also consider the random order, which means we compute $1000$ random orders and 
+   stop as soon one yields an assignment.
+   In Fig.~\ref{fig:} and Fig.~\ref{fig:}, we represent the success rate of the five kind of orders 
+   with regards to the margin. The value is an average computed over $10000$ random star routed networks.
 
 \begin{figure}[h] 
   
