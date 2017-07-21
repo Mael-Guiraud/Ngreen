@@ -33,7 +33,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 		total_brute = 0;
 		total_sl =0;
 		total_search = 0;
-		#pragma omp parallel for private(res_sl,res_brute,res_3NT,res_search,g) if (PARALLEL) schedule (dynamic)
+		#pragma omp parallel for private(res_sl,res_brute,res_3NT,res_search,g) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
 		{
 			g = init_graphe(j*2 + 1);
@@ -62,6 +62,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 			}
 			//else printf("error (Sl = -1)\n");
 			res_search = linear_search(g,taille_message);
+			//res_brute = res_search;
 			//if(res_sl > total_sl)total_sl = res_sl;
 			if(res_search != -1){
 				#pragma omp atomic
@@ -84,8 +85,8 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 		}
 		printf("\n");
 		
-		fprintf(F, "%d %lld %lld %lld %lld %d %d\n",j,(taille_message*j)/(total_3NT/nb_simuls),(taille_message*j)/(total_brute/nb_simuls),(taille_message*j)/(total_search/nb_simuls),(taille_message*j)/(total_sl/nb_simuls),j*taille_message,3*j*taille_message);
-		fprintf(stdout, "%d %lld %lld %lld %lld %d %d\n",j,(taille_message*j)/(total_3NT/nb_simuls),(taille_message*j)/(total_brute/nb_simuls),(taille_message*j)/(total_search/nb_simuls),(taille_message*j)/(total_sl/nb_simuls),j*taille_message,3*j*taille_message);
+		fprintf(F, "%d %f %f %f %f %d %d\n",j,(taille_message*j)/(total_3NT/(float)nb_simuls),(taille_message*j)/(total_brute/(float)nb_simuls),(taille_message*j)/(total_search/(float)nb_simuls),(taille_message*j)/(total_sl/(float)nb_simuls),j*taille_message,3*j*taille_message);
+		fprintf(stdout, "%d %f %f %f %f %d %d\n",j,(taille_message*j)/(total_3NT/(float)nb_simuls),(taille_message*j)/(total_brute/(float)nb_simuls),(taille_message*j)/(total_search/(float)nb_simuls),(taille_message*j)/(total_sl/(float)nb_simuls),j*taille_message,3*j*taille_message);
 		//fprintf(stdout, "%d %lld %lld %lld %lld %d %d\n",j,total_3NT/nb_simuls,total_brute/nb_simuls,total_search/nb_simuls,total_sl/nb_simuls,j*taille_message,3*j*taille_message);
 		//fprintf(F, "%d %lld %lld %lld %d %d\n",j,total_3NT,total_brute,total_sl,j*taille_message,3*j*taille_message);
 		printf("\n");

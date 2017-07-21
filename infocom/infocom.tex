@@ -64,7 +64,7 @@
 \begin{abstract}
 A recent trend in mobile networks is to centralize in distant data-centers the processing units which were attached to 
 antennas. The main challenge is to guarantee that the latency of the periodic messages sent from the antennas to their processing
-units and back fulfills protocol time constaints. We show that traditional statistical multiplexing does not allow such a low latency, due to collisions and buffering at nodes. Hence, we propose in this article to use a deterministic scheme for sending periodic messages without collisions in the network thus without buffering and the resulting additional latency. 
+units and back fulfills protocol time constraints. We show that traditional statistical multiplexing does not allow such a low latency, due to collisions and buffering at nodes. Hence, we propose in this article to use a deterministic scheme for sending periodic messages without collisions in the network thus without buffering and the resulting additional latency. 
 We give several algorithms to compute such schemes for a common topology where one link is shared by all antennas.
 We show that there is always a solution when the routes are short or the load is small. When the parameters are unconstrained,
 and some buffering is allowed in the processing units, we propose an algorithm (PMLS) adapted from a classical scheduling method.
@@ -533,7 +533,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
    \subsection{Experimental evaluation}\label{sec:exp_PAZL}
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithms but are not always able to find a solution, depending on the load or the size of the routes. On the other hand, the exhaustive search finds an optimal solution if it exists, but works in exponential time. We compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
-      From our C-RAN context we choose the following parameters: the number of routes is at most $n = 20$, $\tau$ is equal to $2500$.
+      From our C-RAN context we choose the following parameters: the number of routes is at most $n = 20$, $\tau$ is equal to $2,500$.
       It corresponds to messages of approximately $1$Mb for links of bandwidth $10$Gbps.
 
       % The code in C is available on the webpage of one of the authors~\cite{webpage} under a copyleft license.
@@ -547,7 +547,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       
       Our aim is to understand how well the algorithms are working under high load. To do that we evaluate the highest load 
       under which a $(P,\tau)$-periodic assignment can be found by each algorithm when we change the number of routes. 
-      In our experiment, we generate $1000$ random instances of \pazl for $1$ to $14$ routes. We represent in Fig.~\ref{fig:short} the average maximal possible load, for which each algorithm finds a solution. Remind that the exhaustive search always finds the highest load for a given instance. 
+      In our experiment, we generate $1,000$ random instances of \pazl for $1$ to $14$ routes. We represent in Fig.~\ref{fig:short} the average maximal possible load, for which each algorithm finds a solution. Remind that the exhaustive search always finds the highest load for a given instance. 
 %       The lower and upper bound $n\tau$ and $3n\tau$ are also represented.
       
         
@@ -563,11 +563,11 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       
       The period needed by the Shortest-Longest algorithm to find an optimal solution is a function of the difference between the longest and the shortest route and its average could be easily determined theoretically. The algorithm was expected to find a period close to the optimal one since the routes are short. It turns out it always finds the optimal period in our experiments. Therefore, we should use it in practical applications with short routes, instead of the exhaustive search which is much more computationally expensive. 
       
-      Finally we remark that the greedy algorithm has an average period much lower than the theoretical upper bound of $3n\tau$. We made a linear regression on this value and with a correlation coefficient greater than $0,999$ we find a slope of $1.53n\tau$.
+      Finally we remark that the greedy algorithm has an average period much lower than the theoretical upper bound of $3n\tau$. We made a linear regression on this value and with a correlation coefficient greater than $0.999$ we find a slope of $1.53n\tau$.
       
         \paragraph{Long routes}
       
-      We now want to understand the performance of these algorithms when the size of the routes is unbounded. In this experiment we fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period). We represent in Fig.~\ref{fig:long} the percentage of success of each algorithm, for load from $100\%$ down to $40\%$.
+      We now want to understand the performance of these algorithms when the size of the routes is unbounded. In this experiment we fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30,000$ slots (in the same range as the period). We represent in Fig.~\ref{fig:long} the percentage of success of each algorithm, for load from $100\%$ down to $40\%$.
       
 \begin{figure}[h]
 
@@ -584,15 +584,15 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       When the load is larger than $50\%$, the exhaustive search finds more solutions than the greedy algorithms which justifies its use. However, for load larger than $80\%$ there are many instances for which there are no solutions to \pazl.
       It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general \pall problem in our next section. We will test them on $8$ long routes and a load between $100\%$ and $80\%$ for which, as shown here, there are often no assignment without waiting times.
       
-      The computation time of the exhaustive search is in $O(n!)$ as shown int Th.~\ref{th:FPT}, hence we need to study its scalability when $n$ grows. In the following experiment, the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots. We chosed $95\%$ of load.
+      The computation time of the exhaustive search is in $O(n!)$ as shown int Th.~\ref{th:FPT}, hence we need to study its scalability when $n$ grows. In the following experiment, the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30,000$ slots. We chose  $95\%$ of load.
 %       , that corresponds to loads of $\simeq 70\%$ (for $1$ route) to $\simeq 98\%$ (for 21 routes).
       The following table shows the time before the exhaustive search ends, for $8$ to $16$ routes, averaged on $100$ random star routed networks. This shows that for less than $15$ routes, which corresponds to all current topologies, the algorithm is efficient enough, but on more routes we should improve it further.
          \begin{center}
-         \begin{tabularx}{0.5\textwidth}{|l|X|X|X|X|}
+         \begin{tabularx}{0.5\textwidth}{|l|X|X|X|X|X|}
     \hline
-   $n$ & $8$ & $10$& $12$& $16$\\
+   $n$ & $8$ & $10$& $12$&$14$& $16$\\
     \hline
-   Time (s) & $6.10^{-5}$&$8.10^{-4}$&$2.10^{-2}$& $11$\\
+   Time (s) & $6.10^{-5}$&$8.10^{-4}$&$2.10^{-2}$& $0.4$& $11$\\
     \hline
       \end{tabularx}
       \end{center}
@@ -765,11 +765,11 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
     \label{sec:resultsPALL}
     
     We fix the number of routes to $8$ to make comparisons with the results of Section~\ref{sec:exp_PAZL} easier. 
-    We draw uniformly the weights of the arcs between $0$ and $20000$ slots.
+    We draw uniformly the weights of the arcs between $0$ and $20,000$ slots.
     For a given routed network, we define the {\em margin} as the difference between $T_{max}$ and twice the longest route. 
     Hence, for a routed network choosing the margin or $T_{max}$ is the same, but since we will consider many networks 
     whith different longest route's size, it will be more meaningful to set the margin rather than $T_{max}$.
-    In fact the margin represents the latency imposed by the communication process without taking into account the physical length of the network which cannot be changed. In our experiments the margin range from  $0$ to $3000$ slots.
+    In fact the margin represents the latency imposed by the communication process without taking into account the physical length of the network which cannot be changed. In our experiments the margin range from  $0$ to $3,000$ slots.
    We look at two different regimes, a medium load of $80\%$ and a high load of $95\%$.
    Considering smaller load is not relevant since then we know how to solve the problem even without waiting times as shown in Section~\ref{sec:exp_PAZL}. 
    
@@ -777,10 +777,10 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
    followed by the GD algorithm for this experiment.
    We try the following ones: decreasing order on the length of the routes (LSR), decreasing order on the weigths of the arcs 
    $(c_t,t_i)$ (LSA), increasing order on the length of the routes (SLR), decreasing order on the weigths of the arcs 
-   $(c_t,t_i)$ (SLA) as in Prop.~\ref{prop:SL}. We also consider the random order, which means we compute $1000$ random orders and 
+   $(c_t,t_i)$ (SLA) as in Prop.~\ref{prop:SL}. We also consider the random order, which means we compute $1,000$ random orders and 
    stop as soon one yields an assignment.
    In Fig.~\ref{fig:} and Fig.~\ref{fig:}, we represent the success rate of the five kind of orders 
-   with regards to the margin. The value is an average computed over $10000$ random star routed networks.
+   with regards to the margin. The value is an average computed over $10,000$ random star routed networks.
 
 \begin{figure}[h] 
   
@@ -799,8 +799,8 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
      
      As expected, the  success rate is much better for large periods. According to our experiments, sending the messages from the shortest to the longest route or arc does not work well. It corresponds to the policy of Proposition~\ref{prop:SL} which does not work well when the routes are long as it is the case in these experiments. Sending from the longest to the shortest route or arc works better and it seems that sorting the routes according to the length of the last arc rather than the route is better, at least in a loaded network. 
      
-     The random order is the best by far. When the load is not too high ($P = 30000$) there is always a solution with margin $0$.
-     Note that, when disallowing waiting times, there were instances without solutions for these parameters (see Section~\ref{sec:exp_PAZL}), which justifies the interest of studying the \pall problem. We now want to compare the performances of the three different algorithms used in the second stage. Since GD already showed excellent results on mild loads, it is more interesting to focus on the behavior of the algorithms on high load. Moreover, we will use $1000$ random orders for the first stage as it gives the best results. The following experiment is realized on routed networks with $8$ routes, weights of the arcs drawn between $0$ and $20000$ and with a period of $21000$.  We represent the success rate with regards to the margin, for the three algorithms computed over $10000$ random star routed networks. 
+     The random order is the best by far. When the load is not too high ($P = 30,000$) there is always a solution with margin $0$.
+     Note that, when disallowing waiting times, there were instances without solutions for these parameters (see Section~\ref{sec:exp_PAZL}), which justifies the interest of studying the \pall problem. We now want to compare the performances of the three different algorithms used in the second stage. Since GD already showed excellent results on mild loads, it is more interesting to focus on the behavior of the algorithms on high load. Moreover, we will use $1,000$ random orders for the first stage as it gives the best results. The following experiment is realized on routed networks with $8$ routes, weights of the arcs drawn between $0$ and $20,000$ and with a period of $21,000$.  We represent the success rate with regards to the margin, for the three algorithms computed over $10,000$ random star routed networks. 
     \begin{figure} [h] 
       \vspace{-0.5cm}
        \begin{center}
@@ -812,25 +812,25 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
        \vspace{-0.2cm}
      \end{figure}
      The MLS algorithm performs poorly, worst than GD and PMLS, which shows that taking into account the periodicity is fundamental.
-     The GD algorithms is close to $100\%$ success rate for margins larger than $1500$ while the PMLS algorithm finds a solution in more than $95\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $1000$, which corresponds to about $0.05$ms of additional delay with the chosen parameters, we always find a solution. 
+     The GD algorithms is close to $100\%$ success rate for margins larger than $1,500$ while the PMLS algorithm finds a solution in more than $95\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $1,000$, which corresponds to about $0.05$ms of additional delay with the chosen parameters, we always find a solution. 
      
-    Remark that the random order corresponds to the best of $1000$ orders drawn uniformly which means that a computation can be up to $1000$ time slower than for a fixed order. The choice of the number of random orders drawn yields a trade-off between the computation time and the success rate. Up to now, we chose $1000$ random orders arbitrarily. We investigate the success rate of our algorithm with regards to the number of random orders drawn, a period of $21000$ and a margin $0$. The following tables presents the average success rate for each number of sending orders, on $1000$ instances, for GD and PMLS.
+    Remark that the random order corresponds to the best of $1,000$ orders drawn uniformly which means that a computation can be up to $1,000$ time slower than for a fixed order. The choice of the number of random orders drawn yields a trade-off between the computation time and the success rate. Up to now, we chose $1,000$ random orders arbitrarily. We investigate the success rate of our algorithm with regards to the number of random orders drawn, a period of $21,000$ and a margin $0$. The following tables presents the average success rate for each number of sending orders, on $1,000$ instances, for GD and PMLS.
          \begin{figure}[h] 
        \begin{center}
    \begin{tabularx}{0.5\textwidth}{|c|X|X|X|X|X|X|}
     \hline
-    \# orders& $1$ & $10$ & $100$& $1 000$& $10 000$&$100 000$\\
+    \# orders& $1$ & $10$ & $100$& $1,000$& $10^{4}$&$10^{5}$\\
     \hline
     GD & $0.6$ &$7.1$&$33.4$&$76.4$&$90.0$&$90.0$\\
     \hline
-  PMLS & $41,1$ &$82,5$&$94,5$&$96,2$&$97,2$&$97,2$\\
+  PMLS & $41.1$ &$82.5$&$94.5$&$96.2$&$97.2$&$97.2$\\
     \hline
       \end{tabularx}
       \end{center}
    \caption{Impact of the number of random sending orders}
      \end{figure}
 First remark that we can improve our previous results by taking $10000$ random orders, which 
-yields the best results for the two algorithms. The number of different orders is $7!= 5040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10000$ random draws we could test every possible order in less time. However this method would not be practical with regard to the computation time for $n = 15$. On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means it will work even better than the other methods when $n$ is larger and that the number of random orders drawn is critical.
+yields the best results for the two algorithms. The number of different orders is $7!= 5,040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10000$ random draws we could test every possible order in less time. However this method would not be practical with regard to the computation time for $n = 15$. On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means it will work even better than the other methods when $n$ is larger and that the number of random orders drawn is critical.
      
      
      
@@ -838,7 +838,7 @@ yields the best results for the two algorithms. The number of different orders i
      Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
 	    
      
-     We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
+     We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20,000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50,000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
      
       
     \begin{figure}
@@ -852,13 +852,13 @@ yields the best results for the two algorithms. The number of different orders i
       \label{fig:sto}
      \end{figure}    
      
-     We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Figure~\ref{fig:sto} since even the third quartile was always at $0$ for a period of $20000$.
-     There is around $20\%$ of the instances for which the margin is larger than $0$ for $P=20000$ and $2\%$
-     for $P = 21000$. For the instances with a margin larger than $0$, the margin is on average $400$.
+     We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Figure~\ref{fig:sto} since even the third quartile was always at $0$ for a period of $20,000$.
+     There is around $20\%$ of the instances for which the margin is larger than $0$ for $P=20,000$ and $2\%$
+     for $P = 21,000$. For the instances with a margin larger than $0$, the margin is on average $400$.
      
      The simulations show clearly that the stochastic policy does not ensure a minimal latency. As we can see in Fig~\ref{fig:sto}), the more the network is loaded, the higher the latency is. When the network is highly loaded,
-     we have instances with a margin of about $10000$ which corresponds to half the period, that is $0.5$ms. 
-     Even when the network is lightly loaded, a quarter of the instances have a margin of more than $2000$
+     we have instances with a margin of about $10,000$ which corresponds to half the period, that is $0.5$ms. 
+     Even when the network is lightly loaded, a quarter of the instances have a margin of more than $2,000$
      which is more than what PMLS finds for the worst instance and a network fully loaded ! 
      We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.
      

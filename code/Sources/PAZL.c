@@ -740,6 +740,7 @@ int linear_search(Graphe g,int taille_message)
 	int nb_routes = g.N/2;
 	for(int i =nb_routes*taille_message;i<taille_message*(nb_routes)*3;i++)
 	{
+		//printf(" search for %d (%d) \n",i,result);
 		result = search(g, taille_message,i);
 		if(result != -1)
 		{
