@@ -758,7 +758,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \begin{center}
 	 \hspace{-0.5cm}\includegraphics[width=0.315\textwidth]{periode_petite.pdf}
       \end{center}
-            \vspace{-1cm}
+            \vspace{-0.75cm}
       \caption{Minimum period averaged over $1000$ random instances}
       \end{figure}
       
@@ -984,14 +984,16 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
    and $1,5n\tau$ for a mildly loaded network. Choosing a larger period is not relevant since then we know how to solve the problem even without waiting times as shown in Section~\ref{sec:exp_PAZL}. We represent the success rate with regards to the margin, for the five kind of orders using the Greedy algorithm for the second stage, computed over $10000$ random star routed networks. Note that for the random order, we compute $1000$ random orders and count it as a success as soon as there is a solution for one order. 
    
 \begin{figure}[] 
-    \begin{minipage}[c]{0.2\textwidth}
-  \centering
-      \includegraphics[width=3.5cm]{departs_gp_21000.pdf}
+
+\begin{minipage}[c]{0.2\textwidth}
+
+      \includegraphics[width=4.5cm]{departs_gp_21000.pdf}
       \caption{Success rate of different orders, $95\%$ load.}
+    
       \end{minipage} \hfill
         \begin{minipage}[c]{0.2\textwidth}
-          \includegraphics[width=3.5cm]{departs_gp_25000.pdf}
-      \caption{Success rate of different orders, $80\%$ load.}
+          \includegraphics[width=4.5cm]{departs_gp_25000.pdf}
+     \caption{Success rate of different orders, $80\%$ load.}
             \end{minipage} \hfill
                   \label{fig:success30000}
      \end{figure}
