@@ -25,7 +25,9 @@ set term postscript color solid
 set output '| ps2pdf - departs_gp_25000.pdf'
 
 set key width 0.05
-set key outside right center 
+set key vert
+set key box
+set key at 100,85 left top
 replot
 
 

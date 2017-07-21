@@ -163,7 +163,7 @@ We denote by $\cal R$ a set of routes, the pair $(G,\cal R)$ is called a {\bf ro
       The forward routes are the directed paths $r_i = (s_i,c_s,c_t,t_i)$ and the backward routes are $\rho(r_i) = (t_i,c_t,c_s,s_i)$. The routed network $(G, \{r_i,\rho(r_i)\}_{i<n})$ is called a \textbf{star routed network}.
       
        \begin{center}
-	 \scalebox{0.8}{
+	 \scalebox{0.6}{
 \begin{tikzpicture}
 
 \tikzset{EdgeStyle/.style={<->,font=\scriptsize,above,sloped,midway}}
@@ -676,8 +676,6 @@ $(G, {\cal R})$. Therefore $PALL \in \FPT$.
 \end{proof}
 
 We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Search of Compact Assignments}. To make it more efficient in practice, we make cuts in the search tree used to explore all compact assignments. Consider a set of $k$ forward routes whose offsets has been fixed at some point in the search tree. We consider the times at which the messages of these routes cross the central arc. It divides the period into $[(a_0,b_0), \dots, (a_{k-1},b_{k-1})]$ such that the central arc is free only during the intervals $(a_i,b_i)$. Therefore at most $\displaystyle{ \sum_{i=0}^{k-1} \lfloor(b_{i} -a_i)/\tau\rfloor} $ forward routes can still use the central arc. If this value is more than $n - k$, it is not possible to create a compact assignment by extending the one on $S$ and we backtrack in the search tree. We do the same cut for the backward routes.
-
-% 
 % 	\subsubsection*{Exhaustive search}
 % % 	\begin{algorithm}[H]
 % % 	\caption{Exhaustive Generation}  
@@ -727,10 +725,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 %       
 %       The third cut works well in conjunction with the first one since it makes the offsets grow quickly and 
 %       which makes the first cut more likely to apply. A last cut could be implemented: compute for every route not in $R(S)$ the set of possible positions in the backward period and verify whether at least one is contained in the useful slots of $S$.
-
-
     \subsection{Experimental evaluation}\label{sec:exp_PAZL}
-      
       The following experimental results compare the three presented algorithms.
       Notice that both Greedy algorithm and Shortest-Longest are polynomial time algorithm but are not always able to find a solution, depending on $P$, $\tau$, $n$ and the size of the routes. On the other hand, the exhaustive search finds an optimal solution if it exists, but works in exponential time. We compare the performance of the algorithms in two different regimes: routes are either short with regard to $\tau$, or unrestricted.
       From our C-RAN context we choose the following parameters: the number of routes 
@@ -757,10 +752,11 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       
       \todo{présenter ça comme une average load ?}
         
-      \begin{figure}
+        
+      \begin{figure}[H]
 
       \begin{center}
-	 \hspace{-0.5cm}\includegraphics[width=0.53\textwidth]{periode_petite.pdf}
+	 \hspace{-0.5cm}\includegraphics[width=0.315\textwidth]{periode_petite.pdf}
       \end{center}
             \vspace{-1cm}
       \caption{Minimum period averaged over $1000$ random instances}
@@ -778,10 +774,10 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       
       We now want to understand the performance of these algorithms when the size of the routes is unbounded. In this experiment we fix the number of routes to $8$ and the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $30000$ slots (in the same range as the period). We measure for each algorithm its percentage of success, for periods from $20000$ to $50000$ which corresponds to a load of $100\%$ down to $40\%$.
       
-\begin{figure}
+\begin{figure}[H]
 
        \begin{center}
-      \hspace{-0.5cm}\includegraphics[width=0.5\textwidth]{echec_longues.pdf}
+      \hspace{-0.5cm}\includegraphics[width=0.3\textwidth]{echec_longues.pdf}
       \end{center}
             \vspace{-1cm}
       \caption{Success rate for $8$ routes over $1000$ random instances}
@@ -975,11 +971,8 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 % 
 %     \end{algorithmic}
 %     \end{algorithm}
-    
     \subsection{Experimental evaluation}
     \label{sec:resultsPALL}
-    
-    
     In this section, we first try to understand what is the best choice of order for the first stage of the algorithm.
     We fix the number of routes to $8$ to make comparisons with the results of Section~\ref{sec:exp_PAZL} easier. 
     We draw uniformly the weights of the arcs between $0$ and $20000$ slots.
@@ -989,21 +982,35 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
     In fact the margin represents the latency imposed by the communication process without taking into account the physical length of the network which cannot be changed. In our experiments the margin range from  $0$ to $3000$ slots.
    We look at two different regimes: we take a period equal to $1,05n\tau$ to represent a very loaded network
    and $1,5n\tau$ for a mildly loaded network. Choosing a larger period is not relevant since then we know how to solve the problem even without waiting times as shown in Section~\ref{sec:exp_PAZL}. We represent the success rate with regards to the margin, for the five kind of orders using the Greedy algorithm for the second stage, computed over $10000$ random star routed networks. Note that for the random order, we compute $1000$ random orders and count it as a success as soon as there is a solution for one order. 
- 
-\begin{figure}[H] 
-  
+   
+\begin{figure}[] 
+    \begin{minipage}[c]{0.2\textwidth}
   \centering
-     \hspace{-1.5cm} \includegraphics[width=0.4\textwidth]{departs_gp_21000.pdf}
-\vspace{-0.75cm}
+      \includegraphics[width=3.5cm]{departs_gp_21000.pdf}
       \caption{Success rate of different orders, $95\%$ load.}
-          \end{figure}
-          \vspace{-1cm}
-\begin{figure}[H] 
-          \includegraphics[width=0.5\textwidth]{departs_gp_25000.pdf}
-          \vspace{-1.5cm}
+      \end{minipage} \hfill
+        \begin{minipage}[c]{0.2\textwidth}
+          \includegraphics[width=3.5cm]{departs_gp_25000.pdf}
       \caption{Success rate of different orders, $80\%$ load.}
-           \label{fig:success30000}
+            \end{minipage} \hfill
+                  \label{fig:success30000}
      \end{figure}
+%
+% 
+%\begin{figure}[H] 
+%  
+%  \centering
+%     \hspace{-1.5cm} \includegraphics[width=0.4\textwidth]{departs_gp_21000.pdf}
+%\vspace{-0.75cm}
+%      \caption{Success rate of different orders, $95\%$ load.}
+%          \end{figure}
+%          \vspace{-1cm}
+%\begin{figure}[H] 
+%          \includegraphics[width=0.5\textwidth]{departs_gp_25000.pdf}
+%          \vspace{-1.5cm}
+%      \caption{Success rate of different orders, $80\%$ load.}
+%           \label{fig:success30000}
+%     \end{figure}
      
      As expected, the  success rate is much better for large periods. According to our experiments, sending the messages from the shortest to the longest route or arc does not work well. It corresponds to the policy of Proposition~\ref{prop:SL} which does not work well when the routes are long as it is the case in these experiments. Sending from the longest to the shortest route or arc works better and it seems that sorting the routes according to the length of the last arc rather than the route is better, at least in a loaded network. 
      
@@ -1014,7 +1021,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
  
     \begin{figure} [H] 
        \begin{center}
-      \includegraphics[width=0.5\textwidth]{retour_21000.pdf}
+      \includegraphics[width=0.3\textwidth]{retour_21000.pdf}
       \end{center}
             \vspace{-1cm}
       \caption{Success rate of GD, MLS and PMLS for $P = 21000$}
@@ -1056,7 +1063,7 @@ yields the best results for the two algorithms. The number of different orders i
     \begin{figure}
 
        \begin{center}
-     \hspace{-0.5cm} \includegraphics[width = 0.5\textwidth]{stochastic.pdf}
+     \hspace{-0.5cm} \includegraphics[width = 0.3\textwidth]{stochastic.pdf}
        %\input{figures/stochastic}
       \end{center}
       \vspace{-1cm}
