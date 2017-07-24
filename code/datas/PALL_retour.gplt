@@ -11,6 +11,12 @@ replot   file  using 1:4 with points title "PMLS"
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
+
+set tics font ", 25"
+set xlabel font ", 25"
+set ylabel font ", 25"
+set key font ", 25"
+set size 1,0.6
 set notitle
 set ylabel "Success Rate"
 set xlabel "Margin"
