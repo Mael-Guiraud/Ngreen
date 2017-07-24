@@ -17,6 +17,7 @@
 \usepackage{float}
 \usepackage{tabularx}
 \usepackage{setspace}
+\usepackage{icomma}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \usepackage{authblk}
@@ -78,7 +79,8 @@ The experimental results show that even under full load, most of the time PMLS f
 Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost ownership. The main challenge for this type of architecture is the latency in the transfer process that is an important factor for dimensioning the network. The latency is measured between the sending of a message by the Remote Radio Heads (RRHs) on the field and the receptions of the answers, computed by real-time virtualized network functions on Baseband Units (BBUs), in the cloud. For example, even if next radio protocols are less stringent, some standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in $3$ms~\cite{bouguen2012lte}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer between RRHs and BBUs.
 
  In this article, we study mechanisms to deal with the latency and periodicity constraints in the network located between the BUUs and the RRHs called \emph{fronthaul}.
- Statistical multiplexing even with a large bandwidth does not comply with the latency requirements. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits for the fronthaul. Each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of about $10000$ base stations. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. The aim is to operate a C-RAN on a low-cost shared switched network.
+ Statistical multiplexing even with a large bandwidth does not comply with the latency requirements. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits for the fronthaul. Each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of about $1
+ 0$ base stations. Here we propose to use a deterministic approach to schedule our periodic messages. This approach has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. The aim is to operate a C-RAN on a low-cost shared switched network.
  
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). For simplicity, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. Moreover, we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of parameters that we can choose when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. Moreover the latency must be minimized, that is the time 
  between the emission of a message and the complete return of its answer. It means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long.
@@ -557,7 +559,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 	 \hspace{-0.5cm}\includegraphics[width=0.5\textwidth]{periode_petite.pdf}
       \end{center}
             \vspace{-0.75cm}
-      \caption{Minimum period averaged over $1000$ random instances}\label{fig:short}
+      \caption{Minimum period averaged over $1,000$ random instances}\label{fig:short}
       \end{figure}
       First, we remark that the period found by the exhaustive search is only very slightly above the lower bound of $n\tau$, which means that, in this regime, it is very well justified to look for a solution without waiting time even for a highly loaded network. 
       
@@ -575,7 +577,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \hspace{-0.5cm}\includegraphics[width=0.5\textwidth]{echec_longues.pdf}
       \end{center}
             \vspace{-1cm}
-      \caption{Success rate for $8$ routes over $1000$ random instances}\label{fig:long}
+      \caption{Success rate for $8$ routes over $1,000$ random instances}\label{fig:long}
      \end{figure}
       
       In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. In fact, if we do the previous experiment 
@@ -807,7 +809,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \includegraphics[width=0.5\textwidth]{retour_21000.pdf}
       \end{center}
             \vspace{-1cm}
-      \caption{Success rate of GD, MLS and PMLS for $P = 21000$}
+      \caption{Success rate of GD, MLS and PMLS for $P = 21,000$}
      \label{fig:success21000}
        \vspace{-0.2cm}
      \end{figure}
@@ -829,16 +831,16 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \end{center}
    \caption{Impact of the number of random sending orders}
      \end{figure}
-First remark that we can improve our previous results by taking $10000$ random orders, which 
-yields the best results for the two algorithms. The number of different orders is $7!= 5,040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10000$ random draws we could test every possible order in less time. However this method would not be practical with regard to the computation time for $n = 15$. On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means it will work even better than the other methods when $n$ is larger and that the number of random orders drawn is critical.
+First remark that we can improve our previous results by taking $10,000$ random orders, which 
+yields the best results for the two algorithms. The number of different orders is $7!= 5,040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10,000$ random draws we could test every possible order in less time. However this method would not be practical with regard to the computation time for $n = 15$. On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means it will work even better than the other methods when $n$ is larger and that the number of random orders drawn is critical.
      
      
      
      Now that we have found the best amongst the algorithms solving \pall, we need to compare its performances against the actual way to manage the messages in a network. The classical way to manage messages in the network is statistical multiplexing, where there is a FIFO buffer in each node of the network to deal with the collisions. The time at which the messages are sent in the network is not computed as in our approach, thus we fix the offsets of each route to some random value.
-     Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
+     Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1,000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
 	    
      
-     We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20,000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20000$ (network fully loaded), to $50,000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1000$ simulations using FIFO buffer to resolve collisions.
+     We draw $1,000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20,000$. Note that the results are almost the same when the arcs are small. We measure, for periods from $20,000$ (network fully loaded), to $50,000$ ($40 \%$ of load), the median, the first, and the third quartile of the margins computed in $1,000$ simulations using FIFO buffer to resolve collisions.
      
       
     \begin{figure}
