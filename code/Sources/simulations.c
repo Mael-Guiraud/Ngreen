@@ -427,12 +427,16 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	int ressp;
 	int nb_rand = 1000;
 
+	int periode;
+	int distrib[300];
 
-	for(int periode=taille_paquets*nb_routes;periode<periode_max ;periode+=1000)
+	//for(int periode=taille_paquets*nb_routes;periode<periode_max ;periode+=1000)
+	for(float load = 0.95;load >=0.65;load-=0.15)
 	{
+		periode = (int)(taille_paquets*nb_routes / load);
 		total_sto = 0;
 		total_sp = 0;
-
+		for(int i=0;i<100;i++)distrib[i]=0;
 	
 		#pragma omp parallel for private(ressp,ressto,g) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
@@ -441,22 +445,43 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 			graphe_etoile(g,taille_route);
 	
 
-		 	ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
-		 	
+		 	//ressp = linear_simons_per(g, periode, taille_paquets,nb_rand);
+		 	ressp = 0;
 		 	#pragma omp atomic
 				total_sp+= ressp;
 
 			ressto=stochastic(g,taille_paquets,periode,1000,1);
 			ressto -=  longest_route(g);
+			if(ressto<15000)
+			{
+				printf("load = %f %d\n",load, periode);
+				if(periode == 21052)	
+				{
+					printf("{%d} \n",ressto/150);
+					distrib[ressto/150]++;
+				}
+				if(periode == 25000)
+				{	
+					printf("{%d} \n",ressto/150+100);
+					distrib[ressto/150+100]++;
+				}
+				if(periode == 30769)	
+				{
 
+					printf("{%d} \n",ressto/150+200);
+					distrib[ressto/150+200]++;
+				}
+			}
+				
 			#pragma omp atomic
 				total_sto+= ressto;
 
-			fprintf(F2,"%d %d %d\n",periode,ressto,ressp);
-			fprintf(stdout,"\r Period %d : step %4d",periode,i);fflush(stdout);
+			//fprintf(F2,"%d %d %d\n",periode,ressto,ressp);
+			//fprintf(stdout,"\r Period %d : step %4d",periode,i);fflush(stdout);
 			libere_matrice(g);
 		}
-
+		for(int i=0;i<100;i++)
+			fprintf(F2,"%f %d %d %d \n",load,distrib[i],distrib[i+100],distrib[i+200]);
 	
    			      fprintf(F,"%d %f %f \n",periode,total_sto/(float)nb_simuls,total_sp/(float)nb_simuls);
    			      fprintf(stdout,"%d %f %f \n",periode,total_sto/(float)nb_simuls,total_sp/(float)nb_simuls);

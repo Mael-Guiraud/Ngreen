@@ -11,12 +11,13 @@ replot   file  using 1:4 with points title "PMLS"
 
 ######### Pour une sortie dans un fichier .ps ##################"
 
+ set pointsize 2
 
 set tics font ", 25"
 set xlabel font ", 25"
 set ylabel font ", 25"
 set key font ", 25"
-set size 1,0.6
+
 set notitle
 set ylabel "Success Rate"
 set xlabel "Margin"
@@ -24,7 +25,10 @@ set yrange [0:101]
 set xtics nomirror
 set ytics nomirror
 set border 3
-set term postscript color solid
+set size ratio 0.5
+set term postscript color solid 
+
+
 set output '| ps2pdf - retour_21000.pdf'
 
 set key outside right bot

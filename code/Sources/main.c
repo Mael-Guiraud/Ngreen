@@ -24,7 +24,7 @@ int main()
 	/*****
 	Taux de reussite de chaque algo PAZL en fonction de la periode
 	*****/
-	//echec_PAZL(8,2500,30000,1000);
+	//echec_PAZL(8,2500,20000,1000);
 
 
 	/******************************************/
@@ -43,7 +43,7 @@ int main()
 	/*****
 	Taux de reussite de départ PALL avec un retour GP sur une periode donnée (on fait varier la marge)
 	*****/
-	//sucess_aller_PALL(8,2500,20000,3000,10000,25000);
+	//sucess_aller_PALL(8,2500,20000,3000,10000,21052);
 
 
 
@@ -56,7 +56,7 @@ int main()
 	Taux de reussite des algos PALL avec un aller random sur une periode donnée (on fait varier la marge)
 	*****/
 
-	sucess_retour_PALL(8,2500,20000,3000,10000,21052);
+	//sucess_retour_PALL(8,2500,20000,3000,10000,21052);
 
 
 	/******************************************/
@@ -65,13 +65,13 @@ int main()
 	//Taux de reussite des diferents nombres d'instances générées
 	*****/
 
-	//nombre_random_PALL(8,2500,20000,10000, 21052);
+    //nombre_random_PALL(8,2500,20000,10000, 21052);
 
 	/*****
 	Tmax moyen pour sto vs sp
 	*******/
 
-	//marge_PALL_stochastique(8,2500,20000,1000,50000);
+	marge_PALL_stochastique(8,2500,20000,1000,50000);
 
 
 
