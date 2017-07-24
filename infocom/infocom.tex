@@ -88,7 +88,7 @@ Our main contributions are the following.
    
  Statistical multiplexing even with a large bandwidth does not comply with the latency requirements of C-RAN. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits for the fronthaul. Each end-point (RRH on one side, BBU on the other side) is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of about $10,000$ base stations. The deterministic approach we propose has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, as well at IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. 
      
-The algorithmic problem we focus on may look like wormhole problems~\cite{cole1996benefit}, but  we want to minimize the time lost in buffers and not just to avoid deadlocks. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are already $\NP$-complete. The only coloring which incorporates some periodicity is the circular coloring~\cite{zhou2013multiple} but it is not expressive enough to capture our problem.
+The algorithmic problem we focus on may look like wormhole problems~\cite{cole1996benefit}, but  we want to minimize the time lost in buffers and not just to avoid deadlocks. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are already $\NP$-complete. The only coloring with periodicity is the circular coloring~\cite{zhou2013multiple} but it is not expressive enough to capture our problem.
 
 \section{Model and Problems}\label{sec:def}
 
@@ -786,8 +786,8 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \end{center}
       \caption{Success rate of GD, MLS and PMLS, $95\%$ load}
      \label{fig:success21000}
- 
      \end{figure}
+
      The MLS algorithm performs poorly, worst than GD and PMLS, which shows that \emph{taking into account the periodicity is fundamental}.
      The GD algorithms is close to $100\%$ success rate for margins larger than $1,500$ while the PMLS algorithm finds a solution in more than $97\%$ of the experiments, even with a margin $0$. Therefore, for the worst possible constraints on load and margin, there are a few instances for which we do not find a solution. However, with a margin of $1,000$, which corresponds to about $0.05$ms of additional delay with the chosen parameters, we always find a solution. 
      
@@ -820,9 +820,8 @@ instead of $1,000$. The number of different orders is $7!= 5,040$ since we have 
 
       
     \begin{figure}
-
        \begin{center}
-     \hspace{-0.5cm} \includegraphics[width = 0.4\textwidth]{stochastic.pdf}
+      \includegraphics[width = 0.45\textwidth]{stochastic.pdf}
        %\input{figures/stochastic}
       \end{center}
       \vspace{-1cm}
@@ -836,10 +835,13 @@ instead of $1,000$. The number of different orders is $7!= 5,040$ since we have 
      
      
  \section{Conclusion}
-In this paper, we proposed two kinds of solution to ensure a low latency for C-RAN in fronthaul networks. First, we can find some assignments without buffering the messages in the BBUs when the routes are short, by the shortest longest policy, or when the load of the network is small, with the greedy algorithm. The experience with the FPT algorithm shown that there is some instances when the network is highly loaded in which we need to use some buffers in BBU. Thus, we developed the PMLS algorithm, that gives some assignments even with restricted parameters.
+In this paper, we proposed two deterministic methods to establish a low latency periodic communication between BBUs and RRHs in 
+a star shaped fronthaul network. The first method uses no buffering and has no latency overhead. It works when the routes are short (Longest-Shortest policy) or when the load is less than $80\%$ (Exhaustive search of compact assignments).  
+When the load is higher, buffering is allowed in the BBUs and we are able to find a determinstic communication scheme 
+with no additionnal latency most of the time using our PMLS algorithm. 
+We plan to study other commons fronthaul topologies such as caterpillars, trees or ring; the latter being different since 
+the forward and backward routes are not symmetric. For other applications, it could be interesting to to optimize the average latency of the routes rather than the worst latency, a problem which could be solved using linear optimization.  
 
-The future work is to adapt the main ideas of those algorithm to others common networks topologies, like an optical ring, or a tree.
-    
 %     \paragraph*{Future works}
 %    
 %    We plan to generalize our study of the PALL problem to other topologies,
