@@ -4,45 +4,45 @@ The top-level auxiliary file: infocom.aux
 The style file: ieeetr.bst
 Database file #1: Sources.bib
 Warning--empty journal in zhou2013multiple
-You've used 19 entries,
+You've used 17 entries,
             1876 wiz_defined-function locations,
-            592 strings with 6442 characters,
-and the built_in function-call counts, 4718 in all, are:
-= -- 478
-> -- 165
+            581 strings with 6244 characters,
+and the built_in function-call counts, 4068 in all, are:
+= -- 405
+> -- 157
 < -- 1
-+ -- 64
-- -- 45
-* -- 309
-:= -- 663
-add.period$ -- 26
-call.type$ -- 19
-change.case$ -- 16
++ -- 60
+- -- 43
+* -- 268
+:= -- 583
+add.period$ -- 24
+call.type$ -- 17
+change.case$ -- 14
 chr.to.int$ -- 0
-cite$ -- 20
-duplicate$ -- 241
-empty$ -- 473
-format.name$ -- 45
-if$ -- 1157
+cite$ -- 18
+duplicate$ -- 204
+empty$ -- 404
+format.name$ -- 43
+if$ -- 991
 int.to.chr$ -- 0
-int.to.str$ -- 19
-missing$ -- 16
-newline$ -- 67
-num.names$ -- 18
-pop$ -- 77
+int.to.str$ -- 17
+missing$ -- 14
+newline$ -- 61
+num.names$ -- 16
+pop$ -- 71
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 155
+skip$ -- 126
 stack$ -- 0
-substring$ -- 296
-swap$ -- 89
+substring$ -- 232
+swap$ -- 71
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 48
-width$ -- 21
-write$ -- 187
+while$ -- 40
+width$ -- 19
+write$ -- 166
 (There was 1 warning)
