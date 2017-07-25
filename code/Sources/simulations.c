@@ -46,7 +46,8 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 			}
 			//else printf("error (3nt = -1)\n");
 
-			res_brute = linear_brute(g,taille_message);
+			//res_brute = linear_brute(g,taille_message);
+			res_brute = 1;
 			//if(res_brute > total_brute)total_brute = res_brute;
 			if(res_brute != -1){
 				#pragma omp atomic
@@ -61,7 +62,8 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 				total_sl+=res_sl;
 			}
 			//else printf("error (Sl = -1)\n");
-			res_search = linear_search(g,taille_message);
+			//res_search = linear_search(g,taille_message);
+			res_search = 1;
 			//res_brute = res_search;
 			//if(res_sl > total_sl)total_sl = res_sl;
 			if(res_search != -1){
