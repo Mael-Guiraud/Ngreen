@@ -434,9 +434,10 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 	for(float load = 0.95;load >=0.65;load-=0.15)
 	{
 		periode = (int)(taille_paquets*nb_routes / load);
+		if(periode == 30769)periode = 50000;
 		total_sto = 0;
 		total_sp = 0;
-		for(int i=0;i<100;i++)distrib[i]=0;
+		for(int i=0;i<300;i++)distrib[i]=0;
 	
 		#pragma omp parallel for private(ressp,ressto,g) if (PARALLEL) schedule (static)
 		for(int i = 0;i<nb_simuls;i++)
@@ -454,21 +455,21 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 			ressto -=  longest_route(g);
 			if(ressto<15000)
 			{
-				printf("load = %f %d\n",load, periode);
+				//printf("load = %f %d\n",load, periode);
 				if(periode == 21052)	
 				{
-					printf("{%d} \n",ressto/150);
+					//printf("{%d} \n",ressto/150);
 					distrib[ressto/150]++;
 				}
 				if(periode == 25000)
 				{	
-					printf("{%d} \n",ressto/150+100);
+					//printf("{%d} \n",ressto/150+100);
 					distrib[ressto/150+100]++;
 				}
-				if(periode == 30769)	
+				if(periode == 50000)	
 				{
 
-					printf("{%d} \n",ressto/150+200);
+					//printf("{%d} \n",ressto/150+200);
 					distrib[ressto/150+200]++;
 				}
 			}
@@ -481,7 +482,7 @@ void marge_PALL_stochastique(int nb_routes,int taille_paquets,int taille_route, 
 			libere_matrice(g);
 		}
 		for(int i=0;i<100;i++)
-			fprintf(F2,"%f %d %d %d \n",load,distrib[i],distrib[i+100],distrib[i+200]);
+			fprintf(F2,"%d %d %d %d \n",i,distrib[i],distrib[i+100],distrib[i+200]);
 	
    			      fprintf(F,"%d %f %f \n",periode,total_sto/(float)nb_simuls,total_sp/(float)nb_simuls);
    			      fprintf(stdout,"%d %f %f \n",periode,total_sto/(float)nb_simuls,total_sp/(float)nb_simuls);

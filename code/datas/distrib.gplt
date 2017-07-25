@@ -2,9 +2,9 @@
  file = "donnes_random.data"
 
 
-plot   file  using 1:2 title "95%"
-replot   file  using 1:3 title "80%"
-replot   file  using 1:4 title "65%"
+plot   file  using ($1*150):($2/10) smooth cumulative title "95% of load"
+replot   file  using ($1*150):($3/10) smooth cumulative title "80% of load"
+replot   file  using ($1*150):($4/10) smooth cumulative title "40% of load"
 
 
 
@@ -20,14 +20,14 @@ set ylabel font ", 20"
 set key font ", 20"
 
 set notitle
-set ylabel "Distribution"
+set ylabel "Cumulative distribution(%)"
 set xlabel "Margin"
 
 set border 3
 set term postscript color solid
 set output '| ps2pdf - stochastic.pdf'
 
-set key outside right bot
+set key right bot
 replot
 
 
