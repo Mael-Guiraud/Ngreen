@@ -824,13 +824,13 @@ instead of $1,000$. The number of different orders is $7!= 5,040$ since we have 
      
      
      
-     Now that we have found the best amongst the algorithms solving \pall, we need to compare its performances against the actual way to manage the messages in a network:  statistical multiplexing, where there is a FIFO buffer in each node of the network to deal with the collisions. The time at which the messages are sent in the network is not computed as in our approach, thus we fix the offsets of each route to some random value.
+     Now that we have found the best amongst the algorithms solving \pall, we need to compare its performances against the actual way to manage the messages in a network:  statistical multiplexing, where there is a FIFO buffer in each node of the network to resolve collisions. The time at which the messages are sent in the network is not computed as in our approach, thus we fix the offsets of each route to some random value.
      Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1,000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
 	    
+     In Fig.~\ref{fig:sto}, we represent the cumulative distribution of margins for 
+     statistical multiplexing and PMLS. The distribution is computed from $1000$ star routed networks drawn with the same parameters as before. We represent the distribution under high and light load for statistical multiplexing and under high load only for PMLS since under light load the margin is always $0$. 
      
-     We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20,000$. Note that the results are almost the same when the arcs are small. We measure, for load from $100\%$ down to $40\%$, the median, the first, and the third quartile of the margins computed in $1,000$ simulations using FIFO buffer to resolve collisions.
 
-      
     \begin{figure}
        \begin{center}
       \includegraphics[width = 0.45\textwidth]{stochastic.pdf}
@@ -841,9 +841,11 @@ instead of $1,000$. The number of different orders is $7!= 5,040$ since we have 
       \label{fig:sto}   
      \end{figure}    
      
-     We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Fig.~\ref{fig:sto} since even the third quartile was always at $0$ for a load of $100\%$. There is around $20\%$ of the instances for which the margin is larger than $0$ for a load of $100\%$ and $2\%$ for a load of $95\%$. For the instances with a margin larger than $0$, the margin is on average $400$.
-     
-     The simulations show clearly that the stochastic policy does not ensure a minimal latency. As we can see in Fig~\ref{fig:sto}, the more the network is loaded, the higher the latency is. When the network is highly loaded, we have instances with a margin of about $10,000$ which corresponds to half the period, that is $0.5$ms. Even when the network is lightly loaded, a quarter of the instances have a margin of more than $2,000$ which is more than what PMLS finds for the worst instance and a network fully loaded! We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.
+     The experiment clearly shows that statistical multiplexing does not ensure a minimal latency. 
+     The latency is extremely high when the load is high, with a margin of about $10,000$ for the worst $10\%$ which corresponds to half the period, that is $0.5$ms. Even when the network is lightly loaded, $20\%$ of the instances have a margin of more than $2,000$. On the other hand, PMLS finds an assignment with margin $0$ in a highly loaded $97\%$ of the time! 
+     For each $1000$ slots of latency we are able to win with regard to , we are able to 
+      
+     We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.
      
      
  \section{Conclusion}
