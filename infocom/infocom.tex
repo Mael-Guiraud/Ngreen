@@ -845,10 +845,10 @@ instead of $1,000$. The number of different orders is $7!= 5,040$ since we have 
  \section{Conclusion}
 In this paper, we proposed two deterministic methods to establish a low latency periodic communication between BBUs and RRHs in 
 a star shaped fronthaul network. The first method uses no buffering and has no latency overhead. It works when the routes are short (Longest-Shortest policy) or when the load is less than $80\%$ (Exhaustive search of compact assignments).  
-When the load is higher, buffering is allowed in the BBUs and we are able to find a determinstic communication scheme 
-with no additionnal latency most of the time using our PMLS algorithm. 
+When the load is higher, buffering is allowed in the BBUs and we propose the algorithm PMLS which  finds a deterministic communication scheme with almost no additionnal latency.
+
 We plan to study other commons fronthaul topologies such as caterpillars, trees or ring; the latter being different since 
-the forward and backward routes are not symmetric. For other applications, it could be interesting to to optimize the average latency of the routes rather than the worst latency, a problem which could be solved using linear optimization.  
+the forward and backward routes are not symmetric. For other applications, it could be interesting to optimize the average latency of the routes rather than the worst latency, a problem which may be solved using linear optimization.  
 
 %     \paragraph*{Future works}
 %    
