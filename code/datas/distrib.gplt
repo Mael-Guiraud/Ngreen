@@ -3,8 +3,9 @@
 
 
 plot   file  using ($1*150):($2/10) smooth cumulative title "95% of load"
-replot   file  using ($1*150):($3/10) smooth cumulative title "80% of load"
-replot   file  using ($1*150):($4/10) smooth cumulative title "40% of load"
+replot   file  using ($1*150):($3/10) smooth cumulative title "95% of load"
+replot   file  using ($1*150):($4/10) smooth cumulative title "80% of load"
+replot   file  using ($1*150):($5/10) smooth cumulative title "40% of load"
 
 
 
