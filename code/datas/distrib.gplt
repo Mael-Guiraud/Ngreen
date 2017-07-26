@@ -2,10 +2,10 @@
  file = "donnes_random.data"
 
 
-plot   file  using ($1*150):($2/10) smooth cumulative title "95% of load"
-replot   file  using ($1*150):($3/10) smooth cumulative title "95% of load"
-replot   file  using ($1*150):($4/10) smooth cumulative title "80% of load"
-replot   file  using ($1*150):($5/10) smooth cumulative title "40% of load"
+plot   file  using ($1*150):($2/10) smooth cumulative lw 4 title "Stochastic - 95% of load"
+replot   file  using ($1*150):($3/10) smooth cumulative lw 4 title "Stochastic - 40% of load"
+replot   file  using ($1*150):($4/10) smooth cumulative lw 4 title "PMLS - 95% of load"
+#replot   file  using ($1*150):($5/10) smooth cumulative lw 4 title "PMLS - 40% of load"
 
 
 
@@ -24,7 +24,7 @@ set size 1,0.75
 set notitle
 set ylabel "Cumulative distribution(%)"
 set xlabel "Margin"
-
+set xrange [0:12000]
 set border 3
 set term postscript color solid
 set output '| ps2pdf - stochastic.pdf'
