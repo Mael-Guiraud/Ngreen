@@ -2,8 +2,8 @@
  file = "donnes_random.data"
 
 
-plot   file  using ($1*150):($2/10) smooth cumulative lw 4 title "Stochastic - 95% of load"
-replot   file  using ($1*150):($3/10) smooth cumulative lw 4 title "Stochastic - 40% of load"
+plot   file  using ($1*150):($2/10) smooth cumulative lt rgb "red" lw 4 title "Stochastic - 95% of load" 
+replot   file  using ($1*150):($3/10) smooth cumulative lt rgb "#EE82EE" lw 4 title "Stochastic - 40% of load"
 replot   file  using ($1*150):($4/10) smooth cumulative lw 4 title "PMLS - 95% of load"
 #replot   file  using ($1*150):($5/10) smooth cumulative lw 4 title "PMLS - 40% of load"
 
