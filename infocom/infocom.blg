@@ -1,48 +1,48 @@
-This is BibTeX, Version 0.99d (TeX Live 2016/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2017)
 Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: infocom.aux
 The style file: ieeetr.bst
 Database file #1: Sources.bib
 Warning--empty journal in zhou2013multiple
-You've used 17 entries,
+You've used 18 entries,
             1876 wiz_defined-function locations,
-            581 strings with 6244 characters,
-and the built_in function-call counts, 4068 in all, are:
-= -- 405
-> -- 157
+            585 strings with 6408 characters,
+and the built_in function-call counts, 4162 in all, are:
+= -- 416
+> -- 158
 < -- 1
-+ -- 60
++ -- 61
 - -- 43
-* -- 268
-:= -- 583
-add.period$ -- 24
-call.type$ -- 17
+* -- 271
+:= -- 593
+add.period$ -- 26
+call.type$ -- 18
 change.case$ -- 14
 chr.to.int$ -- 0
-cite$ -- 18
-duplicate$ -- 204
-empty$ -- 404
+cite$ -- 19
+duplicate$ -- 210
+empty$ -- 417
 format.name$ -- 43
-if$ -- 991
+if$ -- 1016
 int.to.chr$ -- 0
-int.to.str$ -- 17
+int.to.str$ -- 18
 missing$ -- 14
-newline$ -- 61
+newline$ -- 65
 num.names$ -- 16
-pop$ -- 71
+pop$ -- 74
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 126
+skip$ -- 128
 stack$ -- 0
 substring$ -- 232
-swap$ -- 71
+swap$ -- 72
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
 while$ -- 40
-width$ -- 19
-write$ -- 166
+width$ -- 20
+write$ -- 174
 (There was 1 warning)

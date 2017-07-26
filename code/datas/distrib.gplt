@@ -19,6 +19,7 @@ set xlabel font ", 20"
 set ylabel font ", 20"
 set key font ", 20"
 
+set size 1,0.75
 set notitle
 set ylabel "Cumulative distribution(%)"
 set xlabel "Margin"

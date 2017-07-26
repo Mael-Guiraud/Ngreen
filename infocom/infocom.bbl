@@ -9,6 +9,11 @@ Y.~Bouguen, E.~Hardouin, A.~Maloberti, and F.-X. Wolff, {\em LTE et les
   r{\'e}seaux {4G}}.
 \newblock Editions Eyrolles, 2012.
 
+\bibitem{3gpp5g}
+3GPP, {\em 3rd Generation Partnership Project; Technical Specification Group
+  Services and System Aspects; Service requirements for the 5G system;}.
+\newblock Stage 1 (Release 16).
+
 \bibitem{pizzinat2015things}
 A.~Pizzinat, P.~Chanclou, F.~Saliou, and T.~Diallo, ``Things you should know
   about fronthaul,'' {\em Journal of Lightwave Technology}, vol.~33, no.~5,
