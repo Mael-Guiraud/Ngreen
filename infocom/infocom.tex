@@ -64,13 +64,7 @@
 \maketitle
 
 \begin{abstract}
-A recent trend in mobile networks is to centralize in distant data-centers the processing units which were attached to 
-antennas. The main challenge is to guarantee that the latency of the periodic messages sent from the antennas to their processing
-units and back fulfills protocol time constraints. We show that traditional statistical multiplexing does not allow such a low latency, due to collisions and buffering at nodes. Hence, we propose in this article to use a deterministic scheme for sending periodic messages without collisions in the network thus without buffering and the resulting additional latency. 
-We give several algorithms to compute such schemes for a common topology where one link is shared by all antennas.
-We show that there is always a solution when the routes are short or the load is small. When the parameters are unconstrained,
-and some buffering is allowed in the processing units, we propose an algorithm (PMLS) adapted from a classical scheduling method.
-The experimental results show that even under full load, most of the time PMLS finds a deterministic sending scheme with no latency.
+A recent trend in mobile networks is to centralize in distant data-centers the processing units which were attached to antennas. The main challenge is to guarantee that the latency of the periodic messages sent from the antennas to their processing units and back fulfills protocol time constraints. We show that statistical multiplexing does not allow such a low latency, due to collisions and buffering at nodes. Hence, we propose to use a deterministic scheme for sending periodic messages without collisions in the network to avoid buffering and the resulting additional latency. We give several algorithms to compute such schemes for a common topology where one link is shared by all antennas. We show that there is always a solution when the routes are short or the load is small. When the parameters are unconstrained, and some buffering is allowed in the processing units, we propose an algorithm (PMLS) adapted from a classical scheduling method. The experimental results show that even under full load, PMLS finds most of the time a deterministic sending scheme with no latency.
 \end{abstract}
 
 %\footnote{This work is partially supported by the french ANR project N-GREEN.}
@@ -84,10 +78,10 @@ The experimental results show that even under full load, most of the time PMLS f
 
 \section{Introduction}
 
-Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost of ownership. The main challenge for this type of architecture is to reach a latency compatible with transport protocols. The latency is measured between the sending of a message by a Remote Radio Head (RRH) and the receptions of the answer, computed by real-time virtualized network functions of a BaseBand Unit (BBU) in the cloud. For example, LTE standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in $3$ms~\cite{bouguen2012lte}. In 5G, some services need end to end latency as low as 1ms~\cite{3gpp5g}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer in the \emph{frontaul} network between RRHs and BBUs: frames need to be emitted and received every milliseconds~\cite{bouguen2012lte}.
+Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost of ownership. The main challenge for this type of architecture is to reach a latency compatible with transport protocols. The latency is measured between the sending of a message by a Remote Radio Head (RRH) and the receptions of the answer, computed by real-time virtualized network functions of a BaseBand Unit (BBU) in the cloud. For example, LTE standards requires to process functions like HARQ (Hybrid Automatic Repeat reQuest) in $3$ms~\cite{bouguen2012lte}. In 5G, some services need end to end latency as low as $1$ms~\cite{3gpp5g}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer in the \emph{frontaul} network between RRHs and BBUs: frames need to be emitted and received each millisecond~\cite{bouguen2012lte}.
 Our aim is to operate a C-RAN on a low-cost shared switched network.
 The question we address is the following: is it possible to schedule messages such that there is no collisions to avoid latency caused by queuing delays? 
-Eliminating this source of latency leaves us with more time budget for latency coming from the length of the network, and thus allows for wider deployment areas.
+Eliminating this source of latency leaves us with more time budget for latency coming from the physical length of the routes in the network, and thus allows for wider deployment areas.
 
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time or slot corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). Following LTE standard~\cite{bouguen2012lte}, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. As we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of values that we can set when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods unusable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. The latency, that is the time between the emission of a message and the complete return of its answer must be minimized. This means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long. Note that the model is technology agnostic, i.e. it is compatible with an optical network with a fixed packet size.   
 
@@ -103,7 +97,9 @@ Our main contributions are the following.
    
  Statistical multiplexing even with a large bandwidth does not comply with the latency requirements of C-RAN. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits for the fronthaul. Each end-point, RRH or BBU, is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of tenths of thousands of deployment sites. The deterministic approach we propose has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, and in  IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. 
      
-The algorithmic problem we focus on may look like wormhole problems~\cite{cole1996benefit}, but  we want to minimize the time lost in buffers and not just to avoid deadlocks. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}, bandwidths~\cite{erlebach2001complexity} or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are already $\NP$-complete. The only coloring with periodicity is the circular coloring~\cite{zhou2013multiple} but it is not expressive enough to capture our problem.
+The algorithmic problem we focus on may look like wormhole problems~\cite{cole1996benefit}, but  we want to minimize the time lost in buffers and not just to avoid deadlocks. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}
+% bandwidths~\cite{erlebach2001complexity}
+or routes~\cite{cole1996benefit} in a network or train schedules~\cite{strotmann2007railway}. Unfortunately, they do not take into account the periodicity of the scheduling and the associated problems are already $\NP$-complete. The only coloring with periodicity is the circular coloring~\cite{zhou2013multiple} but it is not expressive enough to capture our problem.
 
 \section{Model and Problems}\label{sec:def}
 
@@ -187,9 +183,10 @@ Problem \pall is $\NP$-complete.
  Let $H$ be a graph instance of the $k$-coloring problem, from it we build a routed network $(G,{\cal R})$. 
  For each vertex $v$ in $H$, there is a route $r_v$ in ${\cal R}$. Two routes $r_v$ and $r_u$ share an arc if and only if $(u,v)$ is an arc in $H$; this arc is the only one shared by these two routes. All arcs are of weight $0$. 
  Observe that the existence of a $k$-coloring of $H$ is equivalent to the existence of a $(k,1)$-periodic assignment in $G$, 
- by converting an offset of a route into a color of a vertex and reciprocally. \qed
+ by converting an offset of a route into a color of a vertex.\qed
+%  and reciprocally. \qed
      
-       We also consider a simpler version of \pall, that we call {\bf Periodic Assignment for Zero Latency} or \pazl: we ask for a $(P,\tau)$-periodic assignment {\bf with all waiting times equal to $0$}. We introduce \pazl because it is simpler to study and we are able to prove theoretical results and find better algorithms than for \pall. As we  experimentally show in Sec.~\ref{sec:exp_PAZL}, this problem can often be solved positively albeit less often than the general problem. Finally, a solution to \pazl is simpler to implement in real telecommunication networks, since we do not need any buffering at all.    
+       We also consider a simpler version of \pall, that we call {\bf Periodic Assignment for Zero Latency} or \pazl: we ask for a $(P,\tau)$-periodic assignment {\bf with all waiting times equal to $0$}. We introduce \pazl because it is simpler to study and we are able to prove theoretical results and find better algorithms than for \pall. As we  experimentally show in Sec.~\ref{sec:exp_PAZL}, this problem can often be solved positively albeit less often than the general problem. Finally, a solution to \pazl is simpler to implement in real telecommunication networks, since we do not need buffering at all.    
        
  
  
@@ -564,7 +561,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       First, we remark that the exhaustive search finds a solution even when the load is high, especially when there are more routes.
       It justifies the idea to look for an assignment without waiting time, in this short routes regime.
       Second, remark that the Shortest-Longest algorithm is as good as the exhaustive search. While it was expected to be good with short routes, it turns out to be optimal for all the the random star routed networks we have tried. Therefore, we should use it in practical applications with short routes, instead of the exhaustive search which is much more computationally expensive. 
-      Finally, note that the greedy algorithm works on average when the load is less than $2/3$ which is twice better than the theoretical bound. This algorithm seems to depends on the load only and not on the number of routes.
+      Finally, note that the greedy algorithm works on average when the load is less than $2/3$ which is twice better than the theoretical bound. This algorithm seems to depend on the load only and not on the number of routes.
       
         \paragraph{Long routes}
       
@@ -579,15 +576,15 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \caption{Success rate for $8$ routes over $1,000$ random instances}\label{fig:long}
      \end{figure}
       
-      In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. In fact, if we do the previous experiment 
-      for short routes but with long routes, we find that, on average, the greedy algorithm finds a solution when the load is less than $59\%$.
+      In this regime, the performances of Shortest-Longest are abysmal since it depends on the difference between the longest and the smallest route which is large here. On the other hand, the greedy algorithm has a performance not so far from the case of short routes, which is expected since it does not directly depend on the size of the route. In fact, if we do the experiment of Fig.~\ref{fig:short} for long routes, on average the greedy algorithm finds a solution when the load is less than $59\%$.
       
-      When the load is larger than $50\%$, the exhaustive search finds more solutions than the greedy algorithms which justifies its use. However, for load larger than $80\%$ there are many instances for which there are no solutions to \pazl.
-      It means that with long routes and high load, looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general \pall problem in our next section. We will test them on $8$ long routes and a load between $100\%$ and $80\%$ for which, as shown here, there are often no assignment without waiting times.
+      When the load is larger than $50\%$, the exhaustive search finds more solutions than the greedy algorithms which justifies its use. However, for loads larger than $80\%$ there are many instances for which there are no solutions to \pazl: \emph{with long routes and high load}, looking for an assignment without waiting time is far too restrictive. That is why we present algorithms for the general \pall problem in the next section. We will test them on $8$ long routes and a load between $100\%$ and $80\%$ for which, as shown here, there are often no assignments without waiting times.
       
-      The computation time of the exhaustive search is in $O(n!)$ as shown int Th.~\ref{th:FPT}, hence we need to study its scalability when $n$ grows. In the following experiment, the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $20,000$ slots. We chose  $95\%$ of load.
+      The computation time of the exhaustive search is in $O(n!)$ as shown int Th.~\ref{th:FPT}, hence we need to study its scalability when $n$ grows. We set the load at $95\%$.
+%       
+%       In the following experiment, the weights of the arcs $(c_t,t_i)$ are drawn following an uniform distribution between $0$ and $20,000$ slots. We chose  $95\%$ of load.
 %       , that corresponds to loads of $\simeq 70\%$ (for $1$ route) to $\simeq 98\%$ (for 21 routes).
-      The following table shows the time before the exhaustive search ends, for $8$ to $16$ routes, averaged on $100$ random star routed networks. This shows that for less than $15$ routes, which corresponds to all current topologies, the algorithm is efficient enough, but we should improve it further to work on more routes.
+      The following table shows the time before the exhaustive search ends, for $8$ to $16$ routes, averaged on $100$ random star routed networks drawn as in the previous experiment. It shows that for less than $15$ routes, which corresponds to all current topologies, the algorithm is efficient enough, but it should be further improved to work on more routes.
          \begin{center}
          \begin{tabularx}{0.5\textwidth}{|l|X|X|X|X|X|}
     \hline
@@ -619,7 +616,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
       \begin{proof}
       
         We can simplify the weights on the arcs $(s_i,c_s)$ by setting them all to $0$.
-        We find the route with maximal length, say that it is $\lambda(r_0)$. The idea is to 
+        Let assume that the route with maximal length is $r_0$. The idea is to 
         set the waiting times of all routes so they behave exactly as the message in $r_0$.
         
         The offset of the forward route $r_i$ is set to $i\tau$, which ensures that there are no collision on the arc $(c_s,c_t)$ as soon as $P \geq n\tau$ which is the minimal possible period. We set the waiting time for the route $i$ to $w_i = 2(\lambda(r_{0}) - \lambda(r_{i}))$. We can compute the time at which the message of the route $r_i$ arrives at the vertex $c_t$ on its way back: $t(c_t,\rho(r_i)) = w_i + i\tau + 2\lambda(r_{i})$
@@ -648,17 +645,15 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 %    
    \subsection{Greedy scheduling of backward routes}
     
-    We can decompose any algorithm solving the \pall problem in two stages: first set the offsets of the forward routes and then, knowing this information set the offset of the backward routes or equivalently the waiting times.  
-    The offsets of the forward routes are chosen so that they have no collisions and such that there are no free slots in between the end of a message on the central arc and the beginning of the next one. 
-    It is done to minimize the period needed to send the messages of the forward routes. For this section and the next, we assume that the offsets of the forward routes are fixed by some order. 
+    We can decompose any algorithm solving the \pall problem in two stages: first set the offsets of the forward routes and then set the offset of the backward routes or equivalently the waiting times.  
+    The offsets of the forward routes are chosen so that they have no collisions and such that there are no free slots in between the end of a message on the central arc and the beginning of the next one. It is done to minimize the period needed to send the messages of the forward routes. Remark that an order on the routes is enough to determine the offsets of the forward routes with the previous property. In this subsection and the next, we assume that the offsets of the forward routes are fixed by some order. 
     
     Consider a forward route $r_i$ and the corresponding backward route $\rho(r_i)$.
     We define the {\bf deadline} of $\rho(r_i)$ as $m_{r_i} + T_{max} - \omega(s_i,c_s)$, that is the latest time at which the message can go out of $c_t$ such that $PT(r_i) \leq T_{max}$.
     We say that a backward route $\rho(r_i)$ is {\bf eligible} at time $t$ if $m_{i} +  \lambda(r_i) + \omega(c_t,t_i) \leq t$, that is the message of the route $\rho(r_i)$ arrives at $c_t$ before time $t$ when $w_i = 0$.
     
-    The first algorithm we propose is a greedy algorithm which sets the offset $m_{\rho(r_i)}$ of the 
-    backward routes. It prioritizes the routes with the earliest deadline to best satisfy the
-    constraint on the process time. Set $t=0$ and repeat the following: find $s \geq t$ the first time for which there is an eligible route with its offset not fixed. Then amongst all eligible routes at time $s$ choose the one with the smallest deadline, fix its offset to $s - \omega(c_t,t_i) $ and set $t = s + \tau$.
+    The first algorithm we propose is a greedy algorithm which sets the offset $m_{\rho(r_i)}$ of the backward routes. It prioritizes the routes with the earliest deadline to best satisfy the
+    constraint on the process time, hence we call it \textbf{Greedy Deadline (GD)}. Set $t=0$ and repeat the following: find $s \geq t$ the first time for which there is an eligible route with its offset not fixed. Then amongst all eligible routes at time $s$ choose the one with the smallest deadline, fix its offset to $s - \omega(c_t,t_i) $ and set $t = s + \tau$.
     
     This algorithm does not take into account the periodicity. Say that $t_0 = t(c_t,r)$ such that $r$ is the first backward route selected by the algorithm. Then if all backward routes $r$ are such that $t(c_t,r)$ is smaller than $t_0 + P - \tau$,
     by construction, there are no collisions on the central arc.
@@ -708,8 +703,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
 %     The function  min\_non\_assigned(eligible\_time) returns the route with lowest time in eligible\_time, which is not assigned yet. The function update(t,free\_intervals) removes an interval of size $\tau$ beginning at t, which correspond to the message,  from free\_intervals.
 
 
-    The greedy algorithm can be made to work in time $O(n\log(n))$ by using a binary heap for the set of eligible routes, and a list to maintain a list of the intervals
-    of time at which a message can be sent on the arc $(c_t,c_s)$.
+    Algorithm GD can be made to work in time $O(n\log(n))$ by using a binary heap for the set of eligible routes, and a list to maintain a list of the intervals of time at which a message can be sent on the arc $(c_t,c_s)$.
 %    To do that the set of eligible routes must be maintained in a binary heap
 %    to be able to find the one with smallest deadline in time $O(\log(n))$. 
 %    To deal with the possible collisions, one can maintain a list of the intervals
@@ -730,7 +724,7 @@ We call the algorithm described in Theorem~\ref{th:FPT} \textbf{Exhaustive Searc
      The problem to solve in the second stage of our approach is very similar to the following scheduling problem: 
      we are given a set of jobs and each job has a \emph{release time} and a \emph{deadline}. 
      The problem is to schedule all jobs on a single processor, that is choosing the time at which they are computed, so that no two jobs are scheduled at the same time. A job is always scheduled after its release time and it must be finished before its deadline. Let us call $n$ the number of jobs, the problem can be solved in time $O(n^2\log(n))$~\cite{simons1978fast} when all jobs have the same running time and it gives a solution with the earliest possible deadline. On the other hand if the running times are different the problem is $\NP$-complete~\cite{lenstra1977complexity}. 
-     The  polynomial time algorithm  which solves this scheduling problem is similar to the Greedy algorithm presented in the previous section. However, when it fails because a job finishes after its deadline, it changes the schedule of the last messages to find a possible schedule for the problematic job. The change in the scheduling is so that the algorithm cannot fail on the same job a second time except if there is no solution, which proves that the algorithm is in polynomial time.
+     The  polynomial time algorithm  which solves this scheduling problem is similar to the greedy algorithm presented in the previous section. However, when it fails because a job finishes after its deadline, it changes the schedule of the last messages to find a possible schedule for the problematic job. The change in the scheduling is so that the algorithm cannot fail on the same job a second time except if there is no solution, which proves that the algorithm is in polynomial time.
      
      We reduce our problem of setting the offsets of the backwards routes once the order of the forward routes is fixed to this
      scheduling problem. The backward routes are the jobs, the size of a message is the running time of a job,
