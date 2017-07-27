@@ -40,7 +40,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
 
-\renewcommand{\thefootnote}{\*}
+%\renewcommand{\thefootnote}{\*}
 
 \newcommand{\todo}[1]{{\color{red} TODO: {#1}}}
 \newcommand\pazl{\textsc{pazl}\xspace}
@@ -78,15 +78,13 @@ A recent trend in mobile networks is to centralize in distant data-centers the p
 
 \section{Introduction}
 
-Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost of ownership. The main challenge for this type of architecture is to reach a latency compatible with transport protocols. The latency is measured between the sending of a message by a Remote Radio Head (RRH) and the receptions of the answer, computed by real-time virtualized network functions of a BaseBand Unit (BBU) in the cloud. For example, LTE standards requires to process functions like HARQ (Hybrid Automatic Repeat reQuest) in $3$ms~\cite{bouguen2012lte}. In 5G, some services need end to end latency as low as $1$ms~\cite{3gpp5g}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer in the \emph{frontaul} network between RRHs and BBUs: frames need to be emitted and received each millisecond~\cite{bouguen2012lte}.
+Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost of ownership. The main challenge for this type of architecture is to reach a latency compatible with transport protocols. The latency is measured between the sending of a message by a Remote Radio Head (RRH) and the receptions of the answer, computed by real-time virtualized network functions of a BaseBand Unit (BBU)\footnote{Others terminologies exist in the literature. The results of this work are fully compatible with any C-RAN architecture definition.} in the cloud . For example, LTE standards requires to process functions like HARQ (Hybrid Automatic Repeat reQuest) in $3$ms~\cite{bouguen2012lte}. In 5G, some services need end to end latency as low as $1$ms~\cite{3gpp5g}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer in the \emph{frontaul} network between RRHs and BBUs: frames need to be emitted and received each millisecond~\cite{bouguen2012lte}.
 Our aim is to operate a C-RAN on a low-cost shared switched network.
 The question we address is the following: is it possible to schedule messages such that there is no collisions to avoid latency caused by queuing delays? 
 Eliminating this source of latency leaves us with more time budget for latency coming from the physical length of the routes in the network, and thus allows for wider deployment areas.
 
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time or slot corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). Following LTE standard~\cite{bouguen2012lte}, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. As we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of values that we can set when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods unusable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. The latency, that is the time between the emission of a message and the complete return of its answer must be minimized. This means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long. Note that the model is technology agnostic, i.e. it is compatible with an optical network with a fixed packet size.   
 
-
-%\footnote{Others terminologies and functional splits exist in the literature. We choose the most classical one for sake of clarity. The results of this work is fully compatible with any C-RAN architecture definition.}
 
 Our main contributions are the following.
  In Sec.~\ref{sec:def} we propose a model of the network and the periodic sending of messages along its routes  and we introduce the star routed network that we study in this article. 
@@ -843,15 +841,13 @@ instead of $1,000$. The number of different orders is $7!= 5,040$ since we have 
      
      The experiment clearly shows that statistical multiplexing does not ensure a minimal latency. 
      The latency is extremely high when the load is high, with a margin of about $10,000$ for the worst $10\%$ which corresponds to half the period, that is $0.5$ms. Even when the network is lightly loaded, $20\%$ of the instances have a margin of more than $2,000$. On the other hand, PMLS finds an assignment with margin $0$ in a highly loaded $97\%$ of the time! 
-     For each $1000$ slots of latency we are able to win with regard to , we are able to 
-      
-     We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.
-     
+     For each $1000$ slots of latency we remove from the periodic process, we are able to lengthen the routes of $10$km, which has a huge economic impact.
+     We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.     
      
  \section{Conclusion}
 In this paper, we proposed two deterministic methods to establish a low latency periodic communication between BBUs and RRHs in 
 a star shaped fronthaul network. The first method uses no buffering and has no latency overhead. It works when the routes are short (Longest-Shortest policy) or when the load is less than $80\%$ (Exhaustive search of compact assignments).  
-When the load is higher, buffering is allowed in the BBUs and we propose the algorithm PMLS which  finds a deterministic communication scheme with almost no additionnal latency.
+When the load is higher, buffering is allowed in the BBUs and we propose the algorithm PMLS which  finds a deterministic communication scheme with almost no additional latency.
 
 We plan to study other commons fronthaul topologies such as caterpillars, trees or ring; the latter being different since 
 the forward and backward routes are not symmetric. For other applications, it could be interesting to optimize the average latency of the routes rather than the worst latency, a problem which may be solved using linear optimization.  

@@ -75,14 +75,15 @@ The experimental results show that even under full load, most of the time PMLS f
 
 %\footnote{This work is partially supported by the french ANR project N-GREEN.}
 
+
 \section{Introduction}
 
-Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN, or Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost of ownership. The main challenge for this type of architecture is to reach a latency compatible with transported protocols. The latency is measured between the sending of a message by the Remote Radio Heads (RRHs) on the field and the receptions of the answers, computed by real-time virtualized network functions of BaseBand Units (BBUs), in the cloud. For example, LTE standards requires meeting time constraints for functions like HARQ (Hybrid Automatic Repeat reQuest) that needs to be processed in $3$ms~\cite{bouguen2012lte}. In 5G, some services need end to end latency as low as 1ms~\cite{3gpp5g}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer in the \emph{frontaul} network between RRHs and BBUs: frames need to be emitted and received every milliseconds~\cite{bouguen2012lte}.
+Next generations of mobile network architectures evolve toward centralized radio network architectures called C-RAN for Cloud Radio Access Network, to reduce energy consumption costs~\cite{mobile2011c} and more generally the total cost of ownership. The main challenge for this type of architecture is to reach a latency compatible with transport protocols. The latency is measured between the sending of a message by a Remote Radio Head (RRH) and the receptions of the answer, computed by real-time virtualized network functions of a BaseBand Unit (BBU)\footnote{Others terminologies exist in the literature. The results of this work are fully compatible with any C-RAN architecture definition.} in the cloud . For example, LTE standards requires to process functions like HARQ (Hybrid Automatic Repeat reQuest) in $3$ms~\cite{bouguen2012lte}. In 5G, some services need end to end latency as low as $1$ms~\cite{3gpp5g}. The specificity of the C-RAN context is not only the latency constraint, but also the periodicity of the data transfer in the \emph{frontaul} network between RRHs and BBUs: frames need to be emitted and received each millisecond~\cite{bouguen2012lte}.
 Our aim is to operate a C-RAN on a low-cost shared switched network.
-The question we address is the following : is it possible to schedule messages emission such that there is no collision, then no buffering nor latency corresponding to queuing delays ?
+The question we address is the following: is it possible to schedule messages such that there is no collisions to avoid latency caused by queuing delays? 
+Eliminating this source of latency leaves us with more time budget for latency coming from the physical length of the routes in the network, and thus allows for wider deployment areas.
 
-Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time or slot corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand).Following LTE standard~\cite{bouguen2012lte}, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. As we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of values that we can choose when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods inapplicable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods.The latency, that is the time between the emission of a message and the complete return of its answer, must be minimized: this lefts budget for other latency causes, and leads to larger fiber lengths, then wider deployment areas.This means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long. Note that the
-model is technology agnostic, i.e. it is compatible with an optical network with a fixed packet size.   
+Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time or slot corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). Following LTE standard~\cite{bouguen2012lte}, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. As we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of values that we can set when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods unusable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. The latency, that is the time between the emission of a message and the complete return of its answer must be minimized. This means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long. Note that the model is technology agnostic, i.e. it is compatible with an optical network with a fixed packet size.   
 
 Our main contributions are the following.
  In Sec.~\ref{sec:def} we propose a model of the network and the periodic sending of messages along its routes
@@ -1002,37 +1003,35 @@ Finally the complexity is $O(n)$ since we have to find the maximum of the length
 First remark that we can improve our previous results by taking $10,000$ random orders,
 instead of $1,000$. The number of different orders is $7!= 5,040$ since we have $8$ routes and the solutions are invariant up to a circular permutation of the order. Therefore instead of doing $10,000$ random draws we could test every possible order in less time. However the computation time of this method would scale badly with $n$. On the other hand, remark that the success rate of PMLS is already high for $100$ random orders, which means it will work even better than the other methods when $n$ is larger and that the number of random orders drawn becomes critical.
      
-     
-     
-     Now that we have found the best amongst the algorithms solving \pall, we need to compare its performances against the actual way to manage the messages in a network:  statistical multiplexing, where there is a FIFO buffer in each node of the network to deal with the collisions. The time at which the messages are sent in the network is not computed as in our approach, thus we fix the offsets of each route to some random value.
+     Now that we have found the best amongst the algorithms solving \pall, we need to compare its performances against the actual way to manage the messages in a network:  statistical multiplexing, where there is a FIFO buffer in each node of the network to resolve collisions. The time at which the messages are sent in the network is not computed as in our approach, thus we fix the offsets of each route to some random value.
      Even if this policy seems to work in practice when the network is not too loaded, it does not give any guarantee on the latency. Remark that the process is not periodic, therefore we must measure the process time of each route over several periods if we want to compute its maximum. We choose to simulate it for $1,000$ periods and we have observed that the process time usually stabilizes after $10$ periods. The margin is defined as the maximum process time, computed as explained, minus twice the size of the longest route. 
 	    
+     In Fig.~\ref{fig:sto}, we represent the cumulative distribution of margins for 
+     statistical multiplexing and PMLS. The distribution is computed from $1000$ star routed networks drawn with the same parameters as before. We represent the distribution under high and light load for statistical multiplexing and under high load only for PMLS since under light load the margin is always $0$. 
      
-     We draw $1000$ star routed networks with $8$ routes, with weights on the arcs drawn between $0$ and $20,000$. Note that the results are almost the same when the arcs are small. We measure, for load from $100\%$ down to $40\%$, the median, the first, and the third quartile of the margins computed in $1,000$ simulations using FIFO buffer to resolve collisions.
 
-      
     \begin{figure}
        \begin{center}
       \includegraphics[width = 0.45\textwidth]{stochastic.pdf}
        %\input{figures/stochastic}
       \end{center}
-
+         \vspace{-0.5cm}
       \caption{Cumulative distribution of the margin of statistical multiplexing}
-      \label{fig:sto}
+      \label{fig:sto}   
      \end{figure}    
      
-     We have also computed the minimum margin needed by PMLS to find a solution but we have not represented it in Figure~\ref{fig:sto} since even the third quartile was always at $0$ for a load of $100\%$. There is around $20\%$ of the instances for which the margin is larger than $0$ for a load of $100\%$ and $2\%$ for a load of $95\%$. For the instances with a margin larger than $0$, the margin is on average $400$.
-     
-     The simulations show clearly that the stochastic policy does not ensure a minimal latency. As we can see in Fig~\ref{fig:sto}, the more the network is loaded, the higher the latency is. When the network is highly loaded, we have instances with a margin of about $10,000$ which corresponds to half the period, that is $0.5$ms. Even when the network is lightly loaded, a quarter of the instances have a margin of more than $2,000$ which is more than what PMLS finds for the worst instance and a network fully loaded! We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.
-     
+     The experiment clearly shows that statistical multiplexing does not ensure a minimal latency. 
+     The latency is extremely high when the load is high, with a margin of about $10,000$ for the worst $10\%$ which corresponds to half the period, that is $0.5$ms. Even when the network is lightly loaded, $20\%$ of the instances have a margin of more than $2,000$. On the other hand, PMLS finds an assignment with margin $0$ in a highly loaded $97\%$ of the time! 
+     For each $1000$ slots of latency we remove from the periodic process, we are able to lengthen the routes of $10$km, which has a huge economic impact.
+     We feel that it strongly justifies the use of a deterministic sending scheme for latency critical applications such as our C-RAN motivating problem.     
      
  \section{Conclusion}
 In this paper, we proposed two deterministic methods to establish a low latency periodic communication between BBUs and RRHs in 
 a star shaped fronthaul network. The first method uses no buffering and has no latency overhead. It works when the routes are short (Longest-Shortest policy) or when the load is less than $80\%$ (Exhaustive search of compact assignments).  
-When the load is higher, buffering is allowed in the BBUs and we are able to find a determinstic communication scheme 
-with no additionnal latency most of the time using our PMLS algorithm. 
+When the load is higher, buffering is allowed in the BBUs and we propose the algorithm PMLS which  finds a deterministic communication scheme with almost no additional latency.
+
 We plan to study other commons fronthaul topologies such as caterpillars, trees or ring; the latter being different since 
-the forward and backward routes are not symmetric. For other applications, it could be interesting to to optimize the average latency of the routes rather than the worst latency, a problem which could be solved using linear optimization.  
+the forward and backward routes are not symmetric. For other applications, it could be interesting to optimize the average latency of the routes rather than the worst latency, a problem which may be solved using linear optimization.   
 
 %     \paragraph*{Future works}
 %    
