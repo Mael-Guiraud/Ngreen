@@ -21,7 +21,7 @@
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \usepackage{authblk}
-\usepackage{hyperref}
+%\usepackage{hyperref}
 
 \graphicspath{{figures/}}
 \makeatletter
@@ -85,18 +85,12 @@ Eliminating this source of latency leaves us with more time budget for latency c
 
 
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time or slot corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). Following LTE standard~\cite{bouguen2012lte}, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. As we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of values that we can set when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods unusable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. The latency, that is the time between the emission of a message and the complete return of its answer must be minimized. This means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long. Note that the model is technology agnostic, i.e. it is compatible with an optical network with a fixed packet size.   
-\renewcommand{\thefootnote}{\*}
-\footnote{\href{https://1drv.ms/b/s!Aj8RtTXKWFgpgy9SiBowQNfvH-r9}{Please click here to download an extended version with details of mathematical proofs.}} 
-
-
 
 Our main contributions are the following.
  In Sec.~\ref{sec:def} we propose a model of the network and the periodic sending of messages along its routes  and we introduce the star routed network that we study in this article. 
  We formalize the problem of finding a periodic assignment for sending messages without buffering (\pazl) or with buffering in the processing unit only (\pall) and shows that they are $\NP$-hard even to approximate. In Sec.~\ref{sec:PAZL}, we propose two algorithms solving \pazl when the routes between RRHs and BBUs are small or when the load is light. Using a compact representation of an assignment, we show that \pazl is fixed parameter tractable when parametrized by the number of antennas on star routed networks. Finally in Sec.~\ref{sec:PALL}, we introduce a family of algorithms to solve \pall and our experimentations allow to select one which works well, even in loaded networks. In particular we show that the deterministic communication schemes we design vastly outperform the traditional statistical multiplexing with regard to latency. 
- 
-
    \subsection*{Related works}
-   
+  
  Statistical multiplexing even with a large bandwidth does not comply with the latency requirements of C-RAN. Therefore, the current solution~\cite{pizzinat2015things,tayq2017real} is to use dedicated circuits for the fronthaul. Each end-point, RRH or BBU, is connected through direct fiber or full optical switches. This architecture is very expensive and hardly scales in the case of a mobile network composed of tenths of thousands of deployment sites. The deterministic approach we propose has gained some traction recently: Deterministic Networking is under standardization in IEEE 802.1 TSN group~\cite{finn-detnet-architecture-08}, and in  IETF DetNet working group~\cite{ieee802}. Several patents on concepts and mechanisms for DetNet have been already published, see for example~\cite{howe2005time,leclerc2016transmission}. 
      
 The algorithmic problem we focus on may look like wormhole problems~\cite{cole1996benefit}, but  we want to minimize the time lost in buffers and not just to avoid deadlocks. Several graph colorings have been introduced to model similar problems such as the allocation of frequencies~\cite{borndorfer1998frequency}
