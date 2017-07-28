@@ -21,7 +21,7 @@
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \usepackage{authblk}
-% \usepackage{hyperref}
+\usepackage{hyperref}
 
 \graphicspath{{figures/}}
 \makeatletter
@@ -84,6 +84,8 @@ The question we address is the following: is it possible to schedule messages su
 Eliminating this source of latency leaves us with more time budget for latency coming from the physical length of the routes in the network, and thus allows for wider deployment areas.
 
 Let us expose briefly our model: the network topology is modeled by a directed weighted graph and a set of paths (routes) from source nodes (RRHs) to target nodes (BBUs). Time is discretized and a unit of time or slot corresponds to the transmission of a minimal unit of data over the network. The process must be  predictable (i.e. the date of arrival of packets is known beforehand). Following LTE standard~\cite{bouguen2012lte}, in this article we assume that the process is periodic. That is, if we look at the network at times $t$ and $t+P$ where $P$ is the period, all messages are at the same position in the network. As we want to avoid any  buffering in internal nodes of the graph. Hence we need to design a periodic process with no collision between messages. To ensure that this property is always true we propose a deterministic process.  We have two sets of values that we can set when building a periodic sending process, called a \emph{periodic assignment} in this article: the time at which each packet is sent by a RRH in each period and the waiting time in the BBU before the answer is sent back to the RRH. When building a periodic assignment, we must take into account the periodicity which makes many scheduling methods unusable. Not only a message must not collide with the other messages sent by the others BBU/RRH in the same period, but also in the previous and following periods. The latency, that is the time between the emission of a message and the complete return of its answer must be minimized. This means that the only buffering we are allowed -- the waiting time before sending back the answer-- must be small, in particular when the route is long. Note that the model is technology agnostic, i.e. it is compatible with an optical network with a fixed packet size.   
+\renewcommand{\thefootnote}{\*}
+\footnote{\href{https://onedrive.live.com/?authkey=\%21AJIgVoXRuxz1jMU&cid=295858CA35B5113F&id=295858CA35B5113F\%21429&parId=root&o=OneUp}{Please click here to download an extended version with details of mathematical proofs.}} 
 
 
 Our main contributions are the following.
