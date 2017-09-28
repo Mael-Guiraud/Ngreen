@@ -2,7 +2,6 @@
 *.aux
 *.log
 *.tex.backup
-*.svg
 *.ps
 *.bbl
 *.blg
