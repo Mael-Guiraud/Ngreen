@@ -1,0 +1,6 @@
+valeur_noeud
+valeur_slot
+
+numero_noeud1,tic1,tic2,tic3
+numero_noeud2,tic1,tic2,tic3
+numero_noeud3,tic1,tic2,tic3
