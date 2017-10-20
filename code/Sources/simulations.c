@@ -46,12 +46,12 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 			}
 			//else printf("error (3nt = -1)\n");
 
-			res_brute = linear_brute(g,taille_message);
+			//res_brute = linear_brute(g,taille_message);
 			//if(res_brute > total_brute)total_brute = res_brute;
-			if(res_brute != -1){
+			/*if(res_brute != -1){
 				#pragma omp atomic
 				total_brute+=res_brute;
-			}
+			}*/
 			//else printf("error (brute = -1)\n");
 
 			res_sl = algo_shortest_longest(g,3*taille_message*nb_routes,taille_message);
@@ -68,7 +68,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 				#pragma omp atomic
 				total_search+=res_search;
 			}
-
+/*
 			if( res_search != res_brute )
 			{
 				printf("(%d -%d) \n",res_brute,res_search);
@@ -76,7 +76,7 @@ void simuls_periode_PAZL(int nb_routes, int taille_message, int taille_routes,in
 				exit(15);
 				
 			}
-
+*/
 
 
 			//if(res_sl < res_brute)affiche_matrice(g);
