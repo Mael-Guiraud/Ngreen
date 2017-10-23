@@ -89,6 +89,9 @@
                 points="940.0,120.0 940.0,140.0 960.0,140.0 960.0,120.0 960.0,140.0 980.0,140.0 980.0,120.0 980.0,140.0 1000.0,140.0 1000.0,120.0 1000.0,140.0 1020.0,140.0 1020.0,120.0 1020.0,140.0 1040.0,140.0 1040.0,120.0 1040.0,140.0 "
                 stroke-width="0.7" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
         </g>
+        <g latexdraw:type="text" id="id921366135" fill="black" latexdraw:position="bl">
+            <text x="80.0" y="160.0">t</text>
+        </g>
     </g>
     <defs>
         <marker overflow="visible" orient="auto" id="arrow0-1827109942">
