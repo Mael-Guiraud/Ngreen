@@ -27,7 +27,7 @@ Blabla sur le contexte du projet NGREEN
 
 
 \section{Model}
-  
+  \label{model}
   \subsection{Optical ring}
     Graphe oriente representant un anneau, definition des terme delay
   \subsection{Discrete time model}
@@ -67,18 +67,34 @@ Blabla sur le contexte du projet NGREEN
 	
 	\begin{algorithm}[H]
 	\MyStruct{packet}{
- 		int id\_owner\; \tcp{-1 if there is no packet on the slot.}
+ 		int owner\_id\; \tcp{-1 if there is no packet on the slot.}
   		int size\_CRAN\; \tcp{Nb messages CRAN in the packet\, useful to generate the answers.}
-  		int id\_reservation\; \tcp{Useful in the reservation model\, -1 otherwise.}
+  		int reservation\_id\; \tcp{Useful in the reservation model\, -1 otherwise.}
 	}
 	\end{algorithm}
 	
-	We then, for each antenna, initialize the first date $t$ on which the antenna send some traffic. The antenna will then send a message every 10 slots after $t$, during a fixed total emission time, depending of the throughput of the antenna.
+	For each antenna, we initialize the first date $t$ on which the antenna send some traffic. The antenna will then send a message every 10 slots after $t$, during a fixed total emission time, depending of the throughput of the antenna.
+	
+\begin{center}   
+
+      \includegraphics[width=\textwidth]{emission_antenna.pdf}
+
+  
+\end{center}
+
 	 In the Insertion Policy models, this date $t$ is randomly drawn with the rand() functions of stdlib. In the Reservation model, this date $t$ is set by the scheduling algorithms described in sec~\ref{det}.
 	
-	Since the time is discretized, a slot (a unit of time) correspond to one round of a loop. The duration of the loop is set to be large enough to obtain some confident experimental results. Each round of the simulation loop, ...
-
+	Since the time is discretized, a slot (a unit of time) correspond to one round of a loop. The duration of the loop is set to be large enough to obtain some confident experimental results. During each round of the simulation loop, we first generate the best effort and CRAN traffic, following the laws described in sec~\ref{model}.
 	
+	Then, we call the \texttt{insert\_packets()} function to send the packets on the ring, if needed (i.e, if some CRAN has been generated, or the BE buffer is large, or old enough).
+	Finally, the function \texttt{rotate\_ring()} is called, and every struct packets of the circular ring takes the following position in the table (the last cell of the table take the position 1).
+	Afterwards, we call the \texttt{remove\_packets()} function, that free the reading\_slot of a node, if the packet on it has been sent by this node.
+	\subsection{BE-Generation}
+	The best effort generation follows the SBBP decribed in sec~\ref{model}. Since the batch process have, at the most 10 states, this functions runs in $O(1)$: one random drawing for the transition in the markov chain, another random drawing for the batch process, and the Inverse transform sampling, which is bounded by the number of states.
+	\subsection{CRAN-Generation}
+	We splitted the CRAN-Generation in two steps. First, the nodes which are not the BBU adds their messages from antennas to buffers, if needed. In a second time, the BBU generates and answer in it's buffer, if there is a CRAN packet in the reading\_slot of the BBU.
+	
+
 	
 	
 	
