@@ -63,7 +63,7 @@ Blabla sur le contexte du projet NGREEN
 	The source code int C of the simulator used for our experimental results is available on the \href{https://github.com/Mael-Guiraud/Ngreen.git}{ author's github page}.
 	\subsection{Initialisation}
 	First, we need to put coherent parameters , considering the model. For instance, with the parameters of NGREEN, we can not set more than 10 antennas on the ring. 
-	The ring is modeled by a table of packets. 
+	The ring is modeled by a circular table of struct packets. 
 	
 	\begin{algorithm}[H]
 	\MyStruct{packet}{
@@ -73,11 +73,16 @@ Blabla sur le contexte du projet NGREEN
 	}
 	\end{algorithm}
 	
-	We then, for each antenna, initialize the first date $t$ on which the antenna send some traffic. The antenna will then send a message every 10 slots after $t$, during a fixed total time, depending of the throughput of the antenna.
+	We then, for each antenna, initialize the first date $t$ on which the antenna send some traffic. The antenna will then send a message every 10 slots after $t$, during a fixed total emission time, depending of the throughput of the antenna.
 	 In the Insertion Policy models, this date $t$ is randomly drawn with the rand() functions of stdlib. In the Reservation model, this date $t$ is set by the scheduling algorithms described in sec~\ref{det}.
 	
 	Since the time is discretized, a slot (a unit of time) correspond to one round of a loop. The duration of the loop is set to be large enough to obtain some confident experimental results. Each round of the simulation loop, ...
 
+	
+	
+	
+	
+	
 The application we study takes place in the C-Ran context. We want to centralise calculations into a common data-center for an area of antennas distributed on the territory. The data between the RRH (antennas) and the BBU (data-center) are transiting through an optical ring. We study here only the behaviour of the ring. First, for an easier model, we consider a ring in which one or two nodes are the data-centers, and the other nodes of the ring sends some data coming from the RRH.
 
 Every millisecond, between each couple RRH-BBU, the following periodic process is observed:
