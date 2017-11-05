@@ -57,19 +57,8 @@
                 latexdraw:borderPos="outer" stroke-width="2.0"
                 stroke="#3333ff" fill="blue"/>
         </g>
-        <g latexdraw:type="joinedLines" id="id1113630408">
-            <polyline
-                points="80.0,160.0 80.0,280.0 160.0,300.0 280.0,260.0 280.0,240.0 280.0,240.0 "
-                stroke-width="2.0" stroke="#3333ff" fill="none"
-                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-1113630408)"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id106961499">
-            <polyline points="280.0,160.0 280.0,240.0 "
-                stroke-width="2.0" stroke="#3333ff"
-                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-106961499)"/>
-        </g>
         <g latexdraw:type="text" id="id1822927747" fill="black" latexdraw:position="bl">
-            <text x="100.0" y="320.0">Antenna traffic</text>
+            <text x="124.0" y="245.0">Antenna traffic</text>
         </g>
         <g latexdraw:type="joinedLines" id="id1912972698">
             <polyline points="40.0,140.0 40.0,120.0 40.0,120.0 "
@@ -91,6 +80,13 @@
         </g>
         <g latexdraw:type="text" id="id921366135" fill="black" latexdraw:position="bl">
             <text x="80.0" y="160.0">t</text>
+        </g>
+        <g latexdraw:type="joinedLines" id="id197111411">
+            <polyline
+                points="92.0,150.0 190.0,223.0 287.0,149.0 292.0,145.0 "
+                stroke-width="2.0" stroke="#0033ff" fill="none"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-197111411)" marker-end="url(#arrow1-197111411)"/>
         </g>
     </g>
     <defs>
@@ -124,15 +120,15 @@
                 d="M 0.0 0.0 L -4.652083333333334 1.6614583333333335 L -4.652083333333334 0.0 L -4.652083333333334 -1.6614583333333335 z "
                 latexdraw:arrSizeNum="2.0" fill="black"/>
         </marker>
-        <marker overflow="visible" orient="auto" id="arrow0-1113630408">
+        <marker overflow="visible" orient="auto" id="arrow0-197111411">
             <path
                 d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
-                latexdraw:arrSizeNum="2.0" fill="#3333ff"/>
+                latexdraw:arrSizeNum="2.0" fill="#0033ff"/>
         </marker>
-        <marker overflow="visible" orient="auto" id="arrow0-106961499">
+        <marker overflow="visible" orient="auto" id="arrow1-197111411">
             <path
-                d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
-                latexdraw:arrSizeNum="2.0" fill="#3333ff"/>
+                d="M 0.0 0.0 L -4.652083333333334 1.6614583333333335 L -4.652083333333334 0.0 L -4.652083333333334 -1.6614583333333335 z "
+                latexdraw:arrSizeNum="2.0" fill="#0033ff"/>
         </marker>
     </defs>
     <metadata>
@@ -144,7 +140,7 @@
             <latexdraw:zoom>1.0</latexdraw:zoom>
             <latexdraw:magneticGridStyle>CUSTOMISED</latexdraw:magneticGridStyle>
             <latexdraw:gridGap>20</latexdraw:gridGap>
-            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:magneticGrid>false</latexdraw:magneticGrid>
             <latexdraw:version>3.3.5</latexdraw:version>
             <latexdraw:size>
                 <latexdraw:width>1440</latexdraw:width>

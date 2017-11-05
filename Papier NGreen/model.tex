@@ -93,11 +93,43 @@ Blabla sur le contexte du projet NGREEN
 	The best effort generation follows the SBBP decribed in sec~\ref{model}. Since the batch process have, at the most 10 states, this functions runs in $O(1)$: one random drawing for the transition in the markov chain, another random drawing for the batch process, and the Inverse transform sampling, which is bounded by the number of states.
 	\subsection{CRAN-Generation}
 	We splitted the CRAN-Generation in two steps. First, the nodes which are not the BBU adds their messages from antennas to buffers, if needed. In a second time, the BBU generates and answer in it's buffer, if there is a CRAN packet in the reading\_slot of the BBU.
-	
+	\subsection{Insertion packet}
+	A node emits a packet on the ring, in its writting\_slot, if :
+\begin{itemize}
+\item In no management mode :  if the size of the buffer is greater or equal to $\beta .Q $ ($\beta \in ]0;1] , Q$ is the size of the buffer) , or if the oldest datas has arrived in the buffer before or to $t-\alpha$, ( $t$ is the current slot, and $\alpha$ is the deadline, expressed in slot).
+\item In CRAN priority mode : 
+	\begin{itemize}
+	\item If the BE-buffer satisfy one of the latter condition,
+	\item Or if there is some CRAN in the CRAN\_buffer. The packet emitted contains all the CRAN possible, filled with as much BE as possible. 
+	\end{itemize}
+\item in reservation mode, the slot on the writting\_slot of the node must be not reserved, or reserved for the node. Then the constraints are the same than the CRAN-priority mode.
+\end{itemize} 	
+\subsection{Slot Reservation}
+In reservation mode, the main challenge is to reserve the slots for the nodes. Indeed, if a nodes $i$ needs the slot in his wrtting\_slot at time $t$, this slot needs to be reserved at time $t - size\_ring$ by $i$. In this situation, if the slot is already taken by a packet which has been sent by the node $k$, $k$ will remove the packet of the slot during the next lap of the ring, and no other nodes are able to write in this slot before it cames back to the node $i$ a date $t$.
 
+One must study the impact of the reservation on the behavior of the ring. If we want to send a packet in a slot at time $t$, as we described upper, the slot must be reserved one $size\_ring$ before, by the nodes which needs to send the packet. This is the job of the reservation : avoiding others nodes to write in a slot which will be used by the node $i$ at time $t$. Though his reservation allows the CRAN messages to have 0 latency, it impacts the best effort, by avoiding them to use free slots; For the best efforts packets, a slot full represents the same thing as a reserved slot.
+
+Another behavior of a packet on the ring that we must consider is the following one:
+ if a node $i$ sends a packet at time $t$, the slot will be used during $t+ size\_ring$ slots. Thus, even if a node emits once, we must take into consideration the fact that the slot is used in the entire ring during $size\_ring$ slots. This means that no others nodes can use this slot to emit a packet on the ring.
+This case is problematic if we have $ET =P/2$. For instance, if we want to send a periodic message of size $50$ each $100$ slots on two nodes on a ring, If the node $u$ sends the first packet of it's message at date $0$. Thus, $u$ will emit some packets every periods, during $100$ slots, that is $[kP;ET+kP[, k \in N$. Then, the node $v$ will receive the messages from $u$ each period at time $[kP + \lambda(u,v);ET+kP+\lambda(u,v)[$. Thus, $b$ will emit on the ring at time $[ET + kP + \lambda(u,v);ET+kP+\lambda(u,v) + ET[$, and $a$ will receive those packets from $b$ to $[ET + kP + \lambda(u,v) + \lambda(v,u);ET+kP+\lambda(u,v) + ET + \lambda(v,u)[$, that is $[ET + kP + RS; (k+1)P+RS[$. If we take $k=0$, then $a$ will emit at time $[0;ET[$ then $[P;ET+P[$, and receive the first message of $b$ at time $[ET + RS;  P+RS[$. He one can observe that, during $RS$ slots after $ET$ in $a$, the ring is used by $b$ and then $a$ cannot emit on the ring. Thus, the maximum size that two nodes can share on the ring is $P/2 -RS$.
+
+We distinguish tree cases for the reservation model:
+\begin{enumerate}
+\item If $2n < EP $.
+\item If $2n >EP . \frac{P}{ET+RS}$
+\item if $ET = P/2$
+\end{enumerate}
 	
-	
-	
+In the first case, since we have enough frequencies to order the antennas and theirs answers, we only give one block of frequency to each antennas. For instance, if we have $EP = 10$ and $3$ antennas, we give frequencies $0$ and $1$ to the first antenna, $2$ ans $3$ to the second antenna, and $4$ and $5$ to the third antenna.
+
+One can use a smarter method to order k antennas on n frequencies. By expressing $n = q.k + r$, we put a gap of q frequencies between each antennas, except the last r antennas that are spaced by $q+1$ frequencies.
+
+In the second cases, each bloc of $\frac{P}{ET+RS}$ behave like the first case, and we split the different antennas between the different blocks by using the repartition algorithm described above.
+
+In the third case, if $ET = P/2$, we can not schedule the entire emission of a message on the same frequency, because there will be $RS$ slots during while there will be some conflict at the insertion.
+Thus, we need to reserve some frequencies to carry the last packet of the messages.
+The number of frequencies reserved is $2 .\lceil \frac{2.RS.N}{P}\rceil$.
+
 	
 The application we study takes place in the C-Ran context. We want to centralise calculations into a common data-center for an area of antennas distributed on the territory. The data between the RRH (antennas) and the BBU (data-center) are transiting through an optical ring. We study here only the behaviour of the ring. First, for an easier model, we consider a ring in which one or two nodes are the data-centers, and the other nodes of the ring sends some data coming from the RRH.
 
