@@ -74,19 +74,19 @@ The model exposed here has already been studied for another particular topology 
           
   \subsection{N-GREEN Optical ring}
    
- We consider a circular digraph $G = (V,A)$ representing an unidirectional optical ring. The vertices of the graph represents the nodes of the ring. Each arc  $(u,v)$ in $A$ is labeled by an integer weight $\omega(u,v)$ which represents the time taken by a message to go from $u$ to $v$ using this arc.  A {\bf route} $r$ in $G$ is a directed path, that is, a sequence of adjacent vertices. 
- We assume that each RRH has an associated BBU.
-  In the process we study, a message is sent from an RRH to a BBU on each route at each period, denoted by $P$. The time is discretized, i.e. a period is sliced into $P$ {\bf slots}. We call forward routes the routes going from the RRH to the BBU and Backward routes the routes going from the BBU to the RRH. The addition of the weight of the two routes is then equal to $RS$, the size of the ring. 
+ We consider a circular digraph $G = (V,A)$ representing an unidirectional optical ring. The vertices of the graph represents the nodes of the ring. A {\bf route} $r$ in $G$ is a directed path, that is, a sequence of adjacent vertices. We denote by $\omega(u,v)$ the weight of a route, i.e. the time taken by a message to go from $u$ to $v$.
+  In the process we study, a message is sent on each route at each period, denoted by $P$. The time is discretized, i.e. a period is sliced into $P$ {\bf slots}. The ring can be seen as a suit of {\bf containers}, of capacity $Z$, expressed in Bytes that rotates each slots to the following position. The containers are filled with some packets created by the nodes, called {\bf Packet Data Unit, or PDU}.
+  The optical ring has a particularity. Each node has an access to one container per slot. When a node wants to insert a PDU on the ring, the container sawn by the ring must be free. Otherwise, the node has to wait until it has an access to a free container to emit its PDU. The ring follows a {\bf broadcast and select with emission release} policy. A container put on the ring by a node can only be removed by the same node, one lap of the ring later.
+  
+  This study focuses on the performances of the C-RAN PDUs, thus the route we consider are the routes between the BBUs and the RRHs .We assume that there is a bijection between the RRHs and the BBUs.
+ We call forward routes the routes going from the RRHs to the BBUs and Backward routes the routes going from the BBUs to the RRHs. The addition of the weight of the two routes of a couple BBU-RRH is then equal to $RS$, the size of the ring, measured in slots. We denote by $n$ the number of couples BBU-RRH.
  We only consider one datacenter into the ring. This mean that all the forward routes have the same destination nodes, and all the backward routes have the same source node.
 
-   In this entire subsection, the ring is in broadcast and select mode with an emission release policy. We first propose an algorithmic model for the ring. In ~\ref{sec:oportmethods}, we study the behavior of the ring with an opportunistic insertion policies, in which the insertion buffer is managed by two different methods. Finally, we propose and study in ~\ref{sec:deterministicalgorithms} some algorithm allowing the C-RAN PDUs to have $0$ sojourn time in the stations, while the BE PDUs are as little buffered as possible.
 
 
 \subsection{Into the node : Two kind of traffics}
-  In this study, we focus on the behavior of the N-GREEN optical ring. Therefore, we do not want to consider the issues caused by the upstream network. 
-   To refine our model around the N-GREEN study, one must consider the opto-electronic stations behavior.
-   Each N-GREEN station is connected to at least one electronic interface of rate $D$. as mentioned in sec.\ref{com-mod} a station is able to use all the $K$ channels during a slot of duration $Z/KD$ to send a container of capacity $Z$ which contain all the data received  by an electronic interface during a macro-slot, that is, the time needed to fill a container at rate $D$, i.e. $Z/D$
-  In other words, an N-GREEN station is able to fill a PDU with the datas received during a macro-slot in the electronic domain. 
+   To refine our model, one must consider the opto-electronic nodes behaviour.
+   Each node of the ring is connected to some external networks by at least one electronic interface of rate $D$Bps. The ring has a rate of $KD$Bps. $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node is able to aggregate the data received on the electronic interface during $Z/D$s to create a PDU, which fills a container in $Z/KD$s. In other words, the node transforms the datas received during a time $Z/D$, called {\bf macro-slot}, into a PDU that can be sent in a slot. Consequently, a single electronic interface can not emit more than one PDU every $k$ slots on the ring.
     
 \begin{figure}[h!]
 \begin{center}   
@@ -99,7 +99,7 @@ The model exposed here has already been studied for another particular topology 
   \end{figure}
   
   
-      An N-GREEN station deals with two kinds of traffics. Some C-RAN and some Best Effort. We assume that each traffic has its corresponding electronic interface. Also, a C-RAN message is of size $Z $ and completely fills a container let us call {\bf C-RAN PDU} such a message. In the same time, the Best Effort SDUs are buffered in a first {\em gathering buffer} before being gathered together into a {\bf BE PDU}. Once the PDUs are created, there join the {\em contention buffer} before being sent in the ring.
+      An node deals with two kinds of traffics. Some C-RAN and some Best Effort. We assume that each traffic has its corresponding electronic interface. Also, a C-RAN message is of size $Z$ and completely fills a container let us call {\bf C-RAN PDU} such a message. In the same time, the Best Effort messages are buffered in a first {\em gathering buffer} before being gathered together into a {\bf BE PDU}. Once the PDUs are created, there join the {\em contention buffer} before being sent in the ring.  
       \begin{figure}[h!]
 \begin{center}   
   \includegraphics[scale=0.7]{buffers.pdf}
@@ -107,10 +107,11 @@ The model exposed here has already been studied for another particular topology 
      
 \end{center}
   \end{figure}
+ 
+
+\paragraph{BE PDU generation model} To Generate the BE PDU, we used the distribution of the time between the generation of two BE PDU given by some numerical analysis work of another study for N-GREEN. This distribution was calculated by modelling a gathering buffer.
   
- In this study, we measure the sojourn time $W$ of a PDU in a station. The model we consider in our experiments to generate the BE PDUs is described in sec~\ref{jmf}.
-  
- \paragraph{C-RAN PDU generation model} An RRH usually emit an huge quantity of information during a long time. Also, as we just see, an RRH can send no more than a PDU every $10\mu s$ on the ring. This gap between two PDU from the same RRH is defined by $K$, the number of channels considered in the ring.
+ \paragraph{C-RAN PDU generation model} An RRH usually emit an huge quantity of information during a long time. Also, as we just see, an RRH can send no more than a PDU every $K$ slots on the ring.
  We denote by $ET$,for {\bf Emission time}, the time during which an RRH emits a PDU every $K$ slots on the ring. An RRH emits $\frac{ET}{K}$ PDUs on the ring, every period $P$.
     	    
         \begin{figure}[h!]
@@ -122,15 +123,13 @@ The model exposed here has already been studied for another particular topology 
   \end{figure}
   \paragraph{Back and forth communications} As we explained in the introduction of this section, once the datacenter receives some PDUs from an RRH, it computes an answer and send it to the RRH through the ring. To simplify our model, we assume that the computation times is the same for all BBUs and that it is a multiple of the period. In this situation, we can assume that, each time the datacenter receives a container with a C-RAN PDU from an RRH, it immediately sends an answer (which is in fact the answer to the two periods ago C-RAN PDU's).
   
-  
- The behavior of the C-RAN PDU generation leads us a new problem, similar to \pall. The set of time slots used by route $r$ at vertex $v$ in a period $P$, is now defined by $[t(v,r)]_{P,K} = \{t(v,r) +i \mod P \mid i \in \{0,EP,2\times K,...., \frac{ET}{K}\times K\} \}$. Consequently, we now want to find a $(P,ET)$-periodic assignment that set the offsets of the routes $m_r$, such that there is no collision between two routes $r_1$ and $r_2$, that is, $[t(v,r_{1})]_{P,K} \cap [t(v,r_{2})]_{P,K} \neq \emptyset$. 
-  
-  
-  
- The rest of this study is divided in two parts. In a first time, we look at the behavior of the ring and the impact of the PDUs sojourn time with two different method of managing the contention buffer. Then, we propose some algorithms that solve the previous problem of finding a $(P,ET)$-periodic assignment for the C-RAN PDUs and we compare the impact of those different algorithms on the BE PDUs sojourn time.
+  The time at which an RRH on the route $r_i$ sends its first PDU is called {\bf offset} and can be expressed by $m_{r_i}$. The time at which this first PDU arrives to its BBU is the {\bf BBU-offset}, $t(v,r_i) = m_{r_i} + \omega(u,v)$, where $u$ is the RRH and $v$ the BBU of the route $r_i$.
+  We denote by {\bf latency} of a PDU the time sojourn time of a PDU in the contention buffer.
+  We want to ensure a good latency for the C-RAN PDUs. If there is no BE PDUs on the ring, the challenge is to fix the offsets (that directly fixes the BBU-offsets) of the routes such that two messages never collides each others. Nevertheless, we have ton consider the BE PDUs in our model.
+ The rest of this study is divided in two parts. In a first time, we look at the behaviour of the ring and the impact of the PDUs latency with two different method of managing the contention buffer. Then, we propose some algorithms that solve allows us to choose the offsets for the C-RAN PDUs by reserving the containers, and we compare the impact of those different algorithms on the BE PDUs latency.
 
   \subsection{Parameters of the study}
-  \label{sec:parameters} The experiment of this subsections are made following the same parameters, until sec~\ref{sec:optialgo}. We set $K = 10$ chanels, some electronic interface of rate $D=10$Gbps and $Z = 12500$B so, $Z/KD = 1\mu$s. The optical ring has a rate $KD=100$Gbps, while a slots has a duration of $1\mu$s. The length of the ring is to $20$km in our simulations, this means that the ring has a length of $RS = 100$ slots. We consider some BE SDUs of $125$B, and we parametrized BE PDU generator of sec~\ref{jmf} such that each station load the network with an average of $3,5\%$ of BE traffic. We set $ET = 500$ slots, that correspond to a C-RAN traffic of $5$Gbps. The period  $P$ is to $1$ms, that is $1000$ slots. We set the number of RRH to $n=5$. We take $5$ stations and one of them is the datacenter. The antennas are apportioned between the others station. With those parameters, the network is theoretically loaded to $67.5\%$. 
+  \label{sec:parameters} The experiment of this subsections are made following the same parameters, until sec~\ref{sec:optialgo}. We set $K = 10$ chanels, some electronic interface of rate $D=10$Gbps and $Z = 12500$B so, $Z/KD = 1\mu$s. The optical ring has a rate $KD=100$Gbps, while a slots has a duration of $1\mu$s. The length of the ring is to $20$km in our simulations, this means that the ring has a length of $RS = 100$ slots. We consider some BE SDUs of $125$B, and we parametrized BE PDU generator of sec~\ref{jmf} such that each node load the network with an average of $3,5\%$ of BE traffic. We set $ET = 500$ slots, that correspond to a C-RAN traffic of $5$Gbps. The period  $P$ is to $1$ms, that is $1000$ slots. We set the number of RRH to $n=5$. We take $5$ nodes and one of them is the datacenter. The antennas are apportioned between the others node. With those parameters, the network is theoretically loaded to $67.5\%$. 
   
   \begin{figure}
   \centering
@@ -158,7 +157,7 @@ The model exposed here has already been studied for another particular topology 
   \hline
   Number of RRH & $5$  \tabularnewline
   \hline
-  Number of stations $n$ & $5$  \tabularnewline
+  Number of nodes $n$ & $5$  \tabularnewline
   \hline
   
   \end{tabular}
@@ -167,18 +166,17 @@ The model exposed here has already been studied for another particular topology 
   
    \section{Performance evaluation of the N-GREEN optical ring}
    \label{sec:oportmethods}
-   In a first time, we will look at the performance of the N-GREEN optical ring with an opportunistic insertion policy \ref{com-mod}. When a station wants to send a PDU on the ring, it uses the first available container .
-    We study the performance of the ring through two methods; a full opportunistic method, and a method that prioritize the C-RAN PDUs. Since we only consider some PDUs arrivals, those two methods are some variants of the management of the PDUs in the station.
+   In a first time, we will look at the performance of the N-GREEN optical ring with an opportunistic insertion policy. When a node wants to send a PDU on the ring, it uses the first available container .
+    We study the performance of the ring through two methods; a full opportunistic method, and a method that prioritize the C-RAN PDUs. Since we only consider some PDUs arrivals, those two methods are some variants of the management of the PDUs in the node.
    For those two methods, the offsets $m_r$ of the routes are chosen randomly in the period, i.e. we do not choose the first time at which the RRH start to emit.
-   Since we do not manage those offsets, the two following methods do not gives us some $(P-ET)$-periodic assignment. No choices are made on the offsets and thus, two routes can collides. 
 
     
     \subsection{Full opportunistic method}
     \label{sec:fullopport}
-    We first want to look at a simple configuration in which we do not manage the PUDs (BE or C-RAN) arriving into a station. At their arrival, the BE and C-RAN PDUS are buffered in the contention buffer, and this buffer is emptied following the FIFO rule.
+    We first want to look at a simple configuration in which we do not manage the PUDs (BE or C-RAN) arriving into a node. At their arrival, the BE and C-RAN PDUS are buffered in the contention buffer, and this buffer is emptied following the FIFO rule.
 
 The following experiment shows us the performance this {\bf full opportunistic method} with some parameters issued from N-GREEN. 
-On fig~\ref{fig:oport}, one can see the cumulative distribution of the sojourn times of the C-RAN and BE PDUs. Those results are computed on $100$ instances of optical rings that have run during $10,000,000$ slots. The measures are taken after $3,000$ slots of simulation, to let the ring initialize it's behavior. The parameters of the simulations are stated in sec~\ref{sec:parameters}.
+On fig~\ref{fig:oport}, one can see the cumulative distribution of the latency of the C-RAN and BE PDUs. Those results are computed on $100$ instances of optical rings that have run during $10,000,000$ slots. The measures are taken after $3,000$ slots of simulation, to let the ring initialize it's behavior. The parameters of the simulations are stated in sec~\ref{sec:parameters}.
 
 
     \begin{figure}[h!]
@@ -190,11 +188,11 @@ On fig~\ref{fig:oport}, one can see the cumulative distribution of the sojourn t
       \end{center}
   \end{figure}
   
-  As we can see on fig~\ref{fig:oport}, the sojourn times for the different kind of PDU is notably similar because we do not manage anything. Furthermore, we can remark that about $10\%$ of the C-RAN messages wait over $100\mu$s, that is already critical for C-RAN \todo{ref}.
+  As we can see on fig~\ref{fig:oport}, the latency for the different kind of PDU is notably similar because we do not manage anything. Furthermore, we can remark that about $10\%$ of the C-RAN messages wait over $100\mu$s, that is already critical for C-RAN \todo{ref}.
 
 \subsection{C-RAN priority method}
 \label{sec:cranprio}
-  In order to improve the C-RAN PDUs sojourn time, we imagined the following solution, called {\bf C-RAN priority method}. Each stations have two contention buffers. One for the BE PDUs, and one fore the C-RAN PDUs. When a station is able to send a PDU on the ring, i.e. its available container free, the container is filled with the C-RAN PDUs first. 
+  In order to improve the C-RAN PDUs latency, we imagined the following solution, called {\bf C-RAN priority method}. Each nodes have two contention buffers. One for the BE PDUs, and one fore the C-RAN PDUs. When a node is able to send a PDU on the ring, i.e. its available container is free, the container is filled with the C-RAN PDUs first. 
   
     \begin{figure}[h]
 \begin{center}   
@@ -203,7 +201,7 @@ On fig~\ref{fig:oport}, one can see the cumulative distribution of the sojourn t
 \end{center}
   \end{figure}
   
-  With this method, one can imagine improve the sojour time of the C-RAN PDUs. Fig~\ref{fig:prior} shows us the performance of the C-RAN priority algorithm for different kinds of traffics. The parameters of the simulations still the same, stated in sec~\ref{sec:parameters}.
+  With this method, one can imagine improve the latency of the C-RAN PDUs. Fig~\ref{fig:prior} shows us the performance of the C-RAN priority algorithm for different kinds of traffics. The parameters of the simulations still the same, stated in sec~\ref{sec:parameters}.
       \begin{figure}[h]
       \label{fig:prior}
 \begin{center}   
@@ -214,27 +212,26 @@ On fig~\ref{fig:oport}, one can see the cumulative distribution of the sojourn t
 \end{center}
   \end{figure}
   
-  As expected, the sojourn time of the C-RAN PDUs is decreased compared to the full opportunistic method. Nevertheless, there is still $10\%$ of the C-RAN PDUs that have more than $50 \mu$s of latency, and the best effort PDUs are penalized, indeed, close to $10\%$ of the BE PDUs awaits more than $150\mu$s before being sent in the ring, versus close to $0\%$ with the previous method..
+  As expected, the latency of the C-RAN PDUs is decreased compared to the full opportunistic method. Nevertheless, there is still $10\%$ of the C-RAN PDUs that have more than $50 \mu$s of latency, and the best effort PDUs are penalized, indeed, close to $10\%$ of the BE PDUs awaits more than $150\mu$s before being sent in the ring, versus close to $0\%$ with the previous method..
   Thus, we propose a deterministic approach in which we set the offsets of the RRH and we reserve the containers needed for the C-RAN PDUs.
    \todo{il manque une partie sur le travail de karim, }
   \section{Deterministic approach for $0$ latency on C-RAN}
 \label{sec:deterministicalgorithms}
 
- For the rest of the subsection, the policy of slot insertion is the slot reservation. We are still in emission release policy. We present three algorithms that allows the C-RAN PDUs to have $0$ sojourn time in the insertion buffers by establishing a static reservation of the slots in the period.
+ In this section We present three algorithms that allows the C-RAN PDUs to have $0$ latency in the insertion buffers by establishing a static reservation of the slots in the period.
  Those algorithm are {\bf Centralized} and requires a global supervisor of the network to be implemented .\todo{phrase + ref sdn?}
  
-\paragraph{Slot reservation} To decrease the C-RAN messages sojourn time, one plan to reserve the container for the stations. Indeed, if a station $i$ needs to send a PDU at time $t$, a container needs to be reserved since the previous lap of the container, i.e. at time $t - RS$ by $i$. In this situation, if the container is already taken by a PDU which has been sent by a station $j$, $j$ will remove the PDU of the container during the next lap of the ring, and no other stations are able to write in this container before it comes back to the station $i$ a date $t$. By finding a $(P,ET)$-periodic assignment and reserving the corresponding container, we allow the C-RAN PDUs to have $0$ sojourn time in the stations. Though, it impacts the best effort PDUs, by avoiding them to use free reserved containers. It is equivalent to increase the load of the network, without increasing the number of PDUs carried by the network. 
+\paragraph{Slot reservation} To decrease the C-RAN messages latency, one plan to reserve the container for the nodes. Indeed, if a node $i$ needs to send a PDU at time $t$, a container needs to be reserved since the previous lap of the container, i.e. at time $t - RS$ by $i$. In this situation, if the container is already taken by a PDU which has been sent by a node $j$, $j$ will remove the PDU of the container during the next lap of the ring, and no other nodes are able to write in this container before it comes back to the node $i$ a date $t$. By choosing the offsets of the route and reserving the corresponding containers, we allow the C-RAN PDUs to have $0$ latency in the nodes. Though, it impacts the best effort PDUs, by avoiding them to use free reserved containers. It is equivalent to increase the load of the network, without increasing the number of PDUs carried by the network. 
 
 \paragraph{RRHs synchronisations}
-This slot reservation implies that the RRHs are synchronized with the ring. The following proposed algorithms set a sequence of reserved slots for each RRH in each period. A technical application implies to simultaneously ensure the reservation of the slot to the given dates, and the synchronization of the RRH with those reserved slot. One must ensure that the C-RAN PDU arrives in the contention buffer of the station just before the reserved container.
+This slot reservation implies that the RRHs are synchronized with the ring. The following proposed algorithms set a sequence of reserved slots for each RRH in each period. A technical application implies to simultaneously ensure the reservation of the slot to the given dates, and the synchronization of the RRH with those reserved slot. One must ensure that the C-RAN PDU arrives in the contention buffer of the node just before the reserved container.
 
-In this section, we explain the different algorithm we use to ensure $0$ sojourn time on C-RAN PDUs and we study their impact on the BE PDUs sojourn times.
   
-Unlike the previous methods with opportunistic insertion policy, we now want to choose a $(P,ET)$-periodic assignment for the routed network $(G,{\cal R})$. Since all the forward routes have the same last vertex $v$ (the datacenter), which is also the first vertex of all the backward routes, we choose to manage the collision in this vertex only. The purpose is to determine the time $t(v,r_i)$ at which the first C-RAN PDU of the route $i$ arrives at the datacenter $v$ for each routes $i$, such that there is no collisions between the routes. Let us call BBU-offset this time. Once the BBU-offsets are set, for all routes $i$, it is easy to compute $m_{r_i} = t(v,r_i) - \lambda(v,r_i)$.
+Unlike the previous methods with opportunistic insertion policy, we now want to choose a the offsets for the routes. Since all the forward routes have the same last vertex $v$ (the datacenter), which is also the first vertex of all the backward routes, we choose to manage the collision in this vertex only. The purpose is then to determine the time BBU offset of the routes. Once the BBU-offsets are set, for all routes $i$, it is easy to compute $m_{r_i} = t(v,r_i) - \omega(u,v)$.
 
 
 \subsection{N-GREEN parameters adapted algorithms}
-An RRH can not emit a message more often than once slot every $K$ slots. Remember that {\bf macro slot} is a duration of $K$ slots, during which each RRH can emit at most once. Thus, we consider the simple case in which there is less C-RAN traffic than slots in a macro slot. Indeed, in that case, if we manage the collision in one macro slot, i.e. we assign a C-RAN traffic to each slot of the macro-slot, we find a  $(P,ET)$-periodic assignment. Since a BBU always instantly emits an answer to it's RRH, for each RRH, a group of two following containers (called {\bf bunch}) can be reserved. Thus, we first study the case $K \ge 2\times n$. As a reminder, $n$ is the number of couple BBU-RRH. 
+An RRH can not emit a message more often than once slot every $K$ slots. Remember that {\bf macro slot} is a duration of $K$ slots, during which each RRH can emit at most once. Thus, we consider the simple case in which there is less C-RAN traffic than slots in a macro slot. Indeed, in that case, we only manage the collision in one macro slot, i.e. we assign a C-RAN traffic to each slot of the macro-slot. Since a BBU always instantly emits an answer to it's RRH, for each RRH, a group of two following containers (called {\bf bunch}) can be reserved. Thus, we first study the case $K \ge 2\times n$. As a reminder, $n$ is the number of couple BBU-RRH. 
 
  
  Because there is at most as much couples BBU-RRH as bunches, we want to assign one RRH to one bunch.
@@ -246,7 +243,7 @@ We propose the following {\bf naive reservation algorithm}. For each RRH $i, i\i
   \end{figure}
 
 
-We kept the same parameters than in the two previous experiments (see~\ref{sec:parameters}) and we made an experiment to show the impact of this algorithm on the BE traffic. Fig~\ref{fig:res1} shows us the distribution of the sojourn time for BE PDUs with this algorithm.
+We kept the same parameters than in the two previous experiments (see~\ref{sec:parameters}) and we made an experiment to show the impact of this algorithm on the BE traffic. Fig~\ref{fig:res1} shows us the distribution of latency for BE PDUs with this algorithm.
 
       \begin{figure}[h]
 \centering
@@ -254,9 +251,9 @@ We kept the same parameters than in the two previous experiments (see~\ref{sec:p
      \caption{Impact of the naive reservation algorithm on the Best effort PDUs.}   \label{fig:res1}
   \end{figure}
 
-As we can see, the BE traffic is highly penalized by this algorithm, indeed, while almost $100\%$ of the BE PDUs have a sojourn time to less than $200 \mu$s with the full opportunistic method (see fig~\ref{fig:oport}), here, more than half of the BE PDUs are be buffered more than $200\mu s$. Those performances are explained by the structure of the algorithm. The messages are grouped together, and with our parameters, $K = 2\times n$. It creates a long sequence of slots during which there is no free containers in the ring. 
+As we can see, the BE traffic is highly penalized by this algorithm, indeed, while almost $100\%$ of the BE PDUs have a latency to less than $200 \mu$s with the full opportunistic method (see fig~\ref{fig:oport}), here, more than half of the BE PDUs are be buffered more than $200\mu s$. Those performances are explained by the structure of the algorithm. The messages are grouped together, and with our parameters, $K = 2\times n$. It creates a long sequence of slots during which there is no free containers in the ring. 
 
-To improve the BE PDUs sojourn time, we propose a {\bf splited reservation algorithm} that balances the load of the CRAN traffic over the period. Instead of giving some close BBU-offsets for all routes $i$, with $v$ the datacenter, we now uniformly distribute the different BBU-offsets in the period. Each couple BBU-RRH is still assigned to its bunch, but we split the BBU-offsets of $\frac{P}{n}$. Also, if $2 \times n < K$, the RRH are balanced over the bunches by the same way, we try to give a bunch to a RRH each $\frac{K}{2\times n}$ buches.
+To improve the BE PDUs latnecy, we propose a {\bf splited reservation algorithm} that balances the load of the CRAN traffic over the period. Instead of giving some close BBU-offsets for all routes $i$, with $v$ the datacenter, we now uniformly distribute the different BBU-offsets in the period. Each couple BBU-RRH is still assigned to its bunch, but we split the BBU-offsets of $\frac{P}{n}$. Also, if $2 \times n < K$, the RRH are balanced over the bunches by the same way, we try to give a bunch to a RRH each $\frac{K}{2\times n}$ buches.
 
    \begin{figure}[!h]
 \centering
@@ -264,7 +261,7 @@ To improve the BE PDUs sojourn time, we propose a {\bf splited reservation algor
      \caption{Splited assignment of the bunches to the RRH.}   \label{fig:freqS}
   \end{figure}
   
-  On fig~\ref{fig:res2} one can observe the performance of this algorithm on the BE PDUs sojourn time. Once again, to have a reference point, we take the same parameters for the simulation. 
+  On fig~\ref{fig:res2} one can observe the performance of this algorithm on the BE PDUs latency. Once again, to have a reference point, we take the same parameters for the simulation. 
 
  \begin{figure}[h]
 \centering
@@ -272,7 +269,7 @@ To improve the BE PDUs sojourn time, we propose a {\bf splited reservation algor
      \caption{Impact of the splited reservation algorithm on the Best effort.}   \label{fig:res2}
   \end{figure}
   
-  As we can see, the sojourn time of the BE PDUs is highly better with this this algorithm. Indeed almost $100\%$ of CRAN PDUs have a sojourn time of less than $50\mu$s which is better than the full opportunistic method. Thus, we decreased the latency of every kind of traffic.
+  As we can see, thelatency of the BE PDUs is highly better with this this algorithm. Indeed almost $100\%$ of CRAN PDUs have a latency of less than $50\mu$s which is better than the full opportunistic method. Thus, we decreased the latency of every kind of traffic.
 
 \subsection{With more antennas}
 \label{sec:optialgo}
@@ -281,7 +278,7 @@ To improve the BE PDUs sojourn time, we propose a {\bf splited reservation algor
 
  Let us take $ET =  \frac{P}{2}$ and $n = \frac{K}{2} + 1$. We assign a bunch to each $\frac{K}{2}$ first RRH and we have only one RRH left. Then, we only look at one bunch, on which we want to add the new couple BBU-RRH. 
  
- We take a ring with two stations $A$ and $B$. We simplify the model to only look at the behavior of one bunch, thus, both of the nodes alternatively emits some containers every slots, during $ET$ slots in the period $P$. By construction, we allow $A$ to emit a time $1$ during $ET$ slots. This container arrives in $B$ at $\omega(A,B)$, that is  $[t(B,r_A)]_{P,K} = [\omega(A,B);\omega(A,B)+ET]$. Then, $B$ can immediately emit its containers at time $\omega(A,B)+ET$. This containers from $B$ arrives at $A$ at time $\omega(A,B)+ET + \omega(B,A) = ET + RS$, and thus, $[t(A,r_B)]_{P,K} = [ET + RS;ET + RS + ET] = [ET+RS; RS + P] = [ET + RS; RS] \mod P$. Since $[t(A,r_A)]_{P,K} = [1;ET]$, there is a collision at the interval $[1;RS]$ in the period between the two routes $A$ and $B$.
+ We take a ring with two nodes $A$ and $B$. We simplify the model to only look at the behaviour of one bunch, thus, both of the nodes alternatively emits some containers every slots, during $ET$ slots in the period $P$. We assume that $A$ emits a time $1$ during $ET$ slots. This container arrives in $B$ at $\omega(A,B)$, that is  $[t(B,r_A)]_{P,K} = [\omega(A,B);\omega(A,B)+ET]$. Then, $B$ can immediately emit its containers at time $\omega(A,B)+ET$. This containers from $B$ arrives at $A$ at time $\omega(A,B)+ET + \omega(B,A) = ET + RS$, and thus, $[t(A,r_B)]_{P,K} = [ET + RS;ET + RS + ET] = [ET+RS; RS + P] = [ET + RS; RS] \mod P$. Since $[t(A,r_A)]_{P,K} = [1;ET]$, there is a collision at the interval $[1;RS]$ in the period between the two traffics from $A$ and $B$.
   \begin{figure}[h]
 \centering
       \includegraphics[scale=0.7]{rs.pdf}
@@ -292,14 +289,14 @@ To improve the BE PDUs sojourn time, we propose a {\bf splited reservation algor
  
  As we have just noted, if several RRH share the same bunch, the period must have an additional budget in addition to the time needed to send the messages. Let us study the size of the additional budget.
  \begin{prop}
- If several RRH shares a bunch, it is possible to find a $(P,ET)$-periodic assignment if $P \ge n\times ET + RS$ , with $n$ the number of RRHs.
+ If several RRH shares a bunch, it is possible set the offsets of the routes such that there is no collisions between the messages if $P \ge n\times ET + RS$ , with $n$ the number of RRHs.
  \end{prop}
  \begin{proof}
  We seek to show that proposition by induction.
  
  {\bf Base case:} For $n = 2$, the proof of the previous example shows us that it is possible to assign two RRH on the same bunch with $P = 2\times ET + RS$.
  
- {\bf Induction step:}  We consider that we have a frequency shared by $n$ RRH, with a period of size $P= n\times ET + RS$. We want to show that if we want to add one antenna to the bunch, we need a period of size at least $P = (n+1)\times ET + RS$. If we look at the sequence period of the bunch with $n$ RRH. We can observe that this sequence is the same in every station, shifted of the length of the routes between two stations. For instance, if we take two stations $A$ and $B$, the sequence in $A$ is the same that the sequence in $B$ shifted of $\omega(A,B)$.
+ {\bf Induction step:}  We consider that we have a bunch shared by $n$ RRH, with a period of size $P= n\times ET + RS$. We want to show that if we want to add one RRH to the bunch, we need a period of size at least $P = (n+1)\times ET + RS$. If we look at the sequence period of the bunch with $n$ RRH. We can observe that this sequence is the same in every nodes, shifted of the length of the routes between two nodes. For instance, if we take two nodes $A$ and $B$, the sequence in $A$ is the same that the sequence in $B$ shifted of $\omega(A,B)$.
  
    \begin{figure}[h]
 \centering
@@ -307,14 +304,14 @@ To improve the BE PDUs sojourn time, we propose a {\bf splited reservation algor
      \caption{An example of sequence with n = 3.}   \label{fig:proofperiod1}
   \end{figure}
    
- Thus, if we add $ET$ slots in this frequency, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence.
+ Thus, if we add $ET$ slots in this bunch, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence.
  
    \begin{figure}[h]
 \centering
       \includegraphics[scale=0.7]{period2.pdf}
      \caption{The same sequence with n = 4.}   \label{fig:proofperiod2}
   \end{figure}
-  Note that a station can send some traffic from more than one antenna, the figures ~\ref{fig:proofperiod1} and \~ref{fig:proofperiod2} are just an example, but this proof stays the same.
+  Note that a station can send some traffic from more than one RRH, the figures ~\ref{fig:proofperiod1} and \~ref{fig:proofperiod2} are just an example, but this proof stays the same.
  \end{proof}
  
 Considering those results, we propose an algorithm to allow several RRH to share the same bunch, as long as $P \ge n\times ET + RS$. 
@@ -327,8 +324,8 @@ The used bunches have $RS$ or more free slots in the period. Thus, the algorithm
      \caption{Organization of the bunches with the balancing algorithm.}   \label{fig:optimalgo}
   \end{figure}
   
-  We want to observe the impact of this algorithm on BE traffic. Since our previous parameters did not allow several RRH to share a frequency, we now set $ET = 200$, that correspond to a C-RAN flow of $2$Gbps. This is not out of context since the exact split (the C-RAN split is the degree of centralization of the computation units in the cloud) of the C-RAN is not fully determined yet~\cite{REF}.\todo {la ref} To keep a load similar to the load in the previous experiment, we set the number of antennas to $n=12$. The others parameters are all the one described in the sec~\ref{sec:parameters}.
-  The following experiment shows us the impact of the balancing algorithm on the BE traffics. We chose to compare those results to a simulation with the same parameters but with the full opportunistic method of sec~\ref{sec:cranprio}.
+  We want to observe the impact of this algorithm on BE traffic. Since our previous parameters did not allow several RRH to share a bunch, we now set $ET = 200$, that correspond to a C-RAN flow of $2$Gbps. This is not out of context since the exact split (the C-RAN split is the degree of centralization of the computation units in the cloud) of the C-RAN is not fully determined yet~\cite{REF}.\todo {la ref} To keep a load similar to the load in the previous experiment, we set the number of RRH to $n=12$. The others parameters are all the one described in the sec~\ref{sec:parameters}.
+  The following experiment shows us the impact of the balancing algorithm on the BE traffics. We chose to compare those results to a simulation with the same parameters but with the full opportunistic method of sec~\ref{sec:fullopport}.
   
    \begin{figure}[h]
 \centering
@@ -336,7 +333,7 @@ The used bunches have $RS$ or more free slots in the period. Thus, the algorithm
      \caption{Balancing algorithm performance on the N-GREEN optical ring.}   \label{fig:optimres}
   \end{figure}
   
-  As fig~\ref{fig:optimres} shows, the full repartition algorithm ensures a lower sojourn time to BE PDUs than the full opportunistic method, which gave the best result for the BE traffic. Indeed, since we remove the random aspect of the C-RAN PDUs generation, we balanced the load over the period an then increased the BE performances while we totally removed the C-RAN PDUs sojourn time.
+  As fig~\ref{fig:optimres} shows, the full repartition algorithm ensures a lower latencye to BE PDUs than the full opportunistic method, which gave the best result for the BE traffic. Indeed, since we remove the random aspect of the C-RAN PDUs generation, we balanced the load over the period an then increased the BE performances while we totally removed the C-RAN PDUs latency.
   
   \bibliographystyle{ieeetr}
 \bibliography{src}
