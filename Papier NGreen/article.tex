@@ -17,7 +17,7 @@
 \newcommand\pall{\textsc{pall}\xspace}
 
 
-\newcommand{\todo}[1]{{\color{red} TODO: {#1}}}
+\newcommand{\todo}[1]{{\color{red} TODO: {#1}}}	
 \newtheorem{prop}{Proposition}
 
 
@@ -38,7 +38,7 @@
 
 \author{Dominique Barth\addressmark{1}
   \and Dominique Chiaroni?\addressmark{2}
-  \and Ma\"el Guiraud \addressmark{1}
+  \and Ma\"el Guiraud \addressmark{1,2}
    \and Yann Strozecki \addressmark{1}
   }
 
@@ -52,29 +52,41 @@
 
 
 \begin{abstract}
-Nowadays challenge for network providers is to design some network which satisfies in the same time a good Quality of Services and a cheap hardware development. This study is a contribution to the N-GREEN project, which has for goal to develop a low cost optical ring technology that ensures some good performances (dataflow, latency,...) without increasing the hardware with some expensive E2E connections. In this paper, we study the compatibility of such a technology with the development of the Cloud Ran, a latency critical application which is a major aspect of the 5G deployment. 
+
+% Nowadays challenge for network providers is to design some network which satisfies in the same time a good Quality of Services and a cheap hardware development.
+This study is a contribution to the N-GREEN project, which has for goal to design a low cost optical ring technology with good performances (dataflow, latency,$\dots$) without using expensive end to end connections. In this paper, we study the compatibility of such a technology with the development of the Cloud Ran, a latency critical application which is a major aspect of the 5G deployment. We show that the latency of the Cloud Rand can be guaranteed by using a deterministic sending scheme without impacting the others traffics. 
 \end{abstract}
 
+\todo{ça marque et dans le titre, ça ne devrait pas}
+
+
 \section{Introduction}
-Network providers have to design cheapest networks while the amount of datas and online applications significantly increases. Much of these applications have some QoS criteria, like a minimal bandwidth or a maximal latency. The N-GREEN project aims to propose an high performing optical ring while ensuring a minimal cost for providers. Indeed adversely to most of the nowadays solutions to ensure some good QoS [huawei, demander a dominique C], that establish some End to End connection between the nodes, which is extremely expensive, the N-GREEN optical ring is designed to ensure some good performances with few hardware solutions.
 
-This study is based on the Cloud RAN application in the N-GREEN optical ring. Indeed, Cloud RAN is one of the major area of development for 5G, that consists in centralizing the computation units (or {\bf BaseBand Units, BBU}) of the Remote Radio Headers ({\bf RRHs}) in one {\bf datacenter}. The latency of the messages between the BBU and the RRH is critical []. Here, we study the latency of some C-RAN equipment connected through an N-GREEN optical ring.
+Network providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal bandwidth or a maximal latency. The N-GREEN project aims to propose an high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS [huawei, demander a dominique C], establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
 
-In the next part of this paper, we expose the specificity of the optical ring, and the model we studied. In sec ~\ref{sec:oportmethods}, we study two method to manage the messages arrivals, and their impact on the latency. Finally, in sec~\ref{sec:deterministicalgorithms}, we propose and study some deterministic algorithm which allows the C-RAN to not be buffered at all, while the QoS of others messages is also increased.
-\todo{Je sais pas si il faut parler de SDN, qui est un keyword a la mode mais peut etre que l'architecture ngreen nous propose, demander a chiaroni}
-\subsection*{Related work}
-\todo{?}
+In this article, we study a Cloud RAN application in the N-GREEN optical ring. Cloud RAN is one of the major area of development for 5G, that consists in centralizing the computation units (or {\bf BaseBand Units, BBU}) of the Remote Radio Heads ({\bf RRHs}) in one {\bf datacenter}. The latency of the messages between the BBU and the RRH is critical \cite{}. Here, we study the latency of some C-RAN equipment connected through an N-GREEN optical ring.\todo{mettre les citations, à reprendre de nos précédents articles}
 
-\section{Description of the network, model, problematic}
+\todo{Dire un mot sur la forme du traffic cloud RAN, périodique déterministe, aller vers un data center unique, retour, minimisation de la latence ...}
+
+In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow we study. In Sec.~\ref{sec:oportmethods}, we study the latency when using stochastic multiplexing to manage the messages arrivals on the ring, with or without priority of the C-RAN traffic. Finally, in Sec.~\ref{sec:deterministicalgorithms}, we propose deterministic ways to manage the C-RAN without buffers and thus with a minimal latency compared to stochastic multiplexing. The best method also improve the latency of the rest of the traffic.
+\todo{Je sais pas si il faut parler de SDN, qui est un keyword a la mode mais peut etre que l'architecture ngreen nous propose, demander a chiaroni, 
+Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de notre article précédent sur Cloud RAN}
 
 
-  \subsection{Network modeling}
-
-The model exposed here has already been studied for another particular topology of network and with different problematics from the ones of this paper. One can find in \cite{latency2017} the complexity results on the problem proposed, and some algorithmic solutions to solve it in star networks.
+\section{Model of C-RAN traffic over an optical ring}
+\label{sec:model}
+% 
+%   \subsection{Network modeling}
+% 
+% The model exposed here has already been studied for another particular topology of network and with different problematics from the ones of this paper. One can find in \cite{latency2017} the complexity results on the problem proposed, and some algorithmic solutions to solve it in star networks.
           
   \subsection{N-GREEN Optical ring}
    
- We consider a circular digraph $G = (V,A)$ representing an unidirectional optical ring. The vertices of the graph represents the nodes of the ring. A {\bf route} $r$ in $G$ is a directed path, that is, a sequence of adjacent vertices. We denote by $\omega(u,v)$ the weight of a route, i.e. the time taken by a message to go from $u$ to $v$.
+  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represents the nodes of the ring, where traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. One unit of time corresponds to the  
+  The process we study are periodic of period $P$, where 
+  
+  
+  A {\bf route} $r$ in $G$ is a directed path, that is, a sequence of adjacent vertices. We denote by $\omega(u,v)$ the weight of a route, i.e. the time taken by a message to go from $u$ to $v$.
   In the process we study, a message is sent on each route at each period, denoted by $P$. The time is discretized, i.e. a period is sliced into $P$ {\bf slots}. The ring can be seen as a suit of {\bf containers}, of capacity $Z$, expressed in Bytes that rotates each slots to the following position. The containers are filled with some packets created by the nodes, called {\bf Packet Data Unit, or PDU}.
   The optical ring has a particularity. Each node has an access to one container per slot. When a node wants to insert a PDU on the ring, the container sawn by the ring must be free. Otherwise, the node has to wait until it has an access to a free container to emit its PDU. The ring follows a {\bf broadcast and select with emission release} policy. A container put on the ring by a node can only be removed by the same node, one lap of the ring later.
   
