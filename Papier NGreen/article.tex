@@ -57,7 +57,9 @@
 This study is a contribution to the N-GREEN project, which has for goal to design a low cost optical ring technology with good performances (dataflow, latency,$\dots$) without using expensive end to end connections. In this paper, we study the compatibility of such a technology with the development of the Cloud Ran, a latency critical application which is a major aspect of the 5G deployment. We show that the latency of the Cloud Rand can be guaranteed by using a deterministic sending scheme without impacting the others traffics. 
 \end{abstract}
 
-\todo{ça marque et dans le titre, ça ne devrait pas}
+\todo{ça marque et dans le titre, ça ne devrait pas
+
+Il faut citer l'ANR NGREEN + n'importe quel truc de charoni qui explique leur architecture NGREEN}
 
 
 \section{Introduction}
@@ -96,32 +98,29 @@ Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de not
    In our model all BBUs are in the same data-center, thus they are all attached to the same node of the ring. In the following, we will denote by $n$ the number of antennas.
    
    The antenna are linked to the nodes of the ring through an electronic interface of rate $D$Bps.
-   The ring has a rate of $KD$Bps. $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during a time $Z/D$ to create a PDU, which fills a container in $Z/KD$s. In other words, the node transforms the data received during a time $Z/D$, called {\bf macro-slot}, into a PDU that can be sent in a slot. Consequently, a single electronic interface can not emit more than one PDU every $k$ slots on the ring.
-    
-    
-   To refine our model, one must consider the opto-electronic nodes behaviour.
-   Each node of the ring is connected to some external networks by at least one electronic interface of rate $D$Bps. The ring has a rate of $KD$Bps. $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node is able to aggregate the data received on the electronic interface during $Z/D$s to create a PDU, which fills a container in $Z/KD$s. In other words, the node transforms the datas received during a time $Z/D$, called {\bf macro-slot}, into a PDU that can be sent in a slot. Consequently, a single electronic interface can not emit more than one PDU every $k$ slots on the ring.
+   The ring has a larger rate of $KD$Bps. The integer $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during $K$ unit of times to create a PDU of size $Z$, that is which can fills one container of the ring. As a consequence, we consider that each period, an antenna emits a PDU of size $Z$ each $K$ unit of times during a time $ET$.
     
 \begin{figure}[h!]
 \begin{center}   
 
-      \includegraphics[scale=0.3]{slot1.pdf}
-  \includegraphics[scale=0.3]{slot2.pdf}
+      \includegraphics[scale=0.2]{slot1.pdf}
+  \includegraphics[scale=0.2]{slot2.pdf}
      \caption{Opto-electronic interface.}
      
 \end{center}
   \end{figure}
-  
-  
-      An node deals with two kinds of traffics. Some C-RAN and some Best Effort. We assume that each traffic has its corresponding electronic interface. Also, a C-RAN message is of size $Z$ and completely fills a container let us call {\bf C-RAN PDU} such a message. In the same time, the Best Effort messages are buffered in a first {\em gathering buffer} before being gathered together into a {\bf BE PDU}. Once the PDUs are created, there join the {\em contention buffer} before being sent in the ring.  
-      \begin{figure}[h!]
-\begin{center}   
-  \includegraphics[scale=0.7]{buffers.pdf}
-     \caption{An N-GREEN station.}
-     
-\end{center}
-  \end{figure}
- 
+  \todo{Améliorer le dessin: un seul schéma avec les notations et horizontal pour pas perdre de place.
+  Éventuellement faire une représentation du ring et en zoom faire l'interface}
+%   
+%       An node deals with two kinds of traffics. Some C-RAN and some Best Effort. We assume that each traffic has its corresponding electronic interface. Also, a C-RAN message is of size $Z$ and completely fills a container let us call {\bf C-RAN PDU} such a message. In the same time, the Best Effort messages are buffered in a first {\em gathering buffer} before being gathered together into a {\bf BE PDU}. Once the PDUs are created, there join the {\em contention buffer} before being sent in the ring.  
+%       \begin{figure}[h!]
+% \begin{center}   
+%   \includegraphics[scale=0.7]{buffers.pdf}
+%      \caption{An N-GREEN station.}
+%      
+% \end{center}
+%   \end{figure}
+%  
    
 %    
 %   The C-RAN PDUs coming from an antenna are sent according to a 
@@ -131,13 +130,18 @@ Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de not
 %  We call forward routes the routes going from the RRHs to the BBUs and Backward routes the routes going from the BBUs to the RRHs. The addition of the weight of the two routes of a couple BBU-RRH is then equal to $RS$, the size of the ring, measured in slots. We denote by $n$ the number of couples BBU-RRH.
 %  We only consider one data center into the ring. This mean that all the forward routes have the same destination nodes, and all the backward routes have the same source node.
 
+% 
+% 
+% \subsection{Into the node : Two kind of traffics}
+
+\todo{Décrire ici les degrés de liberté -> quand ça part + la latence}
 
 
-\subsection{Into the node : Two kind of traffics}
+\subsection{Best effort traffic}
 
+\todo{Décrire la génération du best effort}
 
-
-\paragraph{BE PDU generation model} To Generate the BE PDU, we used the distribution of the time between the generation of two BE PDU given by some numerical analysis work of another study for N-GREEN. This distribution was calculated by modelling a gathering buffer.
+\paragraph{BE PDU generation model} To Generate the BE PDU, we used the distribution of the time between the generation of two BE PDU given by some numerical analysis work of another study for N-GREEN. This distribution was calculated by modeling a gathering buffer.
   
  \paragraph{C-RAN PDU generation model} An RRH usually emit an huge quantity of information during a long time. Also, as we just see, an RRH can send no more than a PDU every $K$ slots on the ring.
  We denote by $ET$,for {\bf Emission time}, the time during which an RRH emits a PDU every $K$ slots on the ring. An RRH emits $\frac{ET}{K}$ PDUs on the ring, every period $P$.
