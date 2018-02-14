@@ -82,21 +82,23 @@ Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de not
           
   \subsection{N-GREEN Optical ring}
    
-  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represents the nodes of the ring, where traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. One unit of time corresponds to the  
-  The process we study are periodic of period $P$, where 
-  
-  
-  A {\bf route} $r$ in $G$ is a directed path, that is, a sequence of adjacent vertices. We denote by $\omega(u,v)$ the weight of a route, i.e. the time taken by a message to go from $u$ to $v$.
-  In the process we study, a message is sent on each route at each period, denoted by $P$. The time is discretized, i.e. a period is sliced into $P$ {\bf slots}. The ring can be seen as a suit of {\bf containers}, of capacity $Z$, expressed in Bytes that rotates each slots to the following position. The containers are filled with some packets created by the nodes, called {\bf Packet Data Unit, or PDU}.
-  The optical ring has a particularity. Each node has an access to one container per slot. When a node wants to insert a PDU on the ring, the container sawn by the ring must be free. Otherwise, the node has to wait until it has an access to a free container to emit its PDU. The ring follows a {\bf broadcast and select with emission release} policy. A container put on the ring by a node can only be removed by the same node, one lap of the ring later.
-  
-  This study focuses on the performances of the C-RAN PDUs, thus the route we consider are the routes between the BBUs and the RRHs .We assume that there is a bijection between the RRHs and the BBUs.
- We call forward routes the routes going from the RRHs to the BBUs and Backward routes the routes going from the BBUs to the RRHs. The addition of the weight of the two routes of a couple BBU-RRH is then equal to $RS$, the size of the ring, measured in slots. We denote by $n$ the number of couples BBU-RRH.
- We only consider one datacenter into the ring. This mean that all the forward routes have the same destination nodes, and all the backward routes have the same source node.
-
-
-
-\subsection{Into the node : Two kind of traffics}
+  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represents the nodes of the ring, where traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. We denote by $RS$ (ringsize) the length of the cycle, that is the sum of $\omega(u,v)$ for all arcs $(u,v)$.  Each arc $(u,v)$ can be seen as a sequence of $\omega(u,v)$ {\bf containers}, of capacity $Z$, expressed in Bytes.  The containers are filled  by the nodes with smaller packets called {\bf Packet Data Unit}, or PDU.
+  PDUs waiting in the node $u$ can be put in the first container of the arc $(u,v)$ \emph{if it is free}. 
+  The dynamic of the network is simple: at each unit of time PDUs contained in a container go to the next.
+   The ring follows a {\bf broadcast and select with emission release policy}. When a container is filled by some node $u$,
+   it is freed when it comes back at $u$ after a whole round trip.
+   
+   \subsection{C-RAN trafic}
+   
+   We study a C-RAN traffic emitted by each RRH. The data from an antenna arrives into a specific node, then it is routed to 
+   its BBU through the ring. Then after some computation time (which is here supposed to be zero to simplify the model),
+   an answer is sent back from the BBU to the RRH. The same quantity of data is emitted by an antenna at each period $P$. 
+   In our model all BBUs are in the same data-center, thus they are all attached to the same node of the ring. In the following, we will denote by $n$ the number of antennas.
+   
+   The antenna are linked to the nodes of the ring through an electronic interface of rate $D$Bps.
+   The ring has a rate of $KD$Bps. $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during a time $Z/D$ to create a PDU, which fills a container in $Z/KD$s. In other words, the node transforms the data received during a time $Z/D$, called {\bf macro-slot}, into a PDU that can be sent in a slot. Consequently, a single electronic interface can not emit more than one PDU every $k$ slots on the ring.
+    
+    
    To refine our model, one must consider the opto-electronic nodes behaviour.
    Each node of the ring is connected to some external networks by at least one electronic interface of rate $D$Bps. The ring has a rate of $KD$Bps. $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node is able to aggregate the data received on the electronic interface during $Z/D$s to create a PDU, which fills a container in $Z/KD$s. In other words, the node transforms the datas received during a time $Z/D$, called {\bf macro-slot}, into a PDU that can be sent in a slot. Consequently, a single electronic interface can not emit more than one PDU every $k$ slots on the ring.
     
@@ -120,6 +122,20 @@ Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de not
 \end{center}
   \end{figure}
  
+   
+%    
+%   The C-RAN PDUs coming from an antenna are sent according to a 
+%   
+%   follows 
+%   This study focuses on the performances of the C-RAN PDUs, thus the route we consider are the routes between the BBUs and the RRHs .We assume that there is a bijection between the RRHs and the BBUs.
+%  We call forward routes the routes going from the RRHs to the BBUs and Backward routes the routes going from the BBUs to the RRHs. The addition of the weight of the two routes of a couple BBU-RRH is then equal to $RS$, the size of the ring, measured in slots. We denote by $n$ the number of couples BBU-RRH.
+%  We only consider one data center into the ring. This mean that all the forward routes have the same destination nodes, and all the backward routes have the same source node.
+
+
+
+\subsection{Into the node : Two kind of traffics}
+
+
 
 \paragraph{BE PDU generation model} To Generate the BE PDU, we used the distribution of the time between the generation of two BE PDU given by some numerical analysis work of another study for N-GREEN. This distribution was calculated by modelling a gathering buffer.
   
