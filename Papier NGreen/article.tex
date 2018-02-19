@@ -24,7 +24,7 @@
 \graphicspath{{img/}}
 
 %opening
-\title{Contention management for Cloud Ran over an optical ring}
+\title{Contention management for Cloud RAN over an optical ring}
 
 %\author[1]{Dominique Barth}
 %\author[2]{Dominique Chiaroni ?}
@@ -37,14 +37,13 @@
 
 
 \author{Dominique Barth\addressmark{1}
-  \and Dominique Chiaroni?\addressmark{2}
   \and Ma\"el Guiraud \addressmark{1,2}
    \and Yann Strozecki \addressmark{1}
   }
 
 \address{\addressmark{1}David Laboratory, UVSQ \\
   \addressmark{2}BNokia Bell Labs France}
-\keywords{N-GREEN, Optical ring, Latency, 5G}
+\keywords{Optical ring, Latency, C-RAN, SDN}
 
 \begin{document}
 
@@ -54,7 +53,7 @@
 \begin{abstract}
 
 % Nowadays challenge for network providers is to design some network which satisfies in the same time a good Quality of Services and a cheap hardware development.
-This study is a contribution to the N-GREEN project, which has for goal to design a low cost optical ring technology with good performances (dataflow, latency,$\dots$) without using expensive end to end connections. In this paper, we study the compatibility of such a technology with the development of the Cloud Ran, a latency critical application which is a major aspect of the 5G deployment. We show that the latency of the Cloud Rand can be guaranteed by using a deterministic sending scheme without impacting the others traffics. 
+N-GREEN project has for goal to design a low cost optical ring technology with good performances (dataflow, latency,$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency without impacting the latency of others traffics. 
 \end{abstract}
 
 \todo{ça marque et dans le titre, ça ne devrait pas
@@ -64,13 +63,13 @@ Il faut citer l'ANR NGREEN + n'importe quel truc de charoni qui explique leur ar
 
 \section{Introduction}
 
-Network providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal bandwidth or a maximal latency. The N-GREEN project aims to propose an high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS [huawei, demander a dominique C], establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
+Network providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal bandwidth or a maximal latency. The N-GREEN project aims to propose a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS [huawei, demander a dominique C], establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
 
-In this article, we study a Cloud RAN application in the N-GREEN optical ring. Cloud RAN is one of the major area of development for 5G, that consists in centralizing the computation units (or {\bf BaseBand Units, BBU}) of the Remote Radio Heads ({\bf RRHs}) in one {\bf datacenter}. The latency of the messages between the BBU and the RRH is critical \cite{}. Here, we study the latency of some C-RAN equipment connected through an N-GREEN optical ring.\todo{mettre les citations, à reprendre de nos précédents articles}
+In this article, we study a Cloud RAN application in the N-GREEN optical ring. Cloud RAN is one of the major area of development for 5G, that consists in centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter. The latency of the messages between the BBU and the RRH is critical. \todo{mettre les citations sur la latence dans la 5G, archi ngreen et concurents E2E à reprendre de nos précédents articles}
 
-\todo{Dire un mot sur la forme du traffic cloud RAN, périodique déterministe, aller vers un data center unique, retour, minimisation de la latence ...}
+\todo{Dire un mot sur la forme du traffic cloud RAN, périodique déterministe, aller vers un data center unique, retour, minimisation de la latence ..., + ne pas déranger BE, décrire le pb}
 
-In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow we study. In Sec.~\ref{sec:oportmethods}, we study the latency when using stochastic multiplexing to manage the messages arrivals on the ring, with or without priority of the C-RAN traffic. Finally, in Sec.~\ref{sec:deterministicalgorithms}, we propose deterministic ways to manage the C-RAN without buffers and thus with a minimal latency compared to stochastic multiplexing. The best method also improve the latency of the rest of the traffic.
+In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow we study. In Sec.~\ref{sec:oportmethods}, we study the latency when using stochastic multiplexing to manage packets insertions on the ring, with or without priority for C-RAN packets. In Sec.~\ref{sec:deterministicalgorithms}, we propose deterministic ways to manage C-RAN packets without buffers and thus with a minimal latency compared to stochastic multiplexing. The best method to do so also improves the latency of best effort packets.
 \todo{Je sais pas si il faut parler de SDN, qui est un keyword a la mode mais peut etre que l'architecture ngreen nous propose, demander a chiaroni, 
 Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de notre article précédent sur Cloud RAN}
 
