@@ -83,27 +83,25 @@ Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de not
           
   \subsection{N-GREEN Optical ring}
    
-  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represents the nodes of the ring, where traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. We denote by $RS$ (ringsize) the length of the cycle, that is the sum of $\omega(u,v)$ for all arcs $(u,v)$.  Each arc $(u,v)$ can be seen as a sequence of $\omega(u,v)$ {\bf containers}, of capacity $Z$, expressed in Bytes.  The containers are filled  by the nodes with smaller packets called {\bf Packet Data Unit}, or PDU.
-  PDUs waiting in the node $u$ can be put in the first container of the arc $(u,v)$ \emph{if it is free}. 
-  The dynamic of the network is simple: at each unit of time PDUs contained in a container go to the next.
+  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represents the nodes of the ring, where traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. We denote by $RS$ (ringsize) the length of the cycle, that is the sum of $\omega(u,v)$ for all arcs $(u,v)$.  Each arc $(u,v)$ can be seen as a sequence of $\omega(u,v)$ {\bf containers}, of capacity $C$, expressed in Bytes.  The containers are filled  by the nodes. The node $u$ can put some data in the first container of the arc $(u,v)$ \emph{if it is free}. 
+  The dynamic of the network is simple: at each unit of time data contained in a container go to the next.
    The ring follows a {\bf broadcast and select with emission release policy}. When a container is filled by some node $u$,
    it is freed when it comes back at $u$ after a whole round trip.
    
    \subsection{C-RAN trafic}
    
-   We study a C-RAN traffic emitted by each RRH. The data from an antenna arrives into a specific node, then it is routed to 
-   its BBU through the ring. Then after some computation time (which is here supposed to be zero to simplify the model),
-   an answer is sent back from the BBU to the RRH. The same quantity of data is emitted by an antenna at each period $P$. 
+   We study a C-RAN traffic emitted by each RRH. The data from an antenna $i$ arrives into a specific node $u$ at time $m_i$, called  {\bf offset}, then it is routed to its BBU at node $v$ through the ring. Then after some computation time (which is here supposed to be zero to simplify the model),
+   an answer is sent back from the BBU to the RRH at time $t_i = m_i + \omega(u,v)$, called {\bf BBU-offset}. The same quantity of data is emitted by an antenna at each period $P$. 
    In our model all BBUs are in the same data-center, thus they are all attached to the same node of the ring. In the following, we will denote by $n$ the number of antennas.
-   
-   The antenna are linked to the nodes of the ring through an electronic interface of rate $D$Bps.
-   The ring has a larger rate of $KD$Bps. The integer $K$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during $K$ unit of times to create a PDU of size $Z$, that is which can fills one container of the ring. As a consequence, we consider that each period, an antenna emits a PDU of size $Z$ each $K$ unit of times during a time $ET$.
+The {\bf latency} of a message is the time it waits into a node before being put in a container.
+
+   The antenna are linked to the nodes of the ring through an electronic interface of bit rate $R$Bps.
+   The ring has a larger rate of $FR$Bps. The integer $F$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during $F$ unit of times to create a PDU of size $C$, that is which can fills one container of the ring. As a consequence, we consider that each period, an antenna emits a PDU of size $C$ each $F$ unit of times during a time $ET$.
     
 \begin{figure}[h!]
 \begin{center}   
 
-      \includegraphics[scale=0.2]{slot1.pdf}
-  \includegraphics[scale=0.2]{slot2.pdf}
+      \includegraphics[scale=0.8]{interface.pdf}
      \caption{Opto-electronic interface.}
      
 \end{center}
@@ -138,26 +136,9 @@ Yann : je pense qu'il faut parler de SDN, reprendre peut être des choses de not
 
 \subsection{Best effort traffic}
 
-\todo{Décrire la génération du best effort}
+The traffic on the ring is also composed of a best effort traffic, corresponding to the internet flow. We model the arrival of best effort messages by a temporal law that gives the distribution of the arrival between two arrivals of containers with best effort message in a node. This distribution is obtained by studying the impact of the fill rate and the maximum time to wait before sending a container on a contention buffer. This contention buffer is filled by some batch arrivals of data, and creates the containers. [ref].
 
-\paragraph{BE PDU generation model} To Generate the BE PDU, we used the distribution of the time between the generation of two BE PDU given by some numerical analysis work of another study for N-GREEN. This distribution was calculated by modeling a gathering buffer.
-  
- \paragraph{C-RAN PDU generation model} An RRH usually emit an huge quantity of information during a long time. Also, as we just see, an RRH can send no more than a PDU every $K$ slots on the ring.
- We denote by $ET$,for {\bf Emission time}, the time during which an RRH emits a PDU every $K$ slots on the ring. An RRH emits $\frac{ET}{K}$ PDUs on the ring, every period $P$.
-    	    
-        \begin{figure}[h!]
-\begin{center}   
 
-      \includegraphics[width=\textwidth]{emission_antenna.pdf}
-     \caption{C-RAN PDU generation.}
-\end{center}
-  \end{figure}
-  \paragraph{Back and forth communications} As we explained in the introduction of this section, once the datacenter receives some PDUs from an RRH, it computes an answer and send it to the RRH through the ring. To simplify our model, we assume that the computation times is the same for all BBUs and that it is a multiple of the period. In this situation, we can assume that, each time the datacenter receives a container with a C-RAN PDU from an RRH, it immediately sends an answer (which is in fact the answer to the two periods ago C-RAN PDU's).
-  
-  The time at which an RRH on the route $r_i$ sends its first PDU is called {\bf offset} and can be expressed by $m_{r_i}$. The time at which this first PDU arrives to its BBU is the {\bf BBU-offset}, $t(v,r_i) = m_{r_i} + \omega(u,v)$, where $u$ is the RRH and $v$ the BBU of the route $r_i$.
-  We denote by {\bf latency} of a PDU the time sojourn time of a PDU in the contention buffer.
-  We want to ensure a good latency for the C-RAN PDUs. If there is no BE PDUs on the ring, the challenge is to fix the offsets (that directly fixes the BBU-offsets) of the routes such that two messages never collides each others. Nevertheless, we have ton consider the BE PDUs in our model.
- The rest of this study is divided in two parts. In a first time, we look at the behaviour of the ring and the impact of the PDUs latency with two different method of managing the contention buffer. Then, we propose some algorithms that solve allows us to choose the offsets for the C-RAN PDUs by reserving the containers, and we compare the impact of those different algorithms on the BE PDUs latency.
 
   \subsection{Parameters of the study}
   \label{sec:parameters} The experiment of this subsections are made following the same parameters, until sec~\ref{sec:optialgo}. We set $K = 10$ chanels, some electronic interface of rate $D=10$Gbps and $Z = 12500$B so, $Z/KD = 1\mu$s. The optical ring has a rate $KD=100$Gbps, while a slots has a duration of $1\mu$s. The length of the ring is to $20$km in our simulations, this means that the ring has a length of $RS = 100$ slots. We consider some BE SDUs of $125$B, and we parametrized BE PDU generator of sec~\ref{jmf} such that each node load the network with an average of $3,5\%$ of BE traffic. We set $ET = 500$ slots, that correspond to a C-RAN traffic of $5$Gbps. The period  $P$ is to $1$ms, that is $1000$ slots. We set the number of RRH to $n=5$. We take $5$ nodes and one of them is the datacenter. The antennas are apportioned between the others node. With those parameters, the network is theoretically loaded to $67.5\%$. 
