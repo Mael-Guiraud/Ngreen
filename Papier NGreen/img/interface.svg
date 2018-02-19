@@ -14,11 +14,6 @@
                 latexdraw:borderPos="outer" stroke-width="2.0"
                 stroke="black" fill="none"/>
         </g>
-        <g latexdraw:type="rectangle" id="id1456133203">
-            <rect x="281.0" y="21.0" width="38.0" height="18.0"
-                latexdraw:borderPos="outer" stroke-width="2.0"
-                stroke="black" fill="none"/>
-        </g>
         <g latexdraw:type="circle" id="id923345526">
             <circle cx="213.0" cy="189.0" r="8.0"
                 latexdraw:borderPos="outer" stroke-width="2.0"
@@ -78,7 +73,7 @@
             <text x="451.0" y="121.0">RRH</text>
         </g>
         <g latexdraw:type="text" id="id1758271358" fill="black" latexdraw:position="bl">
-            <text x="284.0" y="17.0">BBU</text>
+            <text x="260.0" y="30.0">Datacenter</text>
         </g>
         <g latexdraw:type="circle" id="id86781764">
             <circle cx="396.0" cy="151.0" r="43.0"
@@ -90,176 +85,181 @@
                 stroke-width="2.0" stroke="#0033ff" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="rectangle" id="id59602685">
-            <rect x="561.0" y="41.0" width="318.0" height="198.0"
-                latexdraw:borderPos="outer" stroke-width="2.0"
-                stroke="#0033ff" fill="none"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id779610636">
-            <polyline points="640.0,60.0 640.0,220.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="circle" id="id708066571">
-            <circle cx="640.0" cy="140.0" r="1.0"
-                latexdraw:borderPos="outer" stroke-width="2.0"
-                stroke="black" fill="black"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1380996095">
-            <polyline points="600.0,220.0 640.0,220.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id927946740">
-            <polyline points="600.0,200.0 640.0,200.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id158104184">
-            <polyline points="600.0,180.0 640.0,180.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id825142346">
-            <polyline points="600.0,160.0 640.0,160.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1985842001">
-            <polyline points="600.0,140.0 640.0,140.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1707346374">
-            <polyline points="600.0,120.0 640.0,120.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id915956996">
-            <polyline points="600.0,100.0 640.0,100.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1739956504">
-            <polyline points="600.0,80.0 640.0,80.0 " stroke-width="2.0"
-                stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1513035475">
-            <polyline points="600.0,60.0 640.0,60.0 " stroke-width="2.0"
-                stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1058387025">
-            <polyline points="640.0,220.0 640.0,240.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1490966991">
-            <polyline points="640.0,60.0 640.0,40.0 " stroke-width="2.0"
-                stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="circle" id="id2052719903">
-            <circle cx="659.0" cy="140.0" r="17.0"
-                latexdraw:borderPos="outer" stroke-width="2.0"
-                stroke="black" fill="none"/>
+            <rect x="561.0" y="41.0" width="353.2857142857142"
+                height="198.0" latexdraw:borderPos="outer"
+                stroke-width="2.0" stroke="#0033ff" fill="none"/>
         </g>
         <g latexdraw:type="joinedLines" id="id972348729">
-            <polyline points="680.0,120.0 680.0,140.0 "
+            <polyline
+                points="702.0,111.42857142857133 702.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="joinedLines" id="id1243750701">
-            <polyline points="720.0,120.0 720.0,140.0 "
+            <polyline
+                points="742.0,111.42857142857133 742.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="joinedLines" id="id531195694">
-            <polyline points="760.0,120.0 760.0,140.0 "
+            <polyline
+                points="782.0,111.42857142857133 782.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="joinedLines" id="id1788347826">
-            <polyline points="680.0,140.0 760.0,140.0 "
+            <polyline
+                points="702.0,131.42857142857133 782.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="joinedLines" id="id17341540">
-            <polyline points="760.0,140.0 840.0,140.0 "
+            <polyline
+                points="782.0,131.42857142857133 862.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" stroke-linecap="round"
                 stroke-dasharray="1, 7.291666666666667" latexdraw:rotationAngle="0.0"/>
         </g>
-        <g latexdraw:type="triangle" id="id980240482" latexdraw:points="839.0 120.0 859.0 120.0 859.0 160.0 859.0 160.0">
+        <g latexdraw:type="triangle" id="id980240482" latexdraw:points="861.0 111.42857142857133 881.0 111.42857142857133 881.0 151.42857142857133 881.0 151.42857142857133">
             <polygon
-                points="849.0,124.12310562561765 857.8819660112501,159.0 840.1180339887499,159.0"
+                points="871.0,115.55167705418899 879.8819660112501,150.42857142857133 862.1180339887499,150.42857142857133"
                 latexdraw:borderPos="outer" stroke-width="2.0"
                 stroke="black" fill="none"/>
         </g>
         <g latexdraw:type="bezierCurve" id="id1365676597">
             <path
-                d="M 843.0 135.0 C 818.0 105.0 883.0 110.0 855.0 136.0 "
+                d="M 865.0 126.42857142857133 C 840.0 96.42857142857133 905.0 101.42857142857133 877.0 127.42857142857133 "
                 stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="bezierCurve" id="id502546294">
             <path
-                d="M 858.0 141.0 C 896.8999999999996 92.66666666666652 803.6000000000004 93.0 839.0 139.0 "
+                d="M 880.0 132.42857142857133 C 918.8999999999996 84.09523809523785 825.6000000000004 84.42857142857133 861.0 130.42857142857133 "
                 stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="rectangle" id="id1733729569">
-            <rect x="680.05" y="120.05" width="39.9" height="19.9"
-                latexdraw:borderPos="outer" stroke-width="0.1"
-                stroke="black" fill="#cccccc"/>
-        </g>
-        <g latexdraw:type="rectangle" id="id337836568">
-            <rect x="600.05" y="140.05" width="39.9" height="19.9"
-                latexdraw:borderPos="outer" stroke-width="0.1"
-                stroke="black" fill="#cccccc"/>
+            <rect x="702.05" y="111.47857142857133" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#cccccc"/>
         </g>
         <g latexdraw:type="rectangle" id="id1960274504">
-            <rect x="720.05" y="120.05" width="39.9" height="19.9"
-                latexdraw:borderPos="outer" stroke-width="0.1"
-                stroke="black" fill="#666666"/>
-        </g>
-        <g latexdraw:type="rectangle" id="id1603300207">
-            <rect x="600.05" y="60.05" width="39.9" height="19.9"
-                latexdraw:borderPos="outer" stroke-width="0.1"
-                stroke="black" fill="#666666"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id446108946">
-            <polyline points="600.0,140.0 640.0,140.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1821457945">
-            <polyline points="600.0,160.0 640.0,160.0 "
-                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id1372480601">
-            <polyline points="600.0,60.0 640.0,60.0 " stroke-width="2.0"
-                stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id503768405">
-            <polyline points="600.0,60.0 640.0,60.0 " stroke-width="2.0"
-                stroke="black" latexdraw:rotationAngle="0.0"/>
-        </g>
-        <g latexdraw:type="joinedLines" id="id419339237">
-            <polyline points="600.0,80.0 640.0,80.0 " stroke-width="2.0"
-                stroke="black" latexdraw:rotationAngle="0.0"/>
+            <rect x="742.05" y="111.47857142857133" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#666666"/>
         </g>
         <g latexdraw:type="joinedLines" id="id1509897738">
-            <polyline points="680.0,120.0 680.0,140.0 "
+            <polyline
+                points="702.0,111.42857142857133 702.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="joinedLines" id="id157027819">
-            <polyline points="720.0,120.0 720.0,140.0 "
+            <polyline
+                points="742.0,111.42857142857133 742.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="joinedLines" id="id195277817">
-            <polyline points="680.0,140.0 760.0,140.0 "
+            <polyline
+                points="702.0,131.42857142857133 782.0,131.42857142857133 "
                 stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
         </g>
         <g latexdraw:type="bezierCurve" id="id1127499533">
             <path
-                d="M 645.0 157.0 C 682.0 184.0 701.0 155.0 699.0 146.0 "
+                d="M 615.5714285714286 220.57142857142856 C 678.2857142857143 229.0000000000001 778.714285714286 194.99999999999986 753.1428571428573 140.99999999999994 "
                 stroke-width="2.0" stroke="black" fill="none"
                 latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-1127499533)"/>
         </g>
         <g latexdraw:type="bezierCurve" id="id157260943">
-            <path d="M 644.0 74.0 C 724.0 54.0 745.0 93.0 740.0 120.0 "
+            <path
+                d="M 654.5714285714288 128.9999999999998 C 698.643003813435 66.74327122153196 711.7946611909648 97.6583850931676 721.285714285714 106.42857142857133 "
                 stroke-width="2.0" stroke="black" fill="none"
                 latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-157260943)"/>
         </g>
         <g latexdraw:type="text" id="id834415298" fill="black" latexdraw:position="bl">
-            <text x="560.0" y="175.0">$F$ slots</text>
+            <text x="575.0" y="155.8571428571429">$F$ </text>
         </g>
-        <g latexdraw:type="joinedLines" id="id306592415">
-            <polyline points="580.0,80.0 580.0,160.0 "
-                stroke-width="2.0" stroke="black"
+        <g latexdraw:type="circle" id="id503910944">
+            <circle cx="684.0" cy="121.42857142857133" r="15.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="black"/>
+        </g>
+        <g latexdraw:type="bezierCurve" id="id375140455">
+            <path
+                d="M 612.3809523809518 56.66666666666666 C 665.7142857142853 70.0 652.142857142857 223.5714285714284 592.380952380952 218.80952380952377 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1045261197">
+            <polyline
+                points="610.4761904761906,124.99999999999972 643.8095238095239,124.99999999999972 643.8095238095239,141.6666666666664 610.4761904761906,141.6666666666664 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1085785735">
+            <polyline
+                points="608.9719757961037,105.38636554164226 642.1172458985476,101.85052321665914 643.8851670610392,118.42315826788118 610.7398969585953,121.9590005928643 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="-0.10627520961785317"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1430204558">
+            <polyline
+                points="610.0405569554425,145.60664923828992 642.4427273884831,153.4303607832847 637.8165859017,170.3457317140909 606.1287011829451,161.80773445481032 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.23692160855999125"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1558385829">
+            <polyline
+                points="604.2214491408245,167.23721508472624 634.3440251143909,181.51102073801394 627.2071222877469,196.5723087247972 597.0845463141804,182.29850307150951 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.44251566791442964"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id2089542213">
+            <polyline
+                points="600.6521165201193,86.08437938458277 630.5507503897863,71.34725606153556 637.9193120513098,86.29657299636912 608.0206781816428,101.03369631941634 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="-0.45795382615209346"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id887702494">
+            <rect x="612.7642857142853" y="126.47857142857156"
+                width="30.614285714285778" height="14.185714285714221"
+                latexdraw:borderPos="outer" stroke-width="0.1"
+                stroke="black" fill="#cccccc"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1347295099" transform="rotate(67.6410825090918) translate(-183.7306341035902 -680.6693793803622)">
+            <rect x="585.1428571428573" y="196.714285714286"
+                width="29.428571428571104" height="13.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="#666666"/>
+        </g>
+        <g latexdraw:type="bezierCurve" id="id1871493081">
+            <path
+                d="M 600.7142857142854 125.0 C 603.5714285714283 152.79220779220785 593.2142857142857 175.99567099567093 583.5714285714282 179.28571428571422 "
+                stroke-width="2.0" stroke="black" fill="none"
                 latexdraw:rotationAngle="0.0"
-                marker-start="url(#arrow0-306592415)" marker-end="url(#arrow1-306592415)"/>
+                marker-start="url(#arrow0-1871493081)" marker-end="url(#arrow1-1871493081)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1054941731">
+            <polyline
+                points="230.09271530189957,149.66801149919323 203.3930657325005,159.83930657325016 208.47871326952887,173.1891313579498 235.1783628389279,163.017836283893 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="1.206817370285255"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1511569434">
+            <polyline
+                points="230.9083495740952,131.31089446441325 202.33780720956182,131.08586200308957 202.22529097889972,145.3711331853562 230.79583334343315,145.5961656466801 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="1.5786725443742515"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1347133959">
+            <polyline
+                points="235.79061646444717,114.31000718640465 208.2593501561695,106.67090343825835 204.43979828209612,120.436536592397 231.97106459037377,128.07564034054354 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="1.841508824506073"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1373980024">
+            <polyline
+                points="234.83870967741927,122.58064516129028 259.99999999999994,134.19354838709674 "
+                stroke-width="2.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-1373980024)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1008048198">
+            <polyline
+                points="232.25806451612897,139.35483870967738 258.0645161290322,138.7096774193548 "
+                stroke-width="2.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-1008048198)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1318292940">
+            <polyline
+                points="234.83870967741927,158.0645161290322 258.0645161290322,144.51612903225802 "
+                stroke-width="2.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-1318292940)"/>
+        </g>
+        <g latexdraw:type="text" id="id1262159564" fill="black" latexdraw:position="bl">
+            <text x="259.3548387096774" y="147.0967741935482">Containers</text>
         </g>
     </g>
     <defs>
@@ -278,14 +278,29 @@
                 d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
                 latexdraw:arrSizeNum="2.0" fill="black"/>
         </marker>
-        <marker overflow="visible" orient="auto" id="arrow0-306592415">
+        <marker overflow="visible" orient="auto" id="arrow0-1871493081">
             <path
                 d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
                 latexdraw:arrSizeNum="2.0" fill="black"/>
         </marker>
-        <marker overflow="visible" orient="auto" id="arrow1-306592415">
+        <marker overflow="visible" orient="auto" id="arrow1-1871493081">
             <path
                 d="M 0.0 0.0 L -4.652083333333334 1.6614583333333335 L -4.652083333333334 0.0 L -4.652083333333334 -1.6614583333333335 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1373980024">
+            <path
+                d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1008048198">
+            <path
+                d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1318292940">
+            <path
+                d="M 0.0 0.0 L 4.652083333333334 1.6614583333333335 L 4.652083333333334 0.0 L 4.652083333333334 -1.6614583333333335 z "
                 latexdraw:arrSizeNum="2.0" fill="black"/>
         </marker>
     </defs>
@@ -295,7 +310,7 @@
             <latexdraw:displayXScale>true</latexdraw:displayXScale>
             <latexdraw:displayYScale>true</latexdraw:displayYScale>
             <latexdraw:unit>CM</latexdraw:unit>
-            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:zoom>1.5500000000000005</latexdraw:zoom>
             <latexdraw:magneticGridStyle>CUSTOMISED</latexdraw:magneticGridStyle>
             <latexdraw:gridGap>20</latexdraw:gridGap>
             <latexdraw:magneticGrid>false</latexdraw:magneticGrid>
