@@ -64,7 +64,7 @@
     \@marksrequiredfalse%
     \xdef \@authorhead{\if@@draft \space \else #1\fi}%
 }}
-\def \@authorand{et}
+\def \@authorand{and}
 \newcommand \address[1]{\gdef \@address{\if@@draft \strut \else #1\fi}}
 \def \@firsthead{\relax}
 \def \@keywords{\relax}
@@ -74,7 +74,7 @@
     \@dokeywords%
 }
 \newcommand \@dokeywords{%
-    {\small \noindent \textbf{Mots-clefs :} \@keywords \par}%
+    {\small \noindent \textbf{Keywords :} \@keywords \par}%
     \vspace{10\p@}%
     \hrule \@height 1\p@%
     \vspace{10\p@}%
