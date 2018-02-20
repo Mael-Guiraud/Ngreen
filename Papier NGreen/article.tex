@@ -200,7 +200,7 @@ A contention buffer is filled by a batch arrival process of BE data. Then accord
   \hline
   \end{tabular}
   }
-  \vspace{1cm}
+  \vspace{0.75cm}
   \captionof{figure}{Parameters experiments, based on N-GREEN.}\label{fig:params}
 
   \end{minipage} 
@@ -282,13 +282,13 @@ Take a sequence of container of size $P$ on a ring with $n$ RRH. One can observe
 In addition if the sequence is increased by $ET$ free containers, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence to carry the traffic of a new RRH. Thus a period $P = (n+1)\times ET + RS$ is enough to carry the traffic of $n+1$ RRH.
  \end{proof}
 
-For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free pairs for the BE messages. To this end, the pairs must be filled with as much RRH as possible. Then, the free pairs are uniformly apportioned into the macro slot. Nevertheless, this is not always enough to ensure a good BE traffic latency. Indeed, with the previous parameters, with $ET = \frac{P}{2}$, $F = 10$ and $n = 5$, a pair is given to each antenna, and if all the RRH starts to emit in the same macro slots, a long sequence of reserved container will highly impact the latency of the BE traffic. The solution to this issue is to uniformly distribute the BBU-offset of the first RRH of a pair on the period. In this situation, the number of free pairs in a macro slot is balanced on the period, that allows a more regular BE traffic.
-
+For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free pairs for the BE messages. To this end, the pairs must be filled with as much RRH as possible. Then, the free pairs are uniformly apportioned into the macro slot. Nevertheless, this is not always enough to ensure a good BE traffic latency. Indeed, with the previous parameters, with $ET = \frac{P}{2}$, $F = 10$ and $n = 5$, a pair is given to each antenna, and if all the RRH starts to emit in the same macro slots, a long sequence of reserved container will highly impact the latency of the BE traffic. The solution to this issue is to uniformly distribute the BBU-offset of the first RRH of a pair on the period. In this situation, the number of free pairs in a macro slot is balanced on the period, that allows a more regular BE traffic. Fig.~\ref{fig:optimres} is a compariason between the cumulative distribution of the BE traffic latency with the FIFO rule or with the reservation algorithm proposed here. Since the previous parameters were too restrictive to put several RRH on the same pair, the parameters $ET$, and $n$ have been changed to respectively $200$ and $12$, to keep the same expected load.
    \begin{figure}[h]
 \centering
-      \includegraphics[scale=0.4]{optim.pdf}
-     \caption{Balancing algorithm performance on the N-GREEN optical ring.}   \label{fig:optimres}
+      \includegraphics[scale=0.3]{optim.pdf}
+     \caption{Impact of the reservation of the traffics.}   \label{fig:optimres}
   \end{figure}
+  The performances are excellent, since the C-RAN traffic have $0$ latency and the BE traffic have a better latency with reservation than with the FIFO rule. Indeed, our algorithm balanced the load of the C-RAN traffic over the period , that helps the BE traffic to not aggregate and create additional latency.
   
 
 %% In this section We present three algorithms that allows the C-RAN PDUs to have $0$ latency in the insertion buffers by establishing a static reservation of the slots in the period.
