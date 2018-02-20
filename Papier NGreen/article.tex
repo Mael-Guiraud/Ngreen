@@ -67,7 +67,7 @@ Il faut citer l'ANR NGREEN + n'importe quel truc de charoni qui explique leur ar
 \section{Introduction}
  \footnote{ This work was developed around the ANR N-GREEN project. The authors thanks all the Nokia Bell Labs team for their collaboration.} 
 
-Network providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS [huawei, demander a dominique C], establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
+Network providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things}, establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
 
 In this article, we study a Cloud RAN (C-RAN) application in the N-GREEN optical ring~\cite{ngreenarchitecture}. C-RAN is one of the major area of development for 5G, that consists in centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter. The latency of the messages between the BBU and the RRH is critical~\cite{bouguen2012lte,3gpp5g}. \todo{mettre les citations sur la latence dans la 5G, archi ngreen et concurents E2E à reprendre de nos précédents articles} The aim of the article is to propose simple methods
 to deterministically manage the periodic C-RAN traffic. In a previous work~\cite{dominique2018deterministic}, the authors have studied this problem for a star shaped network. Here the load due to the CRAN traffic is small which makes the problem easier. However, we add several new difficulties: the messages from RRHs are fragmented, there are other traffics which must not be to impacted and the broadcast and select policy of the ring makes reservation of a specific time for emission somewhat wasteful. 
@@ -157,9 +157,9 @@ A contention buffer is filled by a batch arrival process of BE data. Then accord
   
    \section{Performance evaluation of the N-GREEN optical ring}
    \label{sec:oportmethods}
-  One first study the latency of the C-RAN and BE traffics when the ring follows an opportunistic insertion policy: when a node wants to send some data, it uses the first free container available on the ring. If a node can not send a container, because there is no free slots or several containers must be send at the same time, the containers surplus are buffered in an insertion buffer.
-  Two different method to manage this insertion buffer are proposed here. The FIFO rule is compared to another method that uses two insertion buffers: one for the containers with BE, and another for the containers with C-RAN. If there is a free container on the ring, the node wants to empty the insertion buffer with C-RAN containers first.
-  Fig.~\ref{fig:resultopport} gives the cumulative distribution of both C-RAN and BE traffics latencies for the FIFO rule or the C-RAN first rule. On this experiment, the offsets of the RRH are randomly drawn in the period. The parameters of the ring are given by Fig.~\ref{fig:params}. Those results are computed over $100$ instances of optical rings that have ran during $10,000,000$ unit of time.
+  One first study the latency of the C-RAN and BE traffics when the ring follows an opportunistic insertion policy: when a node wants to send some data, it uses the first free container available on the ring. If a node can not send a container, because there is no free slots or several containers must be sent at the same time, the containers surplus are buffered in an insertion buffer.
+  Two different method to manage this insertion buffer are proposed here. The FIFO rule is compared to another method that uses two insertion buffers: one for the containers with BE, and another for the containers with C-RAN. If there is a free container on the ring, the node wants to empty the C-RAN insertion buffer first.
+  Fig.~\ref{fig:resultopport} gives the cumulative distribution of both C-RAN and BE traffics latencies for the FIFO rule and the "C-RAN first" rule. On this experiment, the offsets of the RRH are randomly drawn in the period. The parameters of the ring are given by Fig.~\ref{fig:params}. Those results are computed over $100$ instances of optical rings that have ran during $10,000,000$ unit of time.
   
     \begin{minipage}[b]{0.50\linewidth}
 
@@ -261,7 +261,7 @@ Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize th
 
 Some studies have already been made in order to set the offsets of C-RAN traffic for a different topology~\cite{dominique2018deterministic}. It appears that this problem is not hard in the N-GREEN optical ring. Therefore, one must try to set the offsets for C-RAN traffic such that the BE-traffic latency be not impacted too much.
 
-In order to ensure $0$ latency for C-RAN, the container needed to send a C-RAN message of the RRH $i$ must be free at time $m_i$. Consequently the node reserve the written access this container at time $m_i - RS$. Thus, during the last round trip of the container before $m_i$, the others nodes can only free the reserved containers.
+In order to ensure $0$ latency for C-RAN, the container needed to send a C-RAN message from the RRH $i$ must be free at time $m_i$. Consequently the node reserve the written access this container at time $m_i - RS$. Thus, during the last round trip of the container before $m_i$, the others nodes can only free the reserved containers.
 
 Since the computation time of the BBU is supposed to be zero (or a multiple of the period), setting the offsets $m_i$ for all RRH $i$ also sets the time $m_i + \omega(u,v)$, called {\bf BBU offset}. Because all the BBU are located in the same datacenter, setting the BBU-offsets without coliisions directly avoid the collision between the C-RAN. A {\bf macro slot} is a sequence of $F$ slots. A RRH can emit at most once every macro slot but requires two free containers (one for the uplink message, and one for the downlink one) to ensure zero latency. A {\bf pair} is a sequence of two consecutive slots in the macro slot, the messages of two RRH assigned to different pair can not collide.
 
@@ -269,14 +269,17 @@ Since the computation time of the BBU is supposed to be zero (or a multiple of t
  If several RRH shares a pair, it is possible to set the BBU-offsets such that there is no collisions between the messages if $P \ge n\times ET + RS$.
  \end{prop}
  \begin{proof}
- The objective is to show that proposition by induction.
- The model is simplified in order to study the behavior of one pair, thus, both of the RRH emits some containers every slots, during $ET$ slots in the period $P$.
+One show that proposition by induction.
+ In this proof, the model is simplified in order to study the behavior of one pair, thus, both of the RRH emit some containers every slots, during $ET$ slots in the period $P$.
  {\bf Base case:} 
- Consider $ET =  \frac{P}{2}$ and two RRH each connected to the nodes $A$ and $B$.
- We assume that $A$ starts to emit a time $1$ during $ET$ slots. The containers of $A$ arrive in $B$ during the interval $[\omega(A,B);\omega(A,B)+ET[$. Then, $B$ can immediately emits its containers at time $\omega(A,B)+ET$. Those containers from $B$ arrives at $A$ at during  $ [\omega(A,B)+ET + \omega(B,A) ;ET + RS + ET] = [ET+RS; RS + P] = [ET + RS; RS] \mod P$. When $A$ tries to emit in the next period, there is a collision at the interval $[1;RS]$ in the period between the two traffics from $A$ and $B$.
+ Consider $P =  2.ET+RS$ and two RRH each connected to the nodes $A$ and $B$.
+ We assume that $A$ starts to emit a time $1$ during $ET$ slots. The containers of $A$ arrive in $B$ during the interval $[\omega(A,B);\omega(A,B)+ET[$. Then, $B$ can immediately emits its containers at time $\omega(A,B)+ET$. Those containers from $B$ arrives at $A$ at during  $ [\omega(A,B)+ET + \omega(B,A) ;\omega(A,B)+ET + \omega(B,A) + ET ] = [ET+RS;2.ET+RS] = [ET + RS; P]$. Then, $A$ can emit in the next period, without collisions.
 Thus, for $n = 2$, it is possible to assign two RRH on the same pair if $P = 2\times ET + RS$.
  
- {\bf Induction step:}  \todo{A ecrire sans dessins}
+ {\bf Induction step:}  A ring can support $n$ RRH with a period of size $P= n\times ET + RS$. One must show that if there is one more RRH on the ring, the period must be at least $P = (n+1)\times ET + RS$. 
+ 
+Take a sequence of container of size $P$ on a ring with $n$ RRH. One can observe that this sequence is the same at every nodes, shifted of the length of the routes between the nodes. For instance, with two nodes $A$ and $B$, the sequence in $A$ is the same that the sequence in $B$ shifted by $\omega(A,B)$.
+In addition if the sequence is increased by $ET$ free containers, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence to carry the traffic of a new RRH. Thus a period $P = (n+1)\times ET + RS$ is enough to carry the traffic of $n+1$ RRH.
  \end{proof}
 
 For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free pairs for the BE messages. To this end, the pairs must be filled with as much RRH as possible. Then, the free pairs are uniformly apportioned into the macro slot. Nevertheless, this is not always enough to ensure a good BE traffic latency. Indeed, with the previous parameters, with $ET = \frac{P}{2}$, $F = 10$ and $n = 5$, a pair is given to each antenna, and if all the RRH starts to emit in the same macro slots, a long sequence of reserved container will highly impact the latency of the BE traffic. The solution to this issue is to uniformly distribute the BBU-offset of the first RRH of a pair on the period. In this situation, the number of free pairs in a macro slot is balanced on the period, that allows a more regular BE traffic.
