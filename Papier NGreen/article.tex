@@ -55,7 +55,6 @@
 
 
 \begin{abstract}
-
 % Nowadays challenge for network providers is to design some network which satisfies in the same time a good Quality of Services and a cheap hardware development.
 N-GREEN project has for goal to design a low cost optical ring technology with good performances (throughput, latency$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency without impacting the latency of others traffics. 
 \end{abstract}
@@ -147,7 +146,7 @@ A contention buffer is filled by a batch arrival process of BE data. Then accord
 %   
 
   
-   \section{Performance evaluation of the N-GREEN optical ring}
+   \section{Evaluation of the latency on the N-GREEN optical ring}
    \label{sec:oportmethods}
    
    
@@ -250,39 +249,70 @@ Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize th
 %   \todo{il manque une partie sur le travail de karim, }
 
 
-  \section{Deterministic approach for $0$ latency on C-RAN}
-\label{sec:deterministicalgorithms}
+\section{Deterministic approach for zero lantency} \label{sec:deterministicalgorithms}
 
-Some studies have already been made in order to set the offsets of C-RAN traffic for a different topology~\cite{dominique2018deterministic}. It appears that this problem is not hard in the N-GREEN optical ring. Therefore, one must try to set the offsets for C-RAN traffic such that the BE-traffic latency be not impacted too much.
+The complexity of finding good offsets for the C-RAN traffic for a different topology has been investigated in~\cite{dominique2018deterministic} without best effort traffic. This problem is easy in the N-GREEN optical ring (see the solution in this section). However, we must adapt our method to minimize the latency of the BE traffic.
 
-In order to ensure $0$ latency for C-RAN, the container needed to send a C-RAN message from the RRH $i$ must be free at time $m_i$. Consequently the node reserve the written access this container at time $m_i - RS$. Thus, during the last round trip of the container before $m_i$, the others nodes can only free the reserved containers.
+In order to ensure zero latency for the C-RAN traffic, the container needed to send a C-RAN message from the RRH $i$ must be free at time $m_i$. Hence the node $u_i$ \textbf{reserves} the container at time $m_i - RS$. A container which is reserved cannot be filled by any node except the one which has reserved it. We assume that the message sent by the RRH $i$ arrives at its BBU at time $m_i + \omega(u,v)$ and the answer is sent from the BBU at time $m_i + \omega(u,v) +1$ (with no waiting time).
 
-Since the computation time of the BBU is supposed to be zero (or a multiple of the period), setting the offsets $m_i$ for all RRH $i$ also sets the time $m_i + \omega(u,v)$, called {\bf BBU offset}. Because all the BBU are located in the same datacenter, setting the BBU-offsets without coliisions directly avoid the collision between the C-RAN. A {\bf macro slot} is a sequence of $F$ slots. A RRH can emit at most once every macro slot but requires two free containers (one for the uplink message, and one for the downlink one) to ensure zero latency. A {\bf pair} is a sequence of two consecutive slots in the macro slot, the messages of two RRH assigned to different pair can not collide.
+Recall that an RRH emits a packet every $F$ containers, during a time $ET$. 
+Thus if we divide the period $P$ into \textbf{slots} of $F$ containers, an RRH needs one container by slot.
+Since we do not allow waiting times for C-RAN traffic, each RRH uses a container at the same position in the slot during all the period. If an RRH emits at time $m_i < P$, then we say it has \textbf{position} $m_i \mod F$. If an RRH is at position $i$, then by construction, the corresponding $BBU$ is at position $i+1 \mod F$. 
+
+The problem we solve now is to find an \textbf{assignment} of values of the $m_i$ which is \textbf{valid}: no two RRH reserve the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time to wait for a 
+free container at any moment of the period and in any node of the ring must be minimized. 
+Remark that two RRHs which are not at the same position do not use the same container. Moreover, without loss of generality, 
+if we can fix the offsets of the RRHs to even positions so that they do not reserve the same containers, then it will fix the offsets of the BBUs to odd positions which do not reserve the same containers. 
+
+
+% 
+% Since the computation time of the BBU is supposed to be zero (or a multiple of the period), setting the offsets $m_i$ for all RRH $i$ also sets the time $m_i + \omega(u,v)$, called {\bf BBU offset}. Because all the BBU are located in the same datacenter, setting the BBU-offsets without collisions directly avoid the collision between the C-RAN. A {\bf macro slot} is a sequence of $F$ slots. A RRH can emit at most once every macro slot but requires two free containers (one for the uplink message, and one for the downlink one) to ensure zero latency. A {\bf pair} is a sequence of two consecutive slots in the macro slot, the messages of two RRH assigned to different pair can not collide.
+
 
 \begin{prop}
- If several RRH shares a pair, it is possible to set the BBU-offsets such that there is no collisions between the messages if $P \ge n\times ET + RS$.
- \end{prop}
- \begin{proof}
-One show that proposition by induction.
- In this proof, the model is simplified in order to study the behavior of one pair, thus, both of the RRH emit some containers every slots, during $ET$ slots in the period $P$.
- {\bf Base case:} 
- Consider $P =  2.ET+RS$ and two RRH each connected to the nodes $A$ and $B$.
- We assume that $A$ starts to emit a time $1$ during $ET$ slots. The containers of $A$ arrive in $B$ during the interval $[\omega(A,B);\omega(A,B)+ET[$. Then, $B$ can immediately emits its containers at time $\omega(A,B)+ET$. Those containers from $B$ arrives at $A$ at during  $ [\omega(A,B)+ET + \omega(B,A) ;\omega(A,B)+ET + \omega(B,A) + ET ] = [ET+RS;2.ET+RS] = [ET + RS; P]$. Then, $A$ can emit in the next period, without collisions.
-Thus, for $n = 2$, it is possible to assign two RRH on the same pair if $P = 2\times ET + RS$.
- 
- {\bf Induction step:}  A ring can support $n$ RRH with a period of size $P= n\times ET + RS$. One must show that if there is one more RRH on the ring, the period must be at least $P = (n+1)\times ET + RS$. 
- 
-Take a sequence of container of size $P$ on a ring with $n$ RRH. One can observe that this sequence is the same at every nodes, shifted of the length of the routes between the nodes. For instance, with two nodes $A$ and $B$, the sequence in $A$ is the same that the sequence in $B$ shifted by $\omega(A,B)$.
-In addition if the sequence is increased by $ET$ free containers, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence to carry the traffic of a new RRH. Thus a period $P = (n+1)\times ET + RS$ is enough to carry the traffic of $n+1$ RRH.
- \end{proof}
+There is an assignation for the offsets $m_1, \dots, m_k$ on the same position if  $k\times ET + RS \leq P$.
+\end{prop}
+\begin{proof}
+ First assume w.l.o.g. that the position of the offsets is zero. Then we fix $m_1 = 0$. We also assume that the 
+ nodes $u_1,\dots,u_n$ are in the order of the ring.  The last message emitted by $1$ arrives at $u_2$ at time $ET - 1 + \omega(u_1,u_2)$. Therefore we can fix $m_2 =  ET  + \omega(u_1,u_2)$. In general we can set $m_i = (i-1) \times ET + \omega(u_1,u_i)$ and all RRHs will use different containers at position $0$. The assignation is correct, if the second period 
+ RRH $1$ must emit something, a container is at position $0$ is free. It implies that  $k \times ET + \omega(u_1,u_1) \leq P$, which proves the proposition.
+\end{proof}
 
-For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free pairs for the BE messages. To this end, the pairs must be filled with as much RRH as possible. Then, the free pairs are uniformly apportioned into the macro slot. Nevertheless, this is not always enough to ensure a good BE traffic latency. Indeed, with the previous parameters, with $ET = \frac{P}{2}$, $F = 10$ and $n = 5$, a pair is given to each antenna, and if all the RRH starts to emit in the same macro slots, a long sequence of reserved container will highly impact the latency of the BE traffic. The solution to this issue is to uniformly distribute the BBU-offset of the first RRH of a pair on the period. In this situation, the number of free pairs in a macro slot is balanced on the period, that allows a more regular BE traffic. Fig.~\ref{fig:optimres} is a compariason between the cumulative distribution of the BE traffic latency with the FIFO rule or with the reservation algorithm proposed here. Since the previous parameters were too restrictive to put several RRH on the same pair, the parameters $ET$, and $n$ have been changed to respectively $200$ and $12$, to keep the same expected load.
+Remark that for each position which is used by some RRH, we lose $2RS$ because of the reservation of the RRH and of its BBU.
+Therefore to not waste bandwith, it is relevant to put as many RRH as possible on the same positions. Moreover unused position in an assignment are useful to guarantee a good latency to BE traffic. The unused positions can be chosen uniformly over a slot, to minimize the time to wait before a free slot, as in Fig.~\ref{}.  
+
+However, for some parameters, there is no unused position. In particular, with the current parameters of the N-GREEN ring,
+$ET = \frac{P}{2}$, $F = 10$ and $n = 5$. Hence there is a BBU or an RRH at each position. If all the RRHs start to emit in the first slot, then during $ET$ there will be no free containers anywhere on the ring, inducing a huge latency for $BE$-traffic. 
+To mitigate this problem, the free containers of each position must be uniformly distributed over the period as in Fig.~\ref{}.
+
+We present the cumulative of the latency of the BE traffic latency using the FIFO rule or the reservation algorithm proposed here in
+Fig.~\ref{fig:optimres}. Since the previous parameters were too restrictive to put several RRH on the same pair, the parameters $ET$, and $n$ have been changed to respectively $200$ and $12$, to keep the same expected load.
+% 
+% \begin{prop}
+%  If several RRH shares a pair, it is possible to set the BBU-offsets such that there is no collisions between the messages if $P \ge n\times ET + RS$.
+%  \end{prop}
+% %  \begin{proof}
+% One show that proposition by induction.
+%  In this proof, the model is simplified in order to study the behavior of one pair, thus, both of the RRH emit some containers every slots, during $ET$ slots in the period $P$.
+%  {\bf Base case:} 
+%  Consider $P =  2.ET+RS$ and two RRH each connected to the nodes $A$ and $B$.
+%  We assume that $A$ starts to emit a time $1$ during $ET$ slots. The containers of $A$ arrive in $B$ during the interval $[\omega(A,B);\omega(A,B)+ET[$. Then, $B$ can immediately emits its containers at time $\omega(A,B)+ET$. Those containers from $B$ arrives at $A$ at during  $ [\omega(A,B)+ET + \omega(B,A) ;\omega(A,B)+ET + \omega(B,A) + ET ] = [ET+RS;2.ET+RS] = [ET + RS; P]$. Then, $A$ can emit in the next period, without collisions.
+% Thus, for $n = 2$, it is possible to assign two RRH on the same pair if $P = 2\times ET + RS$.
+%  
+%  {\bf Induction step:}  A ring can support $n$ RRH with a period of size $P= n\times ET + RS$. One must show that if there is one more RRH on the ring, the period must be at least $P = (n+1)\times ET + RS$. 
+%  
+% Take a sequence of container of size $P$ on a ring with $n$ RRH. One can observe that this sequence is the same at every nodes, shifted of the length of the routes between the nodes. For instance, with two nodes $A$ and $B$, the sequence in $A$ is the same that the sequence in $B$ shifted by $\omega(A,B)$.
+% In addition if the sequence is increased by $ET$ free containers, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence to carry the traffic of a new RRH. Thus a period $P = (n+1)\times ET + RS$ is enough to carry the traffic of $n+1$ RRH.
+% %  \end{proof}
+% 
+% For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free pairs for the BE messages. To this end, the pairs must be filled with as much RRH as possible. Then, the free pairs are uniformly apportioned into the macro slot. Nevertheless, this is not always enough to ensure a good BE traffic latency. Indeed, with the previous parameters, with $ET = \frac{P}{2}$, $F = 10$ and $n = 5$, a pair is given to each antenna, and if all the RRH starts to emit in the same macro slots, a long sequence of reserved container will highly impact the latency of the BE traffic. The solution to this issue is to uniformly distribute the BBU-offset of the first RRH of a pair on the period. In this situation, the number of free pairs in a macro slot is balanced on the period, that allows a more regular BE traffic. Fig.~\ref{fig:optimres} is a compariason between the cumulative distribution of the BE traffic latency with the FIFO rule or with the reservation algorithm proposed here. Since the previous parameters were too restrictive to put several RRH on the same pair, the parameters $ET$, and $n$ have been changed to respectively $200$ and $12$, to keep the same expected load.
    \begin{figure}[h]
 \centering
       \includegraphics[scale=0.3]{optim.pdf}
      \caption{Impact of the reservation of the traffics.}   \label{fig:optimres}
   \end{figure}
-  The performances are excellent, since the C-RAN traffic have $0$ latency and the BE traffic have a better latency with reservation than with the FIFO rule. Indeed, our algorithm balanced the load of the C-RAN traffic over the period , that helps the BE traffic to not aggregate and create additional latency.
+  
+  The performance of the reservation algorithm is excellent, since the C-RAN traffic have $0$ latency and the BE traffic have a better latency with reservation than with the FIFO rule. It is due to the balancing of the load of the C-RAN traffic over the period, that guarantee a more regular bandwidth to the BE traffic.
   
 
 %% In this section We present three algorithms that allows the C-RAN PDUs to have $0$ latency in the insertion buffers by establishing a static reservation of the slots in the period.
