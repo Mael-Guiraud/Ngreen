@@ -62,9 +62,8 @@ N-GREEN project has for goal to design a low cost optical ring technology with g
 
 
 \section{Introduction}
- \footnote{ This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} 
 
-Network providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things}, establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
+Network\footnote{ This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things}, establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
 
 In this article, we study a Cloud RAN (C-RAN) application in the N-GREEN optical ring described in~\cite{ngreenarchitecture}. C-RAN is one of the major area of development for 5G, that consists in centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter. The latency of the messages between the BBU and the RRH is critical~\cite{bouguen2012lte,3gpp5g}. In this article we propose a SDN approach to deterministically manage the periodic C-RAN traffic by chosing emmission timing and reserving containers on the ring. In a previous work~\cite{dominique2018deterministic}, the authors have studied this problem for a star shaped network. Here the load due to the CRAN traffic is small which makes the problem easier. However, we add several new difficulties: the messages from RRHs are fragmented, there are other traffics which must not be impacted and the broadcast and select policy of the ring makes reservation of a specific time for emission somewhat wasteful. 
 
@@ -192,9 +191,11 @@ A contention buffer is filled by a batch arrival process of BE data. Then accord
   \hline
   Number of nodes $n$ & $5$  \tabularnewline
   \hline
+   Load induced by C-RAN & $50\%$  \tabularnewline
+  \hline
   \end{tabular}
   }
-  \vspace{0.75cm}
+  \vspace{0.55cm}
   \captionof{figure}{Parameters experiments from the N-GREEN architecture}\label{fig:params}
 
   \end{minipage} 
@@ -276,12 +277,33 @@ Take a sequence of container of size $P$ on a ring with $n$ RRH. One can observe
 In addition if the sequence is increased by $ET$ free containers, the periodic emissions of all others nodes are not impacted, there is just a new interval in the sequence to carry the traffic of a new RRH. Thus a period $P = (n+1)\times ET + RS$ is enough to carry the traffic of $n+1$ RRH.
  \end{proof}
 
-For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free pairs for the BE messages. To this end, the pairs must be filled with as much RRH as possible. Then, the free pairs are uniformly apportioned into the macro slot. Nevertheless, this is not always enough to ensure a good BE traffic latency. Indeed, with the previous parameters, with $ET = \frac{P}{2}$, $F = 10$ and $n = 5$, a pair is given to each antenna, and if all the RRH starts to emit in the same macro slots, a long sequence of reserved container will highly impact the latency of the BE traffic. The solution to this issue is to uniformly distribute the BBU-offset of the first RRH of a pair on the period. In this situation, the number of free pairs in a macro slot is balanced on the period, that allows a more regular BE traffic. Fig.~\ref{fig:optimres} is a compariason between the cumulative distribution of the BE traffic latency with the FIFO rule or with the reservation algorithm proposed here. Since the previous parameters were too restrictive to put several RRH on the same pair, the parameters $ET$, and $n$ have been changed to respectively $200$ and $12$, to keep the same expected load.
-   \begin{figure}[h]
+For the purpose of decreasing the BE traffic latency, it is interesting to regularly ensure some free containers for the BE messages. The first idea, illustrated by Fig.~\ref{fig:repart1} is to uniformly apportion the first BBU-offset of each pair in order to balance the load of the C-RAN traffic over the period. The reservation of the containers for the C-RAN traffic increases the load incurred for the BE traffic, since it does not allow the nodes to use some empty containers to send some BE messages. Thus the pairs must be filled with as much RRH as possible.. Then, the free pairs are uniformly apportioned into the macro slot, as illustrated in Fig.~\ref{fig:repart2}. Fig.~\ref{fig:optimres} is a comparison between the cumulative distribution of the BE traffic latency with the FIFO rule or with the reservation algorithm proposed here. Since the previous parameters were too restrictive to put several RRH on the same pair, the parameters $ET$, and $n$ have been changed to respectively $200$ and $12$, to keep the same expected load.
+
+ 
+
+  \begin{minipage}[b]{0.4\linewidth}
 \centering
-      \includegraphics[scale=0.3]{optim.pdf}
-     \caption{Impact of the reservation of the traffics.}   \label{fig:optimres}
-  \end{figure}
+      \includegraphics[scale=0.25]{optim.pdf}
+     \captionof{figure}{Impact of the reservation of the traffics.}   \label{fig:optimres}
+  \end{minipage} 
+    \begin{minipage}[b]{0.30\linewidth}
+        \begin{center}
+      \includegraphics[scale=0.55]{repart1}
+      \vspace{1cm}
+      \captionof{figure}{Repartition in the period}    \label{fig:repart1}
+      \end{center} 
+  \end{minipage}
+    \begin{minipage}[b]{0.3\linewidth}
+        \begin{center}
+      \includegraphics[scale=0.55]{repart2}
+            \vspace{0.5cm}
+      \captionof{figure}{Repartition in the macro slot.}    \label{fig:repart2}
+      \end{center} 
+  \end{minipage}
+
+
+
+
   The performances are excellent, since the C-RAN traffic have $0$ latency and the BE traffic have a better latency with reservation than with the FIFO rule. Indeed, our algorithm balanced the load of the C-RAN traffic over the period , that helps the BE traffic to not aggregate and create additional latency.
   
 
