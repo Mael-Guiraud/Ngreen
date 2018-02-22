@@ -62,7 +62,7 @@ N-GREEN project has for goal to design a low cost optical ring technology with g
 
 \section{Introduction}
 
-Network\footnote{ This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things}, establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
+Network\footnote{This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} providers have to design inexpensive networks while the amount of data and online applications significantly increases. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things}, establishes end to end connection (E2E) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performances and the hardware it requires scales linearly with the number of nodes while E2E scales quadratically making it impractical for more than a few nodes.
 
 In this article, we study a Cloud RAN (C-RAN) application in the N-GREEN optical ring described in~\cite{ngreenarchitecture}. C-RAN is one of the major area of development for 5G, that consists in centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter. The latency of the messages between the BBU and the RRH is critical~\cite{bouguen2012lte,3gpp5g}. In this article we propose a SDN approach to deterministically manage the periodic C-RAN traffic by chosing emmission timing and reserving containers on the ring. In a previous work~\cite{dominique2018deterministic}, the authors have studied this problem for a star shaped network. Here the load due to the CRAN traffic is small which makes the problem easier. However, we add several new difficulties: the messages from RRHs are fragmented, there are other traffics which must not be impacted and the broadcast and select policy of the ring makes reservation of a specific time for emission somewhat wasteful. 
 
@@ -149,9 +149,8 @@ A contention buffer is filled by a batch arrival process of BE data. Then accord
    \label{sec:oportmethods}
    
    
-   
   One first study the latency of the C-RAN and BE traffics when the ring follows an opportunistic insertion policy: when a node wants to send some data, it uses the first free container available on the ring. 
-  If a node cannot send a container, because there is no free slot or because several containers must be sent at the same time, the remaining containers are stored in an insertion buffer. Two different methods to manage this insertion buffer are experimentally compared. The FIFO rule is compared to another method that uses two insertion buffers: one for the containers with BE data, and another for the containers with C-RAN data. If there is a free container on the ring, the node empties the C-RAN insertion buffer first.  Fig.~\ref{fig:resultopport} gives the cumulative distribution of both C-RAN and BE traffics latencies for the FIFO rule and the "C-RAN first" rule. On this experiment, the offsets of the RRH are not fixed but randomly drawn in the period. The experimental parameters are given by Fig.~\ref{fig:params} and chosen following~\cite{ngreenarchitecture}. The results are computed over $100$ instances of optical rings that are simulated during $10,000,000$ unit of time.
+  If a node cannot send a container, because there is no free slot or because several containers must be sent at the same time, the remaining containers are stored in an insertion buffer. Two different methods to manage this insertion buffer are experimentally compared. The FIFO rule is compared to another method that uses two insertion buffers: one for the containers with BE data, and another for the containers with C-RAN data. If there is a free container on the ring, the node empties the C-RAN insertion buffer first.  Fig.~\ref{fig:resultopport} gives the cumulative distribution of both C-RAN and BE traffics latencies for the FIFO rule and the "C-RAN first" rule. On this experiment, the offsets of the RRH are not fixed but randomly drawn in the period. The experimental\footnote{The source code in C of the experiments can be found on the author's webpage~\cite{webpage}.} parameters are given by Fig.~\ref{fig:params} and chosen following~\cite{ngreenarchitecture}. The results are computed over $100$ instances of optical rings that are simulated during $10,000,000$ unit of time.
   
     \begin{minipage}[b]{0.50\linewidth}
 
@@ -190,11 +189,13 @@ A contention buffer is filled by a batch arrival process of BE data. Then accord
   \hline
   Number of nodes $n$ & $5$  \tabularnewline
   \hline
-   Load induced by C-RAN & $50\%$  \tabularnewline
+   Load induced by C-RAN traffic & $50\%$  \tabularnewline
+  \hline
+    Load induced by BE traffic & $40\%$  \tabularnewline
   \hline
   \end{tabular}
   }
-  \vspace{0.55cm}
+  \vspace{0.3cm}
   \captionof{figure}{Experimental parameters from the N-GREEN architecture}\label{fig:params}
 
   \end{minipage} 
