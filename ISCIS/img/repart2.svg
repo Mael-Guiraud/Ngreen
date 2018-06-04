@@ -1,0 +1,404 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <g>
+        <g latexdraw:type="rectangle" id="id2077406213">
+            <rect x="200.5" y="59.666666666666515" width="299.0"
+                height="99.0" latexdraw:borderPos="outer"
+                stroke-width="1.0" stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id157522556">
+            <polyline
+                points="200.0,79.16666666666652 500.0,79.16666666666652 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id751045143">
+            <polyline
+                points="340.0,199.16666666666652 340.0,179.16666666666652 "
+                stroke-width="1.4000000000000001" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-751045143)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id389722626">
+            <rect x="240.05" y="59.2166666666665" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern389722626)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1588682439">
+            <rect x="200.5" y="219.66666666666652" width="299.0"
+                height="99.0" latexdraw:borderPos="outer"
+                stroke-width="1.0" stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1557081793">
+            <polyline
+                points="200.0,239.16666666666652 500.0,239.16666666666652 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id38511575">
+            <polyline
+                points="500.0,279.1666666666665 200.0,279.1666666666665 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id583009745">
+            <polyline
+                points="500.0,299.1666666666665 200.0,299.1666666666665 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1875223681">
+            <rect x="240.05" y="219.2166666666667" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern1875223681)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id778052383">
+            <rect x="340.05" y="219.2166666666667" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern778052383)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id589399638">
+            <rect x="200.05" y="59.2166666666665" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id677352898">
+            <rect x="200.05" y="219.2166666666667" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="text" id="id2030632" fill="black" latexdraw:position="bl">
+            <text x="189.16666666666652" y="49.166666666666515"> Ring Size</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id903054595">
+            <rect x="240.05" y="259.2166666666665" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern903054595)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id522179541">
+            <rect x="340.05" y="259.2166666666665" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern522179541)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1589041593">
+            <rect x="200.05" y="259.2166666666665" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id291769204">
+            <rect x="240.05" y="299.2166666666665" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern291769204)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id726624425">
+            <rect x="200.05" y="299.2166666666665" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1041942570">
+            <polyline
+                points="500.0,259.1666666666665 200.0,259.1666666666665 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id2072744515">
+            <polyline
+                points="195.0,71.6666666666665 162.5,106.6666666666665 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-2072744515)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id2062176407">
+            <polyline
+                points="198.33333333333331,90.83333333333317 164.16666666666666,109.1666666666665 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-2062176407)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id697463574">
+            <polyline
+                points="196.66666666666666,114.1666666666665 166.66666666666666,114.99999999999983 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-697463574)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1608015159">
+            <polyline
+                points="195.0,132.49999999999983 168.33333333333331,120.83333333333316 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-1608015159)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id203754608">
+            <polyline
+                points="192.5,149.99999999999983 164.16666666666666,121.6666666666665 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow0-203754608)"/>
+        </g>
+        <g latexdraw:type="text" id="id137200057" fill="black" latexdraw:position="bl">
+            <text x="93.33333333333363" y="116.66666666666664">Positions</text>
+        </g>
+        <g latexdraw:type="text" id="id477295016" fill="black" latexdraw:position="bl">
+            <text x="155.83333333333317" y="273.33333333333314">Slot</text>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1471356658">
+            <polyline
+                points="193.33333333333331,319.99999999999994 193.33333333333331,220.83333333333348 "
+                stroke-width="1.0999999999999999" stroke="black"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-1471356658)" marker-end="url(#arrow1-1471356658)"/>
+        </g>
+        <g latexdraw:type="text" id="id1850277438" fill="black" latexdraw:position="bl">
+            <text x="272.49999999999966" y="48.33333333333333">$ET$</text>
+        </g>
+        <g latexdraw:type="joinedLines" id="id558053771">
+            <polyline
+                points="240.0,54.99999999999999 338.3333333333333,54.99999999999999 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-558053771)" marker-end="url(#arrow1-558053771)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id696977804">
+            <polyline
+                points="198.33333333333331,55.0 240.83333333333326,54.16666666666666 "
+                stroke-width="1.0" stroke="black"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-696977804)" marker-end="url(#arrow1-696977804)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1945988404">
+            <polyline
+                points="200.0,99.16666666666652 500.0,99.16666666666652 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1029070596">
+            <rect x="240.05" y="79.2166666666665" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern1029070596)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1153145844">
+            <rect x="200.05" y="79.2166666666665" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1013316647">
+            <polyline
+                points="200.0,119.16666666666652 500.0,119.16666666666652 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1373853852">
+            <rect x="240.05" y="99.2166666666665" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern1373853852)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id393944322">
+            <rect x="200.05" y="99.2166666666665" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id2074477910">
+            <polyline
+                points="200.0,139.16666666666652 500.0,139.16666666666652 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id64588773">
+            <rect x="240.05" y="119.2166666666665" width="99.9"
+                height="19.900000000000013" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern64588773)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1364445611">
+            <rect x="200.05" y="119.2166666666665" width="39.9"
+                height="19.900000000000013" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id325507410">
+            <polyline
+                points="200.0,159.16666666666652 500.0,159.16666666666652 "
+                stroke-width="0.6" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1126673141">
+            <rect x="240.05" y="139.21666666666653" width="99.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="url(#pattern1126673141)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id852262979">
+            <rect x="200.05" y="139.21666666666653" width="39.9"
+                height="19.9" latexdraw:borderPos="outer"
+                stroke-width="0.1" stroke="black" fill="#ff3333"/>
+        </g>
+    </g>
+    <defs>
+        <marker overflow="visible" orient="auto" id="arrow0-751045143">
+            <path
+                d="M 0.0 0.0 L 5.445833333333333 1.9449404761904758 L 5.445833333333333 0.0 L 5.445833333333333 -1.9449404761904758 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern389722626" x="0"
+            y="0" width="340" height="79">
+            <rect width="340" height="79" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 59.1666666666665 L 240.0 79.1666666666665 M 247.65555555555557 59.1666666666665 L 247.65555555555557 79.1666666666665 M 255.31111111111113 59.1666666666665 L 255.31111111111113 79.1666666666665 M 262.9666666666667 59.1666666666665 L 262.9666666666667 79.1666666666665 M 270.62222222222226 59.1666666666665 L 270.62222222222226 79.1666666666665 M 278.2777777777778 59.1666666666665 L 278.2777777777778 79.1666666666665 M 285.9333333333334 59.1666666666665 L 285.9333333333334 79.1666666666665 M 293.58888888888896 59.1666666666665 L 293.58888888888896 79.1666666666665 M 301.2444444444445 59.1666666666665 L 301.2444444444445 79.1666666666665 M 308.9000000000001 59.1666666666665 L 308.9000000000001 79.1666666666665 M 316.55555555555566 59.1666666666665 L 316.55555555555566 79.1666666666665 M 324.2111111111112 59.1666666666665 L 324.2111111111112 79.1666666666665 M 331.8666666666668 59.1666666666665 L 331.8666666666668 79.1666666666665 M 339.52222222222235 59.1666666666665 L 339.52222222222235 79.1666666666665 M 240.0 59.1666666666665 L 340.0 59.1666666666665 M 240.0 66.82222222222205 L 340.0 66.82222222222205 M 240.0 74.4777777777776 L 340.0 74.4777777777776 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern1875223681" x="0"
+            y="0" width="340" height="239">
+            <rect width="340" height="239" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 219.16666666666669 L 240.0 239.16666666666669 M 247.65555555555557 219.16666666666669 L 247.65555555555557 239.16666666666669 M 255.31111111111113 219.16666666666669 L 255.31111111111113 239.16666666666669 M 262.9666666666667 219.16666666666669 L 262.9666666666667 239.16666666666669 M 270.62222222222226 219.16666666666669 L 270.62222222222226 239.16666666666669 M 278.2777777777778 219.16666666666669 L 278.2777777777778 239.16666666666669 M 285.9333333333334 219.16666666666669 L 285.9333333333334 239.16666666666669 M 293.58888888888896 219.16666666666669 L 293.58888888888896 239.16666666666669 M 301.2444444444445 219.16666666666669 L 301.2444444444445 239.16666666666669 M 308.9000000000001 219.16666666666669 L 308.9000000000001 239.16666666666669 M 316.55555555555566 219.16666666666669 L 316.55555555555566 239.16666666666669 M 324.2111111111112 219.16666666666669 L 324.2111111111112 239.16666666666669 M 331.8666666666668 219.16666666666669 L 331.8666666666668 239.16666666666669 M 339.52222222222235 219.16666666666669 L 339.52222222222235 239.16666666666669 M 240.0 219.16666666666669 L 340.0 219.16666666666669 M 240.0 226.82222222222225 L 340.0 226.82222222222225 M 240.0 234.47777777777782 L 340.0 234.47777777777782 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern778052383" x="0"
+            y="0" width="440" height="239">
+            <rect width="440" height="239" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 340.0 219.16666666666669 L 340.0 239.16666666666669 M 347.65555555555557 219.16666666666669 L 347.65555555555557 239.16666666666669 M 355.31111111111113 219.16666666666669 L 355.31111111111113 239.16666666666669 M 362.9666666666667 219.16666666666669 L 362.9666666666667 239.16666666666669 M 370.62222222222226 219.16666666666669 L 370.62222222222226 239.16666666666669 M 378.2777777777778 219.16666666666669 L 378.2777777777778 239.16666666666669 M 385.9333333333334 219.16666666666669 L 385.9333333333334 239.16666666666669 M 393.58888888888896 219.16666666666669 L 393.58888888888896 239.16666666666669 M 401.2444444444445 219.16666666666669 L 401.2444444444445 239.16666666666669 M 408.9000000000001 219.16666666666669 L 408.9000000000001 239.16666666666669 M 416.55555555555566 219.16666666666669 L 416.55555555555566 239.16666666666669 M 424.2111111111112 219.16666666666669 L 424.2111111111112 239.16666666666669 M 431.8666666666668 219.16666666666669 L 431.8666666666668 239.16666666666669 M 439.52222222222235 219.16666666666669 L 439.52222222222235 239.16666666666669 M 340.0 219.16666666666669 L 440.0 219.16666666666669 M 340.0 226.82222222222225 L 440.0 226.82222222222225 M 340.0 234.47777777777782 L 440.0 234.47777777777782 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern903054595" x="0"
+            y="0" width="340" height="279">
+            <rect width="340" height="279" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 259.1666666666665 L 240.0 279.1666666666665 M 247.65555555555557 259.1666666666665 L 247.65555555555557 279.1666666666665 M 255.31111111111113 259.1666666666665 L 255.31111111111113 279.1666666666665 M 262.9666666666667 259.1666666666665 L 262.9666666666667 279.1666666666665 M 270.62222222222226 259.1666666666665 L 270.62222222222226 279.1666666666665 M 278.2777777777778 259.1666666666665 L 278.2777777777778 279.1666666666665 M 285.9333333333334 259.1666666666665 L 285.9333333333334 279.1666666666665 M 293.58888888888896 259.1666666666665 L 293.58888888888896 279.1666666666665 M 301.2444444444445 259.1666666666665 L 301.2444444444445 279.1666666666665 M 308.9000000000001 259.1666666666665 L 308.9000000000001 279.1666666666665 M 316.55555555555566 259.1666666666665 L 316.55555555555566 279.1666666666665 M 324.2111111111112 259.1666666666665 L 324.2111111111112 279.1666666666665 M 331.8666666666668 259.1666666666665 L 331.8666666666668 279.1666666666665 M 339.52222222222235 259.1666666666665 L 339.52222222222235 279.1666666666665 M 240.0 259.1666666666665 L 340.0 259.1666666666665 M 240.0 266.8222222222221 L 340.0 266.8222222222221 M 240.0 274.47777777777765 L 340.0 274.47777777777765 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern522179541" x="0"
+            y="0" width="440" height="279">
+            <rect width="440" height="279" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 340.0 259.1666666666665 L 340.0 279.1666666666665 M 347.65555555555557 259.1666666666665 L 347.65555555555557 279.1666666666665 M 355.31111111111113 259.1666666666665 L 355.31111111111113 279.1666666666665 M 362.9666666666667 259.1666666666665 L 362.9666666666667 279.1666666666665 M 370.62222222222226 259.1666666666665 L 370.62222222222226 279.1666666666665 M 378.2777777777778 259.1666666666665 L 378.2777777777778 279.1666666666665 M 385.9333333333334 259.1666666666665 L 385.9333333333334 279.1666666666665 M 393.58888888888896 259.1666666666665 L 393.58888888888896 279.1666666666665 M 401.2444444444445 259.1666666666665 L 401.2444444444445 279.1666666666665 M 408.9000000000001 259.1666666666665 L 408.9000000000001 279.1666666666665 M 416.55555555555566 259.1666666666665 L 416.55555555555566 279.1666666666665 M 424.2111111111112 259.1666666666665 L 424.2111111111112 279.1666666666665 M 431.8666666666668 259.1666666666665 L 431.8666666666668 279.1666666666665 M 439.52222222222235 259.1666666666665 L 439.52222222222235 279.1666666666665 M 340.0 259.1666666666665 L 440.0 259.1666666666665 M 340.0 266.8222222222221 L 440.0 266.8222222222221 M 340.0 274.47777777777765 L 440.0 274.47777777777765 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern291769204" x="0"
+            y="0" width="340" height="319">
+            <rect width="340" height="319" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 299.1666666666665 L 240.0 319.1666666666665 M 247.65555555555557 299.1666666666665 L 247.65555555555557 319.1666666666665 M 255.31111111111113 299.1666666666665 L 255.31111111111113 319.1666666666665 M 262.9666666666667 299.1666666666665 L 262.9666666666667 319.1666666666665 M 270.62222222222226 299.1666666666665 L 270.62222222222226 319.1666666666665 M 278.2777777777778 299.1666666666665 L 278.2777777777778 319.1666666666665 M 285.9333333333334 299.1666666666665 L 285.9333333333334 319.1666666666665 M 293.58888888888896 299.1666666666665 L 293.58888888888896 319.1666666666665 M 301.2444444444445 299.1666666666665 L 301.2444444444445 319.1666666666665 M 308.9000000000001 299.1666666666665 L 308.9000000000001 319.1666666666665 M 316.55555555555566 299.1666666666665 L 316.55555555555566 319.1666666666665 M 324.2111111111112 299.1666666666665 L 324.2111111111112 319.1666666666665 M 331.8666666666668 299.1666666666665 L 331.8666666666668 319.1666666666665 M 339.52222222222235 299.1666666666665 L 339.52222222222235 319.1666666666665 M 240.0 299.1666666666665 L 340.0 299.1666666666665 M 240.0 306.8222222222221 L 340.0 306.8222222222221 M 240.0 314.47777777777765 L 340.0 314.47777777777765 "/>
+            </g>
+        </pattern>
+        <marker overflow="visible" orient="auto" id="arrow0-2072744515">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-2062176407">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-697463574">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1608015159">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-203754608">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1471356658">
+            <path
+                d="M 0.0 0.0 L 8.967424242424242 3.202651515151515 L 8.967424242424242 0.0 L 8.967424242424242 -3.202651515151515 z "
+                latexdraw:arrSizeNum="4.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-1471356658">
+            <path
+                d="M 0.0 0.0 L -8.967424242424242 3.202651515151515 L -8.967424242424242 0.0 L -8.967424242424242 -3.202651515151515 z "
+                latexdraw:arrSizeNum="4.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-558053771">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-558053771">
+            <path
+                d="M 0.0 0.0 L -6.504166666666667 2.322916666666667 L -6.504166666666667 0.0 L -6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-696977804">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-696977804">
+            <path
+                d="M 0.0 0.0 L -6.504166666666667 2.322916666666667 L -6.504166666666667 0.0 L -6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern1029070596" x="0"
+            y="0" width="340" height="99">
+            <rect width="340" height="99" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 79.1666666666665 L 240.0 99.1666666666665 M 247.65555555555557 79.1666666666665 L 247.65555555555557 99.1666666666665 M 255.31111111111113 79.1666666666665 L 255.31111111111113 99.1666666666665 M 262.9666666666667 79.1666666666665 L 262.9666666666667 99.1666666666665 M 270.62222222222226 79.1666666666665 L 270.62222222222226 99.1666666666665 M 278.2777777777778 79.1666666666665 L 278.2777777777778 99.1666666666665 M 285.9333333333334 79.1666666666665 L 285.9333333333334 99.1666666666665 M 293.58888888888896 79.1666666666665 L 293.58888888888896 99.1666666666665 M 301.2444444444445 79.1666666666665 L 301.2444444444445 99.1666666666665 M 308.9000000000001 79.1666666666665 L 308.9000000000001 99.1666666666665 M 316.55555555555566 79.1666666666665 L 316.55555555555566 99.1666666666665 M 324.2111111111112 79.1666666666665 L 324.2111111111112 99.1666666666665 M 331.8666666666668 79.1666666666665 L 331.8666666666668 99.1666666666665 M 339.52222222222235 79.1666666666665 L 339.52222222222235 99.1666666666665 M 240.0 79.1666666666665 L 340.0 79.1666666666665 M 240.0 86.82222222222205 L 340.0 86.82222222222205 M 240.0 94.4777777777776 L 340.0 94.4777777777776 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern1373853852" x="0"
+            y="0" width="340" height="119">
+            <rect width="340" height="119" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 99.1666666666665 L 240.0 119.1666666666665 M 247.65555555555557 99.1666666666665 L 247.65555555555557 119.1666666666665 M 255.31111111111113 99.1666666666665 L 255.31111111111113 119.1666666666665 M 262.9666666666667 99.1666666666665 L 262.9666666666667 119.1666666666665 M 270.62222222222226 99.1666666666665 L 270.62222222222226 119.1666666666665 M 278.2777777777778 99.1666666666665 L 278.2777777777778 119.1666666666665 M 285.9333333333334 99.1666666666665 L 285.9333333333334 119.1666666666665 M 293.58888888888896 99.1666666666665 L 293.58888888888896 119.1666666666665 M 301.2444444444445 99.1666666666665 L 301.2444444444445 119.1666666666665 M 308.9000000000001 99.1666666666665 L 308.9000000000001 119.1666666666665 M 316.55555555555566 99.1666666666665 L 316.55555555555566 119.1666666666665 M 324.2111111111112 99.1666666666665 L 324.2111111111112 119.1666666666665 M 331.8666666666668 99.1666666666665 L 331.8666666666668 119.1666666666665 M 339.52222222222235 99.1666666666665 L 339.52222222222235 119.1666666666665 M 240.0 99.1666666666665 L 340.0 99.1666666666665 M 240.0 106.82222222222205 L 340.0 106.82222222222205 M 240.0 114.4777777777776 L 340.0 114.4777777777776 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern64588773" x="0"
+            y="0" width="340" height="139">
+            <rect width="340" height="139" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 119.1666666666665 L 240.0 139.16666666666652 M 247.65555555555557 119.1666666666665 L 247.65555555555557 139.16666666666652 M 255.31111111111113 119.1666666666665 L 255.31111111111113 139.16666666666652 M 262.9666666666667 119.1666666666665 L 262.9666666666667 139.16666666666652 M 270.62222222222226 119.1666666666665 L 270.62222222222226 139.16666666666652 M 278.2777777777778 119.1666666666665 L 278.2777777777778 139.16666666666652 M 285.9333333333334 119.1666666666665 L 285.9333333333334 139.16666666666652 M 293.58888888888896 119.1666666666665 L 293.58888888888896 139.16666666666652 M 301.2444444444445 119.1666666666665 L 301.2444444444445 139.16666666666652 M 308.9000000000001 119.1666666666665 L 308.9000000000001 139.16666666666652 M 316.55555555555566 119.1666666666665 L 316.55555555555566 139.16666666666652 M 324.2111111111112 119.1666666666665 L 324.2111111111112 139.16666666666652 M 331.8666666666668 119.1666666666665 L 331.8666666666668 139.16666666666652 M 339.52222222222235 119.1666666666665 L 339.52222222222235 139.16666666666652 M 240.0 119.1666666666665 L 340.0 119.1666666666665 M 240.0 126.82222222222205 L 340.0 126.82222222222205 M 240.0 134.47777777777762 L 340.0 134.47777777777762 "/>
+            </g>
+        </pattern>
+        <pattern latexdraw:type="crosshatch*"
+            latexdraw:rotationAngle="0.0"
+            latexdraw:size="7.055555555555555"
+            patternUnits="userSpaceOnUse" id="pattern1126673141" x="0"
+            y="0" width="340" height="159">
+            <rect width="340" height="159" fill="#cccccc" stroke="none"/>
+            <g stroke="#999999" stroke-width="0.6" stroke-dasharray="none">
+                <path d="M 240.0 139.16666666666652 L 240.0 159.16666666666652 M 247.65555555555557 139.16666666666652 L 247.65555555555557 159.16666666666652 M 255.31111111111113 139.16666666666652 L 255.31111111111113 159.16666666666652 M 262.9666666666667 139.16666666666652 L 262.9666666666667 159.16666666666652 M 270.62222222222226 139.16666666666652 L 270.62222222222226 159.16666666666652 M 278.2777777777778 139.16666666666652 L 278.2777777777778 159.16666666666652 M 285.9333333333334 139.16666666666652 L 285.9333333333334 159.16666666666652 M 293.58888888888896 139.16666666666652 L 293.58888888888896 159.16666666666652 M 301.2444444444445 139.16666666666652 L 301.2444444444445 159.16666666666652 M 308.9000000000001 139.16666666666652 L 308.9000000000001 159.16666666666652 M 316.55555555555566 139.16666666666652 L 316.55555555555566 159.16666666666652 M 324.2111111111112 139.16666666666652 L 324.2111111111112 159.16666666666652 M 331.8666666666668 139.16666666666652 L 331.8666666666668 159.16666666666652 M 339.52222222222235 139.16666666666652 L 339.52222222222235 159.16666666666652 M 240.0 139.16666666666652 L 340.0 139.16666666666652 M 240.0 146.82222222222208 L 340.0 146.82222222222208 M 240.0 154.47777777777765 L 340.0 154.47777777777765 "/>
+            </g>
+        </pattern>
+    </defs>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:latexIncludes/>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:unit>CM</latexdraw:unit>
+            <latexdraw:zoom>1.2000000000000002</latexdraw:zoom>
+            <latexdraw:magneticGridStyle>CUSTOMISED</latexdraw:magneticGridStyle>
+            <latexdraw:gridGap>20</latexdraw:gridGap>
+            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:version>3.3.7</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1440</latexdraw:width>
+                <latexdraw:height>804</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0.0</latexdraw:x>
+                <latexdraw:y>23.0</latexdraw:y>
+            </latexdraw:position>
+        </latexdraw:metadata>
+    </metadata>
+</svg>
