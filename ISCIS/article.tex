@@ -67,24 +67,6 @@ In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.
   The node $u$ can fill a container with a data packet of size less than $C$ bytes at time $t$ if the container 
   at position $u$ at time $t$ is \emph{free}. A container goes from $u$ to $v$ in $\omega(u,v)$ units of time. The ring follows a {\bf broadcast and select scheme with emission release policy}: When a container is filled by some node $u$, it is freed when it comes back at $u$ after a whole round trip.
   
-    \begin{figure}[h!]
-      \begin{minipage}[b]{0.5\linewidth}
-        \begin{center}
-      \includegraphics[scale=0.7]{containers}
-
-      \end{center} 
-  \end{minipage}
-    \begin{minipage}[b]{0.5\linewidth}
-        \begin{center}
-      \includegraphics[scale=0.7]{containers2}
-
-      \end{center} 
-  \end{minipage}
-
-     \caption{Behavior of the containers on the N-GREEN optical ring.}\label{fig:ring}
-
-  \end{figure}
-
      \paragraph{C-RAN traffic}
    
    The RRHs are the source of the {\bf deterministic and periodic} C-RAN traffic.
@@ -187,10 +169,12 @@ we allow nodes to \textbf{reserve} a container one round before using it. A cont
 Let $u$ be the node to which is attached the RRH $i$, if $u$ reserves the container $u$ at time $m_i - RS$, then it is guaranteed that $u$ can fill a free container at time $m_i$ with the data of the RRH $i$.
 In the method we now describe, the C-RAN packets never wait in the node: The message sent by the RRH $i$ arrives at its BBU at node $v$ at time $m_i + \omega(u,v)$ and the answer is sent from the BBU at time $m_i + \omega(u,v) +1$.
 
-Recall that an RRH emits every $F$ containers, during a time $ET$. 
-Thus if we divide the period $P$ into \textbf{slots} of $F$ consecutive unit of time, an RRH needs to use at most one container by slot. If an RRH emits at time $m_i$, then we say it has \textbf{position} $m_i + \omega(u,v)\pmod F$. emitted by the RRH, when it arrives at the data center in node $v$. If an RRH is at position $p$, then by construction, the corresponding $BBU$ is at position $p+1\pmod F$. Since we do not allow waiting times for C-RAN traffic, each RRH uses a container at the same position during all the period.
+Recall that an RRH fills a container every $F$ units of time, during a time $ET$. 
+Thus if we divide the period $P$ into \textbf{slots} of $F$ consecutive units of time, an RRH needs to use at most one container by slot. If an RRH emits at time $m_i$, then we say it is at \textbf{position} $m_i + \omega(u,v)\pmod F$. 
+The position of an RRH corresponds to the position in a slot of the container it has emitted, when it arrives at $u$. 
+If an RRH is at position $p$, then by construction, the corresponding $BBU$ is at position $p+1\pmod F$. Since we do not allow waiting times for C-RAN traffic, each RRH uses a container at the same position during all the period. 
 
-The problem we solve now is to find an \textbf{assignment} of values of the $m_i$s which is \textbf{valid}: two RRHs never reserve or use the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time a node waits for a free container at any point of the period must be minimized. 
+The problem we solve now is to find an \textbf{assignment} of values of the $m_i$'s which is \textbf{valid}: two RRHs never reserve or use the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time a node waits for a free container at any point of the period must be minimized. 
 Remark that two RRHs which are not at the same position never use the same containers. Moreover, if we fix the offsets of the RRHs to even positions so that they do not reserve the same containers, then it will fix the offsets of the BBUs to odd positions which do not reserve the same containers. Hence we need to deal with the RRHs only.
 
 
