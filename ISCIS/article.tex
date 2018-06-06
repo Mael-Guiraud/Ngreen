@@ -67,6 +67,24 @@ In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.
   The node $u$ can fill a container with a data packet of size less than $C$ bytes at time $t$ if the container 
   at position $u$ at time $t$ is \emph{free}. A container goes from $u$ to $v$ in $\omega(u,v)$ units of time. The ring follows a {\bf broadcast and select scheme with emission release policy}: When a container is filled by some node $u$, it is freed when it comes back at $u$ after a whole round trip.
   
+    \begin{figure}[h!]
+      \begin{minipage}[b]{0.5\linewidth}
+        \begin{center}
+      \includegraphics[scale=0.7]{containers}
+
+      \end{center} 
+  \end{minipage}
+    \begin{minipage}[b]{0.5\linewidth}
+        \begin{center}
+      \includegraphics[scale=0.7]{containers2}
+
+      \end{center} 
+  \end{minipage}
+
+     \caption{Behavior of the containers on the N-GREEN optical ring.}\label{fig:ring}
+
+  \end{figure}
+
      \paragraph{C-RAN traffic}
    
    The RRHs are the source of the {\bf deterministic and periodic} C-RAN traffic.
