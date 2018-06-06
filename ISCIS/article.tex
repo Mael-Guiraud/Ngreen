@@ -43,42 +43,42 @@
 
 
 \begin{abstract}
-The N-GREEN project has for goal to design a low cost optical ring technology with good performances (throughput, latency$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency without impacting the latency of others traffics. 
+The N-GREEN project has for goal to design a low cost optical ring technology with good performances (throughput, latency$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency while also improving the latency of the others traffics. 
 \keywords{Optical ring \and Latency \and C-RAN \and SDN}
 \end{abstract}
 
 
 \section{Introduction}
 
-Network\footnote{This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} providers have to design inexpensive networks supporting an increasing amount of data and online applications. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things,tayq2017real}, establish end to end direct connections (E2DE) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performance: the hardware it requires scales linearly with the number of nodes while E2DE scales quadratically making it impractical for more than a few nodes.
+\footnote{This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.}Network providers have to design inexpensive networks supporting an increasing amount of data and online applications. Much of these applications have QoS criteria, like a minimal throughput or a maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things,tayq2017real}, establish end to end direct connections (E2DE) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performance: the hardware it requires scales linearly with the number of nodes while E2DE scales quadratically making it impractical for more than a few nodes.
 
-In this article, we study a Cloud RAN (C-RAN) application based on the N-GREEN optical ring described in~\cite{ngreenarchitecture,uscumlicscalable}. C-RAN is one of the major area of development for 5G; it consists in centralizing or partially centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter. The latency of the messages between the BBU and the RRH is critical~\cite{3gpp5g}. In this article we propose an SDN approach to deterministically manage the periodic C-RAN traffic by choosing emission timing and reserving containers on the ring. In a previous work~\cite{dominique2018deterministic}, the authors have studied a similar problem for a star shaped network. Here the load due to the CRAN traffic is small enough to make the problem easy. However, we add several new difficulties: the messages from RRHs are scattered, there are other traffics whose latency must be preserved and the need to make reservation of containers on the ring requires additional bandwidth.
+In this article, we study a Cloud RAN (C-RAN) application based on the N-GREEN optical ring described in~\cite{ngreenarchitecture,uscumlicscalable}. C-RAN is one of the major area of development for 5G; it consists in centralizing or partially centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter. The latency of the messages between the BBU and the RRH is critical since some services need end-to-end latency as low as $1$ms~\cite{3gpp5g,boccardi2014five}. In this article we propose an SDN approach to deterministically manage the periodic C-RAN traffic by choosing emission timing and reserving containers on the ring. In a previous work~\cite{dominique2018deterministic}, the authors have studied a similar problem for a star shaped network. In contrast with our previous work, finding emmission timings so that different peridoic sources do not use the same ressource is easy in the context of the N-GREEN optical ring. However, we add several new difficulties: the messages from RRHs are scattered, there are other traffics whose latency must be preserved and the need to make reservation of containers on the ring requires additional bandwidth.
 
-In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.~\ref{sec:oportmethods}, we experimentally evaluate the latency when using stochastic multiplexing to manage packets insertions on the ring, with or without priority for C-RAN packets. In Sec.~\ref{sec:deterministicalgorithms}, we propose a deterministic way to manage C-RAN packets without buffers, which guarantees the lowest possible latency. It turns out that it also improves the latency of best effort packets.
+In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.~\ref{sec:oportmethods}, we experimentally evaluate the latency when using stochastic multiplexing to manage packet insertions on the ring, with or without priority for C-RAN packets. In Sec.~\ref{sec:deterministicalgorithms}, we propose a deterministic way to manage C-RAN packets without buffers, which guarantee to have zero latency from buffering. We propose several refinments of this determistic sending scheme to spread the load over time, which improves the latency of best effort packets.
 
 \section{Model of C-RAN traffic over an optical ring}
 \label{sec:model}
     
   \paragraph{N-GREEN Optical ring}
    
-  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represent the nodes of the ring, where the traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. By extension, if $u$ and $v$ are not adjacent, we denote by $\omega(u,v)$ the size of the directed path from $u$ to $v$.  The \textbf{ring size} is the length of the cycle, that is $\omega(u,u)$ and we denote it by $RS$.  Each arc $(u,v)$ can be seen as a sequence of $\omega(u,v)$ {\bf containers}, of capacity $C$, expressed in Bytes.  The containers are filled by the nodes. The node $u$ can put a data packet of size less than $C$ Bytes in the first container of the arc $(u,v)$ {\bf only if it is free}. 
-  The dynamic of the network is simple: at each unit of time, the packet of a container go to the next container.
-   The ring follows a {\bf broadcast and select scheme with emission release policy}: When a container is filled by some node $u$,
-   it is freed when it comes back at $u$ after a whole round trip.
-
-   \paragraph{C-RAN traffic}
+  The unidirectional optical ring is represented by an oriented cycle. The vertices of the cycle represent the nodes of the ring, where the traffic arrives. The edges $(u,v)$ of the cycle have an integer weight $\omega(u,v)$ which represents the time to transmit a unit of information from $u$ to $v$. By extension, if $u$ and $v$ are not adjacent, we denote by $\omega(u,v)$ the size of the directed path from $u$ to $v$.  The \textbf{ring size} is the length of the cycle, that is $\omega(u,u)$ and we denote it by $RS$. A {\bf container}, of capacity $C$  expressed in Bytes, is a basic unit of data in the optical ring. 
+  
+  A unit of time corresponds to the time needed to fill a container with data:
+  The node $u$ can fill a container with a data packet of size less than $C$ Bytes at time $t$ if the container 
+  at position $u$ at time $t$ is \emph{free}. A container goes from $u$ to $v$ in $\omega(u,v)$ units of time. The ring follows a {\bf broadcast and select scheme with emission release policy}: When a container is filled by some node $u$, it is freed when it comes back at $u$ after a whole round trip.
+  
+     \paragraph{C-RAN traffic}
    
    The RRHs are the source of the {\bf deterministic and periodic} C-RAN traffic.
    There are $n$ RRHs attached to the ring and several RRHs can be attached to the same vertex. An RRH is linked to a node of the ring through an electronic interface of bit rate $R$ Bps.
-   The ring has a larger rate of $F\times R$ Bps. The integer $F$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during $F$ unit of times to create a packet of size $C$ which completely fills one container of the ring. 
-  In each period $P$, an RRH emits data during a time called \textbf{emission time} or $ET$. Hence the RRH emits $ET / F$ packets, i.e. a packet of size $C$ each $F$ units of time during the emission time, see Fig.~\ref{fig:interface}.
+   The ring has a larger rate of $F\times R$ Bps. The integer $F$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during $F$ units of time to create a packet of data of size $C$ and then fills a container of the ring with this data. 
+  In each period $P$, an RRH emits data during a time called \textbf{emission time} or $ET$. Hence the RRH emits $ET / F$ packets, i.e. a container of size $C$ each $F$ units of time during the emission time, see Fig.~\ref{fig:interface}.
    %Each period $P$, an RRH emits $ET / F$ packets, i.e. a packet of size $C$ each $F$ units of time during a time $ET$ (emission time),
    
-   The data of the RRH $i$ arrives at node $u$ at a time $m_i$ called {\bf offset}. The offsets can be determined 
-   by the designer of the system and can be different for each RRH but must remain the same over all periods. We assume that all 
-   BBUs are contained in the same data-center attached to the node $v$. The data from $u$ is routed to its BBU at node $v$ through the ring and arrives at time $m_i + \omega(u,v)$ if it has been inserted in the ring upon arrival. Then after some computation time (which is supposed to be zero to simplify the presentation), an answer is sent back from the BBU to the RRH. The same quantity of data is emitted by each BBU or RRH during any period.
-   In this study the {\bf latency} of a message is defined as the time it waits in a node before being put in a free container on the ring.
-   The aim of our study is to minimize the latency of the C-RAN traffic, both from the RRHs and the BBUs. 
+   The data of the RRH $i$ arrives at some node $u$ at a time $m_i$ called {\bf offset}. The offsets can be determined 
+   by the designer of the system and can be different for each RRH but must remain the same over all periods. We assume that all BBUs are contained in the same data-center attached to the node $v$. The data from $u$ is routed to its BBU at node $v$ through the ring and arrives at time $m_i + \omega(u,v)$ if it has been inserted in the ring upon arrival. Then after some computation time (which w.l.o.g. is supposed to be zero), an answer is sent back from the BBU to the RRH. The same quantity of data is emitted by each BBU or RRH during any period.
+   In this study the {\bf latency} of a message is defined as the time it waits in a node before being sent on the ring.
+   The aim of our study is to minimize the latency of the C-RAN traffic, both of the RRHs and the BBUs. 
    In Sec.~\ref{sec:deterministicalgorithms} we propose a deterministic mechanism with zero latency which preserves the latency of other data using the optical ring. We shortly describe the nature of this additional traffic in the next subsection.
    
     
@@ -94,14 +94,14 @@ In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.
 
 \paragraph{Best effort traffic}
 
-The optical ring supports other traffics, corresponding to the internet flow. We call this traffic \textbf{Best Effort} (BE). We want it to have the best possible distribution of latency, but since is less critical than C-RAN traffic, we impose no hard constraint on the latency of BE traffic. At each node of the ring, a contention buffer is filled by a batch arrival process of BE data. Then according to some parameters, fill rate and maximum waiting time, data on the contention buffer are aggregated in a packet of size at most $C$. The node fills the first container of its arc with this packet as soon as it is free. Hence, the arrival of BE messages is modeled by a temporal law that gives the distribution of times between two arrivals of a packet of BE messages in a node~\cite{youssef2018}. This distribution is obtained by choosing the N-GREEN parameters for the contention buffer.
+The optical ring supports other traffics, corresponding to the internet flow. We call this traffic \textbf{Best Effort} (BE). We want it to have the best possible distribution of latency, but since is less critical than C-RAN traffic, we impose no hard constraint on the latency of BE traffic. At each node of the ring, a contention buffer is filled by a batch arrival process of BE data. Then according to some parameters, fill rate and maximum waiting time, data on the contention buffer are aggregated in a container of size at most $C$. The node sends this container on the ring as soon as possible. Hence, the arrival of BE messages is modeled by a temporal law that gives the distribution of times between two arrivals of a packet of BE messages in a node. The computation of this distribution for the parameters of the contention buffer used in the N-GREEN optical ring is described in ~\cite{youssef2018}.
 
    \section{Evaluation of the latency on the N-GREEN optical ring}
    \label{sec:oportmethods}
    
    
-  We first study the latency of the C-RAN and BE traffics when the ring follows an opportunistic insertion policy: When a node wants to send some packets, it uses the first free container available on the ring. 
-  If a node cannot send a packet, because there is no free slot or because several packets must be sent at the same time, the remaining packets are stored in an insertion buffer. Two different methods to manage this insertion buffer are experimentally compared. The FIFO rule is compared to a method that uses two insertion buffers: one for the BE packets, and another for the C-RAN packets. When the node see a free container it empties the C-RAN insertion buffer first.  Fig.~\ref{fig:resultopport} gives the cumulative distribution of both C-RAN and BE traffics latencies for the FIFO rule and the "C-RAN first" rule. In this experiment, the offsets of the RRH are not fixed but randomly distributed in the period. The experimental parameters are given by Fig.~\ref{fig:params} and chosen following~\cite{ngreenarchitecture}. The results are computed over $100$ instances of optical rings that are simulated during $10,000,000$ units of time. The source code in C of the experiments can be found on the author's webpage~\cite{webpage}.
+  We first study the latency of the C-RAN and BE traffics when the ring follows an opportunistic insertion policy: When a node wants to send some container, it does it as soon as it can. 
+  If a node cannot send a container, because the ring is not free free or because several containers must be sent at the same time from the same node, the remaining containers are stored in an insertion buffer. Two different methods to manage this insertion buffer are experimentally compared. The FIFO rule is compared to a method that uses two insertion buffers: one for the BE packets, and another for the C-RAN containers. The C-RAN insertion buffer first has the priority and is used to send containers on the ring while it is non empty before considering the BE insertion buffer.  Fig.~\ref{fig:resultopport} gives the cumulative distribution of both C-RAN and BE traffics latencies for the FIFO rule and the "C-RAN first" rule. In this experiment, the offsets of the RRH are not fixed but randomly distributed in the period. The experimental parameters are given by Fig.~\ref{fig:params} and chosen following~\cite{ngreenarchitecture}. The results are computed over $100$ instances of optical rings that are simulated during $10,000,000$ units of time. The source code in C of the experiments can be found on the author's webpage~\cite{webpage}.
   
    \vspace{0.5cm}
   \hspace{-0.75cm}
@@ -150,7 +150,7 @@ The optical ring supports other traffics, corresponding to the internet flow. We
   \end{tabular}
   }
 
-  \captionof{figure}{Experimental parameters from the N-GREEN architecture}\label{fig:params}
+  \captionof{figure}{Experimental parameters of the N-GREEN architecture}\label{fig:params}
 
   \end{minipage} 
   
@@ -159,11 +159,11 @@ Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize th
 
 \section{Deterministic approach for zero latency} \label{sec:deterministicalgorithms}
 
-Finding good offsets for the C-RAN traffic is a hard problem even for simple topologies and without BE traffic, see~\cite{dominique2018deterministic}. On this section, we give simple solution to this problem in the N-GREEN optical ring, and we adapt it to minimize the latency of the BE traffic.
+Finding good offsets for the C-RAN traffic is a hard problem even for simple topologies and without BE traffic, see~\cite{dominique2018deterministic}. In this section, we give a simple solution to this problem in the N-GREEN optical ring, and we adapt it to minimize the latency of the BE traffic.
 
 In order to ensure zero latency for the C-RAN traffic, the first container after node $u$, to which is attached the RRH $i$, must be free at time $m_i$. Hence the node $u$ \textbf{reserves} the container at time $m_i - RS$. A container which is reserved cannot be filled by any node except the one which has reserved it. In the method we now describe, the C-RAN packets never wait in the node: The message sent by the RRH $i$ arrives at its BBU at node $v$ at time $m_i + \omega(u,v)$ and the answer is sent from the BBU at time $m_i + \omega(u,v) +1$.
 
-Recall that an RRH emits a packet every $F$ containers, during a time $ET$. 
+Recall that an RRH emits every $F$ containers, during a time $ET$. 
 Thus if we divide the period $P$ into \textbf{slots} of $F$ consecutive unit of time, a RRH needs one container by slot.
  If a RRH emits at time $m_i < P$, then we say it has \textbf{position} $m_i~mod~F$. If a RRH is at position $p$, then by construction, the corresponding $BBU$ is at position $p+1~mod~F$. Since we do not allow waiting times for C-RAN traffic, each RRH uses a container at the same position during all the period.
 
