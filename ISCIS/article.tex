@@ -180,15 +180,15 @@ Remark that two RRHs which are not at the same position never use the same conta
 
 \begin{prop}
 \label{prop:assign}
-There is an assignment of the offsets $m_1, \dots, m_k$ on the same position if  $k\times ET + RS \leq P$.
+There is an assignment of the offsets $m_1, \dots, m_k$ on the same position if and only if $k\times ET + RS \leq P$, t
 \end{prop}
 \begin{proof}
  We fix $m_1 = 0$ and all the offsets will also be at position $0$. 
- Let $u_1,\dots,u_k$ be the nodes attached to the RRHs $1,\dots,k$. We assume that $u_1,\dots,u_k$ are in the order of the ring. The last message emitted by the RRH $1$ arrives at $u_2$ at time $ET - 1 + \omega(u_1,u_2)$. Therefore we can fix $m_2 =  ET  + \omega(u_1,u_2)$. In general we can set $m_i = (i-1) \times ET + \omega(u_1,u_i)$ and all RRHs will use different containers at position $0$. The assignment is correct, if when the RRH $1$ must emit something in the second period, there is a free container. It implies that  $k \times ET + \omega(u_1,u_1) \leq P$, which proves the proposition.\qed
+ Let $u_1,\dots,u_k$ be the nodes attached to the RRHs $1,\dots,k$. We assume that $u_1,\dots,u_k$ are in the order of the ring. The last message emitted by the RRH $1$ arrives at $u_2$ at time $ET - 1 + \omega(u_1,u_2)$. Therefore we can fix $m_2 =  ET  + \omega(u_1,u_2)$. In general we can set $m_i = (i-1) \times ET + \omega(u_1,u_i)$ and all RRHs will use different containers at position $0$ during a period. The assignment is correct, since when the RRH $1$ must emit something in the second period, there is a free container. This later constraint implies that  $k \times ET + \omega(u_1,u_1) \leq P$, which proves the proposition.\qed
 \end{proof}
 
 \begin{corollary}
-The number of antennas supported by a ring is $K = \lfloor\frac{P- RS}{ET}\rfloor \times \frac{F}{2}$
+The maximal number of antennas supported by a ring is $K = \lfloor\frac{P- RS}{ET}\rfloor \times \frac{F}{2}$
 \end{corollary}
 \begin{proof}
 Following Prop.~\ref{prop:assign}, the number of antennas on a position is $k = \lfloor\frac{P- RS}{ET}\rfloor $.
