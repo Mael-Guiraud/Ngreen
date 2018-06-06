@@ -43,7 +43,7 @@
 
 
 \begin{abstract}
-The N-GREEN project has for goal to design a low cost optical ring technology with good performances (throughput, latency$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency while also improving the latency of the others traffics. 
+The N-GREEN project has for goal to design a low cost optical ring technology with good performances (throughput, latency$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency while also improving the latency of the other traffics. 
 \keywords{Optical ring \and Latency \and C-RAN \and SDN}
 \end{abstract}
 
@@ -187,19 +187,33 @@ There is an assignment of the offsets $m_1, \dots, m_k$ on the same position if 
  Let $u_1,\dots,u_k$ be the nodes attached to the RRHs $1,\dots,k$. We assume that $u_1,\dots,u_k$ are in the order of the ring. The last message emitted by the RRH $1$ arrives at $u_2$ at time $ET - 1 + \omega(u_1,u_2)$. Therefore we can fix $m_2 =  ET  + \omega(u_1,u_2)$. In general we can set $m_i = (i-1) \times ET + \omega(u_1,u_i)$ and all RRHs will use different containers at position $0$ during a period. The assignment is correct, since when the RRH $1$ must emit something in the second period, there is a free container. This later constraint implies that  $k \times ET + \omega(u_1,u_1) \leq P$, which proves the proposition.\qed
 \end{proof}
 
+From this proposition, it is easy to derive the maximal number of antennas which can be supported by an optical ring,
+when using reservation and the same position for an RRH for the whole period.
+
 \begin{corollary}
-The maximal number of antennas supported by a ring is $K = \lfloor\frac{P- RS}{ET}\rfloor \times \frac{F}{2}$
+The maximal number of antennas such that there is an assignment is $ \lfloor\frac{P- RS}{ET}\rfloor \times \frac{F}{2}$.
 \end{corollary}
 \begin{proof}
 Following Prop.~\ref{prop:assign}, the number of antennas on a position is $k = \lfloor\frac{P- RS}{ET}\rfloor $.
 Since we need two positions for $k$ antennas, in order to carry the traffic coming from the RRHs and the BBUs, and we got $F$ positions in the slot, the number of antennas supported by the ring is thus equal to $k \times \frac{F}{2}$.\qed
 \end{proof}
-Remark that for each position which is used by some RRH, $RS$ containers are reserved before starting to emit some C-RAN traffic. Those containers which are reserved could either be free or freed during the next round trip. Thus, those containers are seen by the BE traffic as additional dataflow.
-Therefore to not waste much bandwidth, it is relevant to put as many RRH as possible on the same position. Moreover, unused positions in an assignment are useful to guarantee a good latency to BE traffic. The unused positions can be distributed uniformly over a slot, to minimize the time to wait before a free container, as shown in Fig.~\ref{fig:repart1}.  
 
-However, it is possible that there are no unused position. It happens with the current parameters of the N-GREEN ring,
-$ET = \frac{P}{2}$, $F = 10$ and $n = 5$. Hence there is exactly one  BBU or RRH at each position. If all the RRHs start to emit in the first slot, then during $ET$ there will be no free containers anywhere on the ring, inducing a huge latency for BE traffic. 
-To mitigate this problem, the time with free containers of each position must be uniformly distributed over the period as in Fig.~\ref{fig:repart2}.
+\paragraph{Packing}
+
+Remark that for each position which is used by some RRH, and during each period, $RS$ containers are reserved before starting to emit some C-RAN traffic, while they are free. Hence, it decreases the maximal load the system can handle.
+Therefore to not waste bandwidth, it is relevant to put as many RRHs as possible on the same position as in Fig.~\ref{fig:repart0}. Indeed, for any position which is not used at all, $RS$ containers need not to be reserved. 
+This strategy is also good for the latency of the BE traffic. If a position is unused, then there is always a container free of C-RAN traffic each $F$ unit of times. 
+
+\paragraph{Balancing inside the slot}
+
+The free positions can be distributed uniformly over a slot, to minimize the time to wait before a node 
+has access to a free container, as shown in Fig.~\ref{fig:repart1}. It is a small optimization, since 
+it decreases the latency of at most $F/2$.
+
+
+\paragraph{Balancing inside the period}
+However, it is possible that there are no unused position as it happens with the parameters of the N-GREEN ring given in Fig.~\ref{fig:params}: $ET = \frac{P}{2}$, $F = 10$ and $n = 5$. Any assignment has exactly one  BBU or RRH at each position. If all the RRHs start to emit in the first slot, then during $ET$ there will be no free containers anywhere on the ring, inducing a huge latency for the BE traffic. 
+To mitigate this problem, in a period, the time with free containers in each position must be uniformly distributed over the period as shown in Fig.~\ref{fig:repart2}.
 
      \begin{minipage}[b]{0.5\linewidth}
         \begin{center}
@@ -216,8 +230,10 @@ To mitigate this problem, the time with free containers of each position must be
       \end{center} 
   \end{minipage}
 
+  
+  \paragraph{Experimental evaluation}
 In order to evaluate the performances of those methods, we present the cumulative distribution of the latency of the BE traffic latency when the C-RAN traffic is distributed in the slot, or in the period in Fig.~\ref{fig:algocmp}.
-Since the previous N-GREEN parameters were too restrictive to put several RRHs on the same position, the parameters $ET$ and has been changed to $400$.
+Since the previous N-GREEN parameters were too restrictive to put several RRHs on the same position, the parameter $ET$ and has been changed to $400$.
 
 As expected, both of the presented method to optimize the BE traffic latency in the ring are efficient. Indeed, if all the C-RAN packets are sent in the same moment of the period, the chances of having a free container for a BE packet are low. Here, we try to distribute as much as possible the free containers. However, it is important to precise that the parameters induce that there is no free positions during $ET+RS$ unit of time when no repartition is done. This is why the performances of the corresponding curve are so weak.
 
