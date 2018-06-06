@@ -67,6 +67,25 @@ In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.
   The node $u$ can fill a container with a data packet of size less than $C$ bytes at time $t$ if the container 
   at position $u$ at time $t$ is \emph{free}. A container goes from $u$ to $v$ in $\omega(u,v)$ units of time. The ring follows a {\bf broadcast and select scheme with emission release policy}: When a container is filled by some node $u$, it is freed when it comes back at $u$ after a whole round trip.
   
+  \begin{figure}[h!]
+       \begin{minipage}[b]{0.5\linewidth}
+        \begin{center}
+      \includegraphics[scale=0.7]{containers}
+   
+      \end{center} 
+  \end{minipage}
+    \begin{minipage}[b]{0.5\linewidth}
+        \begin{center}
+      \includegraphics[scale=0.7]{containers2}
+      
+
+      \end{center} 
+  \end{minipage}
+   
+     \caption{Behavior of the containers on the ring.}\label{fig:containers}
+
+  \end{figure}
+  
      \paragraph{C-RAN traffic}
    
    The RRHs are the source of the {\bf deterministic and periodic} C-RAN traffic.
@@ -207,34 +226,41 @@ We now present an algorithm to determine an assignment of the $m_i$, using the m
 For each position which is used by some RRH, and during each period, $RS$ containers are reserved before starting to emit some C-RAN traffic, while they are free. Hence, it decreases the maximal load the system can handle.
 Therefore to not waste bandwidth, it is relevant to put as many RRHs as possible on the same position as in Fig.~\ref{fig:repart0}. Indeed, for any position which is not used at all, $RS$ containers need not to be reserved. This strategy is also good for the latency of the BE traffic. If a position is unused, then there is always a container free of C-RAN traffic each $F$ unit of times. 
 
+\begin{figure}[h!]
+\begin{center}   
+
+      \includegraphics[scale=0.55]{repart0}
+     \caption{Packing.}\label{fig:packing}
+     
+\end{center}
+  \end{figure}
+
 \paragraph{Balancing inside the slot}
 
 The free positions can be distributed uniformly over a slot, to minimize the time to wait before a node 
 has access to a free container, as shown in Fig.~\ref{fig:repart1}. It is a small optimization, since 
 it decreases the latency of at most $F/2$.
 
+\begin{figure}[h!]
+\begin{center}   
 
+      \includegraphics[scale=0.55]{repart1}
+     \caption{Balancing inside the slot.}\label{fig:packing}
+     
+\end{center}
+  \end{figure}
 \paragraph{Balancing inside the period}
 
 It is possible that there are no unused position as it happens with the parameters of the N-GREEN ring given in Fig.~\ref{fig:params}: $ET = \frac{P}{2}$, $F = 10$ and $n = 5$. Any assignment has exactly one  BBU or RRH at each position. If all the RRHs start to emit in the first slot, then during $ET$ there will be no free containers anywhere on the ring, inducing a huge latency for the BE traffic. 
 To mitigate this problem, in a period, the time with free containers in each position must be uniformly distributed over the period as shown in Fig.~\ref{fig:repart2}.
+\begin{figure}[h!]
+\begin{center}   
 
-     \begin{minipage}[b]{0.5\linewidth}
-        \begin{center}
       \includegraphics[scale=0.55]{repart2}
-            
-      \captionof{figure}{Repartition in the slot}    \label{fig:repart1}
-      \end{center} 
-  \end{minipage}
-    \begin{minipage}[b]{0.5\linewidth}
-        \begin{center}
-      \includegraphics[scale=0.55]{repart1}
-      
-      \captionof{figure}{Repartition in the period}    \label{fig:repart2}
-      \end{center} 
-  \end{minipage}
-
-  
+     \caption{Balancing inside the period.}\label{fig:packing}
+     
+\end{center}
+  \end{figure}  
   \paragraph{Experimental evaluation}
 
   In order to understand the contribution of the three ideas presented in the previous subsection,
