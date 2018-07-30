@@ -1,41 +1,45 @@
 %\documentclass[]{algotel}
 %\usepackage[utf8]{inputenc}
-
-%\usepackage{xspace}
-%\usepackage{graphicx,graphics} 
-%\usepackage{mathtools, bm}
-%\usepackage{caption}
-%\usepackage{amssymb, bm}
-%\usepackage{complexity}
-%\usepackage{amsthm}
-%%\usepackage{authblk}
-%\usepackage{color}
-%\usepackage{amsmath}
-%\usepackage[colorlinks=true,breaklinks=true,linkcolor=blue]{hyperref}
-%\captionsetup{justification=centering,margin=0.5cm}
-\documentclass[]{llncs}
+\documentclass[10pt, conference, letterpaper]{IEEEtran}
 %
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{caption}
-
+\usepackage{authblk}
 \usepackage{graphicx}
+
+\usepackage{xspace}
+\usepackage{graphics} 
+\usepackage{mathtools, bm}
+
+\usepackage{amssymb, bm}
+\usepackage{complexity}
+\usepackage{amsmath,amsthm}
+
+\usepackage{color}
+\usepackage{amsmath}
+%\usepackage[colorlinks=true,breaklinks=true,linkcolor=blue]{hyperref}
+\captionsetup{justification=centering,margin=0.5cm}
+
 
 \newcommand\pall{\textsc{pall}\xspace}
 \newcommand{\todo}[1]{{\color{red} TODO: {#1}}}	
 \newtheorem{prop}{Proposition}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+
 \renewcommand{\thefootnote}{\*}
 
 \graphicspath{{img/}}
 \title{Contention management for Cloud RAN over an optical ring}
-\author{Dominique Barth \inst{1}
-  \and Ma\"el Guiraud \inst{1}
-   \and Yann Strozecki \inst{1}
-  }
-
-\institute{David Laboratory, UVSQ}
 
 
+\author[1]{Dominique Barth}
+\author[1,2]{Ma\"el Guiraud}
+\author[1]{Yann Strozecki}
+\affil[1]{David Laboratory, UVSQ}
+\affil[2]{Nokia Bell Labs France}
 
 \begin{document}
 
@@ -44,7 +48,7 @@
 
 \begin{abstract}
 The N-GREEN project has for goal to design a low cost optical ring technology with good performances (throughput, latency$\dots$) without using expensive end to end connections. We study the compatibility of such a technology with the development of the Cloud RAN, a latency critical application which is a major aspect of 5G deployment. We show that deterministically managing Cloud RAN traffic minimizes its latency while also improving the latency of the other traffics. 
-\keywords{Optical ring \and Latency \and C-RAN \and SDN}
+
 \end{abstract}
 
 
@@ -68,19 +72,15 @@ In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.
   at position $u$ at time $t$ is \emph{free}. A container goes from $u$ to $v$ in $\omega(u,v)$ units of time. The ring follows a {\bf broadcast and select scheme with emission release policy}: When a container is filled by some node $u$, it is freed when it comes back at $u$ after a whole round trip.
   
   \begin{figure}[h!]
-       \begin{minipage}[b]{0.5\linewidth}
-        \begin{center}
-      \includegraphics[scale=0.7]{containers}
-   
-      \end{center} 
-  \end{minipage}
-    \begin{minipage}[b]{0.5\linewidth}
-        \begin{center}
-      \includegraphics[scale=0.7]{containers2}
-      
 
+        \begin{center}
+      \hspace{-2.3cm}\includegraphics[scale=0.7]{containers}
+   
+   \vspace{0.5cm}
+   
+      \includegraphics[scale=0.7]{containers2}
       \end{center} 
-  \end{minipage}
+
    
      \caption{Dynamic behavior of the ring.}\label{fig:containers}
 
@@ -125,22 +125,16 @@ The optical ring supports other traffics, corresponding to the internet flow. We
   
    \vspace{0.5cm}
   \hspace{-0.75cm}
-    \begin{minipage}[b]{0.50\linewidth}
 
 
         \begin{center}
       \includegraphics[scale=0.3]{opport.pdf}
 
      \captionof{figure}{Distribution of latencies for FIFO and C-RAN first}    \label{fig:resultopport}
-      \end{center} 
-  \end{minipage}
-\hfill
-  \begin{minipage}[b]{0.40\linewidth}
- 
+
   \scalebox{0.65}
   {
- 
-  \centering
+
   \begin{tabular}{|c|c|}
   \hline
   Bit rate of an electronic interface $R$ & $10$ Gbps \tabularnewline
@@ -171,9 +165,8 @@ The optical ring supports other traffics, corresponding to the internet flow. We
   }
 
   \captionof{figure}{Experimental parameters of the N-GREEN architecture}\label{fig:params}
+      \end{center} 
 
-  \end{minipage} 
-  
 Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize the C-RAN messages, while the BE traffic is penalized. Nevertheless, there is still $10\%$ of the C-RAN traffic with a latency higher than $50 \mu$s, a problem we address in the next section.
 
 
@@ -218,7 +211,10 @@ Following Prop.~\ref{prop:assign}, the number of antennas on a position is $k = 
 Since we need two positions for $k$ antennas, in order to carry the traffic coming from the RRHs and the BBUs, and we got $F$ positions in the slot, the number of antennas supported by the ring is thus equal to $k \times \frac{F}{2}$.\qed
 \end{proof}
 
-We now present an algorithm to determine an assignment of the $m_i$, using the method of Prop.\ref{prop:assign} to set the offset at the same positions. We propose three variations to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period. 
+
+We now present an algorithm using reservation as in Prop.\ref{prop:assign} to set the offsets at the same position.
+In the naive version of the algorithm, we put each RRH in an arbitrary position, for instance one RRH by position.
+ We then propose three ideas to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period.
 
 
 \paragraph{Packing}
@@ -229,7 +225,7 @@ Therefore to not waste bandwidth, it is relevant to put as many RRHs as possible
 \begin{figure}[h!]
 \begin{center}   
 
-      \includegraphics[scale=0.55]{repart0}
+      \includegraphics[scale=0.5]{repart0}
      \caption{Packing.}\label{fig:packing}
      
 \end{center}
@@ -271,19 +267,16 @@ The performance when we do no packing is really bad, even worst than the methods
 In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here. To keep the load at $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}, we set $ET = 200$ and $n = 12$. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. With these parameters, the loss of bandwidth due to reservation is at most $6\%$
  
 
-  \begin{minipage}[b]{0.45\linewidth}
-\centering
+\begin{center}
       \includegraphics[scale=0.25]{repart1res}
      \captionof{figure}{Impact of the repartition on the latency.}   \label{fig:algocmp}
-  \end{minipage} 
-  \hfill
-  \begin{minipage}[b]{0.45\linewidth}
-\centering
+
+\vspace{0.5cm}
+
       \includegraphics[scale=0.25]{optim.pdf}
      \captionof{figure}{Impact of the deterministic method on the traffics.}   \label{fig:optimres}
-  \end{minipage} 
-
-
+  
+\end{center}
   The performance of the reservation algorithm is excellent, since the C-RAN traffic has {\bf zero latency} and the BE traffic has a \textbf{better latency} with reservation than with the FIFO rule. It is due to the balancing of the load of the C-RAN traffic over the period, that guarantee a more regular bandwidth for the BE traffic.
   
 
