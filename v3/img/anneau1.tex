@@ -1,0 +1,38 @@
+ \usepackage[usenames,dvipsnames]{pstricks}
+ \usepackage{epsfig}
+ \usepackage{pst-grad} % For gradients
+ \usepackage{pst-plot} % For axes
+ \usepackage[space]{grffile} % For spaces in paths
+ \usepackage{etoolbox} % For spaces in paths
+ \makeatletter % For spaces in paths
+ \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+ \makeatother
+ \psscalebox{1.0 1.0} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-4.384483)(7.640009,4.384483)
+\definecolor{colour1}{rgb}{0.99607843,0.99607843,0.99607843}
+\definecolor{colour2}{rgb}{0.0,0.21960784,1.0}
+\definecolor{colour0}{rgb}{0.003921569,0.003921569,0.003921569}
+\pscircle[linecolor=black, linewidth=0.04, dimen=outer](3.9169683,-0.7844828){3.6}
+\psline[linecolor=black, linewidth=0.04](3.2710423,3.40811)(3.2710423,3.0881097)(3.9110425,3.0881097)(3.9110425,3.40811)(3.9110425,3.0881097)
+\psline[linecolor=black, linewidth=0.04](4.2497125,3.3680239)(4.2118726,3.050269)(4.8473825,2.9745896)(4.885222,3.2923446)(4.8473825,2.9745896)
+\psline[linecolor=black, linewidth=0.04](5.1756554,3.2069407)(5.0436735,2.915426)(5.626703,2.6514623)(5.7586846,2.942977)(5.626703,2.6514623)
+\psdots[linecolor=black, dotsize=0.4](3.531783,2.756258)
+\psdots[linecolor=black, dotsize=0.4](0.346598,-0.88818645)
+\psdots[linecolor=black, dotsize=0.4](1.9910425,-3.8215199)
+\psdots[linecolor=black, dotsize=0.4](6.1688204,-3.6141124)
+\psdots[linecolor=black, dotsize=0.4](7.4428945,-0.058556832)
+\psline[linecolor=black, linewidth=0.04](5.9804435,2.86024)(5.803907,2.5933414)(6.3377037,2.2402682)(6.5142403,2.5071669)(6.3377037,2.2402682)
+\psframe[linecolor=colour1, linewidth=0.002, fillstyle=solid,fillcolor=red, dimen=outer](3.8861992,3.4001327)(3.2913275,3.1026967)
+\rput{-5.980281}(-0.30656177,0.4910689){\psframe[linecolor=colour1, linewidth=0.002, fillstyle=solid,fillcolor=colour2, dimen=outer](4.8498363,3.3338156)(4.244708,3.0261233)}
+\psbezier[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(1.5919684,2.9530172)(-0.19553162,2.4530172)(0.041968383,0.50301725)(0.041968383,1.303017241379314)
+\rput[bl](3.0342097,-0.03965517){\textcolor{colour0}{$k$ nodes}}
+\rput[bl](3.1859338,4.0844827){\textcolor{colour0}{Step $t = 0$}}
+\psline[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(3.5445545,2.3051724)(3.5583477,0.37413794)(3.5721407,0.38793105)
+\psline[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(0.799727,-0.7982759)(2.7445545,-0.10862069)
+\psline[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(2.3307614,-3.3637931)(3.1859338,-0.42586207)
+\psline[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(5.751451,-3.1982758)(3.7790372,-0.42586207)
+\psline[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(7.075589,-0.08103448)(4.385934,-0.02586207)
+\end{pspicture}
+}
+

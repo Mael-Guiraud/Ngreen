@@ -1,0 +1,31 @@
+\usepackage[usenames,dvipsnames]{pstricks}
+\usepackage{epsfig}
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot} % For axes
+\usepackage[space]{grffile} % For spaces in paths
+\usepackage{etoolbox} % For spaces in paths
+\makeatletter % For spaces in paths
+\patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+\makeatother
+\psscalebox{1.0 1.0} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-4.3431325)(7.629732,4.3431325)
+\definecolor{colour0}{rgb}{0.003921569,0.003921569,0.003921569}
+\pscircle[linecolor=black, linewidth=0.04, dimen=outer](3.9066913,-0.7431323){3.6}
+\psline[linecolor=black, linewidth=0.04](2.6279526,3.141962)(2.7186525,2.8350852)(3.3050067,3.008387)(3.2143068,3.315264)(3.3050067,3.008387)
+\psline[linecolor=black, linewidth=0.04](3.688065,3.395789)(3.6644988,3.0766578)(4.302761,3.0152397)(4.3263273,3.3486564)(4.302761,3.0295253)
+\psline[linecolor=black, linewidth=0.04](4.6282167,3.299158)(4.538977,2.9918532)(5.153587,2.8133743)(5.2428265,3.1206791)(5.153587,2.8133743)
+\psdots[linecolor=black, dotsize=0.4](3.521506,2.7976084)
+\psdots[linecolor=black, dotsize=0.4](0.3363209,-0.84683603)
+\psdots[linecolor=black, dotsize=0.4](1.9807653,-3.7801692)
+\psdots[linecolor=black, dotsize=0.4](6.158543,-3.572762)
+\psdots[linecolor=black, dotsize=0.4](7.432617,-0.017206386)
+\psline[linecolor=black, linewidth=0.04](5.5218253,3.0464678)(5.363009,2.7686598)(5.918625,2.451027)(6.077441,2.728835)(5.918625,2.451027)
+\psbezier[linecolor=colour0, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=2.0]{<-}(1.5816913,2.9943676)(-0.20580871,2.4943676)(0.031691283,0.5443677)(0.031691283,1.344367687807885)
+\rput[bl](3.161371,4.082976){\textcolor{colour0}{Step 0}}
+\psline[linecolor=black, linewidth=0.04](1.7910924,2.7699409)(1.9286478,2.4810145)(2.5065007,2.7561252)(2.3689454,3.0450518)(2.5065007,2.7561252)
+\rput[bl](2.5781198,3.042582){$l_{i}}
+\rput[bl](3.520977,3.1711533){l_{i+1}}
+\end{pspicture}
+}
+
