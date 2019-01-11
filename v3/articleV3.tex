@@ -267,6 +267,18 @@ we can use \emph{all} containers in a position and hence we could support $\lflo
 
 We now present an algorithm using reservation as in Prop.\ref{prop:assign} to set the offsets at the same position. In the baseline version of the algorithm, we put each RRH in an arbitrary position, for instance one RRH by position. We then propose three ideas to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period.
 
+\paragraph{Balancing inside the period}
+
+With the parameters of the N-GREEN ring given in Fig.~\ref{fig:params} ($ET = \frac{P}{2}$, $F = 10$ and $n = 5$), It is possible that there are no unused position. Any assignment has exactly one  BBU or RRH at each position. If all the RRHs start to emit in the first slot, then during $ET$ there will be no free containers anywhere on the ring, inducing a huge latency for the BE traffic. 
+To mitigate this problem, in a period, the time with free containers in each position must be uniformly distributed over the period as shown in Fig.~\ref{fig:periodbal}.
+\begin{figure}[h!]
+\begin{center}   
+
+      \includegraphics[scale=0.55]{repart2}
+     \caption{Balancing inside the period.}\label{fig:periodbal}
+     
+\end{center}
+  \end{figure}  
 
 \paragraph{Compacting positions}
 
@@ -280,7 +292,7 @@ Therefore to not waste bandwidth, it is relevant to put as many RRHs as possible
      
 \end{center}
   \end{figure}
-
+In order to evaluate the impact of 
 \paragraph{Balancing used positions}
 
 The free positions can be distributed uniformly over a slot, to minimize the time to wait before a node 
@@ -295,18 +307,7 @@ it decreases the latency of at most $F/2$.
      
 \end{center}
   \end{figure}
-\paragraph{Balancing inside the period}
 
-It is possible that there are no unused position as it happens with the parameters of the N-GREEN ring given in Fig.~\ref{fig:params}: $ET = \frac{P}{2}$, $F = 10$ and $n = 5$. Any assignment has exactly one  BBU or RRH at each position. If all the RRHs start to emit in the first slot, then during $ET$ there will be no free containers anywhere on the ring, inducing a huge latency for the BE traffic. 
-To mitigate this problem, in a period, the time with free containers in each position must be uniformly distributed over the period as shown in Fig.~\ref{fig:periodbal}.
-\begin{figure}[h!]
-\begin{center}   
-
-      \includegraphics[scale=0.55]{repart2}
-     \caption{Balancing inside the period.}\label{fig:periodbal}
-     
-\end{center}
-  \end{figure}  
   \paragraph{Experimental evaluation}
 
   In order to understand the contribution of the three ideas presented in the previous subsection,
