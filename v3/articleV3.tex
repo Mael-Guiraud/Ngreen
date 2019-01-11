@@ -100,7 +100,7 @@ In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.
      \paragraph{C-RAN traffic}
    
    The RRHs are the source of the {\bf deterministic and periodic} C-RAN traffic.
-   There are $n$ RRHs attached to the ring and several RRHs can be attached to the same vertex. An RRH is linked to a node of the ring through an electronic interface of bit rate $R$ Bps.
+   There are $k$ RRHs attached to the ring and several RRHs can be attached to the same vertex. An RRH is linked to a node of the ring through an electronic interface of bit rate $R$ Bps.
    The ring has a larger bit rate of $F\times R$ Bps. The integer $F$ is called the {\bf acceleration factor} between the electronic and the optical domains. A node aggregates the data received on the electronic interface during $F$ units of time to create a packet of size $C$ and then puts it in the insertion buffer.
 %   fills a container of the ring with this data. 
   In each period $P$, an RRH emits data during a time called \textbf{emission time} or $ET$. Hence the RRH emits $ET / F$ packets, i.e. a container of size $C$ each $F$ units of time during the emission time, see Fig.~\ref{fig:interface}.
@@ -185,7 +185,7 @@ We compare experimentally these two methods in the simplest topology: The length
   \hline
   Number of RRH & $5$  \tabularnewline
   \hline
-  Number of nodes $n$ & $5$  \tabularnewline
+  Number of nodes $k$ & $5$  \tabularnewline
   \hline
    Load induced by C-RAN traffic & $50\%$  \tabularnewline
   \hline
@@ -220,7 +220,7 @@ In the method we now describe, the C-RAN packets never wait in the node: The mes
 Recall that an RRH fills a container every $F$ units of time, during a time $ET$. 
 Thus if we divide the period $P$ into \textbf{slots} of $F$ consecutive units of time, an RRH needs to use at most one container by slot. If an RRH emits at time $m_i$, then we say it is at \textbf{position} $m_i + \omega(u,v)\pmod F$. 
 The position of an RRH corresponds to the position in a slot of the container it has emitted, when it arrives at $u$. 
-If an RRH is at position $p$, then by construction, the corresponding $BBU$ is at position $p+1\pmod F$. Since we do not allow waiting times for C-RAN traffic, each RRH uses a container at the same position during all the period. 
+If an RRH is at position $p$, then by construction, the corresponding $BBU$ is at position $p+1\pmod F$. Since we do not allow waiting times for C-RAN traffic, each RRH uses a container at the same position during all the emission time. 
 
 Given a ring, a set of RRH's, a period and an acceleration factor $F$, the problem we solve here is to find an \textbf{assignment} of values of the $m_i$'s which is \textbf{valid}: two RRHs never reserve or use the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time a BE packet spent in the insertion buffer must be minimized. To do so, we must minimize the time a node waits for a free container at any point in the period, by spreading the C-RAN traffic as uniformly as possible over the period in order to give the nodes an available container in a minimal average time. 
 
@@ -265,7 +265,7 @@ There are two sources of inefficiency in this method. The first comes from the r
 we can use \emph{all} containers in a position and hence we could support $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$ antennas.
 
 
-We now present an algorithm using reservation as in Prop.\ref{prop:assign} to set the offsets at the same position. In the baseline version of the algorithm, we put each RRH in an arbitrary position, for instance one RRH by position. We then propose three ideas to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period.
+We now present an algorithm using reservation as in Prop.\ref{prop:assign} to set the offsets of several RRH at the same position. In the baseline version of the algorithm, we put each RRH in an arbitrary position, for instance one RRH by position. We then propose three ideas to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period.
 
 \paragraph{Balancing inside the period}
 
@@ -279,7 +279,9 @@ To mitigate this problem, in a period, the time with free containers in each pos
      
 \end{center}
   \end{figure}  
+  
 
+  
 \paragraph{Compacting positions}
 
 For each position which is used by some RRH, and during each period, $RS$ containers are reserved before starting to emit some C-RAN traffic, while they can be free. Hence, it decreases the maximal load the system can handle.
@@ -292,7 +294,8 @@ Therefore to not waste bandwidth, it is relevant to put as many RRHs as possible
      
 \end{center}
   \end{figure}
-In order to evaluate the impact of 
+  
+
 \paragraph{Balancing used positions}
 
 The free positions can be distributed uniformly over a slot, to minimize the time to wait before a node 
@@ -311,25 +314,54 @@ it decreases the latency of at most $F/2$.
   \paragraph{Experimental evaluation}
 
   In order to understand the contribution of the three ideas presented in the previous subsection,
-   we present the cumulative distribution of the latency of the BE traffic latency in Fig.~\ref{fig:algocmp}. Since the previous N-GREEN parameters were too restrictive to put several RRHs on the same position, the parameter $ET$ has been changed to $400$.
+   we present the cumulative distribution of the latency of the BE traffic latency.
+   
+Fig.~\ref{fig:periodonly} shows the performance of balancing the C-RAN traffic inside the period against a baseline version in which all the RRH emits at the same moment of the period. We keep the same parameters as in the previous experiment, described in Table~\ref{fig:params}. The BE traffic latency is highly decreased when we balance the C-RAN traffic inside the period.
 
-The performance when we do no compacting positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of spacing inside the slot brings almost no benefit as expected. The spacing over a period improves the latency marginally. In settings with an higher load, spacing inside a period would have a much larger effect.
+ Since the N-GREEN parameters does not allow us to put several RRH in the same positions, we changed the emission time to $ET = 200$ To keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}, we set $n = 12$. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. With these parameters, the loss of bandwidth due to reservation is at most $6\%$
 
-In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here. To keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}, we set $ET = 200$ and $n = 12$. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. With these parameters, the loss of bandwidth due to reservation is at most $6\%$
- 
+As show in Fig.\ref{fig:algocmp}, the performance when we do no compacting positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing inside the slot brings almost no benefit as expected (the maximum latency for BE traffic is $44\mu$s instead of $48\mu$s with compacting position only . The balancing over a period improves the latency marginally when compacting positions is possible. 
 
-\begin{center}
-      \includegraphics[scale=0.25]{repart1res}
-     \captionof{figure}{Impact of the repartition on the latency.}   \label{fig:algocmp}
+In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here.
 
-\vspace{0.5cm}
-\todo{packing seul programmé, a voir comment on l'integre dans les resultats}
-      \includegraphics[scale=0.25]{optim.pdf}
-     \captionof{figure}{Impact of the deterministic method on the traffics.}   \label{fig:optimres}
-  
-\end{center}
   The performance of the reservation algorithm is excellent, since the C-RAN traffic has {\bf zero latency} and the BE traffic has a \textbf{better latency} with reservation than with the FIFO rule. It is due to the balancing of the load of the C-RAN traffic over the period, that guarantee a more regular bandwidth for the BE traffic.
   
+
+
+\begin{figure}[h!]
+\begin{center}   
+
+      \includegraphics[scale=0.25]{periodonly}
+     \caption{Impact of balancing the inside the period on the BE traffic latency.}\label{fig:periodonly}
+     
+\end{center}
+  \end{figure}
+  
+\begin{figure}[h!]
+\begin{center}   
+
+      \includegraphics[scale=0.25]{repart1res}
+     \caption{Impact of compacting position on the BE traffic latency.}   \label{fig:algocmp}
+
+
+\end{center}
+  \end{figure}
+  
+  
+
+  
+  
+  \begin{figure}[h!]
+\begin{center}   
+
+     \includegraphics[scale=0.25]{optim.pdf}
+     \caption{Impact of the deterministic method on the traffics.}   \label{fig:optimres}
+  
+\end{center}
+  \end{figure}
+  
+  
+ 
 
   
   \bibliographystyle{ieeetr}
