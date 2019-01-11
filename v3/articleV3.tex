@@ -58,7 +58,7 @@ The N-GREEN project has for goal to design a low cost optical ring technology wi
 
 \section{Introduction}
 
-\footnote{This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} Telecommunication network providers have to design inexpensive networks supporting an increasing amount of data and online applications. Many of these applications require QoS guarantees, like minimal throughput and/or  maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things,tayq2017real}, establish end to end direct connections (E2DE) between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performance for a low cost: the hardware it requires scales linearly with the number of nodes while E2DE scales quadratically making it impractical for more than a few nodes.
+\footnote{This work was developed around the ANR N-GREEN project. The authors thank the Nokia Bell Labs team for their collaboration.} Telecommunication network providers have to design inexpensive networks supporting an increasing amount of data and online applications. Many of these applications require QoS guarantees, like minimal throughput and/or  maximal latency. The N-GREEN project aims to design a high performing optical ring while ensuring a minimal cost for providers. The current solutions with good QoS~\cite{pizzinat2015things,tayq2017real}, establish end to end direct connections between the nodes, which is extremely expensive. The N-GREEN optical ring is designed to ensure good performance for a low cost: the hardware it requires scales linearly with the number of nodes while E2DE scales quadratically making it impractical for more than a few nodes.
 
 In this article, we study a Cloud RAN (C-RAN) application based on the N-GREEN optical ring described in~\cite{ngreenarchitecture,uscumlic2018scalable}. C-RAN is one of the major area of development for 5G; it consists in centralizing or partially centralizing the computation units or {\bf BaseBand Units} (BBU) of the {\bf Remote Radio Heads} (RRH) in one datacenter~\cite{mobile2011c}. Periodically, each RRH on the field send some uplink traffic to its associated BBU in the datacenter, then, after a computation, the BBU send the same quantity of downlink traffic back to the RRH. The latency of the messages between the BBU and the RRH is critical since some services need end-to-end latency as low as $1$ms~\cite{3gpp5g,boccardi2014five}.
 
@@ -199,7 +199,10 @@ We compare experimentally these two methods in the simplest topology: The length
 
 
 Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize the C-RAN messages, while the BE traffic is heavily penalized. Furthermore, there is still $10\%$ of the C-RAN traffic with a latency higher than $50 \mu$s, a problem we address in the next section. Remark that the C-RAN and BE traffic latency distribution is not the same with the FIFO method. This comes from the fact that these two sources of traffic are of different nature. With high probability, there are some part of the period which have more 
-BE data arrivals (or C-RAN traffic) than average. In both cases, it makes the latency higher during these times. However a C-RAN emission from an RRH takes half the period while a BE arrival corresponds to only a few unit of times, which explains why the C-RAN traffic suffers  more from this phenomena.
+BE data arrivals (or C-RAN traffic) than average. In both cases, it makes the latency higher during these times. Furthermore, C-RAN taffic both represent an higher load than BE traffic and it is concentrated on half the period, while BE traffic is distributed in all the period.
+% However a C-RAN emission from an RRH takes half the period while a BE arrival corresponds to only a few unit of times,
+It explains why the C-RAN traffic suffers more from this phenomena.
+Also, we observed that the Uplink (from RRH to BBU) and Downlink (BBU to RRH) C-RAN traffics have the same latencies, that is why we chose to represent both indistinctly.
 
 
 
@@ -221,7 +224,7 @@ If an RRH is at position $p$, then by construction, the corresponding $BBU$ is a
 
 Given a ring, a set of RRH's, a period and an acceleration factor $F$, the problem we solve here is to find an \textbf{assignment} of values of the $m_i$'s which is \textbf{valid}: two RRHs never reserve or use the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time a BE packet spent in the insertion buffer must be minimized. To do so, we must minimize the time a node waits for a free container at any point in the period, by spreading the C-RAN traffic as uniformly as possible over the period in order to give the nodes an available container in a minimal average time. 
 
-Figure~\ref{fig:assignment} represent an assignment of three couples RRH-BBU. each slot has a duration $F$ unit of times, and, since an RRH/BBU emits a packet each $F$ UoT during $ET$ UoT, if we take the granularity of a slot to represent the time, the emission of a BBU/RRH is continuous in the time, during $ET$ UoT. Also, if we take a date $t$ in the period $P$, then $t$ is in the slot $\frac{P}{F}$ and is at position $P \mod F$.
+Fig.~\ref{fig:assignment} represent an assignment of three couples RRH-BBU. each slot has a duration $F$ unit of times, and, since an RRH/BBU emits a packet each $F$ UoT during $ET$ UoT, if we take the granularity of a slot to represent the time, the emission of a BBU/RRH is continuous in the time, during $ET$ UoT. Also, if we take a date $t$ in the period $P$, then $t$ is in the slot $\frac{P}{F}$ and is at position $P \mod F$.
 
 \begin{figure}[h!]
 \begin{center}   
