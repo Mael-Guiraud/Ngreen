@@ -199,11 +199,10 @@ We compare experimentally these two methods in the simplest topology: The length
 
 
 Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize the C-RAN messages, while the BE traffic is heavily penalized. Furthermore, there is still $10\%$ of the C-RAN traffic with a latency higher than $50 \mu$s, a problem we address in the next section. Remark that the C-RAN and BE traffic latency distribution is not the same with the FIFO method. This comes from the fact that these two sources of traffic are of different nature. With high probability, there are some part of the period which have more 
-BE data arrivals (or C-RAN traffic) than average. In both cases, it makes the latency higher during these times. Furthermore, C-RAN taffic both represent an higher load than BE traffic and it is concentrated on half the period, while BE traffic is distributed in all the period.
+BE data arrivals (or C-RAN traffic) than average. In both cases, it makes the latency higher during these times. Furthermore, C-RAN traffic is concentrated on half the period, while BE traffic is distributed in all the period.
 % However a C-RAN emission from an RRH takes half the period while a BE arrival corresponds to only a few unit of times,
 It explains why the C-RAN traffic suffers more from this phenomena.
-Also, we observed that the Uplink (from RRH to BBU) and Downlink (BBU to RRH) C-RAN traffics have the same latencies, that is why we chose to represent both indistinctly.
-
+Also, represent indistinclty the Uplink (from RRH to BBU) and Downlink (BBU to RRH) C-RAN traffics. Indeed, due to the broadcast and select mode, a message coming from a BBU or an RRH induces the same load for all the node of the ring, thus, the fact that all the BBU are connected to a same node does not impact the latency of the downlink traffic.
 
 
 \section{Deterministic approach for zero latency} \label{sec:deterministicalgorithms}
@@ -224,7 +223,7 @@ If an RRH is at position $p$, then by construction, the corresponding $BBU$ is a
 
 Given a ring, a set of RRH's, a period and an acceleration factor $F$, the problem we solve here is to find an \textbf{assignment} of values of the offsets $m_i$'s which is \textbf{valid}: two RRHs never use the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time a BE packet waits in the insertion buffer must be minimized. To do so, we must minimize the time a node waits for a free container at any point in the period, by spreading the C-RAN traffic as uniformly as possible over the period in order to give the nodes an available container in a minimal average time. 
 
-Figure~\ref{fig:assignment} represents an assignment of three couples of RRH and BBU. Each slot has a duration of $F$ unit of times, and, since an RRH/BBU emits a packet each $F$ UoT during $ET$ UoT, if we take the granularity of a slot to represent the time, the emission of a BBU/RRH is continuous in our representation, during $ET/F$ slots. A date $t$ in the period corresponds in Figure~\ref{fig:assignment} to the slot $t/F$ and is at position $t \mod F$.
+Figure~\ref{fig:assignment} represents an assignment of two couples of RRH and BBU. Each slot has a duration of $F$ unit of times, and, since an RRH/BBU emits a packet each $F$ UoT during $ET$ UoT, if we take the granularity of a slot to represent the time, the emission of a BBU/RRH is continuous in our representation, during $ET/F$ slots. A date $t$ in the period corresponds in Figure~\ref{fig:assignment} to the slot $t/F$ and is at position $t \mod F$.
 
 
 \begin{figure}[h!]
@@ -319,7 +318,8 @@ Fig.~\ref{fig:periodonly} shows the performance of balancing the C-RAN traffic i
 
  Since the N-GREEN parameters does not allow us to put several RRH in the same positions, we changed the emission time to $ET = 200$ To keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}, we set $n = 12$. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. With these parameters, the loss of bandwidth due to reservation is at most $6\%$
 
-As show in Fig.\ref{fig:algocmp}, the performance when we do no compacting positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing inside the slot brings almost no benefit as expected (the maximum latency for BE traffic is $44\mu$s instead of $48\mu$s with compacting position only . The balancing over a period improves the latency marginally when compacting positions is possible. 
+As show in Fig.\ref{fig:algocmp}, the performance when we do no compacting positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing used positions brings almost no benefit as expected: The average (respectively maximum) latency for BE traffic is $4.43\mu$s (resp. $44\mu$s) instead of $4.76\mu$s (resp. $48\mu$s) with compacting position only. Also, the balancing over a period improves the latency marginally when compacting positions is possible. 
+
 
 In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here.
 
@@ -355,8 +355,7 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \end{center}
   \end{figure}
   
-  
- 
+
 
   
   \bibliographystyle{ieeetr}
