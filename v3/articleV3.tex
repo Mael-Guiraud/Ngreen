@@ -260,8 +260,9 @@ Following Prop.~\ref{prop:assign}, the number of antennas for which there is an 
 In such an assignment, we need a second position to deal with the traffic coming from the BBUs coming back to those k antennas. Since we got  $F$ positions in the slot, the number of antennas supported by the ring is thus equal to $k \times \frac{F}{2}$.
 \end{proof}
 
-There are two sources of inefficiency in this method. The first comes from the reservation and cannot be avoided to guarantee the latency of the C-RAN traffic. The second comes from the fact that an RRH must emit at the same position during all the emission time (to guarantee zero latency). If we allow to change the position of data coming from the same RRH during the period, 
-we can use \emph{all} containers in a given position and hence we could support $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$ antennas.
+There are two sources of inefficiency in this method. The first comes from the reservation and cannot be avoided to guarantee the latency of the C-RAN traffic. The second comes from the fact that an RRH must emit at the same position during all the emission time (to guarantee zero latency). In Sec.~\ref{sec:maxant}, we propose an approach to allow to change the position of data coming from the same RRH during the period, that helps to maximize the number of antennas supported by the ring.
+
+
 
 
 We now present an algorithm using reservation as in Prop.\ref{prop:assign} to set the offsets of several RRH at the same position. In the baseline version of the algorithm, we put each RRH in an arbitrary position, for instance one RRH by position. We then propose three ideas to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period.
@@ -355,7 +356,21 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \end{center}
   \end{figure}
   
+\section{A smarter approach for N-GREEN parameters}
+\label{sec:maxant}
 
+The previous approach limits the number of antennas supported by the ring when $ET \geq \frac{P-RS}{2}$ which is the case with N-GREEN parameters. In order to maximize the number of antennas, we now want to allow the datas from a same RRH to use different positions in the slot. 
+
+In order to allow as much antennas as possible on the ring, the idea is to use \emph{all} containers in a given position. To do so we do the compacting positions of previous section and when less than $ET$ free containers remain in a position ( let us call $x$ this number of free containers), then the $x$ first containers of an antenna are assigned to this position, and the $ET - x$ last containers of this antennas are assigned to the next position. Fig.~\ref{fig:split} illustrates this manner to find an assignment with a maximal number of antennas. The number of antennas supported by the ring is now  $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$. 
+
+\begin{figure}[h!]
+\begin{center}   
+
+      \includegraphics[scale=0.8]{split}
+     \caption{Assignment with $9$ antennas with the N-GREEN parameters.}   \label{fig:split}
+\end{center}
+  \end{figure}
+  
 
   
   \bibliographystyle{ieeetr}
