@@ -67,7 +67,7 @@ In this article, we study a Cloud RAN (C-RAN) application based on the N-GREEN o
 Nowadays, the traffic is managed by statistical multiplexing~\cite{kern2006applying}. Here, we propose an SDN approach to {\bf deterministically} manage the periodic C-RAN traffic by choosing emission timing. Indeed, Deterministic Networking is one of the main method considered to reduce the E2E latency~\cite{finn-detnet-architecture-08}. In a previous work~\cite{dominique2018deterministic}, the authors have studied a similar problem for a star shaped network. In contrast with our previous work, finding emission timings so that different periodic sources do not use the same resource is easy in the context of the N-GREEN optical ring. However, we add two new difficulties arising from practice: the messages from RRHs are scattered and there are other traffics whose latency must be preserved. It turns out that the deterministic management of CRAN traffic
 we propose reduce the latency of CRAN traffic to the physical delay of the routes, while reducing the latency of the other traffics by smoothing the load of the ring over the period. To achieve such a good latency, our solution needs to reserve ressources in advance, which slightly decreases the maximal load the N-GREEN optical ring can handle. Such an approach of reservation of the network for an application (CRAN in our context) relates to network slicing~\cite{jiang2016network} or virtual-circuit-switched connections in optical networks~\cite{cadere2010virtual,szymanski2016ultra}.
 
-In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.~\ref{sec:oportmethods}, we experimentally evaluate the latency when using stochastic multiplexing to manage packet insertions on the ring, with or without priority for C-RAN packets. In Sec.~\ref{sec:deterministicalgorithms}, we propose a deterministic way to manage C-RAN packets without buffers, which guarantees to have zero latency from buffering. We propose several refinements of this deterministic sending scheme to spread the load over time, which improves the latency of best effort packets.
+In Sec.~\ref{sec:model}, we model the optical ring and the traffic flow. In Sec.~\ref{sec:oportmethods}, we experimentally evaluate the latency when using stochastic multiplexing to manage packet insertions on the ring, with or without priority for C-RAN packets. In Sec.~\ref{sec:deterministicalgorithms}, we propose a deterministic way to manage C-RAN packets without buffers, which guarantees to have zero latency from buffering. We propose several refinements of this deterministic sending scheme to spread the load over time, which improves the latency of best effort packet, or to allow the ring to support a maximal number of antennas, regardless the parameters.
 
 \section{Model of C-RAN traffic over an optical ring}
 \label{sec:model}
@@ -206,7 +206,7 @@ Also, represent indistinclty the Uplink (from RRH to BBU) and Downlink (BBU to R
 
 
 \section{Deterministic approach for zero latency} \label{sec:deterministicalgorithms}
-
+\subsection{Reservation, assignment}
 Finding good offsets for the C-RAN traffic is a hard problem even for simple topologies and without BE traffic, see~\cite{dominique2018deterministic}. In this section, we give a simple solution to this problem in the N-GREEN optical ring, and we adapt it to minimize the latency of the BE traffic.
 
 Let $u$ be the node to which is attached the RRH $i$, to ensure zero latency for the C-RAN traffic, then the container which arrives at $u$ at time $m_i$ must be free so that the data from the RRH can be sent immediately on the optical ring. 
@@ -322,7 +322,7 @@ Fig.~\ref{fig:periodonly} shows the performance of balancing the C-RAN traffic i
 As show in Fig.\ref{fig:algocmp}, the performance when we do no compacting positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing used positions brings almost no benefit as expected: The average (respectively maximum) latency for BE traffic is $4.43\mu$s (resp. $44\mu$s) instead of $4.76\mu$s (resp. $48\mu$s) with compacting position only. Also, the balancing over a period improves the latency marginally when compacting positions is possible. 
 
 
-In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here.
+In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here. 
 
   The performance of the reservation algorithm is excellent, since the C-RAN traffic has {\bf zero latency} and the BE traffic has a \textbf{better latency} with reservation than with the FIFO rule. It is due to the balancing of the load of the C-RAN traffic over the period, that guarantee a more regular bandwidth for the BE traffic.
   
@@ -356,12 +356,15 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \end{center}
   \end{figure}
   
-\section{A smarter approach for N-GREEN parameters}
+\subsection{A smarter approach for N-GREEN parameters}
 \label{sec:maxant}
 
 The previous approach limits the number of antennas supported by the ring when $ET \geq \frac{P-RS}{2}$ which is the case with N-GREEN parameters. In order to maximize the number of antennas, we now want to allow the datas from a same RRH to use different positions in the slot. 
 
-In order to allow as much antennas as possible on the ring, the idea is to use \emph{all} containers in a given position. To do so we do the compacting positions of previous section and when less than $ET$ free containers remain in a position ( let us call $x$ this number of free containers), then the $x$ first containers of an antenna are assigned to this position, and the $ET - x$ last containers of this antennas are assigned to the next position. Fig.~\ref{fig:split} illustrates this manner to find an assignment with a maximal number of antennas. The number of antennas supported by the ring is now  $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$. 
+\paragraph{Fulfilling positions}
+In order to allow as much antennas as possible on the ring, the idea is to use \emph{all} containers in a given position. To do so we assign the antennas to the first position which is not full. When less than $ET$ free containers remain in this position ( let us call $x$ this number of free containers), then the $x$ first containers of an antenna are assigned to this position, and the $ET - x$ last containers of this antennas are assigned to the next position. Fig.~\ref{fig:split} illustrates this manner to find an assignment with a maximal number of antennas. 
+
+Remark that we consider only the even positions, because the BBU are set by definitions on the odd positions. This mean that a container reserved to the next position means in reality that this container is reserved $2$ positions after. Thus, a message arriving in a node from an RRH at time $m_i$ can see its reserved container at time $m_i +2$ which introduce a bit of additional latency of $2\mu$s for a part of the CRAN traffic. However, the number of antennas supported by the ring is now  $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$, which is a considerable gain with our N-GREEN parameters ($9$ antennas instead of $5$).
 
 \begin{figure}[h!]
 \begin{center}   
@@ -371,7 +374,18 @@ In order to allow as much antennas as possible on the ring, the idea is to use \
 \end{center}
   \end{figure}
   
+  Since the N-GREEN parameters only allows to do balancing into the period of the previous section, we want to compare the impact on the best effort traffic of fulfilling positions against balancing into the period and FIFO rule. 
+Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort traffic with those three methods, and with the N-GREEN parameters.
 
+
+\begin{figure}[h!]
+\begin{center}   
+
+      \includegraphics[scale=0.25]{splitres}
+     \caption{Impact of fulfilling positions on BE traffic.}   \label{fig:splitres}
+\end{center}
+  \end{figure}
+  
   
   \bibliographystyle{ieeetr}
 \bibliography{src}
