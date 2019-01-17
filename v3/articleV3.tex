@@ -362,9 +362,10 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 The previous approach limits the number of antennas supported by the ring when $ET \geq \frac{P-RS}{2}$ which is the case with N-GREEN parameters. In order to maximize the number of antennas, we now want to allow the datas from a same RRH to use different positions in the slot. 
 
 \paragraph{Fulfilling positions}
-In order to allow as much antennas as possible on the ring, the idea is to use \emph{all} containers in a given position. To do so we assign the antennas to the first position which is not full. When less than $ET$ free containers remain in this position ( let us call $x$ this number of free containers), then the $x$ first containers of an antenna are assigned to this position, and the $ET - x$ last containers of this antennas are assigned to the next position. Fig.~\ref{fig:split} illustrates this manner to find an assignment with a maximal number of antennas. 
+In order to allow as much antennas as possible on the ring, the idea is to use \emph{all} containers in a given position. To do so we assign the antennas to the first position which is not full. When less than $ET$ free containers remain in this position ( let us call $x$ this number of free containers), then the $x$ first packets of an antenna are assigned to this position, and the $ET - x$ last packets of this antennas are assigned to the next position. Fig.~\ref{fig:split} illustrates this manner to find an assignment with a maximal number of antennas. 
 
-Remark that we consider only the even positions, because the BBU are set by definitions on the odd positions. This mean that a container reserved to the next position means in reality that this container is reserved $2$ positions after. Thus, a message arriving in a node from an RRH at time $m_i$ can see its reserved container at time $m_i +2$ which introduce a bit of additional latency of $2\mu$s for a part of the CRAN traffic. However, the number of antennas supported by the ring is now  $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$, which is a considerable gain with our N-GREEN parameters ($9$ antennas instead of $5$).
+Remark that we only consider the even positions, because the BBU are set by definitions on the odd positions. This mean that if a container is reserved in the next position, it is, in reality reserved $2$ positions after. Thus, a packet arriving in a node from an RRH at time $m_i$ can see its reserved container at time $m_i +2$, which introduce a bit of additional latency of $2$ unit of time for a part of the CRAN traffic. However, this cost is worth because the number of antennas supported by the ring is now  $\lfloor\frac{P- RS}{ET} \times \frac{F}{2}\rfloor$, which is a considerable gain with our N-GREEN parameters ($9$ antennas instead of $5$).
+
 
 \begin{figure}[h!]
 \begin{center}   
@@ -374,6 +375,7 @@ Remark that we consider only the even positions, because the BBU are set by defi
 \end{center}
   \end{figure}
   
+  This reservation algorithm naturally apply the compacting position of the previous subsection. Also, there is no balancing into the period to do because all the used position (except the last) are full. The only possible optimisation for the best effort traffic would be to balance the used positions, but, it would add some additional latency on the packet which are already assigned with $2$ unit of time of delay.
   Since the N-GREEN parameters only allows to do balancing into the period of the previous section, we want to compare the impact on the best effort traffic of fulfilling positions against balancing into the period and FIFO rule. 
 Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort traffic with those three methods, and with the N-GREEN parameters.
 
