@@ -353,13 +353,13 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \end{center}
   \end{figure}
   
-\subsection{Valid assignment with small C-RAN latency}
+\subsection{Valid assignment with additional C-RAN latency}
 \label{sec:maxant}
 
-The previous approach limits the number of antennas supported by the ring when $P-RS \mod ET \neq 0$, which is the case with N-GREEN parameters. In order to maximize the number of supported antennas (and to minimize the reserved containers), we now \emph{allow the data from an RRH to use different positions}. 
+The previous approach limits the number of antennas supported by the ring when $P-RS \mod ET \neq 0$, which is the case with N-GREEN parameters. In order to maximize the number of supported antennas, we now \emph{allow the data from an RRH to use different positions}. The method we present in this section enables us to support more antennas and improves the latency of BE traffic (it reserves less free containers)
+by \emph{allowing the data from an RRH to use different positions}.
+It is a the cost of a slightly worse latency for C-RAN traffic and it requires to implement some buffering for the C-RAN containers. 
 
-\todo{dire le tradoff -> en échange de plus d'antennes et d'une meilleure latence BE on a une 
-petite perte sur les C-Rans et une augmentation raisonnable de complexité (buffering pour les CRAN).}
 
 
 \paragraph{Filling positions}
