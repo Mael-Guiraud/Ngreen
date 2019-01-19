@@ -223,7 +223,7 @@ If an RRH is at position $p$, then by construction, the corresponding $BBU$ is a
 
 Given a ring, a set of RRH's, a period and an acceleration factor $F$, the problem we solve here is to find an \textbf{assignment} of values of the offsets $m_i$'s which is \textbf{valid}: two RRHs never use the same container in a period. Moreover we want to preserve the latency of the BE traffic. It means that the time a BE packet waits in the insertion buffer must be minimized. To do so, we must minimize the time a node waits for a free container at any point in the period, by spreading the C-RAN traffic as uniformly as possible over the period. % in order to give the nodes an available container in a minimal average time. 
 
-Figure~\ref{fig:assignment} represents an assignment of two couples of RRH and BBU by showing the containers going through the node of the BBU during a period. Each slot has a duration of $F$ unit of times, and, since an RRH/BBU emits a packet each $F$ UoT during $ET$ UoT, if we take the granularity of a slot to represent the time, the emission of a BBU/RRH is continuous in our representation, during $ET/F$ slots. A date $t$ in the period corresponds in Figure~\ref{fig:assignment} to the slot $t/F$ and is at position $t \mod F$.
+Fig.~\ref{fig:assignment} represents an assignment of two couples of RRH and BBU by showing the containers going through the node of the BBU during a period. Each slot has a duration of $F$ unit of times, and, since an RRH/BBU emits a packet each $F$ UoT during $ET$ UoT, if we take the granularity of a slot to represent the time, the emission of a BBU/RRH is continuous in our representation, during $ET/F$ slots. A date $t$ in the period corresponds in Fig.~\ref{fig:assignment} to the slot $t/F$ and is at position $t \mod F$.
 
 
 \begin{figure}[h!]
@@ -235,7 +235,7 @@ Figure~\ref{fig:assignment} represents an assignment of two couples of RRH and B
 \end{center}
   \end{figure}
 
- \subsection{Building valid assignment with zero C-RAN latency}
+ \subsection{Building valid assignment with zero C-RAN latency}\ref{sec:zerolatency}
 Remark that two RRHs which are not at the same position never use the same containers. Moreover, if we fix the offsets of the RRHs to even positions so that they do not reserve the same containers, then, because the answers of the BBU are sent without delay in our model, it will fix the offsets of the BBUs to odd positions which do not reserve the same containers. Hence, we need to deal with the RRHs only.
 The next proposition gives a simple method to find an assignment.
 
@@ -248,9 +248,9 @@ There is a valid assignment of the offsets $m_1, \dots, m_k$ on the same positio
  the containers filled by the $k$th RRH are freed before $P$. Hence when the RRH $1$ must emit something at the first unit of time of the second period, there is a free container.
 \end{proof}
 
-Remark that reserving free containers make them unusable for BE traffic which is akin to a loss of bandwidth. However, with our choice of emission times of the RRHs in the order of the cycle, most of the container we reserve are used by the data from some RRH. If all containers at some position are used, that is $kET +RS = P$, then there are only $RS$ free containers wasted. In the worst case, less than $2RS$ containers are wasted. 
+Remark that reserving free containers make them unusable for BE traffic which is akin to a loss of bandwidth. However, with our choice of emission times of the RRHs in the order of the cycle, most of the container we reserve are used by the data from some RRH. If all containers at some position are used, that is $kET +RS = P$, then there are only $RS$ free containers wasted. In the worst case, less than $2RS$ containers are wasted by the assignment of Prop.~\ref{prop:assign}. 
 
-From Proposition~\ref{prop:assign}, it is easy to derive the maximal number of antennas which can be supported by an optical ring, when using reservation and the same position for an RRH for the whole period.
+It is now easy to derive the maximal number of antennas which can be supported by an optical ring, when using reservation and the same position for an RRH for the whole period.
 
 \begin{corollary}
 There is a valid assignment with $ \lfloor\frac{P- RS}{ET}\rfloor \times \frac{F}{2}$ antennas and zero latency.
@@ -260,7 +260,8 @@ Following Prop.~\ref{prop:assign}, the maximal number of antennas for which ther
 In such an assignment, we need a second position to deal with the traffic coming from the BBUs coming back to those k antennas. Since we got  $F$ positions in the slot, the number of antennas supported by the ring is thus equal to $k \times \frac{F}{2}$.
 \end{proof}
 
-There are two sources of inefficiency in this method. The first comes from the reservation and cannot be avoided to guarantee the latency of the C-RAN traffic. The second comes from the fact that an RRH must emit at the same position during all the emission time (to guarantee zero latency). In Sec.~\ref{sec:maxant}, we will relax this constraint to maximize the number of antennas supported by the ring, while minimizing the loss of bandwith due to reservation.
+With the parameters of the N-GREEN ring given in Fig.~\ref{fig:params}, we can support $5$ antennas, while stochastic 
+multiplexing can support $10$ antennas albeit extremely inefficiently. There are two sources of inefficiency in our method. The first comes from the reservation and cannot be avoided to guarantee the latency of the C-RAN traffic. The second comes from the fact that an RRH must emit at the same position during all the emission time (to guarantee zero latency). We relax this constraint in Sec.~\ref{sec:maxant} to maximize the number of antennas supported by the ring, while minimizing the loss of bandwith due to reservation.
 
 We now present an algorithm using reservation as in Prop.\ref{prop:assign} to set the offsets of several RRH at the same position. In the baseline version of the algorithm, we put each RRH in an arbitrary position, for instance one RRH by position. We then propose three ideas to optimize the latency of the BE traffic, by spacing as well as possible the free containers in a period.
 
@@ -281,8 +282,8 @@ To mitigate this problem, in a period, the time with free containers in each pos
   
 \paragraph{Compacting positions}
 
-For each position which is used by some RRH, and during each period, $RS$ containers are reserved before starting to emit some C-RAN traffic, while they can be free. Hence, it decreases the maximal load the system can handle.
-Therefore to not waste bandwidth, it is relevant to put as many RRHs as possible on the same position as in Fig.~\ref{fig:packing}. Indeed, for any position which is not used at all, $RS$ containers need not to be reserved. This strategy is also good for the latency of the BE traffic. If a position is unused, then there is always a container free of C-RAN traffic each $F$ unit of times. 
+For each position which is used by some RRH, and for each period, $RS$ free containers are reserved before starting to emit some C-RAN traffic which decreases the maximal load the system can handle. Therefore to not waste bandwidth, it is important to put as many RRHs as possible on the same position as shown in Fig.~\ref{fig:packing}. Indeed, for any position which is not used at all, $RS$ containers need not to be reserved. This strategy is also good to spread the load during the period since it maximizes the number of unused positions.
+It helps the latency of the BE traffic, since for each unused position, there is always a container free of C-RAN traffic each $F$ unit of times. 
 \begin{figure}[h!]
 \begin{center}   
 
@@ -309,14 +310,14 @@ has access to a free container, as shown in Fig.~\ref{fig:slotbal}. To do so, co
 
   \paragraph{Experimental evaluation}
 
-  In order to understand the contribution of the three ideas presented in the previous subsection,
-   we present the cumulative distribution of the latency of the BE traffic latency.
+  In order to understand the interest of the three improvements presented in the previous subsection,
+   we present the cumulative distribution of the latency of the BE traffic using them either alone or in conjunction.
    
-Fig.~\ref{fig:periodonly} shows the performance of balancing the C-RAN traffic inside the period against a baseline version in which all the RRH begin to emit at the same slot. We keep the same parameters as in the previous experiment, described in Table~\ref{fig:params}. The BE traffic latency is highly decreased when we balance the C-RAN traffic inside the period.
+Fig.~\ref{fig:periodonly} shows the performance of balancing the C-RAN traffic inside the period against a baseline version in which all the RRH begin to emit at the same slot. We keep the same parameters of Sec.~\ref{sec:oportmethods} described in Table~\ref{fig:params}. As expected, the BE traffic latency much better when we balance the C-RAN traffic inside the period.
 
- Since the N-GREEN parameters does not allow us to put several RRH at the same position, we changed the emission time to $ET = 200$ To keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}, we set $n = 12$. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. With these parameters, the loss of bandwidth due to reservation is at most $6\%$
+ Since the N-GREEN parameters does not allow us to put several RRH at the same position, we change the emission time to $ET = 200$ and we set the number of antennas to $k = 12$ to keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. %With these parameters, the loss of bandwidth due to reservation is at most $6\%$.
 
-As show in Fig.\ref{fig:algocmp}, the performance when we do no compacting positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing used positions brings almost no benefit as expected: The average (respectively maximum) latency for BE traffic is $4.43\mu$s (resp. $44\mu$s) instead of $4.76\mu$s (resp. $48\mu$s) with compacting position only. Also, the balancing over a period improves the latency marginally when compacting positions is possible. 
+As shown in Fig.\ref{fig:algocmp}, the performance when we do not compact positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing used positions brings almost no benefit as expected: The average (respectively maximum) latency for BE traffic is $4.43\mu$s (resp. $44\mu$s) instead of $4.76\mu$s (resp. $48\mu$s) with compacting position only. Also, the balancing over a period improves the latency marginally when compacting positions is possible. 
 
 
 In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here. 
@@ -356,9 +357,8 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \subsection{Building valid assignment with some C-RAN latency}
 \label{sec:maxant}
 
-The previous approach limits the number of antennas supported by the ring when $P-RS \mod ET \neq 0$, which is the case with N-GREEN parameters. In order to maximize the number of supported antennas, we now \emph{allow the data from an RRH to use different positions}. The method we present in this section enables us to support more antennas and improves the latency of BE traffic (it reserves less free containers)
-by \emph{allowing the data from an RRH to use different positions}.
-It is a the cost of a slightly worse latency for C-RAN traffic and it requires to implement some buffering for the C-RAN containers. 
+The previous approach limits the number of antennas supported by the ring when $P-RS \mod ET \neq 0$, which is the case with N-GREEN parameters. In order to maximize the number of supported antennas, we now \emph{allow the data from an RRH to use different positions}. The method we present in this section enables us to support more antennas and improves the latency of BE traffic (it reserves less free containers) by \emph{allowing the data from an RRH to use different positions}.
+It is a the cost of a slightly worse latency for C-RAN traffic and it also requires to implement some buffering for the C-RAN containers. 
 
 
 
@@ -369,16 +369,23 @@ In order to support as much antennas as possible on the ring, we use \emph{all} 
 \begin{prop}
  There is a valid assignment for $k$ antennas when $k \leq \lfloor \frac{P- RS}{ET} \times \frac{F}{2}\rfloor$.
 \end{prop}
+\begin{proof}
+ We consider the RRHs in the order of the ring and set their offsets as in Prop.\ref{prop:assign}.
+ If $l = \lfloor \frac{P- RS}{ET}\rfloor$, $l$ RRHs can be at position zero, and the $l+1$th
+ RRH will also emit at position zero, with offset $m_{l+1} = l*ET + \omega(u_0,u_{l+1})$. 
+ After emitting up to time $x = P - \omega(u_{l+1},u_{0})$ at position zero, it emits during a time $ET -x $  at position $2$. Then the next RRHs are assigned to position two, and begin to emit at time $x$ instead of zero. This assignment is build in this way filling completely all first positions, until there are no more RRH.  
+\end{proof}
 
-
-To do so we assign the antennas to the first position which is not full. When less than $ET$ free containers remain in this position (let us call $x$ this number of free containers), then the $x$ first containers of an antenna are assigned to this position, and the $ET - x$ last containers of this antennas are assigned to the next position. Fig.~\ref{fig:split} illustrates this manner to find an assignment with a maximal number of antennas. 
+Fig.~\ref{fig:split} illustrates this construction for the N-GREEN parameters. 
+It is possible to support $9$ antennas (but no BE traffic in this extreme case),
+rather than $5$ with the method of Sec.~\ref{sec:zerolatency}.
 
 
 \begin{figure}[h!]
 \begin{center}   
 
       \includegraphics[scale=0.8]{split}
-     \caption{Assignment with $9$ antennas with the N-GREEN parameters.}   \label{fig:split}
+     \caption{Valid assignment for $9$ antennas and the N-GREEN parameters.}   \label{fig:split}
 \end{center}
   \end{figure}
   
@@ -397,7 +404,12 @@ Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort
   
   \section*{Conclusion}
   
-  
+  Dire que c'est trop bien parce qu'on gagne sur tous les fronts par rapport à des classiques
+  buffer FIFO, même avec de la priorité:
+  pas besoin ou presque de buffer-> simplicité, pas de latence pour C RAN et meilleur latence
+  pour BE. 
+    Même utilisable en pratique, d'ailleurs on va faire un prototype..
+  Ouverture sur le cas avec plusieurs data centers (plus compliqué, car on doit réutiliser les méthodes de l'autre article mais tant que la charge de CRAN n'est pas trop importante, ça devrait aller).
   \bibliographystyle{ieeetr}
 \bibliography{src}
 
