@@ -235,7 +235,7 @@ Fig.~\ref{fig:assignment} represents an assignment of two couples of RRH and BBU
 \end{center}
   \end{figure}
 
- \subsection{Building valid assignment with zero C-RAN latency}\ref{sec:zerolatency}
+ \subsection{Building valid assignment with zero C-RAN latency}\label{sec:zerolatency}
 Remark that two RRHs which are not at the same position never use the same containers. Moreover, if we fix the offsets of the RRHs to even positions so that they do not reserve the same containers, then, because the answers of the BBU are sent without delay in our model, it will fix the offsets of the BBUs to odd positions which do not reserve the same containers. Hence, we need to deal with the RRHs only.
 The next proposition gives a simple method to find an assignment.
 
@@ -315,14 +315,18 @@ has access to a free container, as shown in Fig.~\ref{fig:slotbal}. To do so, co
    
 Fig.~\ref{fig:periodonly} shows the performance of balancing the C-RAN traffic inside the period against a baseline version in which all the RRH begin to emit at the same slot. We keep the same parameters of Sec.~\ref{sec:oportmethods} described in Table~\ref{fig:params}. As expected, the BE traffic latency much better when we balance the C-RAN traffic inside the period.
 
- Since the N-GREEN parameters does not allow us to put several RRH at the same position, we change the emission time to $ET = 200$ and we set the number of antennas to $k = 12$ to keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. %With these parameters, the loss of bandwidth due to reservation is at most $6\%$.
+To show the interest of compacting the positions, we must be able to put several RRH at the same position.
+Hence, we change the emission time to $ET = 200$ and the number of antennas to $k = 12$ to keep the load around $90\%$ as in the experiment of Fig.~\ref{fig:resultopport}. This is not out of context since the exact split of the C-RAN (the degree of centralization of the computation units in the cloud) is not fully determined yet~\cite{mobile2011c}. 
 
-As shown in Fig.\ref{fig:algocmp}, the performance when we do not compact positions is really bad, even worst than the methods using an insertion buffer. It is explained by the parameters of the N-GREEN ring: all positions are used and thus, there are no free containers available to BE traffic during $ET+RS$ units of time. When compacting the RRHs on a minimal number of positions, the latency decreases dramatically and becomes much better than in the previous methods. The optimizations of balancing used positions brings almost no benefit as expected: The average (respectively maximum) latency for BE traffic is $4.43\mu$s (resp. $44\mu$s) instead of $4.76\mu$s (resp. $48\mu$s) with compacting position only. Also, the balancing over a period improves the latency marginally when compacting positions is possible. 
+
+%With these parameters, the loss of bandwidth due to reservation is at most $6\%$.
+
+As shown in Fig.\ref{fig:algocmp}, the performance of the baseline algorithm is really bad, even worst than the methods using an insertion buffer. Compacting the RRHs on a minimal number of positions decreases dramatically the latency. If in addition, we balance over a period, we get yet another gain of latency of smaller magnitude.
+We did not represent the benefit of balancing used positions because the reduction in latency it 
+yields is small as expected: The average (respectively maximum) latency for BE traffic goes from $4.76$ UoT (resp. $48$ UoT) to $4.43\mu$s (resp. $44\mu$s). 
 
 
-In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule or the reservation algorithm proposed here. 
-
-  The performance of the reservation algorithm is excellent, since the C-RAN traffic has {\bf zero latency} and the BE traffic has a \textbf{better latency} with reservation than with the FIFO rule. It is due to the balancing of the load of the C-RAN traffic over the period, that guarantee a more regular bandwidth for the BE traffic.
+In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latency of the BE traffic using the FIFO rule to our reservation algorithm with the three proposed improvements. The parameter are the same as in the previous experiment. The performance of the reservation algorithm is \emph{excellent}, since the C-RAN traffic has {\bf zero latency} and the BE traffic has a \textbf{better latency} with reservation than with the FIFO rule. It is due to the balancing of the load of the C-RAN traffic over the period, that guarantee a more regular bandwidth for the BE traffic.
   
 
 
@@ -330,16 +334,16 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \begin{center}   
 
       \includegraphics[scale=0.25]{periodonly}
-     \caption{Impact of balancing the inside the period on the BE traffic latency.}\label{fig:periodonly}
-     
-\end{center}
+     \caption{Latencies of a baseline assignment and of balancing inside the period for $5$ antennas.}  
+     \label{fig:periodonly}
+  \end{center}
   \end{figure}
   
 \begin{figure}[h!]
 \begin{center}   
 
       \includegraphics[scale=0.25]{repart1res}
-     \caption{Impact of compacting position on the BE traffic latency.}   \label{fig:algocmp}
+     \caption{Compacting and balancing inside the period for $12$ antennas.}   \label{fig:algocmp}
 \end{center}
   \end{figure}
   
@@ -349,8 +353,7 @@ In Fig.~\ref{fig:optimres}, we compare the cumulative distribution of the latenc
 \begin{center}   
 
      \includegraphics[scale=0.25]{optim.pdf}
-     \caption{Impact of the deterministic method on the traffics.}   \label{fig:optimres}
-
+     \caption{FIFO buffer compared to the best method with reservation for $12$ antennas.} \label{fig:optimres}
 \end{center}
   \end{figure}
   
@@ -389,7 +392,7 @@ rather than $5$ with the method of Sec.~\ref{sec:zerolatency}.
 \end{center}
   \end{figure}
   
-  This reservation algorithm naturally apply the compacting position of the previous subsection. Also, there is no balancing into the period to do because all the used position (except the last) are full. The only possible optimisation for the best effort traffic would be to balance the used positions, but, it would add some additional latency on the packet which are already assigned with $2$ unit of time of delay.
+  This reservation algorithm naturally applies the compacting position of the previous subsection. Also, there is no balancing into the period to do because all the used position (except the last) are full. The only possible optimisation for the best effort traffic would be to balance the used positions, but, it would add some additional latency on the packet which are already assigned with $2$ unit of time of delay.
   Since the N-GREEN parameters only allows to do balancing into the period of the previous section, we want to compare the impact on the best effort traffic of fulfilling positions against balancing into the period and FIFO rule. 
 Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort traffic with those three methods, and with the N-GREEN parameters.
 
@@ -404,13 +407,13 @@ Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort
   
   \section*{Conclusion}
   
-  Dire que c'est trop bien parce qu'on gagne sur tous les fronts par rapport à des classiques
-  buffer FIFO, même avec de la priorité:
-  pas besoin ou presque de buffer-> simplicité, pas de latence pour C RAN et meilleur latence
-  pour BE. 
-    Même utilisable en pratique, d'ailleurs on va faire un prototype..
-  Ouverture sur le cas avec plusieurs data centers (plus compliqué, car on doit réutiliser les méthodes de l'autre article mais tant que la charge de CRAN n'est pas trop importante, ça devrait aller).
-  \bibliographystyle{ieeetr}
+  As a conclusion, we want to stress the fact that to deal with a deterministic 
+  dataflow as C-RAN, we must use a deterministic managment rather than a classical.
+  Using a simple scheme which requires only to set the emission timing of the RRHs and to allow reservation 
+  on the optic ring, which is easy to do in practice, we remove all logical latencies. It also improves 
+  significantly the latencies of the BE traffic by spreading the load of the C-RAN traffic in a very uniform manner.  We are currently working on a prototype implementing this method on the NGREEN ring.
+  We plan to deal with the case of several different data-centers. The algorithmic methods to find 
+  good emission timings in this case are more complicated similar to what is developped in~\cite{dominique2018deterministic}, but while the load due to the C-RAN traffic is not too high it should work very well.  \bibliographystyle{ieeetr}
 \bibliography{src}
 
 \end{document}
