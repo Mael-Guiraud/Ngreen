@@ -388,14 +388,14 @@ rather than $5$ with the method of Sec.~\ref{sec:zerolatency}.
   
   This reservation algorithm naturally applies the compacting position of the previous subsection. Also, there is no balancing into the period to do because all the used position (except the last) are full. The only possible optimisation for the best effort traffic would be to balance the used positions, but, it would add some additional latency on the packet which are already assigned with $2$ unit of time of delay.
   Since the N-GREEN parameters only allows to do balancing into the period of the previous section, we want to compare the impact on the best effort traffic of fulfilling positions against balancing into the period and FIFO rule. 
-Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort traffic with those three methods, and with the N-GREEN parameters.
+Fig.~\ref{fig:splitres} represent the cumulative distribution of the best effort traffic with those three methods, and with the N-GREEN parameters. Filling positions reduces the BE traffic latency more than balancing into the period. Indeed, with filling positions, the loss of bandwidth due to reservation is minimized.
 
 
 \begin{figure}[h!]
 \begin{center}   
 
       \includegraphics[scale=0.25]{splitres}
-     \caption{Impact of fulfilling positions on BE traffic.}   \label{fig:splitres}
+     \caption{Latencies of filling positions compared to FIFO buffer and balancing into the period for 5 antennas.}   \label{fig:splitres}
 \end{center}
   \end{figure}
   
