@@ -194,10 +194,12 @@ We compare experimentally these two methods in the simplest topology: The length
 
 
 
-Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize the C-RAN messages, while the BE traffic is heavily penalized. Furthermore, there is still $10\%$ of the C-RAN traffic with a latency higher than $50 \mu$s, a problem we address in the next section. Remark that the C-RAN and BE traffic latency distribution is not the same with the FIFO method. This comes from the fact that these two sources of traffic are of different nature. With high probability, there are some part of the period which have more 
-BE data arrivals (or C-RAN traffic) than average. In both cases, it makes the latency higher during these times. Furthermore, C-RAN traffic is concentrated on half the period, while BE traffic is distributed in all the period.\todo{revoir cette explication}
-% However a C-RAN emission from an RRH takes half the period while a BE arrival corresponds to only a few unit of times,
-It explains why the C-RAN traffic suffers more from this phenomena.
+Unsurprisingly, the latency of the C-RAN traffic is better when we prioritize the C-RAN messages, while the BE traffic is heavily penalized. Furthermore, there is still $10\%$ of the C-RAN traffic with a latency higher than $50 \mu$s, a problem we address in the next section.
+
+% Remark that the C-RAN and BE traffic latency distribution is not the same with the FIFO method. This comes from the fact that these two sources of traffic are of different nature. With high probability, there are some part of the period which have more 
+% BE data arrivals (or C-RAN traffic) than average. In both cases, it makes the latency higher during these times. Furthermore, C-RAN traffic is concentrated on half the period, while BE traffic is distributed in all the period.\todo{revoir cette explication}
+% % However a C-RAN emission from an RRH takes half the period while a BE arrival corresponds to only a few unit of times,
+% It explains why the C-RAN traffic suffers more from this phenomena.
 
 
 Remark that, due to the broadcast and select mode, a message coming from any node induces the same load for all the nodes of the ring. Hence the latency of the traffics coming from any RRHs or from the BBUs are the same, which may seem couterintuitive knowing that all BBUs share the same node on the ring. This is why in Fig.~\ref{fig:params} we do not ditinguish between uplink C-RAN traffic (RRH to BBU) and downlink  C-RAN traffic (BBU to RRH).
